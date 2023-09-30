@@ -1,0 +1,123 @@
+image: debian:stable-slim
+
+stages:
+  - install
+  - test
+  - build
+  - pack
+  - release
+
+install:
+  image: node:17.5.0
+  stage: install
+  script:
+    - npm ci
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+
+test:
+  image: node:16.4.1
+  stage: test
+  script:
+    - npm run test:pipeline
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+    policy: pull
+  needs:
+    - install
+  artifacts:
+      when: always
+      paths:
+        - junit.xml
+      reports:
+        junit: junit.xml
+
+build:
+  image: node:17.5.0
+  stage: build
+  script:
+    - npm run build:production
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+    policy: pull
+  needs:
+    - install
+  artifacts:
+    paths:
+      - dist/
+
+pack:
+  image: debian:stable-slim
+  stage: pack
+  before_script:
+    - apt-get update -y
+    - apt-get install -y zip
+    - echo $CI_JOB_ID
+    - echo PACK_JOB_ID=$CI_JOB_ID >> pack.env
+  script:
+    - cd dist
+    - zip -r weather-control.zip *
+    - mv weather-control.zip ../weather-control.zip
+  artifacts:
+    name: weather-control
+    when: on_success
+    expire_in: never
+    paths:
+      - weather-control.zip
+    reports:
+      dotenv: pack.env
+  dependencies:
+    - build
+  needs:
+    - build
+  when: on_success
+  only:
+    - tags
+
+pack-mr:
+  image: debian:stable-slim
+  stage: pack
+  script:
+    - apt-get update -y
+    - apt-get install -y zip
+    - cd dist
+    - zip -r weather-control.zip *
+    - mv weather-control.zip ../weather-control.zip
+  artifacts:
+    name: weather-control
+    when: on_success
+    expire_in: never
+    paths:
+      - weather-control.zip
+  needs:
+    - build
+  when: manual
+  only:
+    - branches
+
+create-release:
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  stage: release
+  only:
+    - tags
+  needs:
+  - job: pack
+    artifacts: true
+  script:
+  - echo 'running release_job'
+  - echo 'Previous Job ID is printed below'
+  - echo $PACK_JOB_ID
+  release:
+    tag_name: '$CI_COMMIT_TAG'
+    description: 'Changelog TBD'
+    assets:
+      links:
+        - name: 'Module Download'
+          url: 'https://gitlab.com/jstebenne/foundryvtt-weather-control/-/jobs/${PACK_JOB_ID}/artifacts/raw/weather-control.zip'
+          link_type: other

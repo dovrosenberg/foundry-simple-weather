@@ -1,0 +1,12 @@
+style.css
+/.vs
+node_modules/
+.DS_Store
+package/
+dist/
+css/
+!**/.gitkeep
+coverage/
+
+junit.xml
+.npmrc

@@ -1,0 +1,62 @@
+{
+  "id": "simple-weather",
+  "## comment:name": "deprecated, remove after v13 release",
+  "name": "simple-weather",
+  "class": "SimpleWeather",
+  "title": "Simple Weather",
+  "description": "Add dynamic weather to your FoundryVTT world.",
+  "## comment:minimumCoreVersion": "deprecated, remove after v13 release",
+  "minimumCoreVersion": "0.8.0",
+  "## comment:compatibleCoreVersion": "deprecated, remove after v13 release",
+  "compatibleCoreVersion": "11",
+  "compatibility": {
+    "minimum": "0.8.0",
+    "verified": "11"
+  },
+  "versionsWithNotices": [
+    "0.0.9"
+  ],
+  "authors": [
+    {
+      "name": "Dov Rosenberg",
+      "discord": "",
+      "patreon": ""
+    }
+  ],
+  "url": "https://github.com/dovrosenberg/foundry-simple-weather",
+  "manifest": "https://github.com/dovrosenberg/foundry-simple-weather/-/raw/master/static/module.json",
+  "download": "https://github.com/dovrosenberg/foundry-simple-weather/-/jobs/artifacts/v4.1.9/raw/simple-weather.zip?job=pack",
+  "esmodules": [
+    "scripts/simple-weather.js"
+  ],
+  "styles": [
+    "scripts/simple-weather.css"
+  ],
+  "packs": [],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "## comment:dependencies": "deprecated, remove after v13 release",
+  "dependencies": [
+    {
+      "name": "foundryvtt-simple-calendar",
+      "manifest": "https://github.com/vigoren/foundryvtt-simple-calendar/releases/latest/download/module.json"
+    }
+  ],
+  "relationships": {
+    "requires": [
+      {
+        "id": "foundryvtt-simple-calendar",
+        "type": "module",
+        "manifest": "https://github.com/vigoren/foundryvtt-simple-calendar/releases/latest/download/module.json",
+        "compatiblity": {
+          "verified": "2.4.0"
+        }
+      }
+    ]
+  }
+}

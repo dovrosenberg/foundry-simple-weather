@@ -1,0 +1,39 @@
+{
+	"compilerOptions": {
+		"incremental": true,
+		"target": "es2018",
+		"module": "esnext",
+		"lib": [ "es2015", "es2019", "dom" ],
+		"typeRoots": [ "node_modules/@types", "types" ],
+		"types": [ "@league-of-foundry-developers/foundry-vtt-types", "jest", "node" ],
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"strict": true,
+
+		"noImplicitAny": false,
+		"strictNullChecks": false,
+		"strictFunctionTypes": true,
+		"strictBindCallApply": true,
+		"strictPropertyInitialization": false,
+		"noImplicitThis": false,
+		"alwaysStrict": true,
+
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+
+		"forceConsistentCasingInFileNames": true,
+		"esModuleInterop": true,
+
+		"newLine": "lf",
+		"skipLibCheck": true,
+		"resolveJsonModule": true,
+
+		"baseUrl": "./",
+		"paths": {
+			"@module": ["./static/module.json"]
+		}
+	},
+  "exclude": [ "node_modules", "dist" ]
+}

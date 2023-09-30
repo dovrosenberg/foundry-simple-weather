@@ -1,0 +1,117 @@
+<div id="simple-weather-container">
+	<section id="calendar">
+
+		<!-- header -->
+		<header class="calendar-header">
+			<div class="header-navigation">
+			</div>
+
+			<!-- day name -->
+			<h1 id="window-move-handle">
+				<span id="weekday">Simple Weather</span>
+			</h1>
+
+			<div class="header-navigation">
+				<div id="season-indicator">
+					<i class="fas fa-circle" title="{{localize 'Season'}}"></i>
+				</div>
+				<div id="weather-toggle" class="icon-btn">
+					<i class="fas fa-cloud-sun" title="{{localize 'sweath.calendar.Weather'}}"></i>
+				</div>
+			</div>
+		</header>
+
+		<!-- content -->
+		<div class="content">
+
+			<!-- date display -->
+			<section id="date-display" title="{{localize 'sweath.calendar.ClickToToggle'}}">
+				<h2>
+					<span id="date-num"></span>
+					<span id="date"></span>
+					<span id="moon"></span>
+				</h2>
+			</section>
+
+			<!-- multiple moon display -->
+			<section id="moon-list">
+			</section>
+
+			<!-- clock display -->
+			<section class="clock">
+				<div id="start-stop-clock" class="time-display"  title="{{localize 'sweath.time.StartStopPseudo'}}">
+					{{#if isGM}}
+					<div id="clock-run-indicator" title="{{localize 'ClockRunning'}}">
+						<ul>
+							<li>
+								<i class="fas fa-hourglass-start"></i>
+							</li>
+							<li>
+								<i class="fas fa-hourglass-half"></i>
+							</li>
+							<li>
+								<i class="fas fa-hourglass-end"></i>
+							</li>
+							<li>
+								<i class="fas fa-hourglass"></i>
+							</li>
+						</ul>
+					</div>
+					{{/if}}
+					<div class="time">
+						<span class="calendar-time-disp" id="calendar-time">00:00:00</span>
+					</div>
+					{{#if isGM}}
+					<div id='time-running' class="start-stop">
+						<i class="fas fa-play"></i>
+						<i class="fas fa-stop"></i>
+					</div>
+					{{/if}}
+				</div>
+			</section>
+		</div>
+
+		<!-- footer -->
+		{{#if isGM}}
+		<footer class="time-controls">
+			<ul>
+				<li id="btn-advance_01" class="advance-btn disabled" title="{{localize 'sweath.time.Advance1second'}}" data-display="enabled" data-increment="1" data-unit-label="s" data-unit="second"></li>
+				<li id="btn-advance_02" class="advance-btn disabled" title="{{localize 'sweath.time.Advance30seconds'}}" data-display="enabled" data-increment="30" data-unit-label="s" data-unit="second"></li>
+				<li class="advance-btn" title="{{localize 'sweath.time.Advance1minute'}}" data-display="enabled" data-increment="1" data-unit-label="min" data-unit="minute"></li>
+				<li class="advance-btn" title="{{localize 'sweath.time.Advance5minutes'}}" data-display="enabled" data-increment="5" data-unit-label="min" data-unit="minute"></li>
+				<li class="advance-btn" title="{{localize 'sweath.time.Advance15minutes'}}" data-display="enabled" data-increment="15" data-unit-label="min" data-unit="minute"></li>
+				<li class="advance-btn" title="{{localize 'sweath.time.Advance1hour'}}" data-display="enabled" data-increment="1" data-unit-label="h" data-unit="hour"></li>
+			</ul>
+		</footer>
+		{{/if}}
+
+	</section>
+
+	<section id="weather">
+		<div id="weather-container">
+			<header>
+				<span id="current-temperature">24.5°C</span>
+				{{#if isGM}}
+				<select id="climate-selection" title="{{localize 'sweath.weather.SelectClimate'}}">
+				<option title="{{localize 'sweath.weather.climate.description.Temperate'}}" value="temperate">{{localize 'sweath.weather.climate.Temperate'}}</option>
+				<option title="{{localize 'sweath.weather.climate.description.TemperateMountain'}}" value="temperateMountain">{{localize 'sweath.weather.climate.TemperateMountain'}}</option>
+				<option title="{{localize 'sweath.weather.climate.description.Desert'}}" value="desert">{{localize 'sweath.weather.climate.Desert'}}</option>
+				<option title="{{localize 'sweath.weather.climate.description.Tundra'}}" value="tundra">{{localize 'sweath.weather.climate.Tundra'}}</option>
+				<option title="{{localize 'sweath.weather.climate.descripton.Tropical'}}" value="tropical">{{localize 'sweath.weather.climate.Tropical'}}</option>
+				<option title="{{localize 'sweath.weather.climate.description.Taiga'}}" value="taiga">{{localize 'sweath.weather.climate.Taiga'}}</option>
+				<option title="{{localize 'sweath.weather.climate.description.Volcanic'}}" value="volcanic">{{localize 'sweath.weather.climate.Volcanic'}}</option>
+				<option title="{{localize 'sweath.weather.climate.description.Polar'}}" value="polar">{{localize 'sweath.weather.climate.Polar'}}</option>
+				</select>
+				<div class="weather-refresh calendar-btn" id="weather-regenerate" title="{{localize 'sweath.weather.RegenerateWeather'}}">
+					<i class="fas fa-redo"></i>
+				</div>
+				{{/if}}
+			</header>
+			<div class="weather-content">
+				<div class="weather-description">
+					<p id="precipitation">Placeholder Text</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
