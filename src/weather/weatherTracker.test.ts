@@ -11,20 +11,16 @@ const game = gameMock();
 const WEATHER_DATA: WeatherData = new WeatherData({
   version: 1,
   currentDate: {
-    raw: {
-      day: 1,
-      currentWeekdayIndex: 1,
-      hour: 0,
-      minute: 0,
-      month: 0,
-      second: 0,
-      weekdays: [],
-      year: 0,
-    },
-    display: {
-      fullDate: 'the full date',
-      time: 'the full time',
-    }
+    day: 1,
+    dayOfTheWeek: 1,
+    hour: 0,
+    minute: 0,
+    month: 0,
+    second: 0,
+    weekdays: [],
+    year: 0,
+    date: 'the full date',
+    time: 'the full time',
   },
   climate: new Climate(),
   isVolcanic: false,
