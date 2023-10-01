@@ -3,17 +3,14 @@ import '../styles/simple-weather.scss';
 
 import { DevMode } from './libraries/devMode/devMode';
 import { DevModeApi } from './libraries/devMode/devModeApi';
-import { DateTime } from './libraries/simple-calendar/dateTime';
-import { SimpleCalendarHooks } from './libraries/simple-calendar/hooks';
-import { SimpleCalendarPresenter } from './libraries/simple-calendar/simple-calendar-presenter';
 import { Log } from './logger/logger';
 import { Notices } from './notices/notices';
 import { ChatProxy } from './proxies/chatProxy';
-import { Migrations } from './settings/migrations';
-import { Migration1 } from './settings/migrations/migration-1';
 import { ModuleSettings } from './settings/module-settings';
 import { VersionUtils } from './utils/versionUtils';
 import { Weather } from './weather';
+
+import { SimpleCalendarHooks } from 'foundryvtt-simple-calendar/src/constants';
 
 const logger = new Log();
 const chatProxy = new ChatProxy();
@@ -52,38 +49,17 @@ function initializeModule() {
   const moduleSettings = new ModuleSettings(getGame());
   initializeNotices(moduleSettings);
 
-  applyMigrations(moduleSettings).then(() => {
-    weather = new Weather(getGame(), chatProxy, logger, moduleSettings);
+  weather = new Weather(getGame(), chatProxy, logger, moduleSettings);
 
-    Hooks.on(SimpleCalendarHooks.DateTimeChange, ({...data}: DateTime) => {
-      weather.onDateTimeChange(SimpleCalendarPresenter.createDateObject(data.date));
-    });
-
-    Hooks.on(SimpleCalendarHooks.ClockStartStop, () => {
-      weather.onClockStartStop();
-    });
-
-    weather.onReady();
+  Hooks.on(SimpleCalendarHooks.DateTimeChange, ({...date}: SimpleCalendar.DateData) => {
+    weather.onDateTimeChange(date);
   });
-}
 
-function applyMigrations(settings: ModuleSettings): Promise<void> {
-  return new Promise((resolve) => {
-    const migrations = new Migrations(logger);
-    migrations.register(new Migration1());
-
-    const weatherData = settings.getWeatherData();
-    const migratedData = migrations.run(weatherData.version, weatherData);
-
-    if (migratedData) {
-      logger.info('Saving migrated data');
-      settings.setWeatherData(migratedData).then(() => {
-        resolve();
-      });
-    } else {
-      resolve();
-    }
+  Hooks.on(SimpleCalendarHooks.ClockStartStop, () => {
+    weather.onClockStartStop();
   });
+
+  weather.onReady();
 }
 
 function initializeNotices(settings: ModuleSettings) {
@@ -95,14 +71,14 @@ function initializeNotices(settings: ModuleSettings) {
 
 function checkDependencies() {
   if (!isSimpleCalendarCompatible()) {
-    const errorMessage = 'Simple Weather cannot initialize and requires Simple Calendar v1.3.73. Make sure the latest version of Simple Calendar is installed.';
+    const errorMessage = 'Simple Weather cannot initialize and requires Simple Calendar v2.4.0. Make sure the latest version of Simple Calendar is installed.';
     console.error(errorMessage);
     ui.notifications.error(errorMessage);
   }
 }
 
 function isSimpleCalendarCompatible(): boolean {
-  const minimumVersion = 'v1.3.73';
+  const minimumVersion = 'v2.4.0';
   const scVersion = getGame().modules.get('foundryvtt-simple-calendar').data.version;
   return VersionUtils.isMoreRecent(scVersion, minimumVersion) || scVersion === minimumVersion;
 }

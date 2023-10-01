@@ -1,5 +1,4 @@
 import { Climate } from './climate';
-import { CurrentDate } from './currentDate';
 
 export enum Climates {
   temperate = 'temperate',
@@ -15,7 +14,7 @@ export enum Climates {
 export class WeatherData {
   public version = 1;
 
-  public currentDate: CurrentDate;
+  public currentDate: SimpleCalendar.DateData;
 
   public climate: Climate = new Climate(); // Current climate
 

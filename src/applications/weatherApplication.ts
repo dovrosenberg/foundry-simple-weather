@@ -1,7 +1,5 @@
 import moduleJson from '@module';
-import { CurrentDate } from '@/models/currentDate';
 
-import { SimpleCalendarApi } from '../libraries/simple-calendar/api';
 import { Log } from '../logger/logger';
 import { Climates, WeatherData } from '../models/weatherData';
 import { WindowPosition } from '../models/windowPosition';
@@ -9,6 +7,7 @@ import { ModuleSettings } from '../settings/module-settings';
 import { farenheitToCelcius } from '../utils/temperatureUtils';
 import { WeatherTracker } from '../weather/weatherTracker';
 import { WindowDrag } from './windowDrag';
+//import { SimpleCalendar } from 'foundryvtt-simple-calendar';
 
 export class WeatherApplication extends Application {
   private windowDragHandler: WindowDrag;
@@ -82,7 +81,7 @@ export class WeatherApplication extends Application {
 
   public updateClockStatus() {
     if (this.isTimeManipulationEnabled()) {
-      if (SimpleCalendarApi.clockStatus().started) {
+      if (SimpleCalendar.api.clockStatus().started) {
         this.getElementById('btn-advance_01').classList.add('disabled');
         this.getElementById('btn-advance_02').classList.add('disabled');
         this.getElementById('time-running').classList.add('isRunning');
@@ -96,11 +95,11 @@ export class WeatherApplication extends Application {
     }
   }
 
-  public updateDateTime(currentDate: CurrentDate) {
-    document.getElementById('weekday').innerHTML = currentDate.raw.weekdays[currentDate.raw.currentWeekdayIndex];
+  public updateDateTime(currentDate: SimpleCalendar.DateData) {
+    document.getElementById('weekday').innerHTML = currentDate.weekdays[currentDate.dayOfTheWeek];
 
-    document.getElementById('date').innerHTML = currentDate.display.fullDate;
-    document.getElementById('date-num').innerHTML = currentDate.raw.day + '/' + currentDate.raw.month + '/' + currentDate.raw.year;
+    document.getElementById('date').innerHTML = currentDate.display.date;
+    document.getElementById('date-num').innerHTML = currentDate.day + '/' + currentDate.month + '/' + currentDate.year;
     document.getElementById('calendar-time').innerHTML = currentDate.display.time;
 
     this.updateClockStatus();

@@ -1,8 +1,5 @@
 import { WeatherApplication } from './applications/weatherApplication';
-import { SimpleCalendarApi } from './libraries/simple-calendar/api';
-import { SimpleCalendarPresenter } from './libraries/simple-calendar/simple-calendar-presenter';
 import { Log } from './logger/logger';
-import { CurrentDate, RawDate } from './models/currentDate';
 import { Climates, WeatherData } from './models/weatherData';
 import { ChatProxy } from './proxies/chatProxy';
 import { ModuleSettings } from './settings/module-settings';
@@ -30,7 +27,7 @@ export class Weather {
     this.initializeWeatherApplication();
   }
 
-  public onDateTimeChange(currentDate: CurrentDate) {
+  public onDateTimeChange(currentDate: SimpleCalendar.DateData) {
     let newWeatherData = this.mergePreviousDateTimeWithNewOne(currentDate);
 
     if (this.hasDateChanged(currentDate)) {
@@ -78,7 +75,7 @@ export class Weather {
     } else if (this.isUserGM()) {
       this.logger.info('No saved weather data - Generating weather');
 
-      weatherData.currentDate = SimpleCalendarPresenter.timestampToDate(SimpleCalendarApi.timestamp());
+      weatherData.currentDate = SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp());
       this.weatherTracker.setWeatherData(weatherData);
       weatherData = this.weatherTracker.generate(Climates.temperate);
       await this.settings.setWeatherData(weatherData);
@@ -100,18 +97,17 @@ export class Weather {
     }
   }
 
-  private mergePreviousDateTimeWithNewOne(currentDate: CurrentDate): WeatherData {
+  private mergePreviousDateTimeWithNewOne(currentDate: SimpleCalendar.DateData): WeatherData {
     return Object.assign({}, this.weatherTracker.getWeatherData(), {currentDate});
   }
 
-  private hasDateChanged(currentDate: CurrentDate): boolean {
-    const previous = this.weatherTracker.getWeatherData().currentDate?.raw;
-    const date = currentDate.raw;
+  private hasDateChanged(currentDate: SimpleCalendar.DateData): boolean {
+    const previous = this.weatherTracker.getWeatherData().currentDate;
 
-    if (this.isDateTimeValid(currentDate.raw)) {
-      if (date.day !== previous.day
-        || date.month !== previous.month
-        || date.year !== previous.year) {
+    if (this.isDateTimeValid(currentDate)) {
+      if (currentDate.day !== previous.day
+        || currentDate.month !== previous.month
+        || currentDate.year !== previous.year) {
         return true;
       }
     }
@@ -119,9 +115,9 @@ export class Weather {
     return false;
   }
 
-  private isDateTimeValid(rawDate: RawDate): boolean {
-    if (this.isDefined(rawDate.second) && this.isDefined(rawDate.minute) && this.isDefined(rawDate.day) &&
-    this.isDefined(rawDate.month) && this.isDefined(rawDate.year)) {
+  private isDateTimeValid(date: SimpleCalendar.DateData): boolean {
+    if (this.isDefined(date.second) && this.isDefined(date.minute) && this.isDefined(date.day) &&
+    this.isDefined(date.month) && this.isDefined(date.year)) {
       return true;
     }
 
@@ -136,7 +132,7 @@ export class Weather {
     return !!weatherData.temp;
   }
 
-  private updateWeatherDisplay(dateTime: CurrentDate) {
+  private updateWeatherDisplay(dateTime: SimpleCalendar.DateData) {
     this.weatherApplication.updateDateTime(dateTime);
     this.weatherApplication.updateWeather(this.weatherTracker.getWeatherData());
   }

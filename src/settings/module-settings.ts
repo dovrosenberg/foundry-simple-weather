@@ -1,10 +1,9 @@
 import moduleJson from '@module';
-import { SimpleCalendarApi } from '@/libraries/simple-calendar/api';
-import { SimpleCalendarPresenter } from '@/libraries/simple-calendar/simple-calendar-presenter';
 import { Climate } from '@/models/climate';
 
 import { WeatherData } from '../models/weatherData';
 import { WindowPosition } from '../models/windowPosition';
+//import { SimpleCalendar } from 'foundryvtt-simple-calendar';
 
 export enum SettingKeys {
   calendarDisplay = 'calendarDisplay',
@@ -163,7 +162,7 @@ export class ModuleSettings {
   }
 
   private createDefaultWeatherData(): WeatherData {
-    const currentDate = SimpleCalendarPresenter.timestampToDate(SimpleCalendarApi.timestamp());
+    const currentDate = SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp());
 
     return new WeatherData({
       climate: new Climate(),
