@@ -20,7 +20,7 @@
     "linkdata": "ln -s $PWD/dist ~/foundryData/Data/modules/simple-weather",
     "unlinkdata": "unlink ~/foundryData/Data/modules/simple-weather",
     "buildcopy": "npm run build && npm run copy",
-    "startfoundry": "node ~/foundry/resources/app/main.js",
+    "foundry": "node ~/foundry/resources/app/main.js",
     "test": "jest",
     "test:pipeline": "jest --ci --collect-coverage --reporters=default --reporters=jest-junit",
     "test:watch": "jest --watch",
