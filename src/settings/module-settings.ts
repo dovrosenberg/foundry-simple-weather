@@ -166,11 +166,11 @@ export class ModuleSettings {
 
     return new WeatherData({
       climate: new Climate(),
-      currentDate,
-      lastTemp: null,
-      precipitation: null,
-      temp: null,
-      tempRange: null,
+      currentDate: currentDate || undefined,
+      lastTemp: undefined,
+      precipitation: undefined,
+      temp: undefined,
+      tempRange: undefined,
       version: 1
     });
   }

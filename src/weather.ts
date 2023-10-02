@@ -4,7 +4,6 @@ import { Climates, WeatherData } from './models/weatherData';
 import { ChatProxy } from './proxies/chatProxy';
 import { ModuleSettings } from './settings/module-settings';
 import { WeatherTracker } from './weather/weatherTracker';
-import type { SimpleCalendar } from 'foundryvtt-simple-calendar';
 
 /**
  * The base class of the module.
@@ -70,6 +69,9 @@ export class Weather {
     } else if (this.isUserGM()) {
       this.logger.info('No saved weather data - Generating weather');
 
+      // NOTE: This is where you'll need to start mid-season, for example
+      // more generally... if we saved the prior day, we should generate weather based on that day 
+      // otherwise, we should generate weather starting at a random spot based on the season
       weatherData.currentDate = SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp());
       this.weatherTracker.setWeatherData(weatherData);
       weatherData = this.weatherTracker.generate(Climates.temperate);

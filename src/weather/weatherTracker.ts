@@ -86,20 +86,23 @@ export class WeatherTracker {
   }
 
   private output() {
-    let messageRecipients = null;
+    let messageRecipients = '';
+
     if (!this.settings.getOutputWeatherToChat()) {
-      messageRecipients = this.chatProxy.getWhisperRecipients('GM')[0].id;
+      messageRecipients = this.chatProxy.getWhisperRecipients('GM')[0].id || '';
+
+      if (messageRecipients) {
+        const chatOut = '<b>' + this.getTemperature() + '</b> - ' + this.weatherData.precipitation;
+
+        this.chatProxy.create({
+          speaker: {
+            alias: this.gameRef.i18n.localize('sweath.weather.tracker.Today'),
+          },
+          whisper: [messageRecipients],
+          content: chatOut,
+        });
+      }
     }
-
-    const chatOut = '<b>' + this.getTemperature() + '</b> - ' + this.weatherData.precipitation;
-
-    this.chatProxy.create({
-      speaker: {
-        alias: this.gameRef.i18n.localize('sweath.weather.tracker.Today'),
-      },
-      whisper: [messageRecipients],
-      content: chatOut,
-    });
   }
 
   /**

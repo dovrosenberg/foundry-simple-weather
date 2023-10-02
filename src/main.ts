@@ -9,8 +9,8 @@ import { ChatProxy } from './proxies/chatProxy';
 import { ModuleSettings } from './settings/module-settings';
 import { VersionUtils } from './utils/versionUtils';
 import { Weather } from './weather';
-
 import { SimpleCalendarHooks } from 'foundryvtt-simple-calendar/src/constants';
+import type { SimpleCalendar } from 'foundryvtt-simple-calendar';
 
 const logger = new Log();
 const chatProxy = new ChatProxy();
