@@ -1,4 +1,0 @@
-{
-  "typescriptHero.imports.organizeOnSave": true,
-  "jest.jestCommandLine": "npm run test --"
-}

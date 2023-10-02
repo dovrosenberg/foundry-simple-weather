@@ -4,6 +4,7 @@ import { Climates, WeatherData } from './models/weatherData';
 import { ChatProxy } from './proxies/chatProxy';
 import { ModuleSettings } from './settings/module-settings';
 import { WeatherTracker } from './weather/weatherTracker';
+import type { SimpleCalendar } from 'foundryvtt-simple-calendar';
 
 /**
  * The base class of the module.
@@ -19,10 +20,10 @@ export class Weather {
   }
 
   private isUserGM(): boolean {
-    return this.gameRef.user.isGM;
+    return this.gameRef?.user?.isGM || false;
   }
 
-  public async onReady() {
+  public async onReady(): Promise<void> {
     await this.initializeWeatherData();
     this.initializeWeatherApplication();
   }

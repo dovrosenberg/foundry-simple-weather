@@ -8,6 +8,7 @@ import { farenheitToCelsius } from '../utils/temperatureUtils';
 import { WeatherTracker } from '../weather/weatherTracker';
 import { WindowDrag } from './windowDrag';
 //import { SimpleCalendar } from 'foundryvtt-simple-calendar';
+import type { Application } from '@league-of-foundry-developers/foundry-vtt-types';
 
 export class WeatherApplication extends Application {
   private windowDragHandler: WindowDrag;
@@ -33,7 +34,7 @@ export class WeatherApplication extends Application {
 
   public getData(): any {
     return {
-      isGM: this.gameRef.user.isGM
+      isGM: this.gameRef?.user?.isGM || false
     };
   }
 
