@@ -91,6 +91,7 @@ export class Weather {
         this.logger,
         () => {
           const weatherData = this.settings.getWeatherData();
+          weatherData.currentDate = SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp());
           this.weatherApplication.updateDateTime(weatherData.currentDate);
           this.weatherApplication.updateWeather(weatherData);
         });

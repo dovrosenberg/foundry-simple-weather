@@ -4,7 +4,7 @@ import { Log } from '../logger/logger';
 import { Climates, WeatherData } from '../models/weatherData';
 import { WindowPosition } from '../models/windowPosition';
 import { ModuleSettings } from '../settings/module-settings';
-import { farenheitToCelcius } from '../utils/temperatureUtils';
+import { farenheitToCelsius } from '../utils/temperatureUtils';
 import { WeatherTracker } from '../weather/weatherTracker';
 import { WindowDrag } from './windowDrag';
 //import { SimpleCalendar } from 'foundryvtt-simple-calendar';
@@ -24,7 +24,7 @@ export class WeatherApplication extends Application {
 
   static get defaultOptions() {
     const options = super.defaultOptions;
-    options.template = `modules/${moduleJson.name}/templates/calendar.html`;
+    options.template = `modules/${moduleJson.id}/templates/calendar.html`;
     options.popOut = false;
     options.resizable = false;
 
@@ -72,8 +72,8 @@ export class WeatherApplication extends Application {
   }
 
   private getTemperature(weatherData: WeatherData): string {
-    if (this.settings.getUseCelcius()) {
-      return farenheitToCelcius(weatherData.temp) + ' °C';
+    if (this.settings.getUseCelsius()) {
+      return farenheitToCelsius(weatherData.temp) + ' °C';
     } else {
       return weatherData.temp + ' °F';
     }
@@ -96,13 +96,16 @@ export class WeatherApplication extends Application {
   }
 
   public updateDateTime(currentDate: SimpleCalendar.DateData) {
-    document.getElementById('weekday').innerHTML = currentDate.weekdays[currentDate.dayOfTheWeek];
+    if (currentDate) {
+      console.log(currentDate);
+      document.getElementById('weekday').innerHTML = currentDate.weekdays[currentDate.dayOfTheWeek];
 
-    document.getElementById('date').innerHTML = currentDate.display.date;
-    document.getElementById('date-num').innerHTML = currentDate.day + '/' + currentDate.month + '/' + currentDate.year;
-    document.getElementById('calendar-time').innerHTML = currentDate.display.time;
+      document.getElementById('date').innerHTML = currentDate.display.date;
+      document.getElementById('date-num').innerHTML = currentDate.day + '/' + currentDate.month + '/' + currentDate.year;
+      document.getElementById('calendar-time').innerHTML = currentDate.display.time;
 
-    this.updateClockStatus();
+      this.updateClockStatus();
+    }
   }
 
   public resetPosition() {
@@ -157,7 +160,7 @@ export class WeatherApplication extends Application {
     });
   }
 
-  private getElementById(id: string): HTMLElement {
+  private getElementById(id: string): HTMLElement | null {
     return document.getElementById(id);
   }
 
@@ -169,13 +172,13 @@ export class WeatherApplication extends Application {
     event.preventDefault();
     event = event || window.event;
 
-    if (SimpleCalendarApi.isPrimaryGM()) {
-      if (SimpleCalendarApi.clockStatus().started) {
+    if (SimpleCalendar.api.isPrimaryGM()) {
+      if (SimpleCalendar.api.clockStatus().started) {
         this.logger.debug('Stopping clock');
-        SimpleCalendarApi.stopClock();
+        SimpleCalendar.api.stopClock();
       } else {
         this.logger.debug('Starting clock');
-        SimpleCalendarApi.startClock();
+        SimpleCalendar.api.startClock();
       }
     }
 
@@ -204,7 +207,7 @@ export class WeatherApplication extends Application {
       const increment = button.target.getAttribute('data-increment');
       const unit = button.target.getAttribute('data-unit');
 
-      SimpleCalendarApi.changeDate({ [unit]: Number(increment) });
+      SimpleCalendar.api.changeDate({ [unit]: Number(increment) });
     });
   }
 

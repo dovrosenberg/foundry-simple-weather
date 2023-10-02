@@ -1,10 +1,10 @@
-import { farenheitToCelcius } from './temperatureUtils';
+import { farenheitToCelsius } from './temperatureUtils';
 
 describe('Temperature Utils', () => {
-  it('SHOULD convert Farenheit to Celcius', () => {
+  it('SHOULD convert Farenheit to Celsius', () => {
     const farenheit = 41;
-    const expectedCelcius = 5;
+    const expectedCelsius = 5;
 
-    expect(farenheitToCelcius(farenheit)).toBe(expectedCelcius);
+    expect(farenheitToCelsius(farenheit)).toBe(expectedCelsius);
   });
 });

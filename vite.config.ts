@@ -62,9 +62,13 @@ export default defineConfig({
       input: 'src/main.ts',
       output: {
         dir: undefined,
-        assetFileNames: (assetInfo) => {
-          if (assetInfo.name === 'output.css') return 'simple-weather.css';
-          return assetInfo.name;
+        assetFileNames: (assetInfo): string => {
+          if (assetInfo.name === 'output.css') 
+            return 'simple-weather.css';
+          else if (assetInfo.name)
+            return assetInfo.name;
+          else
+            throw 'Asset missing name';
         },        
         file: 'dist/scripts/simple-weather.js',
         format: 'es',

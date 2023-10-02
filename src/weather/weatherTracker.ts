@@ -2,7 +2,7 @@ import { Climate } from '../models/climate';
 import { Climates, WeatherData } from '../models/weatherData';
 import { ChatProxy } from '../proxies/chatProxy';
 import { ModuleSettings } from '../settings/module-settings';
-import { farenheitToCelcius } from '../utils/temperatureUtils';
+import { farenheitToCelsius } from '../utils/temperatureUtils';
 import { PrecipitationsGenerator } from './precipitationsGenerator';
 
 /**
@@ -78,8 +78,8 @@ export class WeatherTracker {
   }
 
   private getTemperature(): string {
-    if (this.settings.getUseCelcius()) {
-      return farenheitToCelcius(this.weatherData.temp) + ' °C';
+    if (this.settings.getUseCelsius()) {
+      return farenheitToCelsius(this.weatherData.temp) + ' °C';
     } else {
       return this.weatherData.temp + ' °F';
     }

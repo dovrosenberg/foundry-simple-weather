@@ -30,7 +30,7 @@
 //     expect(game.settings.register).toHaveBeenCalledWith(settings.getModuleName(), SettingKeys.noticeVersion, expect.any(Object));
 //     expect(game.settings.register).toHaveBeenCalledWith(settings.getModuleName(), SettingKeys.outputWeatherToChat, expect.any(Object));
 //     expect(game.settings.register).toHaveBeenCalledWith(settings.getModuleName(), SettingKeys.playerSeeWeatherInfo, expect.any(Object));
-//     expect(game.settings.register).toHaveBeenCalledWith(settings.getModuleName(), SettingKeys.useCelcius, expect.any(Object));
+//     expect(game.settings.register).toHaveBeenCalledWith(settings.getModuleName(), SettingKeys.useCelsius, expect.any(Object));
 //     expect(game.settings.register).toHaveBeenCalledWith(settings.getModuleName(), SettingKeys.weatherData, expect.any(Object));
 //     expect(game.settings.register).toHaveBeenCalledWith(settings.getModuleName(), SettingKeys.windowPosition, expect.any(Object));
 //   });

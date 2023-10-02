@@ -10,7 +10,7 @@ export enum SettingKeys {
   noticeVersion = 'noticeVersion',
   outputWeatherToChat = 'outputWeatherChat',
   playerSeeWeatherInfo = 'playerSeeWeatherInfo',
-  useCelcius = 'useCelcius',
+  useCelsius = 'useCelsius',
   weatherData = 'weatherData',
   windowPosition = 'windowPosition',
 }
@@ -25,7 +25,7 @@ export class ModuleSettings {
   }
 
   public getModuleName(): string {
-    return moduleJson.name;
+    return moduleJson.id;
   }
 
   public getVersion(): string {
@@ -60,8 +60,8 @@ export class ModuleSettings {
     return this.get(SettingKeys.outputWeatherToChat) as any;
   }
 
-  public getUseCelcius(): boolean {
-    return this.get(SettingKeys.useCelcius) as any;
+  public getUseCelsius(): boolean {
+    return this.get(SettingKeys.useCelsius) as any;
   }
 
   public getPlayerSeeWeather(): boolean {
@@ -142,9 +142,9 @@ export class ModuleSettings {
       type: Boolean,
     });
 
-    this.register(SettingKeys.useCelcius, {
-      name: this.gameRef.i18n.localize('sweath.settings.useCelcius'),
-      hint: this.gameRef.i18n.localize('sweath.settings.useCelciusHelp'),
+    this.register(SettingKeys.useCelsius, {
+      name: this.gameRef.i18n.localize('sweath.settings.useCelsius'),
+      hint: this.gameRef.i18n.localize('sweath.settings.useCelsiusHelp'),
       scope: 'world',
       config: true,
       default: false,

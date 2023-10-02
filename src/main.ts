@@ -51,7 +51,7 @@ function initializeModule() {
 
   weather = new Weather(getGame(), chatProxy, logger, moduleSettings);
 
-  Hooks.on(SimpleCalendarHooks.DateTimeChange, ({...date}: SimpleCalendar.DateData) => {
+  Hooks.on(SimpleCalendarHooks.DateTimeChange, ({date}: { date: SimpleCalendar.DateData }) => {
     weather.onDateTimeChange(date);
   });
 
@@ -72,13 +72,12 @@ function initializeNotices(settings: ModuleSettings) {
 function checkDependencies() {
   if (!isSimpleCalendarCompatible()) {
     const errorMessage = 'Simple Weather cannot initialize and requires Simple Calendar v2.4.0. Make sure the latest version of Simple Calendar is installed.';
-    console.error(errorMessage);
     ui.notifications.error(errorMessage);
   }
 }
 
 function isSimpleCalendarCompatible(): boolean {
-  const minimumVersion = 'v2.4.0';
-  const scVersion = getGame().modules.get('foundryvtt-simple-calendar').data.version;
+  const minimumVersion = '2.4.0';
+  const scVersion = getGame().modules.get('foundryvtt-simple-calendar').version;
   return VersionUtils.isMoreRecent(scVersion, minimumVersion) || scVersion === minimumVersion;
 }
