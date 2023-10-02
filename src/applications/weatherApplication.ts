@@ -33,7 +33,7 @@ export class WeatherApplication extends Application {
 
   public getData(): any {
     return {
-      isGM: this.isTimeManipulationEnabled(),
+      isGM: this.gameRef.user.isGM
     };
   }
 
@@ -58,10 +58,6 @@ export class WeatherApplication extends Application {
     this.setClimate(html);
     this.listenToClimateChange(html);
 
-    if (this.isTimeManipulationEnabled()) {
-      this.listenToTimeSkipButtons(html);
-    }
-
     global[moduleJson.class] = {};
     global[moduleJson.class].resetPosition = () => this.resetPosition();
   }
@@ -79,22 +75,7 @@ export class WeatherApplication extends Application {
     }
   }
 
-  public updateClockStatus() {
-    if (this.isTimeManipulationEnabled()) {
-      if (SimpleCalendar.api.clockStatus().started) {
-        this.getElementById('btn-advance_01').classList.add('disabled');
-        this.getElementById('btn-advance_02').classList.add('disabled');
-        this.getElementById('time-running').classList.add('isRunning');
-        this.getElementById('clock-run-indicator').classList.add('isRunning');
-      } else {
-        this.getElementById('btn-advance_01').classList.remove('disabled');
-        this.getElementById('btn-advance_02').classList.remove('disabled');
-        this.getElementById('time-running').classList.remove('isRunning');
-        this.getElementById('clock-run-indicator').classList.remove('isRunning');
-      }
-    }
-  }
-
+  // updates the current date/time showing in the weather dialog
   public updateDateTime(currentDate: SimpleCalendar.DateData) {
     if (currentDate) {
       console.log(currentDate);
@@ -103,8 +84,6 @@ export class WeatherApplication extends Application {
       document.getElementById('date').innerHTML = currentDate.display.date;
       document.getElementById('date-num').innerHTML = currentDate.day + '/' + currentDate.month + '/' + currentDate.year;
       document.getElementById('calendar-time').innerHTML = currentDate.display.time;
-
-      this.updateClockStatus();
     }
   }
 
@@ -181,8 +160,6 @@ export class WeatherApplication extends Application {
         SimpleCalendar.api.startClock();
       }
     }
-
-    this.updateClockStatus();
   }
 
   private initializeWindowInteractions(html: JQuery) {
@@ -201,17 +178,5 @@ export class WeatherApplication extends Application {
     });
   }
 
-  private listenToTimeSkipButtons(html: JQuery) {
-    const advanceButtons = html.find('.advance-btn');
-    advanceButtons.on('click', button => {
-      const increment = button.target.getAttribute('data-increment');
-      const unit = button.target.getAttribute('data-unit');
-
-      SimpleCalendar.api.changeDate({ [unit]: Number(increment) });
-    });
-  }
-
-  private isTimeManipulationEnabled(): boolean {
-    return this.gameRef.user.isGM;
-  }
+  
 }

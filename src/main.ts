@@ -55,10 +55,6 @@ function initializeModule() {
     weather.onDateTimeChange(date);
   });
 
-  Hooks.on(SimpleCalendarHooks.ClockStartStop, () => {
-    weather.onClockStartStop();
-  });
-
   weather.onReady();
 }
 

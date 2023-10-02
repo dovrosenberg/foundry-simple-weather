@@ -50,12 +50,6 @@ export class Weather {
     }
   }
 
-  public onClockStartStop() {
-    if (this.isWeatherApplicationAvailable()) {
-      this.weatherApplication.updateClockStatus();
-    }
-  }
-
   public resetWindowPosition() {
     if (this.isWeatherApplicationAvailable()) {
       this.weatherApplication.resetPosition();
