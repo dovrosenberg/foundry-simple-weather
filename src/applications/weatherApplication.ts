@@ -45,11 +45,11 @@ export class WeatherApplication extends Application {
     this.initializeWindowInteractions(html);
 
     html.find(dateFormatToggle).on('mousedown', event => {
-      this.toggleDateFormat(event);
+      this.onMouseDownToggleDateFormat(event);
     });
 
     html.find(startStopClock).on('mousedown', event => {
-      this.startStopClock(event);
+      this.onMouseDownStartStopClock(event);
     });
 
     this.listenToWindowExpand(html);
@@ -62,8 +62,14 @@ export class WeatherApplication extends Application {
   }
 
   public updateWeather(weatherData: WeatherData) {
-    this.getElementById('current-temperature').innerHTML = this.getTemperature(weatherData);
-    this.getElementById('precipitation').innerHTML = weatherData.precipitation;
+    this.assignElement('current-temperature', this.getTemperature(weatherData));
+    this.assignElement('precipitation', weatherData.precipitation);
+  }
+
+  private assignElement(elementId: string, value: string) {
+    const element = this.getElementById(elementId);
+    if (element !== null)
+      element.innerHTML  = value;
   }
 
   private getTemperature(weatherData: WeatherData): string {
@@ -77,12 +83,11 @@ export class WeatherApplication extends Application {
   // updates the current date/time showing in the weather dialog
   public updateDateTime(currentDate: SimpleCalendar.DateData) {
     if (currentDate) {
-      console.log(currentDate);
-      document.getElementById('weekday').innerHTML = currentDate.weekdays[currentDate.dayOfTheWeek];
+      this.assignElement('weekday', currentDate.weekdays[currentDate.dayOfTheWeek]);
 
-      document.getElementById('date').innerHTML = currentDate.display.date;
-      document.getElementById('date-num').innerHTML = currentDate.day + '/' + currentDate.month + '/' + currentDate.year;
-      document.getElementById('calendar-time').innerHTML = currentDate.display.time;
+      this.assignElement('date', currentDate.display.date);
+      this.assignElement('date-num', currentDate.day + '/' + currentDate.month + '/' + currentDate.year);
+      this.assignElement('calendar-time', currentDate.display.time);
     }
   }
 
@@ -98,16 +103,17 @@ export class WeatherApplication extends Application {
     }
   }
 
+  // listener activators
   private listenToWindowExpand(html: JQuery) {
     const weather = '#weather-toggle';
 
-    if (!this.gameRef.user.isGM && !this.settings.getPlayerSeeWeather()) {
+    if (!this.gameRef?.user?.isGM && !this.settings.getPlayerSeeWeather()) {
       document.getElementById('weather-toggle').style.display = 'none';
     }
 
     html.find(weather).on('click', event => {
       event.preventDefault();
-      if (this.gameRef.user.isGM || this.settings.getPlayerSeeWeather()) {
+      if (this.gameRef?.user?.isGM || this.settings.getPlayerSeeWeather()) {
         document.getElementById('simple-weather-container').classList.toggle('showWeather');
       }
     });
@@ -122,12 +128,6 @@ export class WeatherApplication extends Application {
     });
   }
 
-  private setClimate(html: JQuery) {
-    const climateSelection = '#climate-selection';
-    const climateName = this.weatherTracker.getWeatherData().climate?.name || Climates.temperate;
-    html.find(climateSelection).val(climateName);
-  }
-
   private listenToClimateChange(html: JQuery) {
     const climateSelection = '#climate-selection';
 
@@ -138,15 +138,12 @@ export class WeatherApplication extends Application {
     });
   }
 
-  private getElementById(id: string): HTMLElement | null {
-    return document.getElementById(id);
-  }
-
-  private toggleDateFormat(event) {
+  // event handlers
+  private onMouseDownToggleDateFormat(event) {
     event.currentTarget.classList.toggle('altFormat');
   }
 
-  private startStopClock(event) {
+  private onMouseDownStartStopClock(event) {
     event.preventDefault();
     event = event || window.event;
 
@@ -177,5 +174,15 @@ export class WeatherApplication extends Application {
     });
   }
 
-  
+  // utilities
+  private getElementById(id: string): HTMLElement | null {
+    return document.getElementById(id);
+  }
+
+  private setClimate(html: JQuery) {
+    const climateSelection = '#climate-selection';
+    const climateName = this.weatherTracker.getWeatherData().climate?.name || Climates.temperate;
+    html.find(climateSelection).val(climateName);
+  }
+
 }
