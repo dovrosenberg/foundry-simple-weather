@@ -1,16 +1,12 @@
 import '../styles/notices.scss';
 import '../styles/simple-weather.scss';
 
-import { DevMode } from './libraries/devMode/devMode';
-import { DevModeApi } from './libraries/devMode/devModeApi';
-import { Log } from './logger/logger';
 import { Notices } from './notices/notices';
 import { ChatProxy } from './proxies/chatProxy';
 import { ModuleSettings } from './settings/module-settings';
 import { VersionUtils } from './utils/versionUtils';
 import { Weather } from './weather';
 
-const logger = new Log();
 const chatProxy = new ChatProxy();
 let weather: Weather;
 
@@ -27,12 +23,6 @@ function getGame(): Game {
 */
 Hooks.once('devModeReady', ({ registerPackageDebugFlag: registerPackageDebugFlag }: DevModeApi) => {
   registerPackageDebugFlag('simple-weather', 'level');
-  const devModeModule: DevMode = getGame().modules.get('_dev-mode') as unknown as DevMode;
-
-  try {
-    logger.registerLevelCheckCallback(() => devModeModule?.api?.getPackageDebugValue('simple-weather', 'level'));
-  // eslint-disable-next-line no-empty
-  } catch (e) {}
 });
 
 Hooks.once('ready', () => {
@@ -47,7 +37,7 @@ function initializeModule() {
   const moduleSettings = new ModuleSettings(getGame());
   initializeNotices(moduleSettings);
 
-  weather = new Weather(getGame(), chatProxy, logger, moduleSettings);
+  weather = new Weather(getGame(), chatProxy, moduleSettings);
 
   Hooks.on(SimpleCalendarHooks.DateTimeChange, ({date}: { date: SimpleCalendar.DateData }) => {
     weather.onDateTimeChange(date);

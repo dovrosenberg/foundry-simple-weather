@@ -1,36 +1,29 @@
-import { Climate } from './climate';
-
-export enum Climates {
-  temperate = 'temperate',
-  temperateMountain = 'temperateMountain',
-  desert = 'desert',
-  tundra = 'tundra',
-  tropical = 'tropical',
-  taiga = 'taiga',
-  volcanic = 'volcanic',
-  polar = 'polar',
+enum Season {
+  Spring,
+  Summer,
+  Fall,
+  Winter
 }
 
+enum Humidity {
+  Barren,
+  Modest,
+  Verdant
+}
+
+enum Climate {
+  Cold,
+  Temperate,
+  Hot
+}
+
+// describes the weather for a day
+// we can use humidity, climate, and gridCell to determine the text description
+// season is only used so that if we want to pick the next day's weather we can tell if we've changed seasons
 export class WeatherData {
-  public version = 1;
-
-  public currentDate: SimpleCalendar.DateData;
-
-  public climate: Climate = new Climate(); // Current climate
-
-  public lastTemp: number; // Last temperature in farenheit
-  public precipitation: string; // Description of current weather
-  public temp: number; // Current temperature in farenheit
-  public get tempRange(): { min: number, max: number } { return this.climate.temperatureRange; } // Temperature range of the current season
-  public set tempRange(range: { min: number, max: number }) { this.climate.temperatureRange = range; } // Temperature range of the current season
-
-  /**
-   * TODO: Should be moved into Climate/Biome data
-   *@deprecated
-   */
-  public isVolcanic: boolean;
-
-  constructor(properties: Partial<WeatherData> = {}) {
-    Object.assign(this, properties);
-  }
+  public season: Season;        // which season we were in 
+  public humidity: Humidity;    // the humidity selection
+  public climate: Climate;      // the climate selection
+  public gridCell: number;      // number of the cell in the hex flower
+  public temperature: number;   // the temperature (with random variation) in F
 }

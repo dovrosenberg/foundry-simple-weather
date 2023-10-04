@@ -1,7 +1,7 @@
 import moduleJson from '@module';
 
-import { Log } from '../logger/logger';
-import { Climates, WeatherData } from '../models/weatherData';
+import { log } from '../utils/log';
+import { WeatherData } from '../models/weatherData';
 import { WindowPosition } from '../models/windowPosition';
 import { ModuleSettings } from '../settings/module-settings';
 import { farenheitToCelsius } from '../utils/temperatureUtils';
@@ -15,7 +15,6 @@ export class WeatherApplication extends Application {
     private gameRef: Game,
     private settings: ModuleSettings,
     private weatherTracker: WeatherTracker,
-    private logger: Log,
     private renderCompleteCallback: () => void) {
     super();
     this.render(true);
@@ -95,7 +94,7 @@ export class WeatherApplication extends Application {
     const defaultPosition = { top: 100, left: 100 };
     const element = this.getElementById('simple-weather-container');
     if (element) {
-      this.logger.info('Resetting Window Position');
+      log(false,'Resetting Window Position');
       element.style.top = defaultPosition.top + 'px';
       element.style.left = defaultPosition.left + 'px';
       this.settings.setWindowPosition({top: element.offsetTop, left: element.offsetLeft});
@@ -149,10 +148,10 @@ export class WeatherApplication extends Application {
 
     if (SimpleCalendar.api.isPrimaryGM()) {
       if (SimpleCalendar.api.clockStatus().started) {
-        this.logger.debug('Stopping clock');
+        log(false,'Stopping clock');
         SimpleCalendar.api.stopClock();
       } else {
-        this.logger.debug('Starting clock');
+        log(false,'Starting clock');
         SimpleCalendar.api.startClock();
       }
     }

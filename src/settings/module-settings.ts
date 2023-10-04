@@ -1,18 +1,16 @@
 import moduleJson from '@module';
-import { Climate } from '@/models/climate';
 
-import { WeatherData } from '../models/weatherData';
 import { WindowPosition } from '../models/windowPosition';
-//import { SimpleCalendar } from 'foundryvtt-simple-calendar';
 
 export enum SettingKeys {
-  calendarDisplay = 'calendarDisplay',
-  noticeVersion = 'noticeVersion',
-  outputWeatherToChat = 'outputWeatherChat',
-  playerSeeWeatherInfo = 'playerSeeWeatherInfo',
-  useCelsius = 'useCelsius',
-  weatherData = 'weatherData',
-  windowPosition = 'windowPosition',
+  // displayed in settings
+  dialogDisplay = 'dialogDisplay',   // can non-GM clients see the dialog box
+  outputWeatherToChat = 'outputWeatherChat',   // when new weather is generated, should it be put in the chat box
+  useCelsius = 'useCelsius',   // should we use Celsius
+  windowPosition = 'windowPosition',   // the current position of the window
+
+  // internal only
+  noticeVersion = 'noticeVersion',   // ??? 
 }
 
 export class ModuleSettings {
@@ -36,24 +34,16 @@ export class ModuleSettings {
     return moduleJson.versionsWithNotices;
   }
 
-  public getWeatherData(): WeatherData {
-    return new WeatherData(this.get(SettingKeys.weatherData));
-  }
-
-  public setWeatherData(value: WeatherData): Promise<void> {
-    return this.set(SettingKeys.weatherData, value);
-  }
-
   public getWindowPosition(): WindowPosition {
-    return this.get(SettingKeys.windowPosition) as any;
+    return this.get(SettingKeys.windowPosition) as unknown as WindowPosition;
   }
 
   public setWindowPosition(position: WindowPosition) {
     this.set(SettingKeys.windowPosition, position);
   }
 
-  public getCalendarDisplay(): boolean {
-    return this.get(SettingKeys.calendarDisplay) as any;
+  public getDialogDisplay(): boolean {
+    return this.get(SettingKeys.dialogDisplay) as any;
   }
 
   public getOutputWeatherToChat(): boolean {
@@ -62,10 +52,6 @@ export class ModuleSettings {
 
   public getUseCelsius(): boolean {
     return this.get(SettingKeys.useCelsius) as any;
-  }
-
-  public getPlayerSeeWeather(): boolean {
-    return this.get(SettingKeys.playerSeeWeatherInfo) as any;
   }
 
   public getListOfReadNoticesVersions(): Array<string> {
@@ -97,23 +83,7 @@ export class ModuleSettings {
       scope: 'client',
       config: false,
       type: Object,
-      default: { top: 100, lefT: 100 }
-    });
-
-    this.register(SettingKeys.weatherData, {
-      name: 'Weather Data',
-      scope: 'world',
-      config: false,
-      type: Object,
-      default: this.createDefaultWeatherData()
-    });
-
-    this.register(SettingKeys.weatherData + 'Backup', {
-      name: 'Weather Data Backup',
-      scope: 'world',
-      config: false,
-      type: Object,
-      default: null
+      default: { top: 100, left: 100 }
     });
 
     this.register(SettingKeys.noticeVersion, {
@@ -124,18 +94,18 @@ export class ModuleSettings {
       default: [],
     });
 
-    this.register(SettingKeys.calendarDisplay, {
-      name: this.gameRef.i18n.localize('sweath.settings.DisplayWindowNonGM'),
-      hint: this.gameRef.i18n.localize('sweath.settings.DisplayWindowNonGMHelp'),
+    this.register(SettingKeys.outputWeatherToChat, {
+      name: this.gameRef.i18n.localize('sweath.settings.OutputWeatherToChat'),
+      hint: this.gameRef.i18n.localize('sweath.settings.OutputWeatherToChatHelp'),
       scope: 'world',
       config: true,
       default: true,
       type: Boolean,
     });
 
-    this.register(SettingKeys.outputWeatherToChat, {
-      name: this.gameRef.i18n.localize('sweath.settings.OutputWeatherToChat'),
-      hint: this.gameRef.i18n.localize('sweath.settings.OutputWeatherToChatHelp'),
+    this.register(SettingKeys.dialogDisplay, {
+      name: this.gameRef.i18n.localize('sweath.settings.DialogDisplay'),
+      hint: this.gameRef.i18n.localize('sweath.settings.DialogDisplayHelp'),
       scope: 'world',
       config: true,
       default: true,
@@ -149,29 +119,6 @@ export class ModuleSettings {
       config: true,
       default: false,
       type: Boolean,
-    });
-
-    this.register(SettingKeys.playerSeeWeatherInfo, {
-      name: this.gameRef.i18n.localize('sweath.settings.playerSeeWeather'),
-      hint: this.gameRef.i18n.localize('sweath.settings.playerSeeWeatherHelp'),
-      scope: 'world',
-      config: true,
-      default: false,
-      type: Boolean,
-    });
-  }
-
-  private createDefaultWeatherData(): WeatherData {
-    const currentDate = SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp());
-
-    return new WeatherData({
-      climate: new Climate(),
-      currentDate: currentDate || undefined,
-      lastTemp: undefined,
-      precipitation: undefined,
-      temp: undefined,
-      tempRange: undefined,
-      version: 1
     });
   }
 }

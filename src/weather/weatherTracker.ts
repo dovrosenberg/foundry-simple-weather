@@ -1,19 +1,15 @@
-import { Climate } from '../models/climate';
-import { Climates, WeatherData } from '../models/weatherData';
+import { WeatherData } from '../models/weatherData';
 import { ChatProxy } from '../proxies/chatProxy';
 import { ModuleSettings } from '../settings/module-settings';
 import { farenheitToCelsius } from '../utils/temperatureUtils';
-import { PrecipitationsGenerator } from './precipitationsGenerator';
 
 /**
  * Manages all things related to  weather
  */
 export class WeatherTracker {
   private weatherData: WeatherData;
-  private precipitations: PrecipitationsGenerator;
 
   constructor(private gameRef: Game, private chatProxy: ChatProxy, private settings: ModuleSettings) {
-    this.precipitations = new PrecipitationsGenerator(this.gameRef);
   }
 
   public getWeatherData(): WeatherData {

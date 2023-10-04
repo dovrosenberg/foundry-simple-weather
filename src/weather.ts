@@ -1,6 +1,6 @@
 import { WeatherApplication } from './applications/weatherApplication';
-import { Log } from './logger/logger';
-import { Climates, WeatherData } from './models/weatherData';
+import { log } from './utils/log';
+import { WeatherData } from './models/weatherData';
 import { ChatProxy } from './proxies/chatProxy';
 import { ModuleSettings } from './settings/module-settings';
 import { WeatherTracker } from './weather/weatherTracker';
@@ -13,9 +13,9 @@ export class Weather {
   private weatherTracker: WeatherTracker;
   private weatherApplication: WeatherApplication;
 
-  constructor(private gameRef: Game, private chatProxy: ChatProxy, private logger: Log, private settings: ModuleSettings) {
+  constructor(private gameRef: Game, private chatProxy: ChatProxy, private settings: ModuleSettings) {
     this.weatherTracker = new WeatherTracker(this.gameRef, this.chatProxy, this.settings);
-    this.logger.info('Init completed');
+    log(false, 'Init completed');
   }
 
   private isUserGM(): boolean {
@@ -31,11 +31,11 @@ export class Weather {
     let newWeatherData = this.mergePreviousDateTimeWithNewOne(currentDate);
 
     if (this.hasDateChanged(currentDate)) {
-      this.logger.info('DateTime has changed');
+      log(false, 'DateTime has changed');
       this.weatherTracker.setWeatherData(newWeatherData);
 
       if (this.isUserGM()) {
-        this.logger.info('Generate new weather');
+        log(false, 'Generate new weather');
         newWeatherData = this.weatherTracker.generate();
       }
     }
@@ -45,7 +45,7 @@ export class Weather {
     }
 
     if (this.isWeatherApplicationAvailable()) {
-      this.logger.debug('Update weather display');
+      log(false, 'Update weather display');
       this.updateWeatherDisplay(currentDate);
     }
   }
@@ -64,10 +64,10 @@ export class Weather {
     let weatherData = this.settings.getWeatherData();
 
     if (this.isWeatherDataValid(weatherData)) {
-      this.logger.info('Using saved weather data', weatherData);
+      log(false, 'Using saved weather data', weatherData);
       this.weatherTracker.setWeatherData(weatherData);
     } else if (this.isUserGM()) {
-      this.logger.info('No saved weather data - Generating weather');
+      log(false, 'No saved weather data - Generating weather');
 
       // NOTE: This is where you'll need to start mid-season, for example
       // more generally... if we saved the prior day, we should generate weather based on that day 
@@ -85,7 +85,6 @@ export class Weather {
         this.gameRef,
         this.settings,
         this.weatherTracker,
-        this.logger,
         () => {
           const weatherData = this.settings.getWeatherData();
           weatherData.currentDate = SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp());
