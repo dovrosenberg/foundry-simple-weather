@@ -1,17 +1,19 @@
-enum Season {
+import { weatherDescriptions } from '@/weather/climateData';
+  
+export enum Season {
   Spring,
   Summer,
   Fall,
   Winter
 }
 
-enum Humidity {
+export enum Humidity {
   Barren,
   Modest,
   Verdant
 }
 
-enum Climate {
+export enum Climate {
   Cold,
   Temperate,
   Hot
@@ -24,6 +26,17 @@ export class WeatherData {
   public season: Season;        // which season we were in 
   public humidity: Humidity;    // the humidity selection
   public climate: Climate;      // the climate selection
-  public gridCell: number;      // number of the cell in the hex flower
+  public hexFlowerCell: number;      // number of the cell in the hex flower
   public temperature: number;   // the temperature (with random variation) in F
+
+  public getTemperature = (useCelsius: boolean): string => {
+    if (useCelsius)
+      return Math.floor((this.temperature-32)*5/9) + '°C';
+    else 
+      return this.temperature + '°F';
+  };
+
+  public getDescription = (): string => {  
+    return weatherDescriptions[this.climate][this.humidity][this.hexFlowerCell];
+  };
 }

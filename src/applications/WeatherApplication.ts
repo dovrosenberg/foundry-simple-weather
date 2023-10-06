@@ -1,27 +1,35 @@
 import moduleJson from '@module';
 
-import { log } from '../utils/log';
-import { WeatherData } from '../models/weatherData';
-import { WindowPosition } from '../models/windowPosition';
-import { ModuleSettings } from '../settings/module-settings';
-import { farenheitToCelsius } from '../utils/temperatureUtils';
-import { WeatherTracker } from '../weather/weatherTracker';
-import { WindowDrag } from './windowDrag';
+import { log } from '@/utils/log';
+import { Humidity, Climate, Season, WeatherData } from '@/weather/WeatherData';
+import { WindowPosition } from '@/window/WindowPosition';
+import { ModuleSettings } from '@/settings/module-settings';
+import { WeatherGenerator } from '@/weather/weatherGenerator';
+import { WindowDrag } from '@/window/windowDrag';
+import { isClientGM } from '@/utils/game';
 
 export class WeatherApplication extends Application {
   private windowDragHandler: WindowDrag;
+  private settings: ModuleSettings;
+  private weatherGenerator: WeatherGenerator;
+  private renderCompleteCallback: () => void;
 
-  constructor(
-    private gameRef: Game,
-    private settings: ModuleSettings,
-    private weatherTracker: WeatherTracker,
-    private renderCompleteCallback: () => void) {
+  // renderCompleteCallback will be called when listeners are activated, so can contain
+  //    any logic that needs to be activated at that point
+  constructor(settings: ModuleSettings, weatherGenerator: WeatherGenerator, renderCompleteCallback: () => void) {
     super();
+
+    this.settings = settings;
+    this.weatherGenerator = weatherGenerator;
+    this.renderCompleteCallback = renderCompleteCallback;
+
+    log(false, 'WeatherApplication construction');
     this.render(true);
   }
 
   static get defaultOptions() {
     const options = super.defaultOptions;
+    
     options.template = `modules/${moduleJson.id}/templates/calendar.html`;
     options.popOut = false;
     options.resizable = false;
@@ -31,13 +39,13 @@ export class WeatherApplication extends Application {
 
   public getData(): any {
     return {
-      isGM: this.gameRef?.user?.isGM || false
+      isGM: isClientGM()
     };
   }
 
+  // called by the parent class to attach event handlers
   public activateListeners(html: JQuery) {
     this.renderCompleteCallback();
-
     const dateFormatToggle = '#date-display';
     const startStopClock = '#start-stop-clock';
 
@@ -53,30 +61,22 @@ export class WeatherApplication extends Application {
 
     this.listenToWindowExpand(html);
     this.listenToWeatherRefreshClick(html);
-    this.setClimate(html);
-    this.listenToClimateChange(html);
+    //this.setClimate(html);
+    //this.listenToClimateChange(html);
 
     global[moduleJson.class] = {};
     global[moduleJson.class].resetPosition = () => this.resetPosition();
   }
 
   public updateWeather(weatherData: WeatherData) {
-    this.assignElement('current-temperature', this.getTemperature(weatherData));
-    this.assignElement('precipitation', weatherData.precipitation);
+    this.assignElement('current-temperature', weatherData.getTemperature(this.settings.getUseCelsius()));
+    this.assignElement('current-description', weatherData.getDescription());
   }
 
   private assignElement(elementId: string, value: string) {
-    const element = this.getElementById(elementId);
+    const element = document.getElementById(elementId);
     if (element !== null)
       element.innerHTML  = value;
-  }
-
-  private getTemperature(weatherData: WeatherData): string {
-    if (this.settings.getUseCelsius()) {
-      return farenheitToCelsius(weatherData.temp) + ' °C';
-    } else {
-      return weatherData.temp + ' °F';
-    }
   }
 
   // updates the current date/time showing in the weather dialog
@@ -92,50 +92,54 @@ export class WeatherApplication extends Application {
 
   public resetPosition() {
     const defaultPosition = { top: 100, left: 100 };
-    const element = this.getElementById('simple-weather-container');
+    const element = document.getElementById('simple-weather-container');
     if (element) {
       log(false,'Resetting Window Position');
       element.style.top = defaultPosition.top + 'px';
       element.style.left = defaultPosition.left + 'px';
       this.settings.setWindowPosition({top: element.offsetTop, left: element.offsetLeft});
-      element.style.bottom = null;
+      element.style.bottom = '';
     }
   }
 
   // listener activators
   private listenToWindowExpand(html: JQuery) {
-    const weather = '#weather-toggle';
+    // hide the toggle for non-GM clients
+    if (!isClientGM()) {
+      const element = document.getElementById('weather-toggle');
+      if (element)
+        element.style.display = 'none';
+    } else {
+      // set the handler
+      html.find('#weather-toggle').on('click', event => {
+        event.preventDefault();
 
-    if (!this.gameRef?.user?.isGM && !this.settings.getPlayerSeeWeather()) {
-      document.getElementById('weather-toggle').style.display = 'none';
+        const element = document.getElementById('simple-weather-container');
+        if (element)
+          element.classList.toggle('showWeather');
+      });
     }
-
-    html.find(weather).on('click', event => {
-      event.preventDefault();
-      if (this.gameRef?.user?.isGM || this.settings.getPlayerSeeWeather()) {
-        document.getElementById('simple-weather-container').classList.toggle('showWeather');
-      }
-    });
   }
 
   private listenToWeatherRefreshClick(html: JQuery) {
-    const refreshWeather = '#weather-regenerate';
-
-    html.find(refreshWeather).on('click', event => {
-      event.preventDefault();
-      this.updateWeather(this.weatherTracker.generate());
-    });
+    // add the handler
+    if (isClientGM()) {
+      html.find('#weather-regenerate').on('click', event => {
+        event.preventDefault();
+        this.updateWeather(this.weatherGenerator.generate(Climate.Cold, Humidity.Barren, Season.Winter, null));
+      });
+    } 
   }
 
-  private listenToClimateChange(html: JQuery) {
-    const climateSelection = '#climate-selection';
+  // private listenToClimateChange(html: JQuery) {
+  //   const climateSelection = '#climate-selection';
 
-    html.find(climateSelection).on('change', (event) => {
-      const target = event.originalEvent.target as HTMLSelectElement;
-      const weatherData = this.weatherTracker.generate(target.value as Climates);
-      this.updateWeather(weatherData);
-    });
-  }
+  //   html.find(climateSelection).on('change', (event) => {
+  //     const target = event.originalEvent?.target as HTMLSelectElement;
+  //     const weatherData = this.weatherGenerator.generate(target?.value as Climates);
+  //     this.updateWeather(weatherData);
+  //   });
+  // }
 
   // event handlers
   private onMouseDownToggleDateFormat(event) {
@@ -162,6 +166,8 @@ export class WeatherApplication extends Application {
     const window = calendarMoveHandle.parents('#simple-weather-container').get(0);
     const windowPosition = this.settings.getWindowPosition();
 
+    if (!window) return;
+
     window.style.top = windowPosition.top + 'px';
     window.style.left = windowPosition.left + 'px';
 
@@ -173,15 +179,10 @@ export class WeatherApplication extends Application {
     });
   }
 
-  // utilities
-  private getElementById(id: string): HTMLElement | null {
-    return document.getElementById(id);
-  }
-
-  private setClimate(html: JQuery) {
-    const climateSelection = '#climate-selection';
-    const climateName = this.weatherTracker.getWeatherData().climate?.name || Climates.temperate;
-    html.find(climateSelection).val(climateName);
-  }
+  // private setClimate(html: JQuery) {
+  //   const climateSelection = '#climate-selection';
+  //   const climateName = this.weatherTracker.getWeatherData().climate?.name || Climates.temperate;
+  //   html.find(climateSelection).val(climateName);
+  // }
 
 }

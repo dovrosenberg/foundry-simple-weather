@@ -42,7 +42,7 @@ export default defineConfig({
       hook: 'writeBundle',
     }),
     scss({
-      output: 'dist/style.css',
+      output: 'styles/style.css',
       sourceMap: true,
       watch: ['src/styles/*.scss'],
     }),    viteCommonjs(),
@@ -58,19 +58,21 @@ export default defineConfig({
   ],
   build: {
     sourcemap: true,
+    outDir: 'dist',
     rollupOptions: {
       input: 'src/main.ts',
       output: {
-        dir: undefined,
         assetFileNames: (assetInfo): string => {
           if (assetInfo.name === 'output.css') 
-            return 'simple-weather.css';
+            return 'styles/simple-weather.css';
+          else if (assetInfo.name ==='output.css.map')
+            return 'styles/simple-weather.css.map';
           else if (assetInfo.name)
             return assetInfo.name;
           else
             throw 'Asset missing name';
         },        
-        file: 'dist/scripts/simple-weather.js',
+        entryFileNames: (assetInfo): string => 'scripts/index.js',
         format: 'es',
       },
     },

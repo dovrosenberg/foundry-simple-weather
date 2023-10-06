@@ -1,9 +1,10 @@
 import { Foundry } from '@/libraries/foundry/foundry';
 import { ModuleSettings } from '@/settings/module-settings';
 import { VersionUtils } from '@/utils/versionUtils';
+import { localize } from '@/utils/game';
 
 export class Notices {
-  constructor(private gameRef: Game, private moduleSettings: ModuleSettings) {}
+  constructor(private moduleSettings: ModuleSettings) {}
 
   public async checkForNotices() {
     if (this.noticeForCurrentVersionIsDeclared() && !this.noticeForCurrentVersionWasRead() && await this.noticeFileExistsForCurrentVersion() ) {
@@ -47,7 +48,7 @@ export class Notices {
         buttons: {
           yes: {
             icon: '<i class="fas fa-check"></i>',
-            label: this.gameRef.i18n.localize('sweath.notice.Acknowledge'),
+            label: localize('sweath.notice.Acknowledge'),
             callback: () => this.markNoticeAsSeen()
           }
         },

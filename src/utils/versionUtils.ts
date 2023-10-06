@@ -1,4 +1,3 @@
-
 export abstract class VersionUtils {
   public static sortSemver(versionList: Array<string>): Array<string> {
     return versionList.sort(this.compareSemver);

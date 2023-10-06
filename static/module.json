@@ -11,10 +11,10 @@
   },
 
   "esmodules": [
-    "scripts/simple-weather.js"
+    "scripts/index.js"
   ],
-  "styles": [
-    "scripts/simple-weather.css"
+  "#styles": [
+    "styles/simple-weather.css"
   ],
   "packs": [],
 

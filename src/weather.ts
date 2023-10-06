@@ -1,25 +1,26 @@
-import { WeatherApplication } from './applications/weatherApplication';
-import { log } from './utils/log';
-import { WeatherData } from './models/weatherData';
-import { ChatProxy } from './proxies/chatProxy';
-import { ModuleSettings } from './settings/module-settings';
-import { WeatherTracker } from './weather/weatherTracker';
+import { WeatherApplication } from '@/applications/WeatherApplication';
+import { log } from '@/utils/log';
+import { ChatProxy } from '@/proxies/chatProxy';
+import { ModuleSettings } from '@/settings/module-settings';
+import { WeatherGenerator } from '@/weather/weatherGenerator';
+import { isClientGM } from '@/utils/game';
 
 /**
  * The base class of the module.
- * Every FoundryVTT features must be injected in this so we can mock them in tests.
  */
 export class Weather {
-  private weatherTracker: WeatherTracker;
+  private weatherGenerator: WeatherGenerator;
   private weatherApplication: WeatherApplication;
+  private chatProxy: ChatProxy;
+  private settings: ModuleSettings;
 
-  constructor(private gameRef: Game, private chatProxy: ChatProxy, private settings: ModuleSettings) {
-    this.weatherTracker = new WeatherTracker(this.gameRef, this.chatProxy, this.settings);
+  constructor(chatProxy: ChatProxy, settings: ModuleSettings) {
+    this.weatherGenerator = new WeatherGenerator(this.chatProxy, this.settings);
+
+    this.chatProxy = chatProxy;
+    this.settings = settings;
+
     log(false, 'Init completed');
-  }
-
-  private isUserGM(): boolean {
-    return this.gameRef?.user?.isGM || false;
   }
 
   public async onReady(): Promise<void> {
@@ -28,20 +29,19 @@ export class Weather {
   }
 
   public onDateTimeChange(currentDate: SimpleCalendar.DateData) {
-    let newWeatherData = this.mergePreviousDateTimeWithNewOne(currentDate);
+    //let newWeatherData = this.mergePreviousDateTimeWithNewOne(currentDate);
 
     if (this.hasDateChanged(currentDate)) {
       log(false, 'DateTime has changed');
-      this.weatherTracker.setWeatherData(newWeatherData);
 
-      if (this.isUserGM()) {
+      if (isClientGM()) {
         log(false, 'Generate new weather');
-        newWeatherData = this.weatherTracker.generate();
+        //newWeatherData = this.weatherGenerator.generate();
       }
     }
 
-    if (this.isUserGM()) {
-      this.weatherTracker.setWeatherData(newWeatherData);
+    if (isClientGM()) {
+      //this.weatherGenerator.setWeatherData(newWeatherData);
     }
 
     if (this.isWeatherApplicationAvailable()) {
@@ -57,59 +57,56 @@ export class Weather {
   }
 
   private isWeatherApplicationAvailable(): boolean {
-    return this.settings.getCalendarDisplay() || this.isUserGM();
+    return this.settings.getDialogDisplay() || isClientGM();
   }
 
   private async initializeWeatherData() {
-    let weatherData = this.settings.getWeatherData();
+    //let weatherData = this.settings.getWeatherData();
 
-    if (this.isWeatherDataValid(weatherData)) {
-      log(false, 'Using saved weather data', weatherData);
-      this.weatherTracker.setWeatherData(weatherData);
-    } else if (this.isUserGM()) {
-      log(false, 'No saved weather data - Generating weather');
+    // if (this.isWeatherDataValid(weatherData)) {
+    //   log(false, 'Using saved weather data', weatherData);
+    //   this.weatherTracker.setWeatherData(weatherData);
+    // } else if (isClientGM()) {
+    //   log(false, 'No saved weather data - Generating weather');
 
-      // NOTE: This is where you'll need to start mid-season, for example
-      // more generally... if we saved the prior day, we should generate weather based on that day 
-      // otherwise, we should generate weather starting at a random spot based on the season
-      weatherData.currentDate = SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp());
-      this.weatherTracker.setWeatherData(weatherData);
-      weatherData = this.weatherTracker.generate(Climates.temperate);
-      await this.settings.setWeatherData(weatherData);
-    }
+    //   // NOTE: This is where you'll need to start mid-season, for example
+    //   // more generally... if we saved the prior day, we should generate weather based on that day 
+    //   // otherwise, we should generate weather starting at a random spot based on the season
+    //   weatherData.currentDate = SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp());
+    //   this.weatherTracker.setWeatherData(weatherData);
+    //   weatherData = this.weatherTracker.generate(Climates.temperate);
+    //   await this.settings.setWeatherData(weatherData);
+    // }
   }
 
   private initializeWeatherApplication() {
     if (this.isWeatherApplicationAvailable()) {
       this.weatherApplication = new WeatherApplication(
-        this.gameRef,
         this.settings,
-        this.weatherTracker,
+        this.weatherGenerator,
         () => {
-          const weatherData = this.settings.getWeatherData();
-          weatherData.currentDate = SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp());
-          this.weatherApplication.updateDateTime(weatherData.currentDate);
-          this.weatherApplication.updateWeather(weatherData);
+          // this will be called when the application is done with the initial render
+          log(false, 'RENDER COMPLETE!');
+          // const weatherData = this.settings.getWeatherData();
+          // weatherData.currentDate = SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp());
+          // this.weatherApplication.updateDateTime(weatherData.currentDate);
+          // this.weatherApplication.updateWeather(weatherData);
         });
     }
   }
 
-  private mergePreviousDateTimeWithNewOne(currentDate: SimpleCalendar.DateData): WeatherData {
-    return Object.assign({}, this.weatherTracker.getWeatherData(), {currentDate});
-  }
-
   private hasDateChanged(currentDate: SimpleCalendar.DateData): boolean {
-    const previous = this.weatherTracker.getWeatherData().currentDate;
+    // const previous = this.weatherGenerator.getWeatherData().currentDate;
 
-    if (this.isDateTimeValid(currentDate)) {
-      if (currentDate.day !== previous.day
-        || currentDate.month !== previous.month
-        || currentDate.year !== previous.year) {
-        return true;
-      }
-    }
+    // if (this.isDateTimeValid(currentDate)) {
+    //   if (currentDate.day !== previous.day
+    //     || currentDate.month !== previous.month
+    //     || currentDate.year !== previous.year) {
+    //     return true;
+    //   }
+    // }
 
-    return false;
+    return true;
   }
 
   private isDateTimeValid(date: SimpleCalendar.DateData): boolean {
@@ -125,12 +122,8 @@ export class Weather {
     return value !== undefined && value !== null;
   }
 
-  private isWeatherDataValid(weatherData: WeatherData): boolean {
-    return !!weatherData.temp;
-  }
-
   private updateWeatherDisplay(dateTime: SimpleCalendar.DateData) {
-    this.weatherApplication.updateDateTime(dateTime);
-    this.weatherApplication.updateWeather(this.weatherTracker.getWeatherData());
+    // this.weatherApplication.updateDateTime(dateTime);
+    // this.weatherApplication.updateWeather(this.weatherGenerator.getWeatherData());
   }
 }

@@ -1,9 +1,5 @@
-function getGame(): Game {
-  if(!(game instanceof Game)) {
-    throw new Error('Game is not initialized yet!');
-  }
-  return game;
-}
+import { getGame } from '@/utils/game';
+
 const messagePrefix = 'simple-weather | ';
 
 // log the given text, so long as our current log level is at least the one given

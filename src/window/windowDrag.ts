@@ -1,4 +1,4 @@
-import { WindowPosition } from '../models/windowPosition';
+import { WindowPosition } from '@/window/WindowPosition';
 
 export class WindowDrag {
   private parent: HTMLElement;
@@ -20,8 +20,8 @@ export class WindowDrag {
   }
 
   private mouseMove(event: Partial<MouseEvent>) {
-    this.parent.style.top = this.parent.offsetTop + event.movementY + 'px';
-    this.parent.style.left = this.parent.offsetLeft + event.movementX + 'px';
+    this.parent.style.top = this.parent.offsetTop + (event.movementY || 0) + 'px';
+    this.parent.style.left = this.parent.offsetLeft + (event.movementX || 0) + 'px';
     this.parent.style.position = 'fixed';
     this.parent.style.zIndex = '100';
   }
