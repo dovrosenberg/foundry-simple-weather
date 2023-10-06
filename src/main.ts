@@ -1,38 +1,35 @@
 import '@/../styles/notices.scss';
 import '@/../styles/simple-weather.scss';
 
-// import { Notices } from '@/notices/notices';
-// import { ChatProxy } from '@/proxies/chatProxy';
-// import { ModuleSettings } from '@/settings/module-settings';
+import { Notices } from '@/notices/notices';
+import { ChatProxy } from '@/proxies/chatProxy';
+import { ModuleSettings } from '@/settings/module-settings';
 import { VersionUtils } from '@/utils/versionUtils';
-//import { Weather } from '@/weather';
+import { Weather } from '@/weather';
 import { getGame } from '@/utils/game';
-//import { log } from './utils/log';
+import { log } from './utils/log';
 
-// const chatProxy = new ChatProxy();
-// let weather: Weather;
+const chatProxy = new ChatProxy();
+let weather: Weather;
 
 /**
 * Register module in Developer Mode module (https://github.com/League-of-Foundry-Developers/foundryvtt-devMode)
 * No need to spam the console more than it already is, we hide them between a flag.
 */
 
-// Hooks.once('devModeReady', ({ registerPackageDebugFlag: registerPackageDebugFlag }: DevModeApi) => {
-//   registerPackageDebugFlag('simple-weather');
-// });
-
-console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+// note: for the logs to actually work, you have to activate it in the UI under the config for the developer mode module
+Hooks.once('devModeReady', ({ registerPackageDebugFlag: registerPackageDebugFlag }: DevModeApi) => {
+  registerPackageDebugFlag('simple-weather', 'boolean', { default: true });
+});
 
 Hooks.once('ready', () => {
   checkDependencies();
-  console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY');
-  //log(false, 'ready');
+  log(false, 'ready');
 });
 
 Hooks.once('simple-calendar-ready', () => {
   //initializeModule();
-  console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
-  //log(false, 'simple-calendar-ready');
+  log(false, 'simple-calendar-ready');
 });
 
 // function initializeModule() {

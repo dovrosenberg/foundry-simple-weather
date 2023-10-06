@@ -12,6 +12,7 @@ export function log(force: boolean, ...args): void {
     }
   } catch (e) {
     // eslint-ignore-next-line
+    console.log('ERROR IN LOG FUNCTION:' + e);
   }
 }
 
