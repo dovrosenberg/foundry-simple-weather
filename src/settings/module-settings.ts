@@ -24,12 +24,9 @@ export class ModuleSettings {
     return Object.keys(setting).length === 0 || setting === null || setting === undefined;
   }
 
-  public getModuleName(): string {
-    return moduleJson.id;
-  }
-
   public getWindowPosition(): WindowPosition {
-    return this.get(SettingKeys.windowPosition) as unknown as WindowPosition;
+    const windowPosition = this.get(SettingKeys.windowPosition) as unknown as WindowPosition;
+    return windowPosition;
   }
 
   public setWindowPosition(position: WindowPosition) {
@@ -57,15 +54,15 @@ export class ModuleSettings {
   }
 
   private register(settingKey: string, settingConfig: ClientSettings.PartialSettingConfig) {
-    getGame().settings.register(this.getModuleName(), settingKey, settingConfig);
+    getGame().settings.register(moduleJson.id, settingKey, settingConfig);
   }
 
   private get(settingKey: SettingKeys): unknown {
-    return getGame().settings.get(this.getModuleName(), settingKey);
+    return getGame().settings.get(moduleJson.id, settingKey);
   }
 
   private set(settingKey: SettingKeys, value: any): Promise<any> {
-    return getGame().settings.set(this.getModuleName(), settingKey, value);
+    return getGame().settings.set(moduleJson.id, settingKey, value);
   }
 
   private registerSettings(): void {

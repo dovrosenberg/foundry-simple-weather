@@ -13,6 +13,9 @@ export class WeatherApplication extends Application {
   private moduleSettings: ModuleSettings;
   private renderCompleteCallback: () => void;
 
+
+  private testvalue = 0;
+
   // renderCompleteCallback will be called when listeners are activated, so can contain
   //    any logic that needs to be activated at that point
   constructor(moduleSettings: ModuleSettings, renderCompleteCallback: () => void) {
@@ -36,23 +39,34 @@ export class WeatherApplication extends Application {
   }
 
   // this provides fields that will be available in the template
-  public getData(): any {
-    return {
-      isGM: isClientGM()
-    };
+  public async getData(): Promise<any> {
+    log(false, 'GETDATA called');
+
+    const data = {
+      ...(await super.getData()),
+      isGM: isClientGM(),
+      testvalue: this.testvalue,
+    }
+
+    return data;
   }
 
   // called by the parent class to attach event handlers
-  public activateListeners(html: JQuery) {
+  public activateListeners(html: JQuery<HTMLElement>) {
     this.renderCompleteCallback();
-    // const dateFormatToggle = '#date-display';
-    // const startStopClock = '#start-stop-clock';
 
+    // get window in right place
     this.initializeWindowInteractions(html);
 
-    // html.find(dateFormatToggle).on('mousedown', event => {
-    //   this.onMouseDownToggleDateFormat(event);
-    // });
+    const dateFormatToggle = '#date-display';
+    // const startStopClock = '#start-stop-clock';
+
+    // toggle date format when the date is clicked
+    html.find(dateFormatToggle).on('mousedown', event => {
+      event.currentTarget.classList.toggle('altFormat');
+      this.testvalue++;
+      this.render();
+    });
 
     // html.find(startStopClock).on('mousedown', event => {
     //   this.onMouseDownStartStopClock(event);
@@ -66,6 +80,9 @@ export class WeatherApplication extends Application {
     // // expose a SimpleWeather global object to enable calling resetPosition
     // global.SimpleWeather = {};
     // global.SimpleWeather.resetPosition = () => this.resetPosition();
+
+    // this is important, as it is what triggers refreshes when data changes
+    super.activateListeners(html);
   }
 
   // refreshes the weather shown in the weather dialog
@@ -143,11 +160,7 @@ export class WeatherApplication extends Application {
   // //   });
   // // }
 
-  // // event handlers
-  // private onMouseDownToggleDateFormat(event) {
-  //   event.currentTarget.classList.toggle('altFormat');
-  // }
-
+  // event handlers
   // private onMouseDownStartStopClock(event) {
   //   event.preventDefault();
   //   event = event || window.event;
@@ -163,20 +176,20 @@ export class WeatherApplication extends Application {
   //   }
   // }
 
-  // setup the drag handler for our dialog
-  private initializeWindowInteractions($: JQuery) {
-    const calendarMoveHandle = $.find('#sweath-window-move-handle');
-    const window = $.find('#sweath-container').get(0);
+  // place the window correctly and setup the drag handler for our dialog
+  private initializeWindowInteractions($: JQuery<HTMLElement>) {
+    const calendarMoveHandle = document.getElementById('sweath-window-move-handle');
+    const weatherWindow = document.getElementById('sweath-container');
     const windowPosition = this.moduleSettings.getWindowPosition();
 
-    if (!window) return;
+    if (!weatherWindow) return;
 
-    window.style.top = windowPosition.top + 'px';
-    window.style.left = windowPosition.left + 'px';
+    weatherWindow.style.top = windowPosition.top + 'px';
+    weatherWindow.style.left = windowPosition.left + 'px';
 
     this.windowDragHandler = new WindowDrag();
-    calendarMoveHandle.on('mousedown', () => {
-      this.windowDragHandler.start(window, (windowPos: WindowPosition) => {
+    $.find('#sweath-window-move-handle').on('mousedown', () => {
+      this.windowDragHandler.start(weatherWindow, (windowPos: WindowPosition) => {
         this.moduleSettings.setWindowPosition(windowPos);
       });
     });
