@@ -8,7 +8,7 @@
 
 			<!-- day name -->
 			<h1 id="sweath-window-move-handle">
-				<span id="weekday">Simple Weather</span>
+				<span id="weekday">{{ weekday }}</span>
 			</h1>
 
 			<div class="header-navigation">
@@ -28,8 +28,8 @@
 			<section id="date-display" title="{{localize 'sweath.calendar.ClickToToggle'}}">
 				<h2>
 					{{ testvalue }}
-					<span id="date-num"></span>
-					<span id="date"></span>
+					<span id="date-num">{{ formattedDate }}</span>
+					<span id="date">{{ displayDate }}</span>
 					<span id="moon"></span>
 				</h2>
 			</section>
@@ -60,7 +60,7 @@
 					</div>
 					{{/if}}
 					<div class="time">
-						<span class="calendar-time-disp" id="calendar-time">00:00:00</span>
+						<span class="calendar-time-disp" id="calendar-time">{{ formattedTime }}</span>
 					</div>
 					{{#if isGM}}
 					<div id='time-running' class="start-stop">

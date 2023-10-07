@@ -12,7 +12,7 @@ export class WeatherApplication extends Application {
   private windowDragHandler: WindowDrag;
   private moduleSettings: ModuleSettings;
   private renderCompleteCallback: () => void;
-
+  private currentDate: SimpleCalendar.DateData;
 
   private testvalue = 0;
 
@@ -40,13 +40,14 @@ export class WeatherApplication extends Application {
 
   // this provides fields that will be available in the template
   public async getData(): Promise<any> {
-    log(false, 'GETDATA called');
-
     const data = {
       ...(await super.getData()),
       isGM: isClientGM(),
-      testvalue: this.testvalue,
-    }
+      displayDate: this.currentDate?.display ? this.currentDate.display.date : 'here',
+      formattedDate: this.currentDate ? this.currentDate.day + '/' + this.currentDate.month + '/' + this.currentDate.year : 'here2',
+      formattedTime: this.currentDate?.display ? this.currentDate.display.time : 'here3',
+      weekday: this.currentDate ? this.currentDate.weekdays[this.currentDate.dayOfTheWeek] : 'here4',
+    };
 
     return data;
   }
@@ -97,16 +98,66 @@ export class WeatherApplication extends Application {
   //     element.innerHTML  = value;
   // }
 
-  // // updates the current date/time showing in the weather dialog
-  // public updateDateTime(currentDate: SimpleCalendar.DateData) {
-  //   if (currentDate) {
-  //     this.assignElement('weekday', currentDate.weekdays[currentDate.dayOfTheWeek]);
+  // updates the current date/time showing in the weather dialog
+  // generates new weather if the date has changed
+  public updateDateTime(currentDate: SimpleCalendar.DateData) {
+    // //let newWeatherData = this.mergePreviousDateTimeWithNewOne(currentDate);
 
-  //     this.assignElement('date', currentDate.display.date);
-  //     this.assignElement('date-num', currentDate.day + '/' + currentDate.month + '/' + currentDate.year);
-  //     this.assignElement('calendar-time', currentDate.display.time);
-  //   }
-  // }
+    if (this.hasDateChanged(currentDate)) {
+      log(false, 'DateTime has changed');
+
+      if (isClientGM()) {
+        log(false, 'Generate new weather');
+        //newWeatherData = this.weatherGenerator.generate();
+      }
+    }
+
+    if (isClientGM()) {
+      //this.weatherGenerator.setWeatherData(newWeatherData);
+    }
+
+    if (this.moduleSettings.getDialogDisplay() || isClientGM()) {
+      log(false, 'Update weather display');
+      //this.updateWeatherDisplay(currentDate);
+    }
+
+    // always update because the time has likely changed even if the date didn't
+    this.currentDate = currentDate;
+    this.render();
+  }
+
+  // has the date part changed
+  private hasDateChanged(currentDate: SimpleCalendar.DateData): boolean {
+    const previous = this.currentDate;
+
+    if ((!previous && currentDate) || (previous && !currentDate))
+      return true;
+
+    if (this.isDateTimeValid(currentDate)) {
+      if (currentDate.day !== previous.day
+        || currentDate.month !== previous.month
+        || currentDate.year !== previous.year) {
+        return true;
+      }
+    }
+
+    return true;
+  }
+
+  private isDateTimeValid(date: SimpleCalendar.DateData): boolean {
+    if (this.isDefined(date.second) && this.isDefined(date.minute) && this.isDefined(date.day) &&
+    this.isDefined(date.month) && this.isDefined(date.year)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private isDefined(value: unknown) {
+    return value !== undefined && value !== null;
+  }
+
+
 
   // resets the window's position to the default
   public resetPosition() {

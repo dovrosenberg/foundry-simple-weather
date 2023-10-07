@@ -23,30 +23,7 @@ export class SimpleWeather {
     this.initializeWeatherApplication();
   }
 
-  // called in response to calendar changing date
-  public onDateTimeChange(currentDate: SimpleCalendar.DateData) {
-    // //let newWeatherData = this.mergePreviousDateTimeWithNewOne(currentDate);
-
-    // if (this.hasDateChanged(currentDate)) {
-    //   log(false, 'DateTime has changed');
-
-    //   if (isClientGM()) {
-    //     log(false, 'Generate new weather');
-    //     //newWeatherData = this.weatherGenerator.generate();
-    //   }
-    // }
-
-    // if (isClientGM()) {
-    //   //this.weatherGenerator.setWeatherData(newWeatherData);
-    // }
-
-    // if (this.moduleSettings.getDialogDisplay() || isClientGM()) {
-    //   log(false, 'Update weather display');
-    //   this.updateWeatherDisplay(currentDate);
-    // }
-  }
-
-  // public resetWindowPosition() {
+    // public resetWindowPosition() {
   //   if (this.moduleSettings.getDialogDisplay() || isClientGM()) {
   //     this.weatherApplication.resetPosition();
   //   }
@@ -88,35 +65,12 @@ export class SimpleWeather {
     }
   }
 
-  // private hasDateChanged(currentDate: SimpleCalendar.DateData): boolean {
-  //   // const previous = this.weatherGenerator.getWeatherData().currentDate;
+  public onDateTimeChange(currentDate: SimpleCalendar.DateData) {
+    this.weatherApplication.updateDateTime(currentDate);
+  }
 
-  //   // if (this.isDateTimeValid(currentDate)) {
-  //   //   if (currentDate.day !== previous.day
-  //   //     || currentDate.month !== previous.month
-  //   //     || currentDate.year !== previous.year) {
-  //   //     return true;
-  //   //   }
-  //   // }
-
-  //   return true;
-  // }
-
-  // private isDateTimeValid(date: SimpleCalendar.DateData): boolean {
-  //   if (this.isDefined(date.second) && this.isDefined(date.minute) && this.isDefined(date.day) &&
-  //   this.isDefined(date.month) && this.isDefined(date.year)) {
-  //     return true;
-  //   }
-
-  //   return false;
-  // }
-
-  // private isDefined(value: unknown) {
-  //   return value !== undefined && value !== null;
-  // }
-
-  // private updateWeatherDisplay(dateTime: SimpleCalendar.DateData) {
-  //   // this.weatherApplication.updateDateTime(dateTime);
-  //   // this.weatherApplication.updateWeather(this.weatherGenerator.getWeatherData());
-  // }
+  private updateWeatherDisplay(dateTime: SimpleCalendar.DateData) {
+    this.weatherApplication.updateDateTime(dateTime);
+    // this.weatherApplication.updateWeather(this.weatherGenerator.getWeatherData());
+  }
 }
