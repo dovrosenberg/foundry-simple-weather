@@ -57,8 +57,5 @@
   "## bugs": "TODO",
   "## changelog": "TODO",
 
-  "class": "SimpleWeather",
-  "versionsWithNotices": [
-    "0.0.9"
-  ]
+  "class": "SimpleWeather"
 }

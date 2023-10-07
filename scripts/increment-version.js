@@ -21,9 +21,9 @@ rl.question('Which version to increment? 1: Major - 2: Minor - 3: Patch\n', func
   console.log('==============================\n');
 
   rl.question('Does this new version contain a notice? yes/no\n', function (answer) {
-    if (answer === 'yes' || answer === 'y') {
-      addVersionToNoticesList(version);
-    }
+    // if (answer === 'yes' || answer === 'y') {
+    //   addVersionToNoticesList(version);
+    // }
 
     console.log('==============================');
     rl.question('\nDone! Press any key to write to disk or CTRL+C to cancel.', function() {
@@ -81,9 +81,9 @@ function updateDownloadLink(newVersion) {
   fvttModule.download = link;
 }
 
-function addVersionToNoticesList(newVersion) {
-  fvttModule.versionsWithNotices.push(newVersion);
-}
+// function addVersionToNoticesList(newVersion) {
+//   fvttModule.versionsWithNotices.push(newVersion);
+// }
 
 function writeToFile() {
   fs.writeFileSync('./package.json', JSON.stringify(package, null, 2));

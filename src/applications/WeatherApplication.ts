@@ -4,23 +4,21 @@ import { log } from '@/utils/log';
 import { Humidity, Climate, Season, WeatherData } from '@/weather/WeatherData';
 import { WindowPosition } from '@/window/WindowPosition';
 import { ModuleSettings } from '@/settings/module-settings';
-import { WeatherGenerator } from '@/weather/weatherGenerator';
 import { WindowDrag } from '@/window/windowDrag';
 import { isClientGM } from '@/utils/game';
+import { generate } from '@/weather/weatherGenerator';
 
 export class WeatherApplication extends Application {
   private windowDragHandler: WindowDrag;
   private settings: ModuleSettings;
-  private weatherGenerator: WeatherGenerator;
   private renderCompleteCallback: () => void;
 
   // renderCompleteCallback will be called when listeners are activated, so can contain
   //    any logic that needs to be activated at that point
-  constructor(settings: ModuleSettings, weatherGenerator: WeatherGenerator, renderCompleteCallback: () => void) {
+  constructor(settings: ModuleSettings, renderCompleteCallback: () => void) {
     super();
 
     this.settings = settings;
-    this.weatherGenerator = weatherGenerator;
     this.renderCompleteCallback = renderCompleteCallback;
 
     log(false, 'WeatherApplication construction');
@@ -68,6 +66,7 @@ export class WeatherApplication extends Application {
     global[moduleJson.class].resetPosition = () => this.resetPosition();
   }
 
+  // refreshes the weather shown in the weather dialog
   public updateWeather(weatherData: WeatherData) {
     this.assignElement('current-temperature', weatherData.getTemperature(this.settings.getUseCelsius()));
     this.assignElement('current-description', weatherData.getDescription());
@@ -126,7 +125,7 @@ export class WeatherApplication extends Application {
     if (isClientGM()) {
       html.find('#weather-regenerate').on('click', event => {
         event.preventDefault();
-        this.updateWeather(this.weatherGenerator.generate(Climate.Cold, Humidity.Barren, Season.Winter, null));
+        this.updateWeather(generate(this.settings, Climate.Cold, Humidity.Barren, Season.Winter, null));
       });
     } 
   }

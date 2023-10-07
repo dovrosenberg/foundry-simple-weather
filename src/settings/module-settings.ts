@@ -2,17 +2,17 @@ import moduleJson from '@module';
 
 import { WindowPosition } from '@/window/WindowPosition';
 import { getGame, localize } from '@/utils/game';
-import { log } from '@/utils/log';
+import { WeatherData } from '@/weather/WeatherData';
 
 export enum SettingKeys {
   // displayed in settings
   dialogDisplay = 'dialogDisplay',   // can non-GM clients see the dialog box
   outputWeatherToChat = 'outputWeatherChat',   // when new weather is generated, should it be put in the chat box
   useCelsius = 'useCelsius',   // should we use Celsius
-  windowPosition = 'windowPosition',   // the current position of the window
 
   // internal only
-  noticeVersion = 'noticeVersion',   // ??? 
+  windowPosition = 'windowPosition',   // the current position of the window
+  lastWeatherData = 'lastWeatherData',  // the previously generated weather data
 }
 
 export class ModuleSettings {
@@ -26,15 +26,6 @@ export class ModuleSettings {
 
   public getModuleName(): string {
     return moduleJson.id;
-  }
-
-  public getVersion(): string {
-    log(false, 'VERSION DETECTED: ' + getGame()?.modules.get(this.getModuleName())?.version);
-    return getGame()?.modules.get(this.getModuleName())?.version;
-  }
-
-  public getVersionsWithNotices(): Array<string> {
-    return moduleJson.versionsWithNotices;
   }
 
   public getWindowPosition(): WindowPosition {
@@ -57,15 +48,12 @@ export class ModuleSettings {
     return this.get(SettingKeys.useCelsius) as any;
   }
 
-  public getListOfReadNoticesVersions(): Array<string> {
-    return this.get(SettingKeys.noticeVersion) as any;
+  public getLastWeatherData(): WeatherData {
+    return this.get(SettingKeys.lastWeatherData) as WeatherData;
   }
 
-  public addVersionToReadNotices(version: string) {
-    const list = this.getListOfReadNoticesVersions();
-    list.push(version);
-
-    this.set(SettingKeys.noticeVersion, list);
+  public setLastWeatherData(weatherData: WeatherData) {
+    this.set(SettingKeys.lastWeatherData, weatherData);
   }
 
   private register(settingKey: string, settingConfig: ClientSettings.PartialSettingConfig) {
@@ -82,19 +70,19 @@ export class ModuleSettings {
 
   private registerSettings(): void {
     this.register(SettingKeys.windowPosition, {
-      name: 'Calendar Position',
+      name: 'Window Position',
       scope: 'client',
       config: false,
       type: Object,
       default: { top: 100, left: 100 }
     });
 
-    this.register(SettingKeys.noticeVersion, {
-      name: 'Version of the last notice displayed',
+    this.register(SettingKeys.lastWeatherData, {
+      name: 'Last weather data',
       scope: 'world',
       config: false,
-      type: Array,
-      default: [],
+      type: Object,
+      default: null
     });
 
     this.register(SettingKeys.outputWeatherToChat, {

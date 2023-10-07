@@ -23,6 +23,7 @@ export enum Climate {
 // we can use humidity, climate, and gridCell to determine the text description
 // season is only used so that if we want to pick the next day's weather we can tell if we've changed seasons
 export class WeatherData {
+  public date: SimpleCalendar.DateData;
   public season: Season;        // which season we were in 
   public humidity: Humidity;    // the humidity selection
   public climate: Climate;      // the climate selection
