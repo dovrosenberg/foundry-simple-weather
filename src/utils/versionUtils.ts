@@ -3,8 +3,8 @@ export abstract class VersionUtils {
     return versionList.sort(this.compareSemver);
   }
 
-  public static isMoreRecent(current, other): boolean {
-    const sortedVersions = this.sortSemver([current, other]);
+  public static isMoreRecent(current, check): boolean {
+    const sortedVersions = this.sortSemver([current, check]);
     return sortedVersions.indexOf(current) === 0;
   }
 

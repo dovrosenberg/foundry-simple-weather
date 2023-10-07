@@ -1,4 +1,4 @@
-#simple-weather-container {
+#sweath-container {
   height: auto;
   border-radius: 5px;
   background: rgba(34, 34, 34, 1);
@@ -58,7 +58,7 @@
     color: transparent;
   }
 
-  #window-move-handle {
+  #sweath-window-move-handle {
     font-size: 13px;
     line-height: 1;
     text-align: center;
@@ -297,13 +297,13 @@
 
 /* WEATHER DISPLAY */
 
-#simple-weather-container #weather {
+#sweath-container #weather {
   width: 0;
   overflow: hidden;
   transition: width .3s ease;
 }
 
-#simple-weather-container.showWeather #weather {
+#sweath-container.showWeather #weather {
   width: 250px;
 }
 
@@ -399,20 +399,20 @@
 
 /* Hide controls until hover */
 
-#simple-weather-container .calendar-header .header-navigation,
-#simple-weather-container .day-time-cues,
-#simple-weather-container .time-controls {
+#sweath-container .calendar-header .header-navigation,
+#sweath-container .day-time-cues,
+#sweath-container .time-controls {
   opacity: 0;
   transition: opacity .3s ease;
 }
 
-#simple-weather-container .time-controls {
+#sweath-container .time-controls {
   opacity: .3;
 }
 
-#simple-weather-container:hover .calendar-header .header-navigation,
-#simple-weather-container:hover .day-time-cues,
-#simple-weather-container:hover .time-controls {
+#sweath-container:hover .calendar-header .header-navigation,
+#sweath-container:hover .day-time-cues,
+#sweath-container:hover .time-controls {
   opacity: 1;
 }
 

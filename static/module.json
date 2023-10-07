@@ -13,7 +13,7 @@
   "esmodules": [
     "scripts/index.js"
   ],
-  "#styles": [
+  "styles": [
     "styles/simple-weather.css"
   ],
   "packs": [],
@@ -55,7 +55,5 @@
   "## license": "TODO",
   "## readme": "TODO",
   "## bugs": "TODO",
-  "## changelog": "TODO",
-
-  "class": "SimpleWeather"
+  "## changelog": "TODO"
 }
