@@ -36,20 +36,20 @@ const generate = function(settings: ModuleSettings, climate: Climate, humidity: 
   weatherData.temperature += Math.floor(Math.random()*(2*plusMinus +1) - plusMinus);
 
   // Output to chat if enabled
-  // if (settings.getOutputWeatherToChat()) {
-  //   output(weatherData);
-  // }
+  if (settings.getOutputWeatherToChat()) {
+    output(settings, weatherData);
+  }
 
   return weatherData;
 };
 
-const output = function(weatherData: WeatherData) {
+const output = function(settings: ModuleSettings, weatherData: WeatherData) {
   let messageRecipients = '';
 
   messageRecipients = getWhisperRecipients('GM')[0].id || '';
 
   if (messageRecipients) {
-    const chatOut = '<b>' + weatherData.getTemperature(this.settings.getUseCelsius()) + '</b> - ' + weatherData.getDescription();
+    const chatOut = '<b>' + weatherData.getTemperature(settings.getUseCelsius()) + '</b> - ' + weatherData.getDescription();
 
     createChat({
       speaker: {
