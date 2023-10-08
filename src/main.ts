@@ -31,12 +31,13 @@ Hooks.once('ready', () => {
 Hooks.once(SimpleCalendar.Hooks.Ready, () => {
   log(false, 'simple-calendar-ready');
 
-  Hooks.on(SimpleCalendar.Hooks.DateTimeChange, ({date}: { date: SimpleCalendar.DateData }) => {
-    simpleWeather.onDateTimeChange(date);
+  Hooks.on(SimpleCalendar.Hooks.DateTimeChange, ({newDate}: { newDate: SimpleCalendar.DateData }) => {
+    simpleWeather.onCalendarDateTimeChange(newDate);
   });
 
-  simpleWeather.onReady();
+  simpleWeather.onCalendarReady();
 });
+
 
 // make sure we have a compatible version of simple-calendar installed
 function checkDependencies() {

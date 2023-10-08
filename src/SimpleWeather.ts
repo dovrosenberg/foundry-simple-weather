@@ -18,7 +18,7 @@ export class SimpleWeather {
   }
 
   // call after SimpleCalendar has been loaded ('simple-calendar-ready') hook
-  public async onReady(): Promise<void> {
+  public async onCalendarReady(): Promise<void> {
     await this.initializeWeatherData();
     this.initializeWeatherApplication();
   }
@@ -65,7 +65,7 @@ export class SimpleWeather {
     }
   }
 
-  public onDateTimeChange(currentDate: SimpleCalendar.DateData) {
+  public onCalendarDateTimeChange(currentDate: SimpleCalendar.DateData) {
     this.weatherApplication.updateDateTime(currentDate);
   }
 
