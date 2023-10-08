@@ -166,30 +166,32 @@ export class WeatherApplication extends Application {
   }
 
   // // listener activators
-  // private listenToWindowExpand(html: JQuery) {
-  //   // hide the toggle for non-GM clients
-  //   if (!isClientGM()) {
-  //     const element = document.getElementById('weather-toggle');
-  //     if (element)
-  //       element.style.display = 'none';
-  //   } else {
-  //     // set the handler
-  //     html.find('#weather-toggle').on('click', event => {
-  //       event.preventDefault();
+  private listenToWindowExpand(html: JQuery) {
+    // hide the toggle for non-GM clients
+    if (!isClientGM()) {
+      const element = document.getElementById('weather-toggle');
+      if (element)
+        element.style.display = 'none';
+    } else {
+      // set the handler
+      html.find('#weather-toggle').on('click', event => {
+        event.preventDefault();
 
-  //       const element = document.getElementById('simple-weather-container');
-  //       if (element)
-  //         element.classList.toggle('showWeather');
-  //     });
-  //   }
-  // }
+        const element = document.getElementById('simple-weather-container');
+        if (element)
+          element.classList.toggle('showWeather');
+      });
+    }
+  }
+
+  // event handlers
 
   // private listenToWeatherRefreshClick(html: JQuery) {
   //   // add the handler
   //   if (isClientGM()) {
   //     html.find('#weather-regenerate').on('click', event => {
   //       event.preventDefault();
-  //       this.updateWeather(generate(this.settings, Climate.Cold, Humidity.Barren, Season.Winter, null));
+  //       this.currentWeather = generate(this.settings, Climate.Cold, Humidity.Barren, Season.Winter, null);
   //     });
   //   } 
   // }
@@ -200,14 +202,16 @@ export class WeatherApplication extends Application {
   // //   html.find(climateSelection).on('change', (event) => {
   // //     const target = event.originalEvent?.target as HTMLSelectElement;
   // //     const weatherData = this.weatherGenerator.generate(target?.value as Climates);
-  // //     this.updateWeather(weatherData);
+
+            // rerender?
   // //   });
   // // }
 
   // place the window correctly and setup the drag handler for our dialog
   private initializeWindowInteractions($: JQuery<HTMLElement>) {
-    const weatherWindow = document.getElementById('sweath-container');
+    // place the window based on last saved location
     const windowPosition = this.moduleSettings.getWindowPosition();
+    const weatherWindow = document.getElementById('sweath-container');
 
     if (!weatherWindow) return;
 
