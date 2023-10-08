@@ -1,17 +1,16 @@
-import { nextCell, startingCells, getDirection } from '@/weather/climateData';
+import { nextCell, startingCells, getDirection, weatherDescriptions } from '@/weather/climateData';
 import { createChat, getWhisperRecipients } from '@/chat/chatProxy';
 import { ModuleSettings } from '@/settings/module-settings';
 import { localize } from '@/utils/game';
-import { Climate, Humidity, WeatherData, Season } from './WeatherData';
+import { Climate, Humidity, Season } from './climateData';
+import { WeatherData } from './WeatherData';
+import { log } from '@/utils/log';
 
 const generate = function(settings: ModuleSettings, climate: Climate, humidity: Humidity, season: Season, yesterday: WeatherData | null): WeatherData {
-  const weatherData = new WeatherData();
-  weatherData.climate = climate;
-  weatherData.humidity = humidity;
-  weatherData.season = season;
+  const weatherData = new WeatherData(null, season, humidity, climate, null, null);
 
   // do the generation
-  if (!yesterday || yesterday.season !== season) {
+  if (!yesterday || yesterday.season !== season || !yesterday.hexFlowerCell) {
     // equal changes of any starting spot
     const startingSpot = Math.floor(Math.random()*startingCells[season].length);
 
@@ -30,12 +29,13 @@ const generate = function(settings: ModuleSettings, climate: Climate, humidity: 
   }
 
   // randomize the temperature (+/-2 degrees)
-  weatherData.temperature += Math.floor(Math.random()*5 - 2);
+  // TODO: setup temperatureData
+  weatherData.temperature = 99 + Math.floor(Math.random()*5 - 2);
 
   // Output to chat if enabled
-  if (settings.getOutputWeatherToChat()) {
-    output(weatherData);
-  }
+  // if (settings.getOutputWeatherToChat()) {
+  //   output(weatherData);
+  // }
 
   return weatherData;
 };
@@ -60,4 +60,4 @@ const output = function(weatherData: WeatherData) {
 
 export {
   generate,
-}
+};

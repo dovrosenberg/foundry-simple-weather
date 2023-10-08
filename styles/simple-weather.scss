@@ -307,20 +307,20 @@
   width: 250px;
 }
 
-#weather-container {
+#sweath-weather-container {
   display: flex;
   flex-direction: column;
   height: 100%;
   /*border-left: 1px solid rgba(0,0,0,.6);*/
 }
 
-#weather-container header {
+#sweath-weather-container header {
   flex: 0 0 20px;
   display: flex;
   background: #444;
 }
 
-#weather-container header #current-temperature {
+#sweath-weather-container header #sweath-current-temperature {
   font-size: 13px;
   padding: 0 8px 0 4px;
   border-right: 1px solid rgba(255, 255, 255, .4);
@@ -330,7 +330,7 @@
   white-space: nowrap;
 }
 
-#weather-container header select {
+#sweath-weather-container header select {
   background: none;
   border: none;
   border-radius: 0;
@@ -345,21 +345,21 @@
   transition: background .3s ease;
 }
 
-#weather-container header select option {
+#sweath-weather-container header select option {
   background: #444;
   color: #fff;
 }
 
-#weather-container header select:hover {
+#sweath-weather-container header select:hover {
   background: rgba(255, 255, 255, .2);
 }
 
-#weather-container header select:active,
-#weather-container header select:focus {
+#sweath-weather-container header select:active,
+#sweath-weather-container header select:focus {
   box-shadow: none;
 }
 
-#weather-container .weather-refresh {
+#sweath-weather-container .weather-refresh {
   display: flex;
   align-items: center;
   padding: 4px;
@@ -370,12 +370,12 @@
   border-left: 1px solid rgba(255, 255, 255, .4);
 }
 
-#weather-container .weather-refresh i {
+#sweath-weather-container .weather-refresh i {
   position: relative;
   top: 1px;
 }
 
-.weather-content {
+.sweath-weather-content {
   flex: 1;
   display: flex;
   align-items: center;

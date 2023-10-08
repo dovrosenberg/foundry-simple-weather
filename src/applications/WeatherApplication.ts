@@ -1,7 +1,8 @@
 import moduleJson from '@module';
 
 import { log } from '@/utils/log';
-import { Humidity, Climate, Season, WeatherData } from '@/weather/WeatherData';
+import { WeatherData } from '@/weather/WeatherData';
+import { Climate, Humidity, Season } from '@/weather/climateData';
 import { WindowPosition } from '@/window/WindowPosition';
 import { ModuleSettings } from '@/settings/module-settings';
 import { WindowDrag } from '@/window/windowDrag';
@@ -72,8 +73,8 @@ export class WeatherApplication extends Application {
       this.render();
     });
 
-    // this.listenToWindowExpand(html);
-    // this.listenToWeatherRefreshClick(html);
+    this.listenToWindowExpand(html);
+    this.listenToWeatherRefreshClick(html);
     // //this.setClimate(html);
     // //this.listenToClimateChange(html);
 
@@ -115,9 +116,11 @@ export class WeatherApplication extends Application {
     } else if (isClientGM()) {
       log(false, 'No saved weather data - Generating weather');
   
-      //this.currentWeather = generate(this.moduleSettings, Climate.Temperate, Humidity.Modest, Season.Spring, null);
+      this.currentWeather = generate(this.moduleSettings, Climate.Cold, Humidity.Modest, Season.Spring, null);
     }
 
+    debugger;
+    log(false, 'Setting weather: ' + JSON.stringify(this.currentWeather));
     this.render();
   }
 
@@ -177,7 +180,7 @@ export class WeatherApplication extends Application {
       html.find('#weather-toggle').on('click', event => {
         event.preventDefault();
 
-        const element = document.getElementById('simple-weather-container');
+        const element = document.getElementById('sweath-container');
         if (element)
           element.classList.toggle('showWeather');
       });
@@ -186,15 +189,15 @@ export class WeatherApplication extends Application {
 
   // event handlers
 
-  // private listenToWeatherRefreshClick(html: JQuery) {
-  //   // add the handler
-  //   if (isClientGM()) {
-  //     html.find('#weather-regenerate').on('click', event => {
-  //       event.preventDefault();
-  //       this.currentWeather = generate(this.settings, Climate.Cold, Humidity.Barren, Season.Winter, null);
-  //     });
-  //   } 
-  // }
+  private listenToWeatherRefreshClick(html: JQuery) {
+    // add the handler
+    if (isClientGM()) {
+      html.find('#sweath-weather-regenerate').on('click', event => {
+        event.preventDefault();
+        this.currentWeather = generate(this.moduleSettings, Climate.Cold, Humidity.Barren, Season.Winter, this.currentWeather);
+      });
+    } 
+  }
 
   // // private listenToClimateChange(html: JQuery) {
   // //   const climateSelection = '#climate-selection';
@@ -203,7 +206,7 @@ export class WeatherApplication extends Application {
   // //     const target = event.originalEvent?.target as HTMLSelectElement;
   // //     const weatherData = this.weatherGenerator.generate(target?.value as Climates);
 
-            // rerender?
+  //      // rerender?
   // //   });
   // // }
 

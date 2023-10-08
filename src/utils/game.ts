@@ -18,4 +18,4 @@ export {
   getGame,
   isClientGM,
   localize,
-}
+};

@@ -1,4 +1,21 @@
-import { Season, Humidity, Climate } from '@/weather/WeatherData';
+export enum Season {
+  Spring,
+  Summer,
+  Fall,
+  Winter
+}
+
+export enum Humidity {
+  Barren,
+  Modest,
+  Verdant
+}
+
+export enum Climate {
+  Cold,
+  Temperate,
+  Hot
+}
      
 
 // rather than specifying biomes, we take a more flexible approach (though we also define some biomes as defaults)
