@@ -92,7 +92,7 @@
 	<section id="weather">
 		<div id="weather-container">
 			<header>
-				<span id="current-temperature">24.5°C</span>
+				<span id="current-temperature">{{ currentTemperature }}</span>
 				{{#if isGM}}
 				<select id="climate-selection" title="{{localize 'sweath.weather.SelectClimate'}}">
 				<option title="{{localize 'sweath.weather.climate.description.Temperate'}}" value="temperate">{{localize 'sweath.weather.climate.Temperate'}}</option>
@@ -111,7 +111,7 @@
 			</header>
 			<div class="weather-content">
 				<div class="weather-description">
-					<p id="current-description">Placeholder Text</p>
+					<p id="current-description">{{ currentDescription }}</p>
 				</div>
 			</div>
 		</div>
