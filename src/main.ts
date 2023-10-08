@@ -38,7 +38,6 @@ Hooks.once(SimpleCalendar.Hooks.Ready, () => {
   simpleWeather.onCalendarReady();
 });
 
-
 // make sure we have a compatible version of simple-calendar installed
 function checkDependencies() {
   const minimumVersion = '2.4.0';

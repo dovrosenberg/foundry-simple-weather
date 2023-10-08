@@ -12,7 +12,7 @@ export class WeatherApplication extends Application {
   private windowDragHandler: WindowDrag;
   private moduleSettings: ModuleSettings;
   private renderCompleteCallback: () => void;
-  private currentDate: SimpleCalendar.DateData;
+  private currentWeather: WeatherData;
 
   private testvalue = 0;
 
@@ -43,10 +43,12 @@ export class WeatherApplication extends Application {
     const data = {
       ...(await super.getData()),
       isGM: isClientGM(),
-      displayDate: this.currentDate?.display ? this.currentDate.display.date : 'here',
-      formattedDate: this.currentDate ? this.currentDate.day + '/' + this.currentDate.month + '/' + this.currentDate.year : 'here2',
-      formattedTime: this.currentDate?.display ? this.currentDate.display.time : 'here3',
-      weekday: this.currentDate ? this.currentDate.weekdays[this.currentDate.dayOfTheWeek] : 'here4',
+      displayDate: this.currentWeather?.date?.display ? this.currentWeather.date.display.date : 'here',
+      formattedDate: this.currentWeather?.date ? this.currentWeather.date.day + '/' + this.currentWeather.date.month + '/' + this.currentWeather.date.year : 'here2',
+      formattedTime: this.currentWeather?.date?.display ? this.currentWeather.date.display.time : 'here3',
+      weekday: this.currentWeather?.date ? this.currentWeather.date.weekdays[this.currentWeather.date.dayOfTheWeek] : 'here4',
+      currentTemperature: this.currentWeather? this.currentWeather.getTemperature(this.moduleSettings.getUseCelsius()) : '',
+      currentDescription: this.currentWeather ? this.currentWeather.getDescription() : '',
     };
 
     return data;
@@ -60,18 +62,13 @@ export class WeatherApplication extends Application {
     this.initializeWindowInteractions(html);
 
     const dateFormatToggle = '#date-display';
-    // const startStopClock = '#start-stop-clock';
-
+    
     // toggle date format when the date is clicked
     html.find(dateFormatToggle).on('mousedown', event => {
       event.currentTarget.classList.toggle('altFormat');
       this.testvalue++;
       this.render();
     });
-
-    // html.find(startStopClock).on('mousedown', event => {
-    //   this.onMouseDownStartStopClock(event);
-    // });
 
     // this.listenToWindowExpand(html);
     // this.listenToWeatherRefreshClick(html);
@@ -86,23 +83,9 @@ export class WeatherApplication extends Application {
     super.activateListeners(html);
   }
 
-  // refreshes the weather shown in the weather dialog
-  // public updateWeather(weatherData: WeatherData) {
-  //   this.assignElement('current-temperature', weatherData.getTemperature(this.settings.getUseCelsius()));
-  //   this.assignElement('current-description', weatherData.getDescription());
-  // }
-
-  // private assignElement(elementId: string, value: string) {
-  //   const element = document.getElementById(elementId);
-  //   if (element !== null)
-  //     element.innerHTML  = value;
-  // }
-
   // updates the current date/time showing in the weather dialog
   // generates new weather if the date has changed
   public updateDateTime(currentDate: SimpleCalendar.DateData) {
-    // //let newWeatherData = this.mergePreviousDateTimeWithNewOne(currentDate);
-
     if (this.hasDateChanged(currentDate)) {
       log(false, 'DateTime has changed');
 
@@ -112,23 +95,14 @@ export class WeatherApplication extends Application {
       }
     }
 
-    if (isClientGM()) {
-      //this.weatherGenerator.setWeatherData(newWeatherData);
-    }
-
-    if (this.moduleSettings.getDialogDisplay() || isClientGM()) {
-      log(false, 'Update weather display');
-      //this.updateWeatherDisplay(currentDate);
-    }
-
     // always update because the time has likely changed even if the date didn't
-    this.currentDate = currentDate;
+    this.currentWeather.date = currentDate;
     this.render();
   }
 
   // has the date part changed
   private hasDateChanged(currentDate: SimpleCalendar.DateData): boolean {
-    const previous = this.currentDate;
+    const previous = this.currentWeather.date;
 
     if ((!previous && currentDate) || (previous && !currentDate))
       return true;
@@ -156,8 +130,6 @@ export class WeatherApplication extends Application {
   private isDefined(value: unknown) {
     return value !== undefined && value !== null;
   }
-
-
 
   // resets the window's position to the default
   public resetPosition() {
@@ -211,25 +183,8 @@ export class WeatherApplication extends Application {
   // //   });
   // // }
 
-  // event handlers
-  // private onMouseDownStartStopClock(event) {
-  //   event.preventDefault();
-  //   event = event || window.event;
-
-  //   if (SimpleCalendar.api.isPrimaryGM()) {
-  //     if (SimpleCalendar.api.clockStatus().started) {
-  //       log(false,'Stopping clock');
-  //       SimpleCalendar.api.stopClock();
-  //     } else {
-  //       log(false,'Starting clock');
-  //       SimpleCalendar.api.startClock();
-  //     }
-  //   }
-  // }
-
   // place the window correctly and setup the drag handler for our dialog
   private initializeWindowInteractions($: JQuery<HTMLElement>) {
-    const calendarMoveHandle = document.getElementById('sweath-window-move-handle');
     const weatherWindow = document.getElementById('sweath-container');
     const windowPosition = this.moduleSettings.getWindowPosition();
 
@@ -238,6 +193,7 @@ export class WeatherApplication extends Application {
     weatherWindow.style.top = windowPosition.top + 'px';
     weatherWindow.style.left = windowPosition.left + 'px';
 
+    // listen for drag events
     this.windowDragHandler = new WindowDrag();
     $.find('#sweath-window-move-handle').on('mousedown', () => {
       this.windowDragHandler.start(weatherWindow, (windowPos: WindowPosition) => {
