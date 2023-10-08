@@ -14,6 +14,7 @@ export class WeatherApplication extends Application {
   private moduleSettings: ModuleSettings;
   private renderCompleteCallback: () => void;
   private currentWeather: WeatherData;
+  private weatherPanelOpen: boolean;
 
   private testvalue = 0;
 
@@ -24,6 +25,7 @@ export class WeatherApplication extends Application {
 
     this.moduleSettings = moduleSettings;
     this.renderCompleteCallback = renderCompleteCallback;
+    this.weatherPanelOpen = false;
 
     log(false, 'WeatherApplication construction');
 
@@ -43,6 +45,7 @@ export class WeatherApplication extends Application {
 
   // this provides fields that will be available in the template
   public async getData(): Promise<any> {
+    console.log('x');
     const data = {
       ...(await super.getData()),
       isGM: isClientGM(),
@@ -50,10 +53,14 @@ export class WeatherApplication extends Application {
       formattedDate: this.currentWeather?.date ? this.currentWeather.date.day + '/' + this.currentWeather.date.month + '/' + this.currentWeather.date.year : 'here2',
       formattedTime: this.currentWeather?.date?.display ? this.currentWeather.date.display.time : 'here3',
       weekday: this.currentWeather?.date ? this.currentWeather.date.weekdays[this.currentWeather.date.dayOfTheWeek] : 'here4',
-      currentTemperature: this.currentWeather? this.currentWeather.getTemperature(this.moduleSettings.getUseCelsius()) : '',
+      currentTemperature: this.currentWeather ? this.currentWeather.getTemperature(this.moduleSettings.getUseCelsius()) : '',
       currentDescription: this.currentWeather ? this.currentWeather.getDescription() : '',
+      weatherPanelOpen: this.weatherPanelOpen,
     };
 
+    console.log('y');
+    console.log(this.currentWeather.getDescription());
+    console.log(JSON.stringify(data));
     return data;
   }
 
@@ -119,7 +126,6 @@ export class WeatherApplication extends Application {
       this.currentWeather = generate(this.moduleSettings, Climate.Cold, Humidity.Modest, Season.Spring, null);
     }
 
-    debugger;
     log(false, 'Setting weather: ' + JSON.stringify(this.currentWeather));
     this.render();
   }
@@ -132,9 +138,9 @@ export class WeatherApplication extends Application {
       return true;
 
     if (this.isDateTimeValid(currentDate)) {
-      if (currentDate.day !== previous.day
-        || currentDate.month !== previous.month
-        || currentDate.year !== previous.year) {
+      if (currentDate.day !== (previous as SimpleCalendar.DateData).day
+        || currentDate.month !== (previous as SimpleCalendar.DateData).month
+        || currentDate.year !== (previous as SimpleCalendar.DateData).year) {
         return true;
       }
     }
@@ -180,6 +186,10 @@ export class WeatherApplication extends Application {
       html.find('#weather-toggle').on('click', event => {
         event.preventDefault();
 
+        // we store the state so it's remembered when we rerender, but we also just
+        //    update the DOM for performance reasons (vs. forcing a re-render just for this)
+        this.weatherPanelOpen = !this.weatherPanelOpen;
+
         const element = document.getElementById('sweath-container');
         if (element)
           element.classList.toggle('showWeather');
@@ -195,6 +205,8 @@ export class WeatherApplication extends Application {
       html.find('#sweath-weather-regenerate').on('click', event => {
         event.preventDefault();
         this.currentWeather = generate(this.moduleSettings, Climate.Cold, Humidity.Barren, Season.Winter, this.currentWeather);
+
+        this.render();
       });
     } 
   }

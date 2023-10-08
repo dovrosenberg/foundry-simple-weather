@@ -16,7 +16,7 @@ let simpleWeather: SimpleWeather;
 
 // note: for the logs to actually work, you have to activate it in the UI under the config for the developer mode module
 Hooks.once('devModeReady', ({ registerPackageDebugFlag: registerPackageDebugFlag }: DevModeApi) => {
-  registerPackageDebugFlag('simple-weather', 'boolean', { default: true });
+  registerPackageDebugFlag('simple-weather', 'boolean');
 });
 
 Hooks.once('ready', () => {

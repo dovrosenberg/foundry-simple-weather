@@ -1,4 +1,4 @@
-import { nextCell, startingCells, getDirection, weatherDescriptions } from '@/weather/climateData';
+import { nextCell, startingCells, getDirection, weatherDescriptions, weatherTemperatures } from '@/weather/climateData';
 import { createChat, getWhisperRecipients } from '@/chat/chatProxy';
 import { ModuleSettings } from '@/settings/module-settings';
 import { localize } from '@/utils/game';
@@ -28,9 +28,12 @@ const generate = function(settings: ModuleSettings, climate: Climate, humidity: 
     }
   }
 
-  // randomize the temperature (+/-2 degrees)
-  // TODO: setup temperatureData
-  weatherData.temperature = 99 + Math.floor(Math.random()*5 - 2);
+  // randomize the temperature (+/- # degrees)
+  weatherData.temperature = weatherTemperatures[climate][humidity][weatherData.hexFlowerCell];
+
+  // margin of error is 4%, but always at least 2 degrees
+  const plusMinus = Math.ceil(Math.max(2, .04*weatherData.temperature));
+  weatherData.temperature += Math.floor(Math.random()*(2*plusMinus +1) - plusMinus);
 
   // Output to chat if enabled
   // if (settings.getOutputWeatherToChat()) {
