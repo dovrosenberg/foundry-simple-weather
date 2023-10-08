@@ -25,6 +25,8 @@ export class WeatherApplication extends Application {
     this.renderCompleteCallback = renderCompleteCallback;
 
     log(false, 'WeatherApplication construction');
+
+    this.loadInitialWeather();
     this.render(true);
   }
 
@@ -97,6 +99,25 @@ export class WeatherApplication extends Application {
 
     // always update because the time has likely changed even if the date didn't
     this.currentWeather.date = currentDate;
+    this.render();
+  }
+
+  // called from outside, to load the last weather from the settings
+  public loadInitialWeather(): void {
+    const weatherData = this.moduleSettings.getLastWeatherData();
+
+    log(false, 'loaded weatherData:' + JSON.stringify(weatherData));
+
+    if (weatherData) {
+      log(false, 'Using saved weather data');
+
+      this.currentWeather = weatherData;
+    } else if (isClientGM()) {
+      log(false, 'No saved weather data - Generating weather');
+  
+      //this.currentWeather = generate(this.moduleSettings, Climate.Temperate, Humidity.Modest, Season.Spring, null);
+    }
+
     this.render();
   }
 
