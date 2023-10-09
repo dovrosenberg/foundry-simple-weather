@@ -136,6 +136,8 @@ export class WeatherApplication extends Application {
 
     if ((!previous && currentDate) || (previous && !currentDate))
       return true;
+    if (!previous && !currentDate) 
+      return false;
 
     if (this.isDateTimeValid(currentDate)) {
       if (currentDate.day !== (previous as SimpleCalendar.DateData).day

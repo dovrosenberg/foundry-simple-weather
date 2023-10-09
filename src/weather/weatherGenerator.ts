@@ -4,7 +4,6 @@ import { ModuleSettings } from '@/settings/module-settings';
 import { localize } from '@/utils/game';
 import { Climate, Humidity, Season } from './climateData';
 import { WeatherData } from './WeatherData';
-import { log } from '@/utils/log';
 
 const generate = function(settings: ModuleSettings, climate: Climate, humidity: Humidity, season: Season, yesterday: WeatherData | null): WeatherData {
   const weatherData = new WeatherData(null, season, humidity, climate, null, null);
@@ -29,11 +28,11 @@ const generate = function(settings: ModuleSettings, climate: Climate, humidity: 
   }
 
   // randomize the temperature (+/- # degrees)
+  // margin of error is 4% of temperature, but always at least 2 degrees
   weatherData.temperature = weatherTemperatures[climate][humidity][weatherData.hexFlowerCell];
 
-  // margin of error is 4%, but always at least 2 degrees
-  const plusMinus = Math.ceil(Math.max(2, .04*weatherData.temperature));
-  weatherData.temperature += Math.floor(Math.random()*(2*plusMinus +1) - plusMinus);
+  const plusMinus = Math.max(2, Math.ceil(.04*weatherData.temperature));
+  weatherData.temperature += Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
 
   // Output to chat if enabled
   if (settings.getOutputWeatherToChat()) {

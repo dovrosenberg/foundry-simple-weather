@@ -31,8 +31,8 @@ Hooks.once('ready', () => {
 Hooks.once(SimpleCalendar.Hooks.Ready, () => {
   log(false, 'simple-calendar-ready');
 
-  Hooks.on(SimpleCalendar.Hooks.DateTimeChange, ({newDate}: { newDate: SimpleCalendar.DateData }) => {
-    simpleWeather.onCalendarDateTimeChange(newDate);
+  Hooks.on(SimpleCalendar.Hooks.DateTimeChange, ({date}: { date: SimpleCalendar.DateData }) => {
+    simpleWeather.onCalendarDateTimeChange(date);
   });
 
   simpleWeather.onCalendarReady();
