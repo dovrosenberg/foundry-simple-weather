@@ -68,7 +68,8 @@ export class WeatherApplication extends Application {
   }
 
   // called by the parent class to attach event handlers after window is rendered
-  // note that saved weather has been reloaded by the time this is called
+  // note that saved weather has been reloaded by the time this is called when we're initializing
+  // this is called on every render!  One-time functionality should be put in ????? 
   public async activateListeners(html: JQuery<HTMLElement>) {
     if (this.renderCompleteCallback) {
       await this.updateDateTime(this.renderCompleteCallback());   // this is really for the very 1st load; after that this date should match what was saved in settings
@@ -82,7 +83,7 @@ export class WeatherApplication extends Application {
       event.currentTarget.classList.toggle('altFormat');
     });
 
-    this.listenToWindowExpand(html);
+    this.listenToWeatherToggle(html);
     this.listenToWeatherRefreshClick(html);
     // //this.setClimate(html);
     // //this.listenToClimateChange(html);
@@ -176,7 +177,9 @@ export class WeatherApplication extends Application {
 
   // resets the window's position to the default
   public resetPosition() {
+    log(false, 'Resetting position');
     const defaultPosition = { top: 100, left: 100 };
+    
     const element = document.getElementById('sweath-container');
     if (element) {
       log(false,'Resetting Window Position');
@@ -188,7 +191,7 @@ export class WeatherApplication extends Application {
   }
 
   // // listener activators
-  private listenToWindowExpand(html: JQuery) {
+  private listenToWeatherToggle(html: JQuery) {
     // hide the toggle for non-GM clients
     if (!isClientGM()) {
       const element = document.getElementById('weather-toggle');
@@ -242,6 +245,8 @@ export class WeatherApplication extends Application {
     const weatherWindow = document.getElementById('sweath-container');
 
     if (!weatherWindow) return;
+
+    log(false, 'Initializing position');
 
     weatherWindow.style.top = windowPosition.top + 'px';
     weatherWindow.style.left = windowPosition.left + 'px';
