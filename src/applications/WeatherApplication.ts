@@ -12,7 +12,7 @@ import { generate } from '@/weather/weatherGenerator';
 export class WeatherApplication extends Application {
   private windowDragHandler: WindowDrag;
   private moduleSettings: ModuleSettings;
-  private renderCompleteCallback: () => void;
+  private renderCompleteCallback: (() => SimpleCalendar.DateData | null) | null;
   private currentWeather: WeatherData;
   private weatherPanelOpen: boolean;
 
@@ -20,7 +20,8 @@ export class WeatherApplication extends Application {
 
   // renderCompleteCallback will be called when listeners are activated, so can contain
   //    any logic that needs to be activated at that point
-  constructor(moduleSettings: ModuleSettings, renderCompleteCallback: () => void) {
+  // it must return the current date from the calendar
+  constructor(moduleSettings: ModuleSettings, renderCompleteCallback: (() => SimpleCalendar.DateData | null) | null) {
     super();
 
     this.moduleSettings = moduleSettings;
@@ -30,29 +31,31 @@ export class WeatherApplication extends Application {
     log(false, 'WeatherApplication construction');
 
     this.loadInitialWeather();
+    console.log('constructor currentweather: ' +JSON.stringify(this.currentWeather));
     this.render(true);
   }
 
+  // window options; called by parent class
   static get defaultOptions() {
     const options = super.defaultOptions;
     
     options.template = `modules/${moduleJson.id}/templates/weather-dialog.html`;
-    options.popOut = false;
-    options.resizable = false;
+    options.popOut = false;  // self-contained window without the extra wrapper
+    options.resizable = false;  // window is fixed size
 
     return options;
   }
 
-  // this provides fields that will be available in the template
+  // this provides fields that will be available in the template; called by parent class
   public async getData(): Promise<any> {
     console.log('x');
     const data = {
       ...(await super.getData()),
       isGM: isClientGM(),
-      displayDate: this.currentWeather?.date?.display ? this.currentWeather.date.display.date : 'here',
-      formattedDate: this.currentWeather?.date ? this.currentWeather.date.day + '/' + this.currentWeather.date.month + '/' + this.currentWeather.date.year : 'here2',
-      formattedTime: this.currentWeather?.date?.display ? this.currentWeather.date.display.time : 'here3',
-      weekday: this.currentWeather?.date ? this.currentWeather.date.weekdays[this.currentWeather.date.dayOfTheWeek] : 'here4',
+      displayDate: this.currentWeather?.date?.display ? this.currentWeather.date.display.date : '',
+      formattedDate: this.currentWeather?.date ? this.currentWeather.date.day + '/' + this.currentWeather.date.month + '/' + this.currentWeather.date.year : '',
+      formattedTime: this.currentWeather?.date?.display ? this.currentWeather.date.display.time : '',
+      weekday: this.currentWeather?.date ? this.currentWeather.date.weekdays[this.currentWeather.date.dayOfTheWeek] : '',
       currentTemperature: this.currentWeather ? this.currentWeather.getTemperature(this.moduleSettings.getUseCelsius()) : '',
       currentDescription: this.currentWeather ? this.currentWeather.getDescription() : '',
       weatherPanelOpen: this.weatherPanelOpen,
@@ -64,20 +67,19 @@ export class WeatherApplication extends Application {
     return data;
   }
 
-  // called by the parent class to attach event handlers
-  public activateListeners(html: JQuery<HTMLElement>) {
-    this.renderCompleteCallback();
+  // called by the parent class to attach event handlers after window is rendered
+  // note that saved weather has been reloaded by the time this is called
+  public async activateListeners(html: JQuery<HTMLElement>) {
+    if (this.renderCompleteCallback) {
+      await this.updateDateTime(this.renderCompleteCallback());   // this is really for the very 1st load; after that this date should match what was saved in settings
+    }
 
-    // get window in right place
+    // get window in right place and setup drag and drop
     this.initializeWindowInteractions(html);
 
-    const dateFormatToggle = '#date-display';
-    
     // toggle date format when the date is clicked
-    html.find(dateFormatToggle).on('mousedown', event => {
+    html.find('#date-display').on('mousedown', event => {
       event.currentTarget.classList.toggle('altFormat');
-      this.testvalue++;
-      this.render();
     });
 
     this.listenToWindowExpand(html);
@@ -95,18 +97,26 @@ export class WeatherApplication extends Application {
 
   // updates the current date/time showing in the weather dialog
   // generates new weather if the date has changed
-  public updateDateTime(currentDate: SimpleCalendar.DateData) {
+  public async updateDateTime(currentDate: SimpleCalendar.DateData | null) {
+    if (!currentDate)
+      return;
+
     if (this.hasDateChanged(currentDate)) {
       log(false, 'DateTime has changed');
 
       if (isClientGM()) {
         log(false, 'Generate new weather');
         //newWeatherData = this.weatherGenerator.generate();
+
+        // we only save if we have a new date/weather because the time will get refreshed when we load anyway
+        this.currentWeather.date = currentDate;
+        await this.moduleSettings.setLastWeatherData(this.currentWeather);    
       }
+    } else {
+      // always update because the time has likely changed even if the date didn't
+      this.currentWeather.date = currentDate;
     }
 
-    // always update because the time has likely changed even if the date didn't
-    this.currentWeather.date = currentDate;
     this.render();
   }
 
@@ -141,13 +151,14 @@ export class WeatherApplication extends Application {
 
     if (this.isDateTimeValid(currentDate)) {
       if (currentDate.day !== (previous as SimpleCalendar.DateData).day
-        || currentDate.month !== (previous as SimpleCalendar.DateData).month
-        || currentDate.year !== (previous as SimpleCalendar.DateData).year) {
+          || currentDate.month !== (previous as SimpleCalendar.DateData).month
+          || currentDate.year !== (previous as SimpleCalendar.DateData).year) {
         return true;
       }
-    }
-
-    return true;
+    } 
+    
+    // if either matches or it's invalid (so we don't want to go around updating things)
+    return false;
   }
 
   private isDateTimeValid(date: SimpleCalendar.DateData): boolean {

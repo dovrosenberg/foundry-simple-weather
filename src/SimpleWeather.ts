@@ -19,9 +19,14 @@ export class SimpleWeather {
 
   // call after SimpleCalendar has been loaded ('simple-calendar-ready') hook
   public async onCalendarReady(): Promise<void> {
-    this.initializeWeatherApplication();
+    if (this.moduleSettings.getDialogDisplay() || isClientGM()) {
+      this.weatherApplication = new WeatherApplication(this.moduleSettings, (): SimpleCalendar.DateData | null => {
+        return SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp());
+      });
+    }
   }
 
+  // note: the actual update is async, so this handler isn't guaranteed to have actually recorded any changes when it returns
   public onCalendarDateTimeChange(currentDate: SimpleCalendar.DateData) {
     this.weatherApplication.updateDateTime(currentDate);
   }
@@ -32,14 +37,4 @@ export class SimpleWeather {
   //   }
   // }
 
-  private initializeWeatherApplication() {
-    if (this.moduleSettings.getDialogDisplay() || isClientGM()) {
-      this.weatherApplication = new WeatherApplication(
-        this.moduleSettings,
-        () => {
-          // this will be called when the application is done with the initial render
-          log(false, 'RENDER COMPLETE!');
-        });
-    }
-  }
 }

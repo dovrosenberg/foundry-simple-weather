@@ -29,7 +29,7 @@ export class ModuleSettings {
     return windowPosition;
   }
 
-  public setWindowPosition(position: WindowPosition) {
+  public async setWindowPosition(position: WindowPosition) {
     this.set(SettingKeys.windowPosition, position);
   }
 
@@ -45,12 +45,17 @@ export class ModuleSettings {
     return this.get(SettingKeys.useCelsius) as any;
   }
 
-  public getLastWeatherData(): WeatherData {
-    return this.get(SettingKeys.lastWeatherData) as WeatherData;
+  public getLastWeatherData(): WeatherData | null{
+    const loaded = this.get(SettingKeys.lastWeatherData) as WeatherData;  // not really WeatherData - need to attach functions
+
+    if (loaded) 
+      return new WeatherData(loaded.date, loaded.season, loaded.humidity, loaded.climate, loaded.hexFlowerCell, loaded.temperature);
+    else 
+      return null;
   }
 
-  public setLastWeatherData(weatherData: WeatherData) {
-    this.set(SettingKeys.lastWeatherData, weatherData);
+  public async setLastWeatherData(weatherData: WeatherData) {
+    await this.set(SettingKeys.lastWeatherData, weatherData);
   }
 
   private register(settingKey: string, settingConfig: ClientSettings.PartialSettingConfig) {
@@ -61,7 +66,7 @@ export class ModuleSettings {
     return getGame().settings.get(moduleJson.id, settingKey);
   }
 
-  private set(settingKey: SettingKeys, value: any): Promise<any> {
+  private async set(settingKey: SettingKeys, value: any): Promise<any> {
     return getGame().settings.set(moduleJson.id, settingKey, value);
   }
 
