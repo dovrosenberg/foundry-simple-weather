@@ -317,6 +317,8 @@
 #sweath-weather-container header {
   flex: 0 0 20px;
   display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
   background: #444;
 }
 
@@ -330,11 +332,16 @@
   white-space: nowrap;
 }
 
+#sweath-weather-container header div {
+  display:flex;
+}
+
 #sweath-weather-container header select {
   background: none;
   border: none;
   border-radius: 0;
   height: 20px;
+  width:100%;
   font-size: 13px;
   font-family: Signika, sans-serif;
   flex: 1;
@@ -418,4 +425,9 @@
 
 .calendar-form-export-import {
   display: flex;
+}
+
+#sweath-container .row-break {
+  flex-basis: 100%;
+  height: 0;
 }
