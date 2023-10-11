@@ -2,7 +2,7 @@ import moduleJson from '@module';
 
 import { log } from '@/utils/log';
 import { WeatherData } from '@/weather/WeatherData';
-import { biomeSelections, Climate, Humidity, initializeLocalizedText, Season } from '@/weather/climateData';
+import { seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season } from '@/weather/climateData';
 import { WindowPosition } from '@/window/WindowPosition';
 import { ModuleSettings } from '@/settings/module-settings';
 import { WindowDrag } from '@/window/windowDrag';
@@ -58,6 +58,9 @@ export class WeatherApplication extends Application {
       currentDescription: this.currentWeather ? this.currentWeather.getDescription() : '',
       weatherPanelOpen: this.weatherPanelOpen,
       biomeSelections: biomeSelections,
+      seasonSelections: seasonSelections,
+      humiditySelections: humiditySelections,
+      climateSelections: climateSelections,
     };
 
     console.log(JSON.stringify(biomeSelections));

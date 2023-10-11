@@ -22,14 +22,17 @@ export enum Climate {
 
 // these are used to create the drop downs; the first value in each
 //    subarray is the value, the second the description
-let biomeSelections: { value: string, text: string}[];
-let climateSelections: { value: number, text: string}[];
-let humiditySelections: { value: number, text: string}[];
+type SelectOption = { value: string, text: string};
+
+let biomeSelections: SelectOption[];
+let climateSelections: SelectOption[];
+let humiditySelections: SelectOption[];
+let seasonSelections: SelectOption[];
 
 // call to set everything up after the game has loaded
 export function initializeLocalizedText(): void {
   log(false, 'Loading localized climate text');
-  
+
   biomeSelections = [
     { value: 'tundra', text: localize('sweath.weather.biome.tundra') },
     { value: 'alpine', text: localize('sweath.weather.biome.alpine') },
@@ -43,15 +46,22 @@ export function initializeLocalizedText(): void {
   ];
 
   climateSelections= [
-    { value: Climate.Cold, text: localize('sweath.weather.climate.cold') },
-    { value: Climate.Temperate, text: localize('sweath.weather.climate.temperate') },
-    { value: Climate.Hot, text: localize('sweath.weather.climate.hot') },
+    { value: String(Climate.Cold), text: localize('sweath.weather.climate.cold') },
+    { value: String(Climate.Temperate), text: localize('sweath.weather.climate.temperate') },
+    { value: String(Climate.Hot), text: localize('sweath.weather.climate.hot') },
   ];
 
   humiditySelections = [
-    { value: Humidity.Barren, text: localize('sweath.weather.humidity.barren') },
-    { value: Humidity.Modest, text: localize('sweath.weather.humidity.modest') },
-    { value: Humidity.Verdant, text: localize('sweath.weather.humidity.verdant') },
+    { value: String(Humidity.Barren), text: localize('sweath.weather.humidity.barren') },
+    { value: String(Humidity.Modest), text: localize('sweath.weather.humidity.modest') },
+    { value: String(Humidity.Verdant), text: localize('sweath.weather.humidity.verdant') },
+  ];
+
+  seasonSelections = [
+    { value: String(Season.Summer), text: localize('sweath.season.summer') },
+    { value: String(Season.Fall), text: localize('sweath.season.fall') },
+    { value: String(Season.Winter), text: localize('sweath.season.winter') },
+    { value: String(Season.Spring), text: localize('sweath.season.spring') },
   ];
 }
 
@@ -59,6 +69,7 @@ export {
   humiditySelections,
   climateSelections,
   biomeSelections,
+  seasonSelections,
 }
 
 // these map the biomes to their climate/humidity

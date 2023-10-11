@@ -1,15 +1,18 @@
 <div id="sweath-container" {{#if weatherPanelOpen}}class="showWeather"{{/if}}>
-	<section id="calendar">
+	<div id="calendar-box">
 
 		<!-- header -->
-		<header class="calendar-header">
-			<div class="header-navigation">
-			</div>
-
+		<header>
 			<!-- day name -->
-			<h1 id="sweath-window-move-handle">
-				<span id="weekday">{{ weekday }}</span>
-			</h1>
+			<div id="sweath-window-move-handle">
+				<div>
+					<select id="season-selection" title="{{localize 'sweath.weather.SelectSeason'}}">
+						{{#each seasonSelections}}
+							<option title="{{text}}" value="{{value}}">{{text}}</option>
+						{{/each}}
+					</select>
+				</div>
+			</div>
 
 			<div class="header-navigation">
 				<div id="season-indicator">
@@ -21,25 +24,25 @@
 			</div>
 		</header>
 
-		<!-- content -->
-		<div class="content">
+		<!-- date side -->
+		<div class="date-box">
 
 			<!-- date display -->
-			<section id="date-display" title="{{localize 'sweath.calendar.ClickToToggle'}}">
+			<div id="date-display" title="{{localize 'sweath.calendar.ClickToToggle'}}">
 				<h2>
-					{{ testvalue }}
+					<span id="weekday">{{ weekday }}, </span>
 					<span id="date-num">{{ formattedDate }}</span>
 					<span id="date">{{ displayDate }}</span>
 					<span id="moon"></span>
 				</h2>
-			</section>
+			</div>
 
 			<!-- multiple moon display -->
-			<section id="moon-list">
-			</section>
+			<div id="moon-list">
+			</div>
 
 			<!-- clock display -->
-			<section class="clock">
+			<div class="clock">
 				<div id="start-stop-clock" class="time-display"  title="{{localize 'sweath.time.StartStopPseudo'}}">
 					{{#if isGM}}
 					<div id="clock-run-indicator" title="{{localize 'ClockRunning'}}">
@@ -71,7 +74,7 @@
 					{{/if}}
 					-->
 				</div>
-			</section>
+			</div>
 		</div>
 
 		<!-- footer -->
@@ -89,9 +92,9 @@
 		</footer>
 		{{/if}}
 		-->
-	</section>
+	</div>
 
-	<section id="weather">
+	<div id="weather-box">
 		<div id="sweath-weather-container">
 			<header>
 				<div>
@@ -111,16 +114,16 @@
 					<div class="row-break"></div>
 					<div style="flex:0 0 50%">
 						<select id="climate-selection" title="{{localize 'sweath.weather.SelectClimate'}}">
-							<option title="{{localize 'sweath.weather.climate.cold'}}" value="cold">{{localize 'sweath.weather.climate.cold'}}</option>
-							<option title="{{localize 'sweath.weather.climate.temperate'}}" value="temperate">{{localize 'sweath.weather.climate.temperate'}}</option>
-							<option title="{{localize 'sweath.weather.climate.hot'}}" value="hot">{{localize 'sweath.weather.climate.hot'}}</option>
+							{{#each seasonSelections}}
+								<option title="{{text}}" value="{{value}}">{{text}}</option>
+							{{/each}}
 						</select>
 					</div>
 					<div style="flex: 0 0 50%">
 						<select id="humidity-selection" title="{{localize 'sweath.weather.SelectHumidity'}}">
-							<option title="{{localize 'sweath.weather.humidity.barren'}}" value="barren">{{localize 'sweath.weather.humidity.barren'}}</option>
-							<option title="{{localize 'sweath.weather.humidity.modest'}}" value="modest">{{localize 'sweath.weather.humidity.modest'}}</option>
-							<option title="{{localize 'sweath.weather.humidity.verdant'}}" value="verdant">{{localize 'sweath.weather.humidity.verdant'}}</option>
+							{{#each humiditySelections}}
+								<option title="{{text}}" value="{{value}}">{{text}}</option>
+							{{/each}}
 						</select>
 					</div>			
 				{{/if}}
@@ -131,5 +134,5 @@
 				</div>
 			</div>
 		</div>
-	</section>
+	</div>
 </div>

@@ -10,25 +10,18 @@
   overflow: hidden;
   display: flex;
 
-  #calendar {
+  #calendar-box {
     flex: 1 0 255px;
     min-width: 255px;
   }
 
-  .calendar-header {
-    background: rgba(68, 68, 68, 1);
+  #calendar-box header {
+    background: #444;
     display: flex;
     height: 20px;
     justify-content: space-between;
     align-items: center;
     cursor: move;
-  }
-
-  .calendar-header .header-navigation {
-    display: flex;
-    padding: 3px 4px;
-    cursor: default;
-    flex: 0 0 44px;
   }
 
   .icon-btn,
@@ -65,10 +58,11 @@
     padding: 0;
     margin: 0;
     border: none;
+    display: flex;
     flex: 1;
   }
 
-  .content {
+  .date-box {
     padding: 0 1px;
   }
 
@@ -297,13 +291,13 @@
 
 /* WEATHER DISPLAY */
 
-#sweath-container #weather {
+#sweath-container #weather-box {
   width: 0;
   overflow: hidden;
   transition: width .3s ease;
 }
 
-#sweath-container.showWeather #weather {
+#sweath-container.showWeather #weather-box {
   width: 250px;
 }
 
@@ -332,11 +326,11 @@
   white-space: nowrap;
 }
 
-#sweath-weather-container header div {
+#sweath-weather-container header div, #calendar-box header div {
   display:flex;
 }
 
-#sweath-weather-container header select {
+#sweath-weather-container header select, #calendar-box header select {
   background: none;
   border: none;
   border-radius: 0;
@@ -352,7 +346,12 @@
   transition: background .3s ease;
 }
 
-#sweath-weather-container header select option {
+// we don't want the season box to fill the whole header
+#calendar-box header select {
+  flex: 1;
+}
+
+#sweath-weather-container header select option, #calendar-box header select option {
   background: #444;
   color: #fff;
 }

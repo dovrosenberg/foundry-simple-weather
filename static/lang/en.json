@@ -1,46 +1,9 @@
 {
   "sweath.calendar.ClickToToggle" : "Click to Toggle Date Format",
-  "sweath.calendar.EditCalendar": "Edit Calendar",
-  "sweath.calendar.Events": "Events",
-  "sweath.calendar.Monday": "Monday",
-  "sweath.calendar.Thursday": "Thursday",
-  "sweath.calendar.Tuesday": "Tuesday",
   "sweath.calendar.Weather": "Weather",
-  "sweath.calendar.Wednesday": "Wednesday",
-
-  "sweath.misc.AboutTimeGitlab": "Open the Gitlab page now",
-  "sweath.misc.AboutTimeMissing": "About Time is not found",
-  "sweath.misc.AboutTimeMissingHelp": "The Calendar/Weather mod requires AboutTime by Tim Posney in order to run properly.",
-  "sweath.misc.Disregard": "Disregard this message",
-  "sweath.misc.toggleControl": "Toggle the Calendar",
-
-  "sweath.seasons.AddSeason": "Add a new season",
-  "sweath.seasons.Delete" : "Delete Season",
-  "sweath.seasons.ExampleSeasons" : "ex. Autumn",
-  "sweath.seasons.color.blue": "Blue",
-  "sweath.seasons.color.green": "Green",
-  "sweath.seasons.color.orange": "Orange",
-  "sweath.seasons.color.red": "Red",
-  "sweath.seasons.color.white": "White",
-  "sweath.seasons.color.yellow": "Yellow",
-  "sweath.seasons.DrierOrWetter": "Is the season drier or wetter than average?",
-  "sweath.seasons.HotterOrColder": "Is the season hotter or colder than average?",
-  "sweath.seasons.SeasonColor": "What color do you want to display with the season?",
-  "sweath.seasons.SeasonDayStart": "What day does the season start?",
-  "sweath.seasons.SeasonHourBright": "Enter the hour it gets bright",
-  "sweath.seasons.SeasonHourDark": "Enter the hour it gets dark",
-  "sweath.seasons.SeasonIntro": "Enter the start date and weather modifiers for each season. The Color dropdown changes the color of the weather icon for a visual indication of the season. Entering an @RollTable[] into the 'Table' will disable advanced weather generation and instead, weather will be generated via the table. Note this will disable FXMaster integration.",
-  "sweath.seasons.SeasonMonthStart": "What month does the season start?",
-  "sweath.seasons.SeasonName": "Enter the season's name:",
-  "sweath.seasons.SeasonRolltable" : "OPTIONAL: Entering a @RollTable[] will disable advanced weather generation and instead, weather will be generated via the table.",
-  "sweath.seasons.Title" : "Seasons",
 
   "sweath.settings.DialogDisplay": "Calendar Display for Non-GM",
   "sweath.settings.DialogDisplayHelp": "When checked, clients without GM-level permissions will be able to see the calendar displayed",
-  "sweath.settings.NightCycleLabel": "Scene Night Cycle",
-  "sweath.settings.NightCycleLabelHelp": "When checked, the scene will undergo a night cycle, darkening during the night and getting brighter during the day.",
-  "sweath.settings.NoGlobal": "Disable Global Illumination at Night",
-  "sweath.settings.NoGlobalHelp": "When checked, once the scene reaches max darkness, it will disable the scene's Global Illumination",
   "sweath.settings.playerSeeWeather": "Can Players see weather information",
   "sweath.settings.playerSeeWeatherHelp": "When checked, players can toggle the side panel displaying weather information",
   "sweath.settings.useCelsius": "Use Celsius",
@@ -85,5 +48,10 @@
   "sweath.weather.humidity.modest": "Modest",
   "sweath.weather.humidity.verdant": "Verdant",
 
-  "sweath.notice.Acknowledge": "Got it! Don't show this again."
+  "sweath.season.fall": "Fall",
+  "sweath.season.summer": "Summer",
+  "sweath.season.spring": "Spring",
+  "sweath.season.winter": "Winter",
+
+  "sweath.weather.SelectSeason": "Select the current season"
 }
