@@ -1,5 +1,5 @@
 import { WeatherApplication } from '@/applications/WeatherApplication';
-import { ModuleSettings } from '@/settings/module-settings';
+import { ModuleSettings, SettingKeys } from '@/settings/module-settings';
 import { log } from '@/utils/log';
 import { isClientGM } from '@/utils/game';
 
@@ -19,7 +19,7 @@ export class SimpleWeather {
 
   // call after SimpleCalendar has been loaded ('simple-calendar-ready') hook
   public async onCalendarReady(): Promise<void> {
-    if (this.moduleSettings.getDialogDisplay() || isClientGM()) {
+    if (this.moduleSettings.get(SettingKeys.dialogDisplay) || isClientGM()) {
       this.weatherApplication = new WeatherApplication(this.moduleSettings, (): SimpleCalendar.DateData | null => {
         return SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp());
       });
@@ -32,7 +32,7 @@ export class SimpleWeather {
   }
 
   // public resetWindowPosition() {
-  //   if (this.moduleSettings.getDialogDisplay() || isClientGM()) {
+  //   if (this.moduleSettings.get(SettingKeys.dialogDisplay) || isClientGM()) {
   //     this.weatherApplication.resetPosition();
   //   }
   // }

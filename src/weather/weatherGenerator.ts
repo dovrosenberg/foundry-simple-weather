@@ -1,6 +1,6 @@
 import { nextCell, startingCells, getDirection, weatherDescriptions, weatherTemperatures } from '@/weather/climateData';
 import { createChat, getWhisperRecipients } from '@/chat/chatProxy';
-import { ModuleSettings } from '@/settings/module-settings';
+import { ModuleSettings, SettingKeys } from '@/settings/module-settings';
 import { localize } from '@/utils/game';
 import { Climate, Humidity, Season } from './climateData';
 import { WeatherData } from './WeatherData';
@@ -35,7 +35,7 @@ const generate = function(settings: ModuleSettings, climate: Climate, humidity: 
   weatherData.temperature += Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
 
   // Output to chat if enabled
-  if (settings.getOutputWeatherToChat()) {
+  if (settings.get(SettingKeys.outputWeatherToChat)) {
     output(settings, weatherData);
   }
 
@@ -48,7 +48,7 @@ const output = function(settings: ModuleSettings, weatherData: WeatherData) {
   messageRecipients = getWhisperRecipients('GM')[0].id || '';
 
   if (messageRecipients) {
-    const chatOut = '<b>' + weatherData.getTemperature(settings.getUseCelsius()) + '</b> - ' + weatherData.getDescription();
+    const chatOut = '<b>' + weatherData.getTemperature(settings.get(SettingKeys.useCelsius)) + '</b> - ' + weatherData.getDescription();
 
     createChat({
       speaker: {

@@ -4,7 +4,7 @@ import { log } from '@/utils/log';
 import { WeatherData } from '@/weather/WeatherData';
 import { seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season } from '@/weather/climateData';
 import { WindowPosition } from '@/window/WindowPosition';
-import { ModuleSettings } from '@/settings/module-settings';
+import { ModuleSettings, SettingKeys } from '@/settings/module-settings';
 import { WindowDrag } from '@/window/windowDrag';
 import { isClientGM } from '@/utils/game';
 import { generate } from '@/weather/weatherGenerator';
@@ -54,7 +54,7 @@ export class WeatherApplication extends Application {
       formattedDate: this.currentWeather?.date ? this.currentWeather.date.day + '/' + this.currentWeather.date.month + '/' + this.currentWeather.date.year : '',
       formattedTime: this.currentWeather?.date?.display ? this.currentWeather.date.display.time : '',
       weekday: this.currentWeather?.date ? this.currentWeather.date.weekdays[this.currentWeather.date.dayOfTheWeek] : '',
-      currentTemperature: this.currentWeather ? this.currentWeather.getTemperature(this.moduleSettings.getUseCelsius()) : '',
+      currentTemperature: this.currentWeather ? this.currentWeather.getTemperature(this.moduleSettings.get(SettingKeys.useCelsius)) : '',
       currentDescription: this.currentWeather ? this.currentWeather.getDescription() : '',
       weatherPanelOpen: this.weatherPanelOpen,
       biomeSelections: biomeSelections,
@@ -111,7 +111,7 @@ export class WeatherApplication extends Application {
 
         // we only save if we have a new date/weather because the time will get refreshed when we load anyway
         this.currentWeather.date = currentDate;
-        await this.moduleSettings.setLastWeatherData(this.currentWeather);    
+        await this.moduleSettings.set(SettingKeys.lastWeatherData, this.currentWeather);    
       }
     } else {
       // always update because the time has likely changed even if the date didn't
@@ -123,7 +123,7 @@ export class WeatherApplication extends Application {
 
   // called from outside, to load the last weather from the settings
   public loadInitialWeather(): void {
-    const weatherData = this.moduleSettings.getLastWeatherData();
+    const weatherData = this.moduleSettings.get(SettingKeys.lastWeatherData);
 
     log(false, 'loaded weatherData:' + JSON.stringify(weatherData));
 
@@ -185,7 +185,7 @@ export class WeatherApplication extends Application {
       log(false,'Resetting Window Position');
       element.style.top = defaultPosition.top + 'px';
       element.style.left = defaultPosition.left + 'px';
-      this.moduleSettings.setWindowPosition({top: element.offsetTop, left: element.offsetLeft});
+      this.moduleSettings.set(SettingKeys.windowPosition, {top: element.offsetTop, left: element.offsetLeft});
       element.style.bottom = '';
     }
   }
@@ -244,7 +244,7 @@ export class WeatherApplication extends Application {
   // place the window correctly and setup the drag handler for our dialog
   private initializeWindowInteractions($: JQuery<HTMLElement>) {
     // place the window based on last saved location
-    const windowPosition = this.moduleSettings.getWindowPosition();
+    const windowPosition = this.moduleSettings.get(SettingKeys.windowPosition);
     const weatherWindow = document.getElementById('sweath-container');
 
     if (!weatherWindow) return;
@@ -258,7 +258,7 @@ export class WeatherApplication extends Application {
     this.windowDragHandler = new WindowDrag();
     $.find('#sweath-window-move-handle').on('mousedown', () => {
       this.windowDragHandler.start(weatherWindow, (windowPos: WindowPosition) => {
-        this.moduleSettings.setWindowPosition(windowPos);
+        this.moduleSettings.set(SettingKeys.windowPosition, windowPos);
       });
     });
   }
