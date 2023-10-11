@@ -100,15 +100,9 @@
 				{{#if isGM}}
 					<div style="flex:1">
 						<select id="biome-selection" title="{{localize 'sweath.weather.SelectBiome'}}">
-							<option title="{{localize 'sweath.weather.biome.Tundra'}}" value="tundra">{{localize 'sweath.weather.biome.Tundra'}}</option>
-							<option title="{{localize 'sweath.weather.biome.Alpine'}}" value="alpine">{{localize 'sweath.weather.biome.Alpine'}}</option>
-							<option title="{{localize 'sweath.weather.biome.Taiga'}}" value="taiga">{{localize 'sweath.weather.biome.Taiga'}}</option>
-							<option title="{{localize 'sweath.weather.biome.Chapparel'}}" value="chapparel">{{localize 'sweath.weather.biome.Chapparel'}}</option>
-							<option title="{{localize 'sweath.weather.biome.Grassland'}}" value="grassland">{{localize 'sweath.weather.biome.Grassland'}}</option>
-							<option title="{{localize 'sweath.weather.biome.Forest'}}" value="forest">{{localize 'sweath.weather.biome.Forest'}}</option>
-							<option title="{{localize 'sweath.weather.biome.Desert'}}" value="desert">{{localize 'sweath.weather.biome.Desert'}}</option>
-							<option title="{{localize 'sweath.weather.biome.Savannah'}}" value="savannah">{{localize 'sweath.weather.biome.Savannah'}}</option>
-							<option title="{{localize 'sweath.weather.biome.Rainforest'}}" value="rainforest">{{localize 'sweath.weather.biome.Rainforest'}}</option>
+							{{#each biomeSelections}}
+								<option title="{{text}}" value="{{value}}">{{text}}</option>
+							{{/each}}
 						</select>
 					</div>
 					<div class="weather-refresh calendar-btn" id="sweath-weather-regenerate" title="{{localize 'sweath.weather.RegenerateWeather'}}">
@@ -117,16 +111,16 @@
 					<div class="row-break"></div>
 					<div style="flex:0 0 50%">
 						<select id="climate-selection" title="{{localize 'sweath.weather.SelectClimate'}}">
-							<option title="{{localize 'sweath.weather.climate.Cold'}}" value="cold">{{localize 'sweath.weather.climate.Cold'}}</option>
-							<option title="{{localize 'sweath.weather.climate.Temperate'}}" value="temperate">{{localize 'sweath.weather.climate.Temperate'}}</option>
-							<option title="{{localize 'sweath.weather.climate.Hot'}}" value="hot">{{localize 'sweath.weather.climate.Hot'}}</option>
+							<option title="{{localize 'sweath.weather.climate.cold'}}" value="cold">{{localize 'sweath.weather.climate.cold'}}</option>
+							<option title="{{localize 'sweath.weather.climate.temperate'}}" value="temperate">{{localize 'sweath.weather.climate.temperate'}}</option>
+							<option title="{{localize 'sweath.weather.climate.hot'}}" value="hot">{{localize 'sweath.weather.climate.hot'}}</option>
 						</select>
 					</div>
 					<div style="flex: 0 0 50%">
 						<select id="humidity-selection" title="{{localize 'sweath.weather.SelectHumidity'}}">
-							<option title="{{localize 'sweath.weather.humidity.Barren'}}" value="barren">{{localize 'sweath.weather.humidity.Barren'}}</option>
-							<option title="{{localize 'sweath.weather.humidity.Modest'}}" value="modest">{{localize 'sweath.weather.humidity.Modest'}}</option>
-							<option title="{{localize 'sweath.weather.humidity.Verdant'}}" value="verdant">{{localize 'sweath.weather.humidity.Verdant'}}</option>
+							<option title="{{localize 'sweath.weather.humidity.barren'}}" value="barren">{{localize 'sweath.weather.humidity.barren'}}</option>
+							<option title="{{localize 'sweath.weather.humidity.modest'}}" value="modest">{{localize 'sweath.weather.humidity.modest'}}</option>
+							<option title="{{localize 'sweath.weather.humidity.verdant'}}" value="verdant">{{localize 'sweath.weather.humidity.verdant'}}</option>
 						</select>
 					</div>			
 				{{/if}}

@@ -1,3 +1,6 @@
+import { localize } from '@/utils/game';
+import { log } from '@/utils/log';
+
 export enum Season {
   Spring,
   Summer,
@@ -16,7 +19,60 @@ export enum Climate {
   Temperate,
   Hot
 }
-     
+
+// these are used to create the drop downs; the first value in each
+//    subarray is the value, the second the description
+let biomeSelections: { value: string, text: string}[];
+let climateSelections: { value: number, text: string}[];
+let humiditySelections: { value: number, text: string}[];
+
+// call to set everything up after the game has loaded
+export function initializeLocalizedText(): void {
+  log(false, 'Loading localized climate text');
+  
+  biomeSelections = [
+    { value: 'tundra', text: localize('sweath.weather.biome.tundra') },
+    { value: 'alpine', text: localize('sweath.weather.biome.alpine') },
+    { value: 'taiga', text: localize('sweath.weather.biome.taiga') },
+    { value: 'chapparel', text: localize('sweath.weather.biome.chapparel') },
+    { value: 'grassland', text: localize('sweath.weather.biome.grassland') },
+    { value: 'forest', text: localize('sweath.weather.biome.forest') },
+    { value: 'desert', text: localize('sweath.weather.biome.desert') },
+    { value: 'savannah', text: localize('sweath.weather.biome.savannah') },
+    { value: 'rainforest', text: localize('sweath.weather.biome.rainforest') },
+  ];
+
+  climateSelections= [
+    { value: Climate.Cold, text: localize('sweath.weather.climate.cold') },
+    { value: Climate.Temperate, text: localize('sweath.weather.climate.temperate') },
+    { value: Climate.Hot, text: localize('sweath.weather.climate.hot') },
+  ];
+
+  humiditySelections = [
+    { value: Humidity.Barren, text: localize('sweath.weather.humidity.barren') },
+    { value: Humidity.Modest, text: localize('sweath.weather.humidity.modest') },
+    { value: Humidity.Verdant, text: localize('sweath.weather.humidity.verdant') },
+  ];
+}
+
+export { 
+  humiditySelections,
+  climateSelections,
+  biomeSelections,
+}
+
+// these map the biomes to their climate/humidity
+export const biomeMappings: Record<string, { climate: number, humidity: number }> = {
+  tundra: { climate: Climate.Cold, humidity: Humidity.Barren },
+  alpine: { climate: Climate.Cold, humidity: Humidity.Modest },
+  taiga: { climate: Climate.Cold, humidity: Humidity.Verdant },
+  chapparel: { climate: Climate.Temperate, humidity: Humidity.Barren },
+  grassland: { climate: Climate.Temperate, humidity: Humidity.Modest },
+  forest: { climate: Climate.Temperate, humidity: Humidity.Verdant },
+  desert: { climate: Climate.Hot, humidity: Humidity.Barren }, 
+  savannah: { climate: Climate.Hot, humidity: Humidity.Modest },
+  rainforest: { climate: Climate.Hot, humidity: Humidity.Verdant },
+};
 
 // rather than specifying biomes, we take a more flexible approach (though we also define some biomes as defaults)
 // this approach allows GMs to create non-earth biomes (ex. what's the weather like in the Fey realm or another plane?) and 

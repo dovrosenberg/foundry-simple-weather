@@ -5,6 +5,7 @@ import { VersionUtils } from '@/utils/versionUtils';
 import { getGame } from '@/utils/game';
 import { log } from './utils/log';
 import { SimpleWeather } from './SimpleWeather';
+import { initializeLocalizedText } from './weather/climateData';
 
 let moduleSettings: ModuleSettings;
 let simpleWeather: SimpleWeather;
@@ -24,6 +25,7 @@ Hooks.once('ready', () => {
 
   moduleSettings = new ModuleSettings();
   simpleWeather = new SimpleWeather(moduleSettings);
+  initializeLocalizedText();
 
   log(false, 'ready');
 });

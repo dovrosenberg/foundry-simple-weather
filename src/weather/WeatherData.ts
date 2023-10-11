@@ -25,7 +25,6 @@ export class WeatherData {
     if (this.temperature===null)
       return '';
 
-    console.log('temperature here');
     if (useCelsius)
       return Math.floor((this.temperature-32)*5/9) + '°C';
     else 
@@ -36,8 +35,6 @@ export class WeatherData {
     if (this.climate===null || this.humidity===null  || this.hexFlowerCell===null)
       return '';
 
-    console.log(this.climate, this.humidity, this.hexFlowerCell);
-    console.log('description: ' + weatherDescriptions[this.climate][this.humidity][this.hexFlowerCell]);
     return weatherDescriptions[this.climate][this.humidity][this.hexFlowerCell];
   };
 }

@@ -2,7 +2,7 @@ import moduleJson from '@module';
 
 import { log } from '@/utils/log';
 import { WeatherData } from '@/weather/WeatherData';
-import { Climate, Humidity, Season } from '@/weather/climateData';
+import { biomeSelections, Climate, Humidity, initializeLocalizedText, Season } from '@/weather/climateData';
 import { WindowPosition } from '@/window/WindowPosition';
 import { ModuleSettings } from '@/settings/module-settings';
 import { WindowDrag } from '@/window/windowDrag';
@@ -31,7 +31,6 @@ export class WeatherApplication extends Application {
     log(false, 'WeatherApplication construction');
 
     this.loadInitialWeather();
-    console.log('constructor currentweather: ' +JSON.stringify(this.currentWeather));
     this.render(true);
   }
 
@@ -48,7 +47,6 @@ export class WeatherApplication extends Application {
 
   // this provides fields that will be available in the template; called by parent class
   public async getData(): Promise<any> {
-    console.log('x');
     const data = {
       ...(await super.getData()),
       isGM: isClientGM(),
@@ -59,11 +57,10 @@ export class WeatherApplication extends Application {
       currentTemperature: this.currentWeather ? this.currentWeather.getTemperature(this.moduleSettings.getUseCelsius()) : '',
       currentDescription: this.currentWeather ? this.currentWeather.getDescription() : '',
       weatherPanelOpen: this.weatherPanelOpen,
+      biomeSelections: biomeSelections,
     };
 
-    console.log('y');
-    console.log(this.currentWeather.getDescription());
-    console.log(JSON.stringify(data));
+    console.log(JSON.stringify(biomeSelections));
     return data;
   }
 
@@ -86,7 +83,7 @@ export class WeatherApplication extends Application {
     this.listenToWeatherToggle(html);
     this.listenToWeatherRefreshClick(html);
     // //this.setClimate(html);
-    // //this.listenToClimateChange(html);
+    this.listenToDropdownsChange(html);
 
     // // expose a SimpleWeather global object to enable calling resetPosition
     // global.SimpleWeather = {};
@@ -227,16 +224,19 @@ export class WeatherApplication extends Application {
     } 
   }
 
-  // // private listenToClimateChange(html: JQuery) {
-  // //   const climateSelection = '#climate-selection';
+  private listenToDropdownsChange(html: JQuery) {
+    // const climateSelection = ;
+    // const biomeSelection = '#biome-selection';
+    // const humiditySelection = '#humidity-selection';
 
-  // //   html.find(climateSelection).on('change', (event) => {
-  // //     const target = event.originalEvent?.target as HTMLSelectElement;
-  // //     const weatherData = this.weatherGenerator.generate(target?.value as Climates);
+    // // NOTE!  The values of the items in the drop-downs must match the enum values
+    // html.find('#climate-selection').on('change', (event) => {
+    //   const target = event.originalEvent?.target as HTMLSelectElement;
+    //   const weatherData = this.weatherGenerator.generate(target?.value as Climates);
 
-  //      // rerender?
-  // //   });
-  // // }
+    //    rerender?
+    // });
+  }
 
   // place the window correctly and setup the drag handler for our dialog
   private initializeWindowInteractions($: JQuery<HTMLElement>) {
