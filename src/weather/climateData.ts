@@ -161,12 +161,14 @@ moveProbabilities[Season.Summer] = {
   [Direction.NW]: 0.155,
 };
 
+// determine the direction we will (attempt to) move
 export const getDirection = (season: Season): Direction => {
   const rand = Math.random();
 
   // note: this relies on the specific values of the Direction enums
   for (let direction=-1, accumulator=0; direction<=5; direction++) {
-    accumulator += moveProbabilities[season][accumulator];
+    log(false, 'direction calc: rand=' + rand + ' direction=' + direction + ' accumulator=' + accumulator);
+    accumulator += moveProbabilities[season][direction];
 
     if (rand<=accumulator) {
       return direction as Direction;

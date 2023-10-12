@@ -1,9 +1,10 @@
-import { nextCell, startingCells, getDirection, weatherDescriptions, weatherTemperatures } from '@/weather/climateData';
+import { nextCell, startingCells, getDirection, weatherDescriptions, weatherTemperatures, Direction } from '@/weather/climateData';
 import { createChat, getWhisperRecipients } from '@/chat/chatProxy';
 import { ModuleSettings, SettingKeys } from '@/settings/module-settings';
 import { localize } from '@/utils/game';
 import { Climate, Humidity, Season } from './climateData';
 import { WeatherData } from './WeatherData';
+import { log } from '@/utils/log';
 
 const generate = function(settings: ModuleSettings, climate: Climate, humidity: Humidity, season: Season, yesterday: WeatherData | null): WeatherData {
   const weatherData = new WeatherData(null, season, humidity, climate, null, null);
@@ -16,15 +17,24 @@ const generate = function(settings: ModuleSettings, climate: Climate, humidity: 
     // no yesterday data (or starting a new season), so just pick a random starting point based on the season
     weatherData.hexFlowerCell = startingCells[season][startingSpot];
   } else {
+
     // generate based on yesterday
     const direction = getDirection(season);
 
-    weatherData.hexFlowerCell = nextCell[season][yesterday.hexFlowerCell][direction];
-
-    // a -1 means stay where we were
-    if (weatherData.hexFlowerCell === -1) {
+    if (direction===Direction.stay) {
       weatherData.hexFlowerCell = yesterday.hexFlowerCell;
+    } else {
+      weatherData.hexFlowerCell = nextCell[season][yesterday.hexFlowerCell][direction];
+
+      // a -1 means stay where we were
+      if (weatherData.hexFlowerCell === -1) {
+        weatherData.hexFlowerCell = yesterday.hexFlowerCell;
+      }
     }
+
+    log(false, 'generating - yesterday hex:' + yesterday.hexFlowerCell);
+    log(false, 'generating - direction: ' + direction);
+    log(false, 'generating - new hex:' + weatherData.hexFlowerCell);
   }
 
   // randomize the temperature (+/- # degrees)

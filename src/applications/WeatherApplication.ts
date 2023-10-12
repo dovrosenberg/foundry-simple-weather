@@ -2,7 +2,7 @@ import moduleJson from '@module';
 
 import { log } from '@/utils/log';
 import { WeatherData } from '@/weather/WeatherData';
-import { seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season } from '@/weather/climateData';
+import { seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings } from '@/weather/climateData';
 import { WindowPosition } from '@/window/WindowPosition';
 import { ModuleSettings, SettingKeys } from '@/settings/module-settings';
 import { WindowDrag } from '@/window/windowDrag';
@@ -63,7 +63,7 @@ export class WeatherApplication extends Application {
       climateSelections: climateSelections,
     };
 
-    console.log(JSON.stringify(biomeSelections));
+    //console.log(JSON.stringify(biomeSelections));
     return data;
   }
 
@@ -83,16 +83,34 @@ export class WeatherApplication extends Application {
       event.currentTarget.classList.toggle('altFormat');
     });
 
-    this.listenToWeatherToggle(html);
-    this.listenToWeatherRefreshClick(html);
     // //this.setClimate(html);
-    this.listenToDropdownsChange(html);
 
     // // expose a SimpleWeather global object to enable calling resetPosition
     // global.SimpleWeather = {};
     // global.SimpleWeather.resetPosition = () => this.resetPosition();
 
-    // this is important, as it is what triggers refreshes when data changes
+    // set the drop-down values
+    html.find('#climate-selection').val(this.moduleSettings.get(SettingKeys.climate));
+    html.find('#humidity-selection').val(this.moduleSettings.get(SettingKeys.humidity));
+    html.find('#season-selection').val(this.moduleSettings.get(SettingKeys.season));
+    html.find('#biome-selection').val(this.moduleSettings.get(SettingKeys.biome));
+
+
+    // add the handlers
+    if (isClientGM()) {
+      log(false, 'here');
+      html.find('#sweath-weather-regenerate').on('click', this.onWeatherRegenerateClick);
+      html.find('#weather-toggle').on('click', this.onWeatherToggleClick);
+      html.find('#biome-selection').on('change', this.onBiomeSelectChange);
+      html.find('#climate-selection').on('change', this.onClimateSelectChange);
+      html.find('#humidity-selection').on('change', this.onHumiditySelectChange);
+    } else {
+      // hide stuff
+      const element = document.getElementById('weather-toggle');
+      if (element)
+        element.style.display = 'none';
+    }
+
     super.activateListeners(html);
   }
 
@@ -190,56 +208,89 @@ export class WeatherApplication extends Application {
     }
   }
 
-  // // listener activators
-  private listenToWeatherToggle(html: JQuery) {
-    // hide the toggle for non-GM clients
-    if (!isClientGM()) {
-      const element = document.getElementById('weather-toggle');
-      if (element)
-        element.style.display = 'none';
-    } else {
-      // set the handler
-      html.find('#weather-toggle').on('click', event => {
-        event.preventDefault();
+  // access the current selections
+  public getSeason(): Season | null {
+    const element = document.getElementById('season-selection') as HTMLSelectElement | null;
+    if (element)
+      return Number(element.value) as Season;
+    else 
+      return null;
+  }
+  public getClimate(): Climate | null {
+    const element = document.getElementById('climate-selection') as HTMLSelectElement | null;
+    if (element)
+      return Number(element.value) as Climate;
+    else 
+      return null;
+  };
+  public getHumidity(): Humidity | null {
+    const element = document.getElementById('humidity-selection') as HTMLSelectElement | null;
+    if (element)
+      return Number(element.value) as Humidity;
+    else 
+      return null;
+  };
 
-        // we store the state so it's remembered when we rerender, but we also just
-        //    update the DOM for performance reasons (vs. forcing a re-render just for this)
-        this.weatherPanelOpen = !this.weatherPanelOpen;
+  // listener activators
+  private onWeatherToggleClick = (event): void => {
+    event.preventDefault();
 
-        const element = document.getElementById('sweath-container');
-        if (element)
-          element.classList.toggle('showWeather');
-      });
+    // we store the state so it's remembered when we rerender, but we also just
+    //    update the DOM for performance reasons (vs. forcing a re-render just for this)
+    this.weatherPanelOpen = !this.weatherPanelOpen;
+
+    const element = document.getElementById('sweath-container');
+    if (element)
+      element.classList.toggle('showWeather');
+  } ;
+
+  private onWeatherRegenerateClick = (event): void => {
+    event.preventDefault();
+
+    const humidity = this.getHumidity();
+    const climate = this.getClimate();
+    const season = this.getSeason();
+
+    if (humidity!==null && climate!==null && season!==null) {
+      this.currentWeather = generate(this.moduleSettings, climate, humidity, season, this.currentWeather);
+
+      this.render();
     }
-  }
+  };
 
-  // event handlers
+  private onClimateSelectChange = (event): void => {
+    // save the value - we don't regenerate because we might be changing other settings, too, and don't want to trigger a bunch of chat messages
+    const target = event.originalEvent?.target as HTMLSelectElement;
+    this.moduleSettings.set(SettingKeys.climate, Number(target.value));
+  };
 
-  private listenToWeatherRefreshClick(html: JQuery) {
-    // add the handler
-    if (isClientGM()) {
-      html.find('#sweath-weather-regenerate').on('click', event => {
-        event.preventDefault();
-        this.currentWeather = generate(this.moduleSettings, Climate.Cold, Humidity.Barren, Season.Winter, this.currentWeather);
+  private onHumiditySelectChange = (event): void => {
+    // save the value - we don't regenerate because we might be changing other settings, too, and don't want to trigger a bunch of chat messages
+    const target = event.originalEvent?.target as HTMLSelectElement;
+    this.moduleSettings.set(SettingKeys.humidity, Number(target.value));
+  };
 
-        this.render();
-      });
-    } 
-  }
+  private onBiomeSelectChange = (event): void => {
+    const target = event.originalEvent?.target as HTMLSelectElement;
 
-  private listenToDropdownsChange(html: JQuery) {
-    // const climateSelection = ;
-    // const biomeSelection = '#biome-selection';
-    // const humiditySelection = '#humidity-selection';
+    // reset the climate and humidity selects
+    const biomeMapping = biomeMappings[target.value];
+    if (biomeMapping) {
+      // save the value - we don't regenerate because we might be changing other settings, too, and don't want to trigger a bunch of chat messages
+      this.moduleSettings.set(SettingKeys.biome, target.value);
 
-    // // NOTE!  The values of the items in the drop-downs must match the enum values
-    // html.find('#climate-selection').on('change', (event) => {
-    //   const target = event.originalEvent?.target as HTMLSelectElement;
-    //   const weatherData = this.weatherGenerator.generate(target?.value as Climates);
+      // update the other selects
+      const climate = document.getElementById('climate-selection') as HTMLSelectElement | null;
+      if (climate)
+        climate.value = String(biomeMapping.climate);
+      
+      const humidity = document.getElementById('humidity-selection') as HTMLSelectElement | null;
+      if (humidity)
+        humidity.value = String(biomeMapping.humidity);
 
-    //    rerender?
-    // });
-  }
+    }
+  };
+
 
   // place the window correctly and setup the drag handler for our dialog
   private initializeWindowInteractions($: JQuery<HTMLElement>) {

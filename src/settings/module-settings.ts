@@ -61,55 +61,88 @@ export class ModuleSettings {
   }
 
   private registerSettings(): void {
-    const settingParams: (InexactPartial<Omit<SettingConfig<unknown>, 'key' | 'namespace'>> & { settingID: string })[] = [
+    // name and hint should be the id of a localization string
+    const displayParams: (InexactPartial<Omit<SettingConfig<unknown>, 'key' | 'namespace'>> & { settingID: string })[] = [
       {
-        settingID: SettingKeys.dialogDisplay,
-        name: localize('sweath.settings.OutputWeatherToChat'),
-        hint: localize('sweath.settings.OutputWeatherToChatHelp'),
-        scope: 'world',
-        config: true,
+        settingID: SettingKeys.outputWeatherToChat,
+        name: 'sweath.settings.OutputWeatherToChat',
+        hint: 'sweath.settings.OutputWeatherToChatHelp',
         default: true,
         type: Boolean,
       },
       {
+        settingID: SettingKeys.dialogDisplay, 
+        name: 'sweath.settings.DialogDisplay',
+        hint: 'sweath.settings.DialogDisplayHelp',
+        default: true,
+        type: Boolean,
+      },
+      {
+        settingID: SettingKeys.useCelsius, 
+        name: 'sweath.settings.useCelsius',
+        hint: 'sweath.settings.useCelsiusHelp',
+        default: false,
+        type: Boolean,
+      },
+    ];
+
+    const internalParams: (InexactPartial<Omit<SettingConfig<unknown>, 'key' | 'namespace'>> & { settingID: string })[] = [
+      {
         settingID: SettingKeys.windowPosition,
         name: 'Window Position',
-        scope: 'client',
-        config: false,
         type: Object,
         default: { top: 100, left: 100 }
       },
       {
         settingID: SettingKeys.lastWeatherData,
         name: 'Last weather data',
-        scope: 'world',
-        config: false,
         type: Object,
         default: null
       },
       {
-        settingID: SettingKeys.dialogDisplay, 
-        name: localize('sweath.settings.DialogDisplay'),
-        hint: localize('sweath.settings.DialogDisplayHelp'),
-        scope: 'world',
-        config: true,
-        default: true,
-        type: Boolean,
+        settingID: SettingKeys.season,
+        name: 'Last season',
+        type: Number,
+        default: 0
       },
       {
-        settingID: SettingKeys.useCelsius, 
-        name: localize('sweath.settings.useCelsius'),
-        hint: localize('sweath.settings.useCelsiusHelp'),
-        scope: 'world',
-        config: true,
-        default: false,
-        type: Boolean,
+        settingID: SettingKeys.biome,
+        name: 'Last biome',
+        type: String,
+        default: ''
+      },
+      {
+        settingID: SettingKeys.climate,
+        name: 'Last climate',
+        type: Number,
+        default: 0
+      },
+      {
+        settingID: SettingKeys.humidity,
+        name: 'Last humidity',
+        type: Number,
+        default: 0
       },
     ];
+   
+    for (let i=0; i<displayParams.length; i++) {
+      const { settingID, ...settings} = displayParams[i];
+      this.register(settingID, {
+        ...settings,
+        name: settings.name ? localize(settings.name) : '',
+        hint: settings.hint ? localize(settings.hint) : '',
+        scope: 'world',
+        config: true,
+      });
+    }
 
-    for (let i=0; i<settingParams.length; i++) {
-      const { settingID, ...settings} = settingParams[i];
-      this.register(settingID, settings);
+    for (let i=0; i<internalParams.length; i++) {
+      const { settingID, ...settings} = internalParams[i];
+      this.register(settingID, {
+        ...settings,
+        scope: 'world',
+        config: false,
+      });
     }
   }
 }
