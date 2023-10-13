@@ -1,11 +1,11 @@
 import { nextCell, startingCells, getDirection, weatherTemperatures, Direction } from '@/weather/climateData';
-import { moduleSettings, ModuleSettings, SettingKeys } from '@/settings/module-settings';
+import { moduleSettings, SettingKeys } from '@/settings/module-settings';
 import { getGame, localize } from '@/utils/game';
 import { Climate, Humidity, Season } from './climateData';
 import { WeatherData } from './WeatherData';
 import { log } from '@/utils/log';
 
-const generate = function(settings: ModuleSettings, climate: Climate, humidity: Humidity, season: Season, yesterday: WeatherData | null): WeatherData {
+const generate = function(climate: Climate, humidity: Humidity, season: Season, yesterday: WeatherData | null): WeatherData {
   const weatherData = new WeatherData(null, season, humidity, climate, null, null);
 
   // do the generation
@@ -44,7 +44,7 @@ const generate = function(settings: ModuleSettings, climate: Climate, humidity: 
   weatherData.temperature += Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
 
   // Output to chat if enabled
-  if (settings.get(SettingKeys.outputWeatherToChat)) {
+  if (moduleSettings.get(SettingKeys.outputWeatherToChat)) {
     output(weatherData);
   }
 
