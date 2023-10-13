@@ -8,6 +8,7 @@ export enum SettingKeys {
   // displayed in settings
   dialogDisplay = 'dialogDisplay',   // can non-GM clients see the dialog box
   outputWeatherToChat = 'outputWeatherChat',   // when new weather is generated, should it be put in the chat box
+  publicChat = 'publicChat',   // should everyone see the chat (true) or just the GM (false)
   useCelsius = 'useCelsius',   // should we use Celsius
 
   // internal only
@@ -20,16 +21,25 @@ export enum SettingKeys {
 }
 
 type SettingType<K extends SettingKeys> =
-  K extends SettingKeys.dialogDisplay ? boolean :
-  K extends SettingKeys.outputWeatherToChat ? boolean :
-  K extends SettingKeys.useCelsius ? boolean :
-  K extends SettingKeys.windowPosition ? WindowPosition :
-  K extends SettingKeys.lastWeatherData ? (WeatherData | null) :  
-  K extends SettingKeys.season ? string :
-  K extends SettingKeys.biome ? string :
-  K extends SettingKeys.climate ? number :
-  K extends SettingKeys.humidity ? number :
-  never;  // Add more cases for other enum values as needed
+    K extends SettingKeys.dialogDisplay ? boolean :
+    K extends SettingKeys.publicChat ? boolean :
+    K extends SettingKeys.outputWeatherToChat ? boolean :
+    K extends SettingKeys.useCelsius ? boolean :
+    K extends SettingKeys.windowPosition ? WindowPosition :
+    K extends SettingKeys.lastWeatherData ? (WeatherData | null) :  
+    K extends SettingKeys.season ? string :
+    K extends SettingKeys.biome ? string :
+    K extends SettingKeys.climate ? number :
+    K extends SettingKeys.humidity ? number :
+    never;  // Add more cases for other enum values as needed
+
+// the solo instance
+export let moduleSettings: ModuleSettings;
+
+// set the main application; should only be called once
+export function updateModuleSettings(settings: ModuleSettings): void {
+  moduleSettings = settings;
+}
 
 export class ModuleSettings {
   constructor() {
@@ -67,6 +77,13 @@ export class ModuleSettings {
         settingID: SettingKeys.outputWeatherToChat,
         name: 'sweath.settings.OutputWeatherToChat',
         hint: 'sweath.settings.OutputWeatherToChatHelp',
+        default: true,
+        type: Boolean,
+      },
+      {
+        settingID: SettingKeys.publicChat,
+        name: 'sweath.settings.PublicChat',
+        hint: 'sweath.settings.PublicChatHelp',
         default: true,
         type: Boolean,
       },

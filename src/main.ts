@@ -1,14 +1,11 @@
 import '@/../styles/simple-weather.scss';
 
-import { ModuleSettings } from '@/settings/module-settings';
+import { moduleSettings, ModuleSettings, SettingKeys, updateModuleSettings } from '@/settings/module-settings';
 import { VersionUtils } from '@/utils/versionUtils';
-import { getGame } from '@/utils/game';
+import { getGame, isClientGM } from '@/utils/game';
 import { log } from './utils/log';
-import { SimpleWeather } from './SimpleWeather';
 import { initializeLocalizedText } from './weather/climateData';
-
-let moduleSettings: ModuleSettings;
-let simpleWeather: SimpleWeather;
+import { updateWeatherApplication, weatherApplication, WeatherApplication } from './applications/WeatherApplication';
 
 /**
 * Register module in Developer Mode module (https://github.com/League-of-Foundry-Developers/foundryvtt-devMode)
@@ -20,24 +17,35 @@ Hooks.once('devModeReady', ({ registerPackageDebugFlag: registerPackageDebugFlag
   registerPackageDebugFlag('simple-weather', 'boolean');
 });
 
-Hooks.once('ready', () => {
-  checkDependencies();
+Hooks.once('init', async () => {
+  // initialize the solo instances of the various classes
+  updateModuleSettings(new ModuleSettings());
+  updateWeatherApplication(new WeatherApplication());
 
-  moduleSettings = new ModuleSettings();
-  simpleWeather = new SimpleWeather(moduleSettings);
-  initializeLocalizedText();
-
-  log(false, 'ready');
+  // get window in right place and setup drag and drop
+  weatherApplication.initialize();
 });
 
-Hooks.once(SimpleCalendar.Hooks.Ready, () => {
+Hooks.once('ready', () => {
+  checkDependencies();
+});
+
+Hooks.once('i18nInit', (): void => {
+  initializeLocalizedText();
+});
+
+Hooks.once(SimpleCalendar.Hooks.Ready, async () => {
   log(false, 'simple-calendar-ready');
 
-  Hooks.on(SimpleCalendar.Hooks.DateTimeChange, ({date}: { date: SimpleCalendar.DateData }) => {
-    simpleWeather.onCalendarDateTimeChange(date);
-  });
+  // set the date and time
+  if (moduleSettings.get(SettingKeys.dialogDisplay) || isClientGM()) {
+    await weatherApplication.updateDateTime(SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp()));   // this is really for the very 1st load; after that this date should match what was saved in settings
+  }
 
-  simpleWeather.onCalendarReady();
+  // add the datetime change hook
+  Hooks.on(SimpleCalendar.Hooks.DateTimeChange, ({date}: { date: SimpleCalendar.DateData }) => {
+    weatherApplication.updateDateTime(date);
+  });
 });
 
 // make sure we have a compatible version of simple-calendar installed

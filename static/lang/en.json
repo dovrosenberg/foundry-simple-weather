@@ -9,7 +9,9 @@
   "sweath.settings.useCelsius": "Use Celsius",
   "sweath.settings.useCelsiusHelp": "Use Celsius for temperature display.",
   "sweath.settings.OutputWeatherToChat": "Output weather to chat?",
-  "sweath.settings.OutputWeatherToChatHelp": "Select who can see the weather messages in chat.",
+  "sweath.settings.OutputWeatherToChatHelp": "Should newly generated weather be shown in chat?",
+  "sweath.settings.PublicChat": "Make chat public?",
+  "sweath.settings.PublicChatHelp": "Should everyone see the weather chat (if on) or just the GM (if off)?",
   "sweath.settings.WeatherLabel": "Scene Weather Effects",
   "sweath.settings.WeatherLabelHelp": "When checked, if the FXMaster module is installed, it will generate weather effects such as rain and clouds.",
 

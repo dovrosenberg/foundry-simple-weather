@@ -1,7 +1,6 @@
-import { nextCell, startingCells, getDirection, weatherDescriptions, weatherTemperatures, Direction } from '@/weather/climateData';
-import { createChat, getWhisperRecipients } from '@/chat/chatProxy';
-import { ModuleSettings, SettingKeys } from '@/settings/module-settings';
-import { localize } from '@/utils/game';
+import { nextCell, startingCells, getDirection, weatherTemperatures, Direction } from '@/weather/climateData';
+import { moduleSettings, ModuleSettings, SettingKeys } from '@/settings/module-settings';
+import { getGame, localize } from '@/utils/game';
 import { Climate, Humidity, Season } from './climateData';
 import { WeatherData } from './WeatherData';
 import { log } from '@/utils/log';
@@ -46,25 +45,29 @@ const generate = function(settings: ModuleSettings, climate: Climate, humidity: 
 
   // Output to chat if enabled
   if (settings.get(SettingKeys.outputWeatherToChat)) {
-    output(settings, weatherData);
+    output(weatherData);
   }
 
   return weatherData;
 };
 
-const output = function(settings: ModuleSettings, weatherData: WeatherData) {
-  let messageRecipients = '';
+const output = function(weatherData: WeatherData) {
+  let messageRecipients: string[];
 
-  messageRecipients = getWhisperRecipients('GM')[0].id || '';
+  if (moduleSettings.get(SettingKeys.publicChat)) {
+    messageRecipients = getGame().users?.map((user) => user.id) || [];
+  } else {
+    messageRecipients = ChatMessage.getWhisperRecipients('GM')?.map((user) => user.id) || [];
+  } 
 
   if (messageRecipients) {
-    const chatOut = '<b>' + weatherData.getTemperature(settings.get(SettingKeys.useCelsius)) + '</b> - ' + weatherData.getDescription();
+    const chatOut = '<b>' + weatherData.getTemperature(moduleSettings.get(SettingKeys.useCelsius)) + '</b> - ' + weatherData.getDescription();
 
-    createChat({
+    ChatMessage.create({
       speaker: {
         alias: localize('sweath.weather.tracker.Today'),
       },
-      whisper: [messageRecipients],
+      whisper: messageRecipients,
       content: chatOut,
     });
   }
