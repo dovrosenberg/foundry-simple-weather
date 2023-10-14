@@ -28,11 +28,11 @@ Would love to have help providing translations to other languages
 
 ### Simple Calendar
 
-Simple Weather heavily relies on [Simple Calendar](https://github.com/vigoren/foundryvtt-simple-calendar) by [Vigoren](https://github.com/vigoren). Without his incredible work handling date and time (which is known to be very hard to do in the programming world) and providing an API for it all, this module would be much harder to develop and maintain.
+Simple Weather heavily relies on [Simple Calendar](https://github.com/vigoren/foundryvtt-simple-calendar) by [Vigoren](https://github.com/vigoren). Thank you for inspiration  and a simple API.
 
 ## Original Author
 
-You can't easily tell, because this is a rebuild, rather than a fork, but this module began on top of the work on [Weather Control](https://gitlab.com/jstebenne/foundryvtt-weather-control) by Julien Stébenne.
+You can't easily tell, because this is a rebuild, rather than a fork, but this module began on top of the work on [Weather Control](https://gitlab.com/jstebenne/foundryvtt-weather-control) by Julien Stébenne.  As I learned how to develop a module for Foundry VTT, having this as a solid starting point was invaluable.
 
 
 

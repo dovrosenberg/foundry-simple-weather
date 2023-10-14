@@ -95,6 +95,10 @@ export class ModuleSettings {
         default: true,
         type: Boolean,
       },
+    ];
+
+    // these are client-specific and displayed in settings
+    const localDisplayParams: (InexactPartial<Omit<SettingConfig<unknown>, 'key' | 'namespace'>> & { settingID: string })[] = [
       {
         settingID: SettingKeys.useCelsius, 
         name: 'sweath.settings.useCelsius',
@@ -102,10 +106,6 @@ export class ModuleSettings {
         default: false,
         type: Boolean,
       },
-    ];
-
-    // these are client-specific and displayed in settings
-    const localDisplayParams: (InexactPartial<Omit<SettingConfig<unknown>, 'key' | 'namespace'>> & { settingID: string })[] = [
     ];
 
     // these are globals only used internally
@@ -164,7 +164,7 @@ export class ModuleSettings {
     }
 
     for (let i=0; i<localDisplayParams.length; i++) {
-      const { settingID, ...settings} = internalParams[i];
+      const { settingID, ...settings} = localDisplayParams[i];
       this.register(settingID, {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
