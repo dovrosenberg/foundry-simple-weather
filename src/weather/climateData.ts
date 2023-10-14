@@ -514,26 +514,6 @@ weatherTemperatures[Climate.Hot][Humidity.Modest] = [
   78, 77, 64, 72,
 ];
 
-weatherDescriptions[Climate.Hot][Humidity.Modest] = [
-  'Sunny, refreshing breezes', 'Fleecy clouds', 'Wind', 'Windy, very dry',
-  'Wind storm', 'Drizzle', 'Humid, warm', 'Grey sky', 'Barrel clouds',
-  'Steel blue sky', 'Heavy rain', 'Wispy clouds', 'Fog banks', 'Heavy fog', 'Beautiful, clear sky',
-  'Gentle breeze, some clouds', 'Clear, dry, hot', 'Warm, clear sky', 'Blue white sky', 'Cool, clear sky', 'Clear, dry, no wind', 'Grey, windy',
-  'Wild fire', 'Dark storm cloud', 'Warm rain', 'Dark clouds', 'Hard rain', 'Cooling rain',
-  'Lightning storm', 'Cumulonimbus clouds', 'Strong gale', 'Rain, windy', 'Grey, fast clouds',
-  'Dry thunderstom', 'Windstorm', 'Heavy rain storm', 'Light rain, windy',
-];
-
-weatherTemperatures[Climate.Hot][Humidity.Modest] = [
-  79, 79, 77, 75,
-  80, 79, 77, 74, 73,
-  82, 80, 76, 73, 73, 71,
-  79, 86, 78, 77, 74, 61, 63,
-  78, 80, 78, 76, 68, 65,
-  77, 80, 75, 74, 69,
-  78, 77, 64, 72,
-];
-
 weatherDescriptions[Climate.Hot][Humidity.Verdant] = [
   'Sunny, refreshing breezes', 'Drizzle', 'Wind', 'Dry',
   'Dry storm', 'Steady rain', 'Light rain, warm', 'Grey sky', 'Barrel clouds',
