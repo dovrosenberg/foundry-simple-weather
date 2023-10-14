@@ -42,10 +42,15 @@ Hooks.once(SimpleCalendar.Hooks.Ready, async () => {
     await weatherApplication.updateDateTime(SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp()));   // this is really for the very 1st load; after that this date should match what was saved in settings
   }
 
-  // add the datetime change hook
-  Hooks.on(SimpleCalendar.Hooks.DateTimeChange, ({date}: { date: SimpleCalendar.DateData }) => {
-    weatherApplication.updateDateTime(date);
+  // add the datetime change hook - we don't use SimpleCalendar.Hooks.DateTimeChange 
+  //    because it doesn't call the hook on player clients
+  Hooks.on('updateWorldTime', (timestamp) => {
+    weatherApplication.updateDateTime(SimpleCalendar.api.timestampToDate(timestamp));
   });
+
+  // Hooks.on(SimpleCalendar.Hooks.DateTimeChange, ({date}: { date: SimpleCalendar.DateData }) => {
+  //   weatherApplication.updateDateTime(date);
+  // });
 });
 
 // on non-GMs, we need to update whenever the GM changes the weather
