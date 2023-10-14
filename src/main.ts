@@ -15,11 +15,10 @@ import { updateWeatherApplication, weatherApplication, WeatherApplication } from
 // note: for the logs to actually work, you have to activate it in the UI under the config for the developer mode module
 Hooks.once('devModeReady', ({ registerPackageDebugFlag: registerPackageDebugFlag }: DevModeApi) => {
   registerPackageDebugFlag('simple-weather', 'boolean');
+  //CONFIG.debug.hooks = true;
 });
 
 Hooks.once('init', async () => {
-  CONFIG.debug.hooks = true;
-
   // initialize the solo instances of the various classes
   // settings first, so other things can use them
   updateModuleSettings(new ModuleSettings());
