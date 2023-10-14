@@ -169,9 +169,12 @@ export class WeatherApplication extends Application {
       this.currentWeather = weatherData;
     } else if (isClientGM()) {
       log(false, 'No saved weather data - Generating weather');
+
+      console.log('TODO');
   
-      this.currentWeather = generate(moduleSettings, Climate.Cold, Humidity.Modest, Season.Spring, null);
-      moduleSettings.set(SettingKeys.lastWeatherData, this.currentWeather);        }
+      this.currentWeather = generate(Climate.Cold, Humidity.Modest, Season.Spring, null);
+      moduleSettings.set(SettingKeys.lastWeatherData, this.currentWeather);        
+    }
 
     log(false, 'Setting weather: ' + JSON.stringify(this.currentWeather));
     this.render();
@@ -179,7 +182,7 @@ export class WeatherApplication extends Application {
 
   // has the date part changed
   private hasDateChanged(currentDate: SimpleCalendar.DateData): boolean {
-    const previous = this.currentWeather.date;
+    const previous = this.currentWeather?.date;
 
     if ((!previous && currentDate) || (previous && !currentDate))
       return true;
@@ -255,7 +258,7 @@ export class WeatherApplication extends Application {
     const season = this.getSeason();
 
     if (humidity!==null && climate!==null && season!==null) {
-      this.currentWeather = generate(moduleSettings, climate, humidity, season, this.currentWeather);
+      this.currentWeather = generate(climate, humidity, season, this.currentWeather);
       moduleSettings.set(SettingKeys.lastWeatherData, this.currentWeather);        
 
       this.render();
