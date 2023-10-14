@@ -1,14 +1,23 @@
 #sweath-container {
   height: auto;
   border-radius: 5px;
-  background: rgba(34, 34, 34, 1);
-  color: rgba(255, 255, 255, .87);
-  top: 100px;
-  left: 100px;
   position: fixed;
   z-index: 100;
   overflow: hidden;
   display: flex;
+
+  #sweath-wrapper {
+    height: auto;
+    overflow: hidden;
+    display: flex;
+    align-items: end;
+  }
+
+  // don't put on the wrapper because we need it to be transparent in spots
+  #calendar-box, #weather-box {
+    background: rgba(34, 34, 34, 1);
+    color: rgba(255, 255, 255, .87);
+  }
 
   #calendar-box {
     flex: 1 0 255px;
@@ -79,8 +88,7 @@
     }
   }
 
-  #moon,
-  #moon-list {
+  #moon {
     display: none;
   }
 
@@ -88,30 +96,13 @@
     display: inline-block;
   }
 
-  #moon-list.hasMoon {
-    border-bottom: 1px solid rgba(255, 255, 255, .4);
-    display: flex;
-  }
-
-  #moon-list {
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 4px;
-  }
-
-  #moon img,
-  #moon-list img {
+  #moon img {
     margin-left: 4px;
     flex: 0 0 14px;
     width: 14px;
     height: 14px;
     border: none;
     vertical-align: middle;
-  }
-
-  #moon-list img:first-child {
-    margin: 0;
   }
 
   #moon img {
@@ -278,14 +269,13 @@
 /* WEATHER DISPLAY */
 
 #sweath-container #weather-box {
-  width: 0;
+  visibility: hidden;
   overflow: hidden;
-  transition: width .3s ease;
 }
 
 // expand the box when show-weather is set
 #sweath-container.show-weather #weather-box {
-  width: 250px;
+  visibility: visible;
 }
 
 #sweath-weather-container {
@@ -382,6 +372,7 @@
   font-size: 15px;
   line-height: 17px;
   margin: auto;
+  height: 60px;
 }
 
 #current-description {
