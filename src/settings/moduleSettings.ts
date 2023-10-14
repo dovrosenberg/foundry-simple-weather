@@ -26,7 +26,7 @@ type SettingType<K extends SettingKeys> =
     K extends SettingKeys.outputWeatherToChat ? boolean :
     K extends SettingKeys.useCelsius ? boolean :
     K extends SettingKeys.lastWeatherData ? (WeatherData | null) :  
-    K extends SettingKeys.season ? string :
+    K extends SettingKeys.season ? number :
     K extends SettingKeys.windowPosition ? (WindowPosition | null) :
     K extends SettingKeys.biome ? string :
     K extends SettingKeys.climate ? number :

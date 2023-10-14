@@ -114,6 +114,7 @@ export class WeatherApplication extends Application {
       html.find('#biome-selection').on('change', this.onBiomeSelectChange);
       html.find('#climate-selection').on('change', this.onClimateSelectChange);
       html.find('#humidity-selection').on('change', this.onHumiditySelectChange);
+      html.find('#season-selection').on('change', this.onSeasonSelectChange);
     }
 
     super.activateListeners(html);
@@ -249,10 +250,16 @@ export class WeatherApplication extends Application {
   private onWeatherRegenerateClick = (event): void => {
     event.preventDefault();
 
-    //this.currentWeather = this.generateWeather();
-    //moduleSettings.set(SettingKeys.lastWeatherData, this.currentWeather);        
+    this.generateWeather(this.currentWeather?.date || null);
+    moduleSettings.set(SettingKeys.lastWeatherData, this.currentWeather);        
 
     this.render();
+  };
+
+  private onSeasonSelectChange = (event): void => {
+    // save the value - we don't regenerate because we might be changing other settings, too, and don't want to trigger a bunch of chat messages
+    const target = event.originalEvent?.target as HTMLSelectElement;
+    moduleSettings.set(SettingKeys.season, Number(target.value));
   };
 
   private onClimateSelectChange = (event): void => {
@@ -278,13 +285,16 @@ export class WeatherApplication extends Application {
 
       // update the other selects
       const climate = document.getElementById('climate-selection') as HTMLSelectElement | null;
-      if (climate)
+      if (climate) {
         climate.value = String(biomeMapping.climate);
+        moduleSettings.set(SettingKeys.climate, biomeMapping.climate);
+      }
       
       const humidity = document.getElementById('humidity-selection') as HTMLSelectElement | null;
-      if (humidity)
+      if (humidity) {
         humidity.value = String(biomeMapping.humidity);
-
+        moduleSettings.set(SettingKeys.humidity, biomeMapping.humidity);
+      }
     }
   };
 
