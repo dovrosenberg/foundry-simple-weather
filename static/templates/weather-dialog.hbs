@@ -4,16 +4,17 @@
 
 			<!-- header -->
 			<header>
-				<!-- day name -->
-				<div id="sweath-window-move-handle">
-					<div>
+				<div>
+					{{#if isGM}}
 						<select id="season-selection" title="{{localize 'sweath.weather.SelectSeason'}}">
 							{{#each seasonSelections}}
 								<option title="{{text}}" value="{{value}}">{{text}}</option>
 							{{/each}}
 						</select>
-					</div>
+					{{/if}}
 				</div>
+
+				<div id="sweath-window-move-handle">&nbsp;</div>
 
 				<div class="header-navigation">
 					<div id="season-indicator">

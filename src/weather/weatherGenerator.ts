@@ -1,4 +1,4 @@
-import { nextCell, startingCells, getDirection, weatherTemperatures, Direction } from '@/weather/climateData';
+import { nextCell, startingCells, getDirection, weatherTemperatures, Direction, seasonSelections, climateSelections, humiditySelections, weatherDescriptions } from '@/weather/climateData';
 import { moduleSettings, SettingKeys } from '@/settings/moduleSettings';
 import { getGame, localize } from '@/utils/game';
 import { Climate, Humidity, Season } from './climateData';
@@ -19,8 +19,15 @@ const generate = function(climate: Climate, humidity: Humidity, season: Season, 
     // no yesterday data (or starting a new season), so just pick a random starting point based on the season
     weatherData.hexFlowerCell = startingCells[season][startingSpot];
   } else {
+    log(false, 'Generating weather');
+    log(false, 'Season: ' + seasonSelections[season].text);
+    log(false, 'Climate: ' + climateSelections[climate].text);
+    log(false, 'Humidity: ' + humiditySelections[humidity].text);
+    log(false, 'Current cell: ' + yesterday.hexFlowerCell + ' (' + weatherDescriptions[climate][humidity][yesterday.hexFlowerCell] + ')')
+
     // generate based on yesterday
     const direction = getDirection(season);
+    log(false, 'Direction: ' + Direction[direction]);
 
     if (direction===Direction.stay) {
       weatherData.hexFlowerCell = yesterday.hexFlowerCell;
@@ -33,9 +40,7 @@ const generate = function(climate: Climate, humidity: Humidity, season: Season, 
       }
     }
 
-    log(false, 'generating - yesterday hex:' + yesterday.hexFlowerCell);
-    log(false, 'generating - direction: ' + direction);
-    log(false, 'generating - new hex:' + weatherData.hexFlowerCell);
+    log(false, 'New cell: ' + weatherData.hexFlowerCell + ' (' + weatherDescriptions[climate][humidity][weatherData.hexFlowerCell] + ')')
   }
 
   // randomize the temperature (+/- # degrees)

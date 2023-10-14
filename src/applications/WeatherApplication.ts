@@ -77,7 +77,6 @@ export class WeatherApplication extends Application {
       windowPosition: this.windowPosition,
     };
 
-    //console.log(JSON.stringify(biomeSelections));
     return data;
   }
 
@@ -149,8 +148,6 @@ export class WeatherApplication extends Application {
   public setWeather(): void {
     const weatherData = moduleSettings.get(SettingKeys.lastWeatherData);
 
-    log(false, 'loaded weatherData:' + JSON.stringify(weatherData));
-
     if (weatherData) {
       log(false, 'Using saved weather data');
 
@@ -161,7 +158,6 @@ export class WeatherApplication extends Application {
       this.generateWeather(null);
     }
 
-    log(false, 'Setting weather: ' + JSON.stringify(this.currentWeather));
     this.render();
   }
 
@@ -266,18 +262,29 @@ export class WeatherApplication extends Application {
     // save the value - we don't regenerate because we might be changing other settings, too, and don't want to trigger a bunch of chat messages
     const target = event.originalEvent?.target as HTMLSelectElement;
     moduleSettings.set(SettingKeys.climate, Number(target.value));
+
+    // set biome to blank because we adjusted manually
+    jQuery(document).find('#biome-selection').val('');
+    moduleSettings.set(SettingKeys.biome, '');
   };
 
   private onHumiditySelectChange = (event): void => {
     // save the value - we don't regenerate because we might be changing other settings, too, and don't want to trigger a bunch of chat messages
     const target = event.originalEvent?.target as HTMLSelectElement;
     moduleSettings.set(SettingKeys.humidity, Number(target.value));
+
+    // set biome to blank because we adjusted manually
+    jQuery(document).find('#biome-selection').val('');
+    moduleSettings.set(SettingKeys.biome, '');
   };
 
   private onBiomeSelectChange = (event): void => {
     const target = event.originalEvent?.target as HTMLSelectElement;
 
-    // reset the climate and humidity selects
+    // reset the climate and humidity selects (unless we pickee the blank)
+    if (!target.value)
+      return;
+
     const biomeMapping = biomeMappings[target.value];
     if (biomeMapping) {
       // save the value - we don't regenerate because we might be changing other settings, too, and don't want to trigger a bunch of chat messages
