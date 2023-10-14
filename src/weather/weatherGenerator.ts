@@ -5,8 +5,11 @@ import { Climate, Humidity, Season } from './climateData';
 import { WeatherData } from './WeatherData';
 import { log } from '@/utils/log';
 
-const generate = function(climate: Climate, humidity: Humidity, season: Season, yesterday: WeatherData | null): WeatherData {
-  const weatherData = new WeatherData(null, season, humidity, climate, null, null);
+// note: we don't actually care if the date on yesterday is the day before today; yesterday is used to determine if we should be picking a random
+//    starting spot or moving from the prior one
+// today is used to set the date on the returned object
+const generate = function(climate: Climate, humidity: Humidity, season: Season, today: SimpleCalendar.DateData | null, yesterday: WeatherData | null): WeatherData {
+  const weatherData = new WeatherData(today, season, humidity, climate, null, null);
 
   // do the generation
   if (!yesterday || yesterday.season !== season || !yesterday.hexFlowerCell) {
@@ -16,7 +19,6 @@ const generate = function(climate: Climate, humidity: Humidity, season: Season, 
     // no yesterday data (or starting a new season), so just pick a random starting point based on the season
     weatherData.hexFlowerCell = startingCells[season][startingSpot];
   } else {
-
     // generate based on yesterday
     const direction = getDirection(season);
 

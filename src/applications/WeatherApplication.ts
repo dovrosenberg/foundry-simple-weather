@@ -40,9 +40,9 @@ export class WeatherApplication extends Application {
       }
     );
 
-    this.setWeather();
+    this.setWeather();  
 
-    // initial render
+    // initial render -- needed even though setWeather will render because we need to force
     this.render(true);
   }
 
@@ -130,15 +130,13 @@ export class WeatherApplication extends Application {
 
       if (isClientGM()) {
         log(false, 'Generate new weather');
-        console.log('TODO');
-        //newWeatherData = generate();
-
-        // we only save if we have a new date/weather because the time will get refreshed when we load anyway
-        this.currentWeather.date = currentDate;
-        await moduleSettings.set(SettingKeys.lastWeatherData, this.currentWeather);    
+        
+        this.generateWeather(currentDate);
       }
     } else {
       // always update because the time has likely changed even if the date didn't
+      // but we don't need to save the time to the db, because every second
+      //    it's getting refreshed 
       this.currentWeather.date = currentDate;
     }
 
@@ -159,12 +157,28 @@ export class WeatherApplication extends Application {
     } else if (isClientGM()) {
       log(false, 'No saved weather data - Generating weather');
 
-      this.currentWeather = generate(Climate.Cold, Humidity.Modest, Season.Spring, null);
-      moduleSettings.set(SettingKeys.lastWeatherData, this.currentWeather);        
+      this.generateWeather(null);
     }
 
     log(false, 'Setting weather: ' + JSON.stringify(this.currentWeather));
     this.render();
+  }
+
+  // generate weather based on drop-down settings, store locally and update db
+  private generateWeather(currentDate: SimpleCalendar.DateData | null): void {
+    const climate = this.getClimate();
+    const humidity = this.getHumidity();
+    const season = this.getSeason();
+
+    this.currentWeather = generate(
+      climate!==null ? climate : Climate.Cold, 
+      humidity!==null ? humidity : Humidity.Modest, 
+      season!==null ? season : Season.Spring, 
+      currentDate,
+      this.currentWeather || null
+    );
+
+    moduleSettings.set(SettingKeys.lastWeatherData, this.currentWeather);        
   }
 
   // has the date part changed
@@ -235,16 +249,10 @@ export class WeatherApplication extends Application {
   private onWeatherRegenerateClick = (event): void => {
     event.preventDefault();
 
-    const humidity = this.getHumidity();
-    const climate = this.getClimate();
-    const season = this.getSeason();
+    //this.currentWeather = this.generateWeather();
+    //moduleSettings.set(SettingKeys.lastWeatherData, this.currentWeather);        
 
-    if (humidity!==null && climate!==null && season!==null) {
-      this.currentWeather = generate(climate, humidity, season, this.currentWeather);
-      moduleSettings.set(SettingKeys.lastWeatherData, this.currentWeather);        
-
-      this.render();
-    }
+    this.render();
   };
 
   private onClimateSelectChange = (event): void => {
