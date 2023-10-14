@@ -159,8 +159,6 @@ export class WeatherApplication extends Application {
     } else if (isClientGM()) {
       log(false, 'No saved weather data - Generating weather');
 
-      console.log('TODO');
-  
       this.currentWeather = generate(Climate.Cold, Humidity.Modest, Season.Spring, null);
       moduleSettings.set(SettingKeys.lastWeatherData, this.currentWeather);        
     }

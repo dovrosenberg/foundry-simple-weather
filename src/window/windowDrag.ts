@@ -12,11 +12,11 @@ export class WindowDrag {
     document.addEventListener('mousemove', this.mouseMoveCallback);
     document.addEventListener('mouseup', () => {
       document.removeEventListener('mousemove', this.mouseMoveCallback);
-      mouseUpCallback({
+      mouseUpCallback({        
         top: this.parent.offsetTop,
         left: this.parent.offsetLeft,
       });
-    });
+    }, {once: true});  // remove listener once called once
   }
 
   private mouseMove(event: Partial<MouseEvent>) {
