@@ -1,5 +1,5 @@
 import { nextCell, startingCells, getDirection, weatherTemperatures, Direction } from '@/weather/climateData';
-import { moduleSettings, ModuleSettings, SettingKeys } from '@/settings/module-settings';
+import { moduleSettings, ModuleSettings, SettingKeys } from '@/settings/moduleSettings';
 import { getGame, localize } from '@/utils/game';
 import { Climate, Humidity, Season } from './climateData';
 import { WeatherData } from './WeatherData';
@@ -10,7 +10,7 @@ const generate = function(settings: ModuleSettings, climate: Climate, humidity: 
 
   // do the generation
   if (!yesterday || yesterday.season !== season || !yesterday.hexFlowerCell) {
-    // equal changes of any starting spot
+    // equal chances of any starting spot
     const startingSpot = Math.floor(Math.random()*startingCells[season].length);
 
     // no yesterday data (or starting a new season), so just pick a random starting point based on the season

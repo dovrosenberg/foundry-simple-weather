@@ -297,7 +297,8 @@
   transition: width .3s ease;
 }
 
-#sweath-container.showWeather #weather-box {
+// expand the box when show-weather is set
+#sweath-container.show-weather #weather-box {
   width: 250px;
 }
 

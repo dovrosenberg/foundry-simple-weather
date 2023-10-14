@@ -25,9 +25,9 @@ type SettingType<K extends SettingKeys> =
     K extends SettingKeys.publicChat ? boolean :
     K extends SettingKeys.outputWeatherToChat ? boolean :
     K extends SettingKeys.useCelsius ? boolean :
-    K extends SettingKeys.windowPosition ? WindowPosition :
     K extends SettingKeys.lastWeatherData ? (WeatherData | null) :  
     K extends SettingKeys.season ? string :
+    K extends SettingKeys.windowPosition ? (WindowPosition | null) :
     K extends SettingKeys.biome ? string :
     K extends SettingKeys.climate ? number :
     K extends SettingKeys.humidity ? number :
@@ -71,6 +71,7 @@ export class ModuleSettings {
   }
 
   private registerSettings(): void {
+    // these are globals shown in the options
     // name and hint should be the id of a localization string
     const displayParams: (InexactPartial<Omit<SettingConfig<unknown>, 'key' | 'namespace'>> & { settingID: string })[] = [
       {
@@ -103,13 +104,12 @@ export class ModuleSettings {
       },
     ];
 
+    // these are client-specific and displayed in settings
+    const localDisplayParams: (InexactPartial<Omit<SettingConfig<unknown>, 'key' | 'namespace'>> & { settingID: string })[] = [
+    ];
+
+    // these are globals only used internally
     const internalParams: (InexactPartial<Omit<SettingConfig<unknown>, 'key' | 'namespace'>> & { settingID: string })[] = [
-      {
-        settingID: SettingKeys.windowPosition,
-        name: 'Window Position',
-        type: Object,
-        default: { top: 100, left: 100 }
-      },
       {
         settingID: SettingKeys.lastWeatherData,
         name: 'Last weather data',
@@ -142,6 +142,16 @@ export class ModuleSettings {
       },
     ];
    
+    // these are locals only used internally
+    const localInternalParams: (InexactPartial<Omit<SettingConfig<unknown>, 'key' | 'namespace'>> & { settingID: string })[] = [
+      {
+        settingID: SettingKeys.windowPosition,
+        name: 'Window Position',
+        type: Object,
+        default: null
+      },
+    ];
+
     for (let i=0; i<displayParams.length; i++) {
       const { settingID, ...settings} = displayParams[i];
       this.register(settingID, {
@@ -153,11 +163,31 @@ export class ModuleSettings {
       });
     }
 
+    for (let i=0; i<localDisplayParams.length; i++) {
+      const { settingID, ...settings} = internalParams[i];
+      this.register(settingID, {
+        ...settings,
+        name: settings.name ? localize(settings.name) : '',
+        hint: settings.hint ? localize(settings.hint) : '',
+        scope: 'client',
+        config: true,
+      });
+    }
+
     for (let i=0; i<internalParams.length; i++) {
       const { settingID, ...settings} = internalParams[i];
       this.register(settingID, {
         ...settings,
         scope: 'world',
+        config: false,
+      });
+    }
+
+    for (let i=0; i<localInternalParams.length; i++) {
+      const { settingID, ...settings} = localInternalParams[i];
+      this.register(settingID, {
+        ...settings,
+        scope: 'client',
         config: false,
       });
     }

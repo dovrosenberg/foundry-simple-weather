@@ -4,11 +4,11 @@ import { log } from '@/utils/log';
 import { WeatherData } from '@/weather/WeatherData';
 import { seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings } from '@/weather/climateData';
 import { WindowPosition } from '@/window/WindowPosition';
-import { SettingKeys } from '@/settings/module-settings';
+import { SettingKeys } from '@/settings/moduleSettings';
 import { WindowDrag } from '@/window/windowDrag';
 import { isClientGM } from '@/utils/game';
 import { generate } from '@/weather/weatherGenerator';
-import { moduleSettings } from '@/settings/module-settings';
+import { moduleSettings } from '@/settings/moduleSettings';
 
 // the solo instance
 export let weatherApplication: WeatherApplication;
@@ -23,7 +23,8 @@ export class WeatherApplication extends Application {
   private weatherPanelOpen: boolean;
   private windowID = 'sweath-container';
   private windowDragHandler = new WindowDrag();
-
+  private windowPosition: WindowPosition;
+  
   constructor() {
     super();
 
@@ -31,7 +32,15 @@ export class WeatherApplication extends Application {
 
     log(false, 'WeatherApplication construction');
 
-    this.loadInitialWeather();
+    // get default position or set default
+    this.setWindowPosition(
+      moduleSettings.get(SettingKeys.windowPosition) || {
+        left: 100,
+        top: 100,
+      }
+    );
+
+    this.setWeather();
 
     // initial render
     this.render(true);
@@ -65,10 +74,28 @@ export class WeatherApplication extends Application {
       humiditySelections: humiditySelections,
       climateSelections: climateSelections,
       hideWeather: isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay) ? false : true,
+      windowPosition: this.windowPosition,
     };
 
     //console.log(JSON.stringify(biomeSelections));
     return data;
+  }
+
+  // move the window
+  // we can't use foundry's setPosition() because it doesn't work for fixed size, non popout windows
+  public setWindowPosition(newPosition: WindowPosition) {
+    const element = document.getElementById(this.windowID);
+
+    this.windowPosition = newPosition;
+
+    if (element) {
+      log(false,'Resetting Window Position');
+      element.style.top = newPosition.top + 'px';
+      element.style.left = newPosition.left + 'px';
+    }
+
+    // save
+    moduleSettings.set(SettingKeys.windowPosition, {top: newPosition.top, left: newPosition.left});
   }
 
   // called by the parent class to attach event handlers after window is rendered
@@ -80,34 +107,24 @@ export class WeatherApplication extends Application {
       event.currentTarget.classList.toggle('altFormat');
     });
 
-    // //this.setClimate(html);
-
-    // // expose a SimpleWeather global object to enable calling resetPosition
-    // global.SimpleWeather = {};
-    // global.SimpleWeather.resetPosition = () => this.resetPosition();
-
     // handle window drag
     html.find('#sweath-window-move-handle').on('mousedown', this.onMoveHandleMouseDown);
-    
-    // set the drop-down values
-    html.find('#climate-selection').val(moduleSettings.get(SettingKeys.climate));
-    html.find('#humidity-selection').val(moduleSettings.get(SettingKeys.humidity));
-    html.find('#season-selection').val(moduleSettings.get(SettingKeys.season));
-    html.find('#biome-selection').val(moduleSettings.get(SettingKeys.biome));
 
+    // setup handlers and values for everyone
+    html.find('#weather-toggle').on('click', this.onWeatherToggleClick);
 
-    // add the handlers
+    // GM-only
     if (isClientGM()) {
+      // set the drop-down values
+      html.find('#climate-selection').val(moduleSettings.get(SettingKeys.climate));
+      html.find('#humidity-selection').val(moduleSettings.get(SettingKeys.humidity));
+      html.find('#season-selection').val(moduleSettings.get(SettingKeys.season));
+      html.find('#biome-selection').val(moduleSettings.get(SettingKeys.biome));
+
       html.find('#sweath-weather-regenerate').on('click', this.onWeatherRegenerateClick);
-      html.find('#weather-toggle').on('click', this.onWeatherToggleClick);
       html.find('#biome-selection').on('change', this.onBiomeSelectChange);
       html.find('#climate-selection').on('change', this.onClimateSelectChange);
       html.find('#humidity-selection').on('change', this.onHumiditySelectChange);
-    } else {
-      // // hide stuff
-      // const element = document.getElementById('weather-toggle');
-      // if (element)
-      //   element.style.display = 'none';
     }
 
     super.activateListeners(html);
@@ -124,7 +141,8 @@ export class WeatherApplication extends Application {
 
       if (isClientGM()) {
         log(false, 'Generate new weather');
-        //newWeatherData = this.weatherGenerator.generate();
+        console.log('TODO');
+        //newWeatherData = generate();
 
         // we only save if we have a new date/weather because the time will get refreshed when we load anyway
         this.currentWeather.date = currentDate;
@@ -139,7 +157,8 @@ export class WeatherApplication extends Application {
   }
 
   // called from outside, to load the last weather from the settings
-  public loadInitialWeather(): void {
+  // also called by player clients when GM updates the settings
+  public setWeather(): void {
     const weatherData = moduleSettings.get(SettingKeys.lastWeatherData);
 
     log(false, 'loaded weatherData:' + JSON.stringify(weatherData));
@@ -152,7 +171,7 @@ export class WeatherApplication extends Application {
       log(false, 'No saved weather data - Generating weather');
   
       this.currentWeather = generate(moduleSettings, Climate.Cold, Humidity.Modest, Season.Spring, null);
-    }
+      moduleSettings.set(SettingKeys.lastWeatherData, this.currentWeather);        }
 
     log(false, 'Setting weather: ' + JSON.stringify(this.currentWeather));
     this.render();
@@ -192,21 +211,6 @@ export class WeatherApplication extends Application {
     return value !== undefined && value !== null;
   }
 
-  // resets the window's position to the default
-  public resetPosition() {
-    log(false, 'Resetting position');
-    const defaultPosition = { top: 100, left: 100 };
-        
-    const element = document.getElementById(this.windowID);
-    if (element) {
-      log(false,'Resetting Window Position');
-      element.style.top = defaultPosition.top + 'px';
-      element.style.left = defaultPosition.left + 'px';
-      moduleSettings.set(SettingKeys.windowPosition, {top: element.offsetTop, left: element.offsetLeft});
-      element.style.bottom = '';
-    }
-  }
-
   // access the current selections
   public getSeason(): Season | null {
     const element = document.getElementById('season-selection') as HTMLSelectElement | null;
@@ -240,7 +244,7 @@ export class WeatherApplication extends Application {
 
     const element = document.getElementById(this.windowID);
     if (element)
-      element.classList.toggle('showWeather');
+      element.classList.toggle('show-weather');
   } ;
 
   private onWeatherRegenerateClick = (event): void => {
@@ -252,6 +256,7 @@ export class WeatherApplication extends Application {
 
     if (humidity!==null && climate!==null && season!==null) {
       this.currentWeather = generate(moduleSettings, climate, humidity, season, this.currentWeather);
+      moduleSettings.set(SettingKeys.lastWeatherData, this.currentWeather);        
 
       this.render();
     }
@@ -293,25 +298,10 @@ export class WeatherApplication extends Application {
   private onMoveHandleMouseDown = (): void => {
     const element = document.getElementById(this.windowID);
     if (element) {
-      this.windowDragHandler.start(element, (windowPos: WindowPosition) => {
+      this.windowDragHandler.start(element, (position: WindowPosition) => {
         // save the new location
-        moduleSettings.set(SettingKeys.windowPosition, windowPos);
+        this.setWindowPosition(position);
       });
     }
   };  
-
-  // place the window correctly and setup the drag handler for our dialog
-  // should be called before rendering
-  public async initialize(): Promise<void> {
-    // place the window based on last saved location
-    const element = document.getElementById(this.windowID);
-    const windowPosition = moduleSettings.get(SettingKeys.windowPosition);
-
-    if (element && windowPosition) {
-      log(false, 'Initializing position');
-
-      element.style.top = windowPosition.top + 'px';
-      element.style.left = windowPosition.left + 'px';
-    }
-  }
 }

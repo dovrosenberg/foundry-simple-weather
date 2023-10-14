@@ -1,6 +1,6 @@
 import '@/../styles/simple-weather.scss';
 
-import { moduleSettings, ModuleSettings, SettingKeys, updateModuleSettings } from '@/settings/module-settings';
+import { moduleSettings, ModuleSettings, SettingKeys, updateModuleSettings } from '@/settings/moduleSettings';
 import { VersionUtils } from '@/utils/versionUtils';
 import { getGame, isClientGM } from '@/utils/game';
 import { log } from './utils/log';
@@ -18,12 +18,12 @@ Hooks.once('devModeReady', ({ registerPackageDebugFlag: registerPackageDebugFlag
 });
 
 Hooks.once('init', async () => {
+  CONFIG.debug.hooks = true;
+
   // initialize the solo instances of the various classes
+  // settings first, so other things can use them
   updateModuleSettings(new ModuleSettings());
   updateWeatherApplication(new WeatherApplication());
-
-  // get window in right place and setup drag and drop
-  weatherApplication.initialize();
 });
 
 Hooks.once('ready', () => {
@@ -46,6 +46,12 @@ Hooks.once(SimpleCalendar.Hooks.Ready, async () => {
   Hooks.on(SimpleCalendar.Hooks.DateTimeChange, ({date}: { date: SimpleCalendar.DateData }) => {
     weatherApplication.updateDateTime(date);
   });
+});
+
+// on non-GMs, we need to update whenever the GM changes the weather
+Hooks.on('updateSetting', (setting: Setting): void => {
+  if (setting.key === 'simple-weather.' + SettingKeys.lastWeatherData) 
+    weatherApplication.setWeather();
 });
 
 // make sure we have a compatible version of simple-calendar installed

@@ -1,4 +1,4 @@
-<div id="sweath-container">
+<div id="sweath-container" {{#if weatherPanelOpen}}class="show-weather"{{/if}} style="top:{{windowPosition.top}}px; left:{{windowPosition.left}}px;">
 	<div {{#if hideWeather}}style="display:none"{{/if}}>
 		<div id="calendar-box">
 
@@ -95,7 +95,7 @@
 			-->
 		</div>
 
-		<div id="weather-box" {{#if weatherPanelOpen}}class="showWeather"{{/if}}>
+		<div id="weather-box">
 			<div id="sweath-weather-container">
 				<header>
 					<div>
