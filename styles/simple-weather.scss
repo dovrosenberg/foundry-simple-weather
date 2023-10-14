@@ -77,20 +77,6 @@
       text-align: center;
       font-weight: 400;
     }
-
-    #date-num {
-      display: none;
-    }
-
-    &.altFormat {
-      #date-num {
-        display: inline;
-      }
-
-      #date {
-        display: none;
-      }
-    }
   }
 
   #moon,

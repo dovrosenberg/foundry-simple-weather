@@ -84,29 +84,18 @@ export class WeatherApplication extends Application {
   // move the window
   // we can't use foundry's setPosition() because it doesn't work for fixed size, non popout windows
   public setWindowPosition(newPosition: WindowPosition) {
-    const element = document.getElementById(this.windowID);
-
     this.windowPosition = newPosition;
-
-    if (element) {
-      log(false,'Resetting Window Position');
-      element.style.top = newPosition.top + 'px';
-      element.style.left = newPosition.left + 'px';
-    }
 
     // save
     moduleSettings.set(SettingKeys.windowPosition, {top: newPosition.top, left: newPosition.left});
+
+    this.render();
   }
 
   // called by the parent class to attach event handlers after window is rendered
   // note that saved weather has been reloaded by the time this is called when we're initializing
   // this is called on every render!  One-time functionality should be put in ????? 
   public async activateListeners(html: JQuery<HTMLElement>) {
-    // toggle date format when the date is clicked
-    html.find('#date-display').on('mousedown', event => {
-      event.currentTarget.classList.toggle('altFormat');
-    });
-
     // handle window drag
     html.find('#sweath-window-move-handle').on('mousedown', this.onMoveHandleMouseDown);
 
@@ -241,13 +230,8 @@ export class WeatherApplication extends Application {
   private onWeatherToggleClick = (event): void => {
     event.preventDefault();
 
-    // we store the state so it's remembered when we rerender, but we also just
-    //    update the DOM for performance reasons (vs. forcing a re-render just for this)
     this.weatherPanelOpen = !this.weatherPanelOpen;
-
-    const element = document.getElementById(this.windowID);
-    if (element)
-      element.classList.toggle('show-weather');
+    this.render();
   } ;
 
   private onWeatherRegenerateClick = (event): void => {
