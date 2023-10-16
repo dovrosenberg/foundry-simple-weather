@@ -18,7 +18,7 @@ jobs:
       id: manifest_link_version
       uses: cschleiden/replace-tokens@v1
       with:
-        files: './src/static/module.json'
+        files: './static/module.json'
       env:
         MANIFEST: https://github.com/${{github.repository}}/tree/latest/static/module.json
         DOWNLOAD: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.zip
