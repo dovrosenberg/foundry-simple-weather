@@ -67,7 +67,7 @@ jobs:
           name: ${{ github.event.release.name }}
           draft: false
           prerelease: false
-          #token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_TOKEN }}
           artifacts: './module.json, ./module.zip'
           tag: ${{ github.event.release.tag_name }}
           body: ${{ github.event.release.body }}
