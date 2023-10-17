@@ -1,27 +1,16 @@
-<div id="sweath-container" {{#if weatherPanelOpen}}class="show-weather"{{/if}} style="top:{{windowPosition.top}}px; left:{{windowPosition.left}}px;">
-	<div id="sweath-wrapper" {{#if hideWeather}}style="display:none"{{/if}}>
-		<div id="calendar-box">
+<div id="sweath-container" {{#if hideWeather}}class="hide-weather"{{/if}} style="top:{{windowPosition.top}}px; left:{{windowPosition.left}}px;">
+	<div id="sweath-wrapper" {{#if hideDialog}}style="display:none"{{/if}}>
+		<div id="calendar-box" {{#if hideCalendar}}style="visibility:hidden;overflow:hidden"{{/if}}>
 
 			<!-- header -->
-			<header>
-				<div>
-					{{#if isGM}}
-						<select id="season-selection" title="{{localize 'sweath.weather.SelectSeason'}}">
-							{{#each seasonSelections}}
-								<option title="{{text}}" value="{{value}}">{{text}}</option>
-							{{/each}}
-						</select>
-					{{/if}}
-				</div>
+			<header id="calendar-header">
+				<div class="topbar">
+					<div id="sweath-weather-move-handle">&nbsp;</div>
 
-				<div id="sweath-window-move-handle">&nbsp;</div>
-
-				<div class="header-navigation">
-					<div id="season-indicator">
-						<i class="fas fa-circle" title="{{localize 'Season'}}"></i>
-					</div>
-					<div id="weather-toggle" class="icon-btn">
-						<i class="fas fa-cloud-sun" title="{{localize 'sweath.calendar.Weather'}}"></i>
+					<div class="header-navigation">
+						<div id="weather-toggle" class="sweath-icon-btn">
+							<i class="fas fa-cloud-sun" title="{{localize 'sweath.calendar.Weather'}}"></i>
+						</div>
 					</div>
 				</div>
 			</header>
@@ -85,11 +74,26 @@
 
 		<div id="weather-box">
 			<div id="sweath-weather-container">
-				<header>
+				<header id="weather-header">
+					<div class="topbar">
+						<div id="sweath-calendar-move-handle" style="flex:1 0 100%">&nbsp;</div>
+						<div class="header-navigation"></div>
+					</div>
+
 					<div>
 						<span id="sweath-current-temperature">{{ currentTemperature }}</span>
 					</div>
+
 					{{#if isGM}}
+						<div style="flex:1">
+							{{#if isGM}}
+								<select id="season-selection" title="{{localize 'sweath.weather.SelectSeason'}}">
+									{{#each seasonSelections}}
+										<option title="{{text}}" value="{{value}}">{{text}}</option>
+									{{/each}}
+								</select>
+							{{/if}}
+						</div>
 						<div style="flex:1">
 							<select id="biome-selection" title="{{localize 'sweath.weather.SelectBiome'}}">
 								{{#each biomeSelections}}
@@ -97,7 +101,7 @@
 								{{/each}}
 							</select>
 						</div>
-						<div class="weather-refresh calendar-btn" id="sweath-weather-regenerate" title="{{localize 'sweath.weather.RegenerateWeather'}}">
+						<div id="sweath-weather-refresh" clas="calendar-btn" title="{{localize 'sweath.weather.RegenerateWeather'}}">
 							<i class="fas fa-redo"></i>
 						</div>
 						<div class="row-break"></div>

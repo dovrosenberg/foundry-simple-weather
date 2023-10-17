@@ -24,17 +24,8 @@
     min-width: 255px;
   }
 
-  #calendar-box header {
-    background: #444;
-    display: flex;
-    height: 20px;
-    justify-content: space-between;
-    align-items: center;
-    cursor: move;
-  }
 
-  .icon-btn,
-  #season-indicator {
+  .sweath-icon-btn {
     color: rgba(255, 255, 255, .45);
     transition: color .3s ease;
     margin-right: 4px;
@@ -43,24 +34,17 @@
     align-items: center;
   }
 
-  #season-indicator {
-    color: transparent;
-    cursor: default;
-  }
-
-  .icon-btn:last-child {
+  .sweath-icon-btn:last-child {
     margin-right: 0;
   }
 
-  .icon-btn:hover {
+  .sweath-icon-btn:hover {
     color: rgba(255, 255, 255, 1);
   }
 
-  #season-indicator:hover {
-    color: transparent;
-  }
-
-  #sweath-window-move-handle {
+  #sweath-calendar-move-handle,
+  #sweath-weather-move-handle 
+  {
     font-size: 13px;
     line-height: 1;
     text-align: center;
@@ -68,7 +52,7 @@
     margin: 0;
     border: none;
     display: flex;
-    flex: 1;
+    flex: 1 0;
   }
 
   .date-box {
@@ -269,13 +253,13 @@
 /* WEATHER DISPLAY */
 
 #sweath-container #weather-box {
-  visibility: hidden;
-  overflow: hidden;
+  visibility: visible;
 }
 
 // expand the box when show-weather is set
-#sweath-container.show-weather #weather-box {
-  visibility: visible;
+#sweath-container.hide-weather #weather-box {
+  visibility: hidden;
+  overflow: hidden;
 }
 
 #sweath-weather-container {
@@ -285,15 +269,26 @@
   /*border-left: 1px solid rgba(0,0,0,.6);*/
 }
 
-#sweath-weather-container header {
+#sweath-container header {
   flex: 0 0 20px;
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
   background: #444;
+  cursor: move;
 }
 
-#sweath-weather-container header #sweath-current-temperature {
+#sweath-container header .topbar {
+  display: flex;
+  flex: 1 0 100%;
+  flex-flow: row wrap;
+  height: 20px;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+}
+
+#sweath-current-temperature {
   font-size: 13px;
   padding: 0 8px 0 4px;
   border-right: 1px solid rgba(255, 255, 255, .4);
@@ -303,11 +298,11 @@
   white-space: nowrap;
 }
 
-#sweath-weather-container header div, #calendar-box header div {
+#weather-container header div {
   display:flex;
 }
 
-#sweath-weather-container header select, #calendar-box header select {
+#sweath-container header select {
   background: none;
   border: none;
   border-radius: 0;
@@ -323,26 +318,21 @@
   transition: background .3s ease;
 }
 
-// we don't want the season box to fill the whole header
-#calendar-box header select {
-  flex: 1;
-}
-
-#sweath-weather-container header select option, #calendar-box header select option {
+#sweath-container header select option {
   background: #444;
   color: #fff;
 }
 
-#sweath-weather-container header select:hover {
+#sweath-container header select:hover {
   background: rgba(255, 255, 255, .2);
 }
 
-#sweath-weather-container header select:active,
-#sweath-weather-container header select:focus {
+#sweath-container header select:active,
+#sweath-container header select:focus {
   box-shadow: none;
 }
 
-#sweath-weather-container .weather-refresh {
+#sweath-weather-refresh {
   display: flex;
   align-items: center;
   padding: 4px;
@@ -353,7 +343,7 @@
   border-left: 1px solid rgba(255, 255, 255, .4);
 }
 
-#sweath-weather-container .weather-refresh i {
+#sweath-weather-refresh i {
   position: relative;
   top: 1px;
 }
@@ -383,7 +373,6 @@
 
 /* Hide controls until hover */
 
-#sweath-container .calendar-header .header-navigation,
 #sweath-container .day-time-cues,
 #sweath-container .time-controls {
   opacity: 0;
@@ -394,7 +383,6 @@
   opacity: .3;
 }
 
-#sweath-container:hover .calendar-header .header-navigation,
 #sweath-container:hover .day-time-cues,
 #sweath-container:hover .time-controls {
   opacity: 1;

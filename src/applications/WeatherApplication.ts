@@ -68,12 +68,13 @@ export class WeatherApplication extends Application {
       weekday: this.currentWeather?.date ? this.currentWeather.date.weekdays[this.currentWeather.date.dayOfTheWeek] : '',
       currentTemperature: this.currentWeather ? this.currentWeather.getTemperature(moduleSettings.get(SettingKeys.useCelsius)) : '',
       currentDescription: this.currentWeather ? this.currentWeather.getDescription() : '',
-      weatherPanelOpen: this.weatherPanelOpen,
       biomeSelections: biomeSelections,
       seasonSelections: seasonSelections,
       humiditySelections: humiditySelections,
       climateSelections: climateSelections,
-      hideWeather: isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay) ? false : true,
+      hideDialog: isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay) ? false : true,
+      hideCalendar: false,
+      hideWeather: !this.weatherPanelOpen && !false,  // replace with hideCalendar
       windowPosition: this.windowPosition,
     };
 
@@ -96,7 +97,8 @@ export class WeatherApplication extends Application {
   // this is called on every render!  One-time functionality should be put in ????? 
   public async activateListeners(html: JQuery<HTMLElement>) {
     // handle window drag
-    html.find('#sweath-window-move-handle').on('mousedown', this.onMoveHandleMouseDown);
+    html.find('#sweath-calendar-move-handle').on('mousedown', this.onMoveHandleMouseDown);
+    html.find('#sweath-weather-move-handle').on('mousedown', this.onMoveHandleMouseDown);
 
     // setup handlers and values for everyone
     html.find('#weather-toggle').on('click', this.onWeatherToggleClick);
@@ -109,7 +111,7 @@ export class WeatherApplication extends Application {
       html.find('#season-selection').val(moduleSettings.get(SettingKeys.season));
       html.find('#biome-selection').val(moduleSettings.get(SettingKeys.biome));
 
-      html.find('#sweath-weather-regenerate').on('click', this.onWeatherRegenerateClick);
+      html.find('#sweath-weather-refresh').on('click', this.onWeatherRegenerateClick);
       html.find('#biome-selection').on('change', this.onBiomeSelectChange);
       html.find('#climate-selection').on('change', this.onClimateSelectChange);
       html.find('#humidity-selection').on('change', this.onHumiditySelectChange);
