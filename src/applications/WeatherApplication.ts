@@ -24,6 +24,7 @@ export class WeatherApplication extends Application {
   private windowID = 'sweath-container';
   private windowDragHandler = new WindowDrag();
   private windowPosition: WindowPosition;
+  private calendarPresent = false;   // is simple calendar present?
   
   constructor() {
     super();
@@ -72,9 +73,9 @@ export class WeatherApplication extends Application {
       seasonSelections: seasonSelections,
       humiditySelections: humiditySelections,
       climateSelections: climateSelections,
-      hideDialog: isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay) ? false : true,
-      hideCalendar: false,
-      hideWeather: !this.weatherPanelOpen && !false,  // replace with hideCalendar
+      hideDialog: (isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)) ? false : true,
+      hideCalendar: !this.calendarPresent,
+      hideWeather: this.calendarPresent && !this.weatherPanelOpen,  // note: without the calendar, we always show the weather box
       windowPosition: this.windowPosition,
     };
 
@@ -89,6 +90,11 @@ export class WeatherApplication extends Application {
     // save
     moduleSettings.set(SettingKeys.windowPosition, {top: newPosition.top, left: newPosition.left});
 
+    this.render();
+  }
+
+  public activateCalendar(): void {
+    this.calendarPresent = true;
     this.render();
   }
 

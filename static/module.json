@@ -18,19 +18,6 @@
   ],
   "packs": [],
 
-  "relationships": {
-    "requires": [
-      {
-        "id": "foundryvtt-simple-calendar",
-        "type": "module",
-        "manifest": "https://github.com/vigoren/foundryvtt-simple-calendar/releases/latest/download/module.json",
-        "compatiblity": {
-          "verified": "2.4.0"
-        }
-      }
-    ]
-  },
-
   "languages": [
     {
       "lang": "en",

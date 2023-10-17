@@ -7,7 +7,7 @@
 				<div class="topbar">
 					<div id="sweath-weather-move-handle">&nbsp;</div>
 
-					<div class="header-navigation">
+					<div>
 						<div id="weather-toggle" class="sweath-icon-btn">
 							<i class="fas fa-cloud-sun" title="{{localize 'sweath.calendar.Weather'}}"></i>
 						</div>
@@ -76,15 +76,22 @@
 			<div id="sweath-weather-container">
 				<header id="weather-header">
 					<div class="topbar">
-						<div id="sweath-calendar-move-handle" style="flex:1 0 100%">&nbsp;</div>
-						<div class="header-navigation"></div>
-					</div>
+						{{#unless isGM}}
+							<div style="display: flex; align-items:center; flex: 1 1 30px">
+								<div>
+									<span id="sweath-current-temperature">{{ currentTemperature }}</span>
+								</div>
+							</div>
+						{{/unless}}
 
-					<div>
-						<span id="sweath-current-temperature">{{ currentTemperature }}</span>
+						<div id="sweath-calendar-move-handle" style="flex:1 1 80%">&nbsp;</div>
 					</div>
 
 					{{#if isGM}}
+						<div>
+							<span id="sweath-current-temperature">{{ currentTemperature }}</span>
+						</div>
+
 						<div style="flex:1">
 							{{#if isGM}}
 								<select id="season-selection" title="{{localize 'sweath.weather.SelectSeason'}}">
