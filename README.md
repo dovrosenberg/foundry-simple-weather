@@ -2,9 +2,9 @@
 
 [![Supported Foundry Versions](https://img.shields.io/endpoint?url=https://foundryshields.com/version?url=https://github.com/dovrosenberg/foundry-simple-weather/raw/master/static/module.json)](https://github.com/dovrosenberg/foundry-simple-weather)
 
-A module that provides dynamic weather generation, by season and biome.  If [Simple Calendar](https://foundryvtt.com/packages/foundryvtt-simple-calendar) (minimum version 2.4.0) is present, Simple Weather will integrate to it and display the date/time and automatically generate new weather when the date changes.  Without Simple Calendar, Simple Weather displays just a weather control.  (NOTE: THIS MODULE IS NOT AFFILIATED WITH THE CREATORS OF SIMPLE CALENDAR)
+A module that provides dynamic weather generation, by season and biome.  If [Simple Calendar](https://foundryvtt.com/packages/foundryvtt-simple-calendar) (minimum version 2.4.0) is present, Simple Weather will integrate to it and display the date/time and automatically generate new weather when the date changes.  Without Simple Calendar, no date is shown and weather regeneration can be manually triggered. (NOTE: THIS MODULE IS NOT AFFILIATED WITH THE CREATORS OF SIMPLE CALENDAR)
 
-An alternative to Weather Control with an updated and simplified algorithm (or for those not caring about the calendar), aims to provide the most seamless experience to add dynamic weather to your game based on climates.
+An alternative to [Weather Control](https://foundryvtt.com/packages/weather-control) with an updated algorithm (or for those not wishing to rely on Simple Calendar), **Simple Weather** aims to provide the most seamless experience to add dynamic weather to your game based on climates.
 
 I built this as a way to learn Foundry better, but I plan to maintain it for now and am happy to consider feature requests (open an issue at (https://github.com/dovrosenberg/foundry-simple-weather/issues))
 
@@ -13,14 +13,14 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
 - Intuitive UI to generate weather and see current time (if using Simple Calendar) 
 - Print the weather to chat, with the option of showing to players or not
 - Choose whether players can see the dialog
-- Generate weather for every new day automatically
+- Generate weather for every new day automatically (if using Simple Calendar; otherwise manually trigger weather changes)
 - Randomized weather for every season across 3 climates (hot, temperate, cold) and 3 humidities (barren, modest, verdant)
 - Weather progresses naturally from day to day
 - Supports Farenheit and Celsius temperatures
 
 ## Controls
 
-![Main UI](https://i.imgur.com/CEO2rse.png)
+![Main UI](https://i.imgur.com/xLUaVs8.png)
 
 Selecting a biome will automatically pick the climate and humidity to match - providing an easy way to pick standard Earth biomes.  But you can also
 pick the climate/humidity separately so it's flexible to capture most weather conditions.

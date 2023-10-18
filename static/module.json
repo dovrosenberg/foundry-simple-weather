@@ -6,7 +6,7 @@
 
   "compatibility": {
     "minimum": "10",
-    "verified": "11",
+    "verified": "11.313",
     "maximum": "11"
   },
 
@@ -42,5 +42,5 @@
   "license": "https://github.com/dovrosenberg/foundry-simple-weather/blob/master/LICENSE.md",
   "readme": "https://github.com/dovrosenberg/foundry-simple-weather/blob/master/README.md",
   "bugs": "https://github.com/dovrosenberg/foundry-simple-weather/issues",
-  "## changelog": "TODO"
+  "changelog": "https://github.com/dovrosenberg/foundry-simple-weather/blob/master/CHANGELOG.md"
 }
