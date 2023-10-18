@@ -1,0 +1,42 @@
+{
+  "sweath.calendar.Weather": "Wetter",
+
+  "sweath.settings.DialogDisplay": "Können Spieler das Dialogfenster sehen?",
+  "sweath.settings.DialogDisplayHelp": "Wenn ausgewählt, Nicht-SLs können das Dialogfenster sehen (aber nur Zeit, Temperatur und Wetterbeschreibung. Sie können keine Dropdown-Auswahl sehen oder Wetter generieren.",
+  "sweath.settings.useCelsius": "Verwende Celsius",
+  "sweath.settings.useCelsiusHelp": "Verwende die Celsius-Skala, um Temperaturen darzustellen.",
+  "sweath.settings.OutputWeatherToChat": "Zeige das Wetter im Chat?",
+  "sweath.settings.OutputWeatherToChatHelp": "Soll neu-generiertes Wetter im Chat angezeigt werden?",
+  "sweath.settings.PublicChat": "Soll die Chatausgabe öffentlich sein?",
+  "sweath.settings.PublicChatHelp": "Soll jeder (wenn ausgewählt) oder nur der SL (wenn nicht ausgewählt) das Wetter im Chat sehen können?",
+
+  "sweath.weather.biome.tundra": "Tundra",
+  "sweath.weather.biome.alpine": "Alpin",
+  "sweath.weather.biome.taiga": "Taiga",
+  "sweath.weather.biome.chapparel": "Chapparal",
+  "sweath.weather.biome.grassland": "Grassteppe",
+  "sweath.weather.biome.forest": "Wald",
+  "sweath.weather.biome.desert": "Wüste",
+  "sweath.weather.biome.savannah": "Savanne",
+  "sweath.weather.biome.rainforest": "Regenwald",
+  "sweath.weather.RegenerateWeather": "Wetter neuladen",
+  "sweath.weather.SelectBiome": "Wähle eine Vegetation, um das Klima und Luftfeuchtigkeit auszuwählen",
+  "sweath.weather.SwitchUnit": "Wechsle zwischen °F and °C",
+  "sweath.weather.tracker.Today": "Heutiges Wetter:",
+
+  "sweath.weather.SelectClimate": "Wähle ein Klima",
+  "sweath.weather.climate.cold": "Kalt",
+  "sweath.weather.climate.temperate": "Gemäßigt",
+  "sweath.weather.climate.hot": "Heiß",
+
+  "sweath.weather.SelectHumidity": "Wähle ein Luftfeuchtigkeitslevel",
+  "sweath.weather.humidity.barren": "Trocken",
+  "sweath.weather.humidity.modest": "Moderat",
+  "sweath.weather.humidity.verdant": "Feucht",
+
+  "sweath.weather.SelectSeason": "Wähle die derzeitige Jahreszeit",
+  "sweath.season.fall": "Herbst",
+  "sweath.season.summer": "Sommer",
+  "sweath.season.spring": "Frühling",
+  "sweath.season.winter": "Winter"
+}
