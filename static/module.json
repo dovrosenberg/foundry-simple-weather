@@ -1,7 +1,7 @@
 {
   "id": "simple-weather",
   "title": "Simple Weather",
-  "description": "Add dynamic weather to your FoundryVTT world (on top of Simple Calendar).  Note: not affiliated with creators of Simple Calendar.",
+  "description": "Add dynamic weather to your FoundryVTT world.  Note: not affiliated with creators of Simple Calendar.",
   "## version": "will be added when we build",
 
   "compatibility": {
