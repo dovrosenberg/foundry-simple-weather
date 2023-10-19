@@ -9,6 +9,8 @@
   "sweath.settings.OutputWeatherToChatHelp": "Should newly generated weather be shown in chat?",
   "sweath.settings.PublicChat": "Make chat public?",
   "sweath.settings.PublicChatHelp": "Should everyone see the weather chat (if on) or just the GM (if off)?",
+  "sweath.settings.hideCalendar": "Hide calendar box?",
+  "sweath.settings.hideCalendarHelp": "When checked, will only show the weather controls (for example, if you leave the Simple Calendar window open, this saves real estate)",
 
   "sweath.weather.biome.tundra": "Tundra",
   "sweath.weather.biome.alpine": "Alpine",

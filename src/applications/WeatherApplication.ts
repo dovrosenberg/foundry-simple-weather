@@ -74,8 +74,8 @@ export class WeatherApplication extends Application {
       humiditySelections: humiditySelections,
       climateSelections: climateSelections,
       hideDialog: (isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)) ? false : true,
-      hideCalendar: !this.calendarPresent,
-      hideWeather: this.calendarPresent && !this.weatherPanelOpen,  // note: without the calendar, we always show the weather box
+      hideCalendar: !this.calendarPresent || moduleSettings.get(SettingKeys.hideCalendar),
+      hideWeather: this.calendarPresent && !moduleSettings.get(SettingKeys.hideCalendar) && !this.weatherPanelOpen,  // can only hide weather if calendar present and setting is off
       windowPosition: this.windowPosition,
     };
 
