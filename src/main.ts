@@ -34,6 +34,10 @@ Hooks.once('ready', () => {
 
 Hooks.once('i18nInit', (): void => {
   initializeLocalizedText();
+
+  // rerender weather
+  if (weatherApplication)
+    weatherApplication.render();
 });
 
 // on non-GMs, we need to update whenever the GM changes the weather
