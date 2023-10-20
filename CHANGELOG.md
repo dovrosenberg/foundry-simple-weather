@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.2.1 - Fix to manifest file location
+![](https://img.shields.io/badge/release%20date-October%2020%2C%202023-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.2.1/module.zip)
+
+Fixed bad manifest file location in module.json preventing updates 
+
+<hr/>
+
 ## v1.2.0 - Now in German!  Also, reduced screen footprint
 
 ![](https://img.shields.io/badge/release%20date-October%2020%2C%202023-blue)

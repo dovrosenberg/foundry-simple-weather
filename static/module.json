@@ -23,6 +23,11 @@
       "lang": "en",
       "name": "English",
       "path": "lang/en.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
     }
   ],
 
@@ -36,7 +41,7 @@
   ],
 
   "url": "https://github.com/dovrosenberg/foundry-simple-weather",
-  "manifest": "#{MANIFEST}#",
+  "manifest": "https://github.com/dovrosenberg/foundry-simple-weather/releases/latest/download/module.json",
   "download": "#{DOWNLOAD}#",
 
   "license": "https://github.com/dovrosenberg/foundry-simple-weather/blob/master/LICENSE.md",

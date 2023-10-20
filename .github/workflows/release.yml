@@ -13,14 +13,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    # update the MANIFEST AND DOWNLOAD LINKS IN MODULE.JSON
-    - name: Manifest and Download Links
-      id: manifest_link_version
+    # update the DOWNLOAD LINK IN MODULE.JSON
+    - name: Download Link
+      id: download_link_version
       uses: cschleiden/replace-tokens@v1
       with:
         files: './static/module.json'
       env:
-        MANIFEST: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.json
         DOWNLOAD: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.zip
 
     # build  
