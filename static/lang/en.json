@@ -42,7 +42,6 @@
   "sweath.season.spring": "Spring",
   "sweath.season.winter": "Winter",
 
-  "## weather descriptions": "These are sorted in array order per the hex flower in climateData.ts; but numbered left-right, top-down in each season",
   "sweath.description.cold.barren.springfall.1": "Cold winds, very dry",
   "sweath.description.cold.barren.springfall.2": "Grey sky",
   "sweath.description.cold.barren.springfall.3": "Misty",
