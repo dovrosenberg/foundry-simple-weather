@@ -10,6 +10,7 @@ export enum SettingKeys {
   outputWeatherToChat = 'outputWeatherChat',   // when new weather is generated, should it be put in the chat box
   publicChat = 'publicChat',   // should everyone see the chat (true) or just the GM (false)
   useCelsius = 'useCelsius',   // should we use Celsius
+  hideCalendar = 'hideCalendar',  // should we always hide the calendar side
 
   // internal only
   windowPosition = 'windowPosition',   // the current position of the window
@@ -25,6 +26,7 @@ type SettingType<K extends SettingKeys> =
     K extends SettingKeys.publicChat ? boolean :
     K extends SettingKeys.outputWeatherToChat ? boolean :
     K extends SettingKeys.useCelsius ? boolean :
+    K extends SettingKeys.hideCalendar ? boolean :
     K extends SettingKeys.lastWeatherData ? (WeatherData | null) :  
     K extends SettingKeys.season ? number :
     K extends SettingKeys.windowPosition ? (WindowPosition | null) :
@@ -104,6 +106,14 @@ export class ModuleSettings {
         name: 'sweath.settings.useCelsius',
         hint: 'sweath.settings.useCelsiusHelp',
         default: false,
+        type: Boolean,
+      },
+      {
+        settingID: SettingKeys.hideCalendar, 
+        name: 'sweath.settings.hideCalendar',
+        hint: 'sweath.settings.hideCalendarHelp',
+        default: false,
+        requiresReload: true,   // can't find the right typescript type, but this does work
         type: Boolean,
       },
     ];
