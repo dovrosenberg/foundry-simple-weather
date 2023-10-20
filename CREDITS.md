@@ -10,12 +10,10 @@ The current owner of the module.
 
 ## Translators
 
-Would love to have help providing translations to other languages
-
 | Language                  | Translator(s)                                                               |
 |---------------------------|-----------------------------------------------------------------------------|
 | French (fr)               |                                                                             |
-| German (de)               |                                                                             |
+| German (de)               | SesuUisu                                                                    |
 | Korean (ko)               |                                                                             |
 | Japanese (ja)             |                                                                             |
 | Portuguese Brasil (pt-BR) |                                                                             |
@@ -24,11 +22,13 @@ Would love to have help providing translations to other languages
 | Svenska (sv)              |                                                                             |
 | Simplified Chinese (zh)   |                                                                             |
 
+Would love to have help providing translations to other languages
+
 ## Used modules
 
 ### Simple Calendar
 
-Simple Weather heavily relies on [Simple Calendar](https://github.com/vigoren/foundryvtt-simple-calendar) by [Vigoren](https://github.com/vigoren). 
+Simple Weather optionally uses [Simple Calendar](https://github.com/vigoren/foundryvtt-simple-calendar) by [Vigoren](https://github.com/vigoren). 
 
 ## Weather algorithm
 The weather algorithm was inspired by:
