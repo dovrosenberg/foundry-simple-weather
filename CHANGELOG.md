@@ -1,5 +1,16 @@
 # Change Log
 
+## v1.2.0 - Now in German!  Also, reduced screen footprint
+
+![](https://img.shields.io/badge/release%20date-October%2020%2C%202023-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.2.0/module.zip)
+
+Added an option to hide the date/time box when using Simple Calendar (it's always hidden without it).  Helpful if you like to leave Simple Calendar open so only need the weather side of Simple Weather.
+
+Thanks to SesuUisu for adding German translations!
+
+<hr/>
+
 ## v1.1.0 - Removed dependency on Simple Calendar
 
 ![](https://img.shields.io/badge/release%20date-October%2017%2C%202023-blue)

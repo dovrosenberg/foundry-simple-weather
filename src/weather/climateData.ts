@@ -64,6 +64,25 @@ export function initializeLocalizedText(): void {
     { value: String(Season.Winter), text: localize('sweath.season.winter') },
     { value: String(Season.Spring), text: localize('sweath.season.spring') },
   ];
+
+  // load weatherDescriptions
+  // convert enums to array for safety (i.e. in case values aren't in order)
+  const climateArray = Object.values(Climate);
+  const humidityArray = Object.values(Humidity);
+
+  // note each array contains first the string names and then the numeric 
+  //    values
+  for (let c=(climateArray.length/2); c<climateArray.length; c++) {
+    const climate = climateArray[c];
+
+    for (let h=(humidityArray.length/2); h<humidityArray.length; h++) {
+      const humidity = humidityArray[h];
+
+      for (let i=0; i<37; i++) {
+        weatherDescriptions[climate][humidity][i] = localize(`sweath.description.${localizeClimates[climate]}.${localizeHumidities[humidity]}.${descriptionOrder[i]}`);
+      }
+    }
+  }
 }
 
 export { 
@@ -315,18 +334,77 @@ nextCell[Season.Spring] = nextCell[Season.Fall];
 
 // descriptions and temperatures are indexed by Climate, then Humidity, then cell #
 // seasons are handled by controlling which parts of the grid you can get to
-export const weatherDescriptions: string[][][] = [[[]], [[]], [[]], [[]]];
+// we need to populate the descriptions because we might call them before localization happens
+export const weatherDescriptions: string[][][] = new Array(Object.keys(Climate).length)
+  .fill('')
+  .map(() => new Array(Object.keys(Humidity).length)
+    .fill('')
+    .map(() => new Array(37).fill('')));
+
+
 export const weatherTemperatures: number[][][] = [[[]], [[]], [[]], [[]]];
 
-weatherDescriptions[Climate.Cold][Humidity.Barren] = [
-  'Sunny, breezy', 'Fleecy clouds', 'Wind', 'Cold winds, very dry',
-  'Dry storm', 'Cloudy', 'Dry, mild', 'Grey sky', 'Clear sky',
-  'Steel blue sky', 'Light rain', 'Wispy clouds', 'Misty', 'Light fog', 'Cold, clear sky',
-  'Gentle breeze, some clouds', 'Clear, dry, warm', 'Mild, clear sky', 'Blue white sky', 'Cool, clear sky', 'Clear, dry, frigid, no wind', 'Grey, windy',
-  'Blizzard', 'Dark storm cloud', 'Warm rain', 'Dark clouds', 'White out', 'Cloudy and cold',
-  'Hail storm', 'Cumulonimbus clouds', 'Strong gale', 'Spitting snow, windy', 'Grey, fast clouds',
-  'Dry thunderstom', 'Windstorm', 'Light snowfall', 'Snow flurries, windy',
+/////////////////////////////////////////
+// these things are used to map the i18n keys to the right spot in our arrays
+// maps the localized names to the hex order
+const descriptionOrder = [
+  'summer.1',
+  'summer.5',
+  'springfall.warm.1',
+  'springfall.1',
+
+  'summer.2',
+  'summer.6',
+  'springfall.warm.2',
+  'springfall.2',
+  'springfall.cool.1',
+
+  'summer.3',
+  'summer.7',
+  'springfall.warm.3',
+  'springfall.3',
+  'springfall.cool.2',
+  'winter.1',
+
+  'summer.4',
+  'summer.8',
+  'springfall.warm.4',
+  'springfall.4',
+  'springfall.cool.3',
+  'winter.2',
+  'winter.6',
+
+  'summer.9',
+  'springfall.warm.5',
+  'springfall.5',
+  'springfall.cool.4',
+  'winter.3',
+  'winter.7',
+
+  'springfall.warm.6',
+  'springfall.6',
+  'springfall.cool.5',
+  'winter.4',
+  'winter.8',
+
+  'springfall.7',
+  'springfall.cool.6',
+  'winter.5',
+  'winter.9',
 ];
+const localizeClimates = {
+  [Climate.Cold]: 'cold',
+  [Climate.Temperate]: 'temperate',
+  [Climate.Hot]: 'hot',
+
+};
+const localizeHumidities = {
+  [Humidity.Barren]: 'barren',
+  [Humidity.Modest]: 'modest',
+  [Humidity.Verdant]: 'verdant',
+};
+
+///////////////////////////////////////
 
 weatherTemperatures[Climate.Cold][Humidity.Barren] = [
   44, 42, 30, 23,
@@ -336,16 +414,6 @@ weatherTemperatures[Climate.Cold][Humidity.Barren] = [
   36, 49, 36, 30, -15, -35,
   32, 51, 23, 18, -9,
   36, 32, -38, 4,
-];
-
-weatherDescriptions[Climate.Cold][Humidity.Modest] = [
-  'Sunny, refreshing breezes', 'Fleecy clouds', 'Wind', 'Cold winds, very dry',
-  'Dry storm', 'Drizzle', 'Humid, warm', 'Grey sky', 'Barrel clouds',
-  'Steel blue sky', 'Heavy rain', 'Wispy clouds', 'Fog banks', 'Heavy fog', 'Cold, clear sky',
-  'Gentle breeze, some clouds', 'Clear, dry, hot', 'Warm, clear sky', 'Blue white sky', 'Cool, clear sky', 'Clear, dry, cold, no wind', 'Grey, windy',
-  'Blizzard', 'Dark storm cloud', 'Warm rain', 'Dark clouds', 'Heavy snow', 'Snow storm',
-  'Hail storm', 'Cumulonimbus clouds', 'Strong gale', 'Sleet, windy', 'Grey, fast clouds',
-  'Dry thunderstom', 'Windstorm', 'Blizzard', 'Light snowfall, windy',
 ];
 
 weatherTemperatures[Climate.Cold][Humidity.Modest] = [
@@ -358,16 +426,6 @@ weatherTemperatures[Climate.Cold][Humidity.Modest] = [
   36, 32, -38, 4,
 ];
 
-weatherDescriptions[Climate.Cold][Humidity.Verdant] = [
-  'Sunny, refreshing breezes', 'Drizzle', 'Wind', 'Cold winds, very dry',
-  'Dry storm', 'Steady rain', 'Light rain, warm', 'Grey sky', 'Barrel clouds',
-  'Scattered clouds, patches of light rain', 'Downpour', 'Wispy clouds', 'Rolling fog', 'Heavy fog', 'Cold, clear sky',
-  'Gentle breeze, some clouds', 'Clear, dry, hot', 'Humid, warm, clear sky', 'Blue white sky', 'Cool, clear sky', 'Clear, dry, cold, no wind', 'Grey, windy',
-  'Blizzard', 'Storming, rain', 'Warm rain', 'Humid, dark clouds, threatening rain', 'Heavy snow', 'Thick snow',
-  'Hail storm', 'Warm rain', 'Strong gale', 'Sleet, windy, rain', 'Grey, fast clouds',
-  'Thunderstom with spitting rain', 'Windstorm', 'Blizzard', 'Moderate snowfall, windy',
-];
-
 weatherTemperatures[Climate.Cold][Humidity.Verdant] = [
   44, 42, 30, 23,
   51, 46, 32, 18, 11,
@@ -376,16 +434,6 @@ weatherTemperatures[Climate.Cold][Humidity.Verdant] = [
   36, 49, 36, 30, -15, -35,
   32, 51, 23, 18, -9,
   36, 32, -38, 4,
-];
-
-weatherDescriptions[Climate.Temperate][Humidity.Barren] = [
-  'Sunny, refreshing breezes', 'Fleecy clouds', 'Wind', 'Cold winds, very dry',
-  'Dry storm', 'Cloudy', 'Dry, warm, 73C', 'Grey sky', 'Clear sky',
-  'Steel blue sky', 'Light rain', 'Wispy clouds', 'Misty', 'Light fog', 'Cold, clear sky',
-  'Gentle breeze, some clouds', 'Clear, dry, hot', 'Warm, clear sky', 'Blue white sky', 'Cool, clear sky', 'Snowing', 'Grey, windy',
-  'Wild fire', 'Dark storm cloud', 'Warm rain', 'Dark clouds', 'Clear, dry, no wind', 'Cloudy and cold',
-  'Flash floods', 'Cumulonimbus clouds', 'Strong gale', 'Drizzle, windy', 'Grey, fast clouds',
-  'Dry thunderstom', 'Windstorm', 'Light snowfall', 'Snow flurries, windy',
 ];
 
 weatherTemperatures[Climate.Temperate][Humidity.Barren] = [
@@ -398,16 +446,6 @@ weatherTemperatures[Climate.Temperate][Humidity.Barren] = [
   75, 73, 38, 59,
 ];
 
-weatherDescriptions[Climate.Temperate][Humidity.Modest] = [
-  'Sunny, refreshing breezes', 'Fleecy clouds', 'Wind', 'Cold winds, very dry',
-  'Dry storm', 'Drizzle', 'Humid, warm', 'Grey sky', 'Barrel clouds',
-  'Steel blue sky', 'Heavy rain', 'Wispy clouds', 'Fog banks', 'Heavy fog', 'Cold, clear sky',
-  'Gentle breeze, some clouds', 'Clear, dry, hot', 'Warm, clear sky', 'Blue white sky', 'Cool, clear sky', 'Clear, dry, cold, no wind', 'Grey, windy',
-  'Tornado', 'Dark storm cloud', 'Warm rain', 'Dark clouds', 'Heavy snow', 'Snow storm',
-  'Hail storm', 'Cumulonimbus clouds', 'Strong gale', 'Sleet, windy', 'Grey, fast clouds',
-  'Dry thunderstom', 'Windstorm', 'Blizzard', 'Light snowfall, windy',
-];
-
 weatherTemperatures[Climate.Temperate][Humidity.Modest] = [
   70, 68, 57, 50,
   77, 72, 59, 45, 39,
@@ -416,16 +454,6 @@ weatherTemperatures[Climate.Temperate][Humidity.Modest] = [
   63, 75, 63, 57, 14, -6,
   59, 77, 50, 45, 19,
   63, 59, -8, 32,
-];
-
-weatherDescriptions[Climate.Temperate][Humidity.Verdant] = [
-  'Sunny, refreshing breezes', 'Drizzle', 'Wind', 'Cold winds, very dry',
-  'Dry storm', 'Steady rain', 'Light rain, warm', 'Grey sky', 'Barrel clouds',
-  'Scattered clouds, patches of light rain', 'Downpour', 'Wispy clouds', 'Rolling fog', 'Heavy fog', 'Cold, clear sky',
-  'Gentle breeze, some clouds', 'Clear, dry, hot', 'Humid, warm, clear sky', 'Blue white sky', 'Cool, clear sky', 'Clear, dry, cold, no wind', 'Grey, windy',
-  'Dangerous winds', 'Storming, rain', 'Warm rain', 'Humid, dark clouds, threatening rain', 'Heavy snow', 'Thick snow',
-  'Hail storm', 'Warm rain', 'Strong gale', 'Sleet, windy, rain', 'Grey, fast clouds',
-  'Thunderstom with spitting rain', 'Windstorm', 'Blizzard', 'Moderate snowfall, windy',
 ];
 
 weatherTemperatures[Climate.Temperate][Humidity.Verdant] = [
@@ -438,16 +466,6 @@ weatherTemperatures[Climate.Temperate][Humidity.Verdant] = [
   63, 59, -10, 22,
 ];
 
-weatherDescriptions[Climate.Hot][Humidity.Barren] = [
-  'Sunny, refreshing breezes', 'Fleecy clouds', 'Wind', 'Windy, very dry',
-  'Dust storm', 'Cloudy', 'Dry, warm', 'Grey sky', 'Clear sky',
-  'Steel blue sky', 'Light rain', 'Wispy clouds', 'Misty', 'Light fog', 'Cold, clear sky',
-  'Gentle breeze, some clouds', 'Clear, dry, hot', 'Warm, clear sky', 'Blue white sky', 'Cool, clear sky', 'Clear, dry, no wind', 'Grey, windy',
-  'Dust devil', 'Dark storm cloud', 'Warm rain', 'Dark clouds', 'Thunder storm', 'Cloudy and mild',
-  'Flash floods', 'Cumulonimbus clouds', 'Strong gale', 'Drizzle, windy', 'Grey, fast clouds',
-  'Dry thunderstom', 'Windstorm', 'Spitting rain', 'Spitting rain, windy',
-];
-
 weatherTemperatures[Climate.Hot][Humidity.Barren] = [
   93, 92, 87, 84,
   96, 94, 88, 82, 79,
@@ -458,16 +476,6 @@ weatherTemperatures[Climate.Hot][Humidity.Barren] = [
   90, 88, 58, 76,
 ];
 
-weatherDescriptions[Climate.Hot][Humidity.Modest] = [
-  'Sunny, refreshing breezes', 'Fleecy clouds', 'Wind', 'Windy, very dry',
-  'Wind storm', 'Drizzle', 'Humid, warm', 'Grey sky', 'Barrel clouds',
-  'Steel blue sky', 'Heavy rain', 'Wispy clouds', 'Fog banks', 'Heavy fog', 'Beautiful, clear sky',
-  'Gentle breeze, some clouds', 'Clear, dry, hot', 'Warm, clear sky', 'Blue white sky', 'Cool, clear sky', 'Clear, dry, no wind', 'Grey, windy',
-  'Wild fire', 'Dark storm cloud', 'Warm rain', 'Dark clouds', 'Hard rain', 'Cooling rain',
-  'Lightning storm', 'Cumulonimbus clouds', 'Strong gale', 'Rain, windy', 'Grey, fast clouds',
-  'Dry thunderstom', 'Windstorm', 'Heavy rain storm', 'Light rain, windy',
-];
-
 weatherTemperatures[Climate.Hot][Humidity.Modest] = [
   79, 79, 77, 75,
   80, 79, 77, 74, 73,
@@ -476,16 +484,6 @@ weatherTemperatures[Climate.Hot][Humidity.Modest] = [
   78, 80, 78, 76, 68, 65,
   77, 80, 75, 74, 69,
   78, 77, 64, 72,
-];
-
-weatherDescriptions[Climate.Hot][Humidity.Verdant] = [
-  'Sunny, refreshing breezes', 'Drizzle', 'Wind', 'Dry',
-  'Dry storm', 'Steady rain', 'Light rain, warm', 'Grey sky', 'Barrel clouds',
-  'Scattered clouds, paches of light rain', 'Downpour', 'Wispy clouds', 'Rolling fog', 'Heavy fog', 'Beautiful, clear sky',
-  'Gentle breeze, some clouds', 'Clear, dry, hot', 'Humid, warm, clear sky', 'Blue white sky', 'Beautiful, clear sky', 'Clear, dry, no wind', 'Grey, windy',
-  'Cyclone', 'Storming, rain', 'Warm rain', 'Humid, dark clouds, threatening rain', 'Heavy rain', 'Pouring rain',
-  'Heavy rainstorm', 'Warm rain', 'Strong gale', 'Windy, rain', 'Grey, fast clouds',
-  'Thunderstom with spitting rain', 'Windstorm', 'Downpour', 'Moderate rain, windy',
 ];
 
 weatherTemperatures[Climate.Hot][Humidity.Verdant] = [

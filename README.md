@@ -15,12 +15,14 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
 - Choose whether players can see the dialog
 - Generate weather for every new day automatically (if using Simple Calendar; otherwise manually trigger weather changes)
 - Randomized weather for every season across 3 climates (hot, temperate, cold) and 3 humidities (barren, modest, verdant)
+- Show the current date/time from Simple Calendar in a smaller box (good for players who don't need the full Simple Calendar display), or
+-    hide it and just show the weather.
 - Weather progresses naturally from day to day
 - Supports Farenheit and Celsius temperatures
 
 ## Controls
 
-![Main UI](https://i.imgur.com/xLUaVs8.png)
+![Main UI](https://i.imgur.com/mqhvNi9.png)
 
 Selecting a biome will automatically pick the climate and humidity to match - providing an easy way to pick standard Earth biomes.  But you can also
 pick the climate/humidity separately so it's flexible to capture most weather conditions.
