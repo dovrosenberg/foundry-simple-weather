@@ -51,7 +51,7 @@
     },
 
     "labels": {
-      "openWeatherBox": "Wetter",
+      "openWeatherBox": "Offnen/schließen wetter",
       "regenerateWeather": "Wetter neu laden"
     },
 

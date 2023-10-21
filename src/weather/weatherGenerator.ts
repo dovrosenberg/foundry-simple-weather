@@ -12,17 +12,15 @@ const generate = function(climate: Climate, humidity: Humidity, season: Season, 
   const weatherData = new WeatherData(today, season, humidity, climate, null, null);
 
   // do the generation
-  if (!yesterday || yesterday.season !== season || !yesterday.hexFlowerCell) {
-    // equal chances of any starting spot
-    const startingSpot = Math.floor(Math.random()*startingCells[season].length);
+  log(false, 'Generating weather');
+  log(false, 'Season: ' + Object.values(Season)[season]);
+  log(false, 'Climate: ' + Object.values(Climate)[climate]);
+  log(false, 'Humidity: ' + Object.values(Humidity)[humidity]);
 
+  if (!yesterday || yesterday.season !== season || !yesterday.hexFlowerCell) {
     // no yesterday data (or starting a new season), so just pick a random starting point based on the season
-    weatherData.hexFlowerCell = startingCells[season][startingSpot];
+    weatherData.hexFlowerCell = getDefaultStart(season);
   } else {
-    log(false, 'Generating weather');
-    log(false, 'Season: ' + seasonSelections[season].text);
-    log(false, 'Climate: ' + climateSelections[climate].text);
-    log(false, 'Humidity: ' + humiditySelections[humidity].text);
     log(false, 'Current cell: ' + yesterday.hexFlowerCell + ' (' + weatherDescriptions[climate][humidity][yesterday.hexFlowerCell] + ')')
 
     // generate based on yesterday
@@ -34,9 +32,9 @@ const generate = function(climate: Climate, humidity: Humidity, season: Season, 
     } else {
       weatherData.hexFlowerCell = nextCell[season][yesterday.hexFlowerCell][direction];
 
-      // a -1 means stay where we were
+      // a -1 should never happen; if it does, something got screwy, so go to a default starting position
       if (weatherData.hexFlowerCell === -1) {
-        weatherData.hexFlowerCell = yesterday.hexFlowerCell;
+        weatherData.hexFlowerCell = weatherData.hexFlowerCell = getDefaultStart(season);
       }
     }
 
@@ -78,6 +76,13 @@ const output = function(weatherData: WeatherData) {
       content: chatOut,
     });
   }
+};
+
+// pick one of the valid starting cells at random
+const getDefaultStart = function(season: Season) {
+  const startingSpot = Math.floor(Math.random()*startingCells[season].length);
+
+  return startingCells[season][startingSpot];
 };
 
 export {

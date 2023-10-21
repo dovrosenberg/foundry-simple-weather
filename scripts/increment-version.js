@@ -39,17 +39,17 @@ function incrementVersion(answer) {
   let patch = 0;
 
   switch(answer) {
-  case '1':
-    major = 1;
-    break;
+    case '1':
+      major = 1;
+      break;
 
-  case '2':
-    minor = 1;
-    break;
+    case '2':
+      minor = 1;
+      break;
 
-  case '3':
-    patch = 1;
-    break;
+    case '3':
+      patch = 1;
+      break;
   }
   const mask = [major,minor,patch];
 
