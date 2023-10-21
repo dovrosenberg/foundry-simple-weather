@@ -72,7 +72,7 @@ const output = function(weatherData: WeatherData) {
 
     ChatMessage.create({
       speaker: {
-        alias: localize('sweath.weather.tracker.Today'),
+        alias: localize('sweath.chat.header'),
       },
       whisper: messageRecipients,
       content: chatOut,

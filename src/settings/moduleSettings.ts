@@ -78,22 +78,22 @@ export class ModuleSettings {
     const displayParams: (InexactPartial<Omit<SettingConfig<unknown>, 'key' | 'namespace'>> & { settingID: string })[] = [
       {
         settingID: SettingKeys.outputWeatherToChat,
-        name: 'sweath.settings.OutputWeatherToChat',
-        hint: 'sweath.settings.OutputWeatherToChatHelp',
+        name: 'sweath.settings.outputweatherToChat',
+        hint: 'sweath.settings.outputweatherToChatHelp',
         default: true,
         type: Boolean,
       },
       {
         settingID: SettingKeys.publicChat,
-        name: 'sweath.settings.PublicChat',
-        hint: 'sweath.settings.PublicChatHelp',
+        name: 'sweath.settings.publicChat',
+        hint: 'sweath.settings.publicChatHelp',
         default: true,
         type: Boolean,
       },
       {
         settingID: SettingKeys.dialogDisplay, 
-        name: 'sweath.settings.DialogDisplay',
-        hint: 'sweath.settings.DialogDisplayHelp',
+        name: 'sweath.settings.dialogDisplay',
+        hint: 'sweath.settings.dialogDisplayHelp',
         default: true,
         type: Boolean,
       },

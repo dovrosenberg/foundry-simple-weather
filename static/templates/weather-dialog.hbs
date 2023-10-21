@@ -9,7 +9,7 @@
 
 					<div>
 						<div id="weather-toggle" class="sweath-icon-btn">
-							<i class="fas fa-cloud-sun" title="{{localize 'sweath.calendar.Weather'}}"></i>
+							<i class="fas fa-cloud-sun" title="{{localize 'sweath.labels.openWeatherBox'}}"></i>
 						</div>
 					</div>
 				</div>
@@ -29,7 +29,7 @@
 
 				<!-- clock display -->
 				<div class="clock">
-					<div id="start-stop-clock" class="time-display"  title="{{localize 'sweath.time.StartStopPseudo'}}">
+					<div id="start-stop-clock" class="time-display">
 						{{#if isGM}}
 						<div id="clock-run-indicator" title="{{localize 'ClockRunning'}}">
 							<ul>
@@ -94,7 +94,7 @@
 
 						<div style="flex:1">
 							{{#if isGM}}
-								<select id="season-selection" title="{{localize 'sweath.weather.SelectSeason'}}">
+								<select id="season-selection" title="{{localize 'sweath.options.season.select'}}">
 									{{#each seasonSelections}}
 										<option title="{{text}}" value="{{value}}">{{text}}</option>
 									{{/each}}
@@ -102,25 +102,25 @@
 							{{/if}}
 						</div>
 						<div style="flex:1">
-							<select id="biome-selection" title="{{localize 'sweath.weather.SelectBiome'}}">
+							<select id="biome-selection" title="{{localize 'sweath.options.biome.select'}}">
 								{{#each biomeSelections}}
 									<option title="{{text}}" value="{{value}}">{{text}}</option>
 								{{/each}}
 							</select>
 						</div>
-						<div id="sweath-weather-refresh" clas="calendar-btn" title="{{localize 'sweath.weather.RegenerateWeather'}}">
+						<div id="sweath-weather-refresh" class="calendar-btn" title="{{localize 'sweath.labels.regenerateWeather'}}">
 							<i class="fas fa-redo"></i>
 						</div>
 						<div class="row-break"></div>
 						<div style="flex:0 0 50%">
-							<select id="climate-selection" title="{{localize 'sweath.weather.SelectClimate'}}">
+							<select id="climate-selection" title="{{localize 'sweath.options.climate.select'}}">
 								{{#each climateSelections}}
 									<option title="{{text}}" value="{{value}}">{{text}}</option>
 								{{/each}}
 							</select>
 						</div>
 						<div style="flex: 0 0 50%">
-							<select id="humidity-selection" title="{{localize 'sweath.weather.SelectHumidity'}}">
+							<select id="humidity-selection" title="{{localize 'sweath.options.humidity.select'}}">
 								{{#each humiditySelections}}
 									<option title="{{text}}" value="{{value}}">{{text}}</option>
 								{{/each}}

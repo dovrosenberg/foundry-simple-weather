@@ -35,34 +35,34 @@ export function initializeLocalizedText(): void {
 
   biomeSelections = [
     { value: '', text: '' },
-    { value: 'tundra', text: localize('sweath.weather.biome.tundra') },
-    { value: 'alpine', text: localize('sweath.weather.biome.alpine') },
-    { value: 'taiga', text: localize('sweath.weather.biome.taiga') },
-    { value: 'chapparel', text: localize('sweath.weather.biome.chapparel') },
-    { value: 'grassland', text: localize('sweath.weather.biome.grassland') },
-    { value: 'forest', text: localize('sweath.weather.biome.forest') },
-    { value: 'desert', text: localize('sweath.weather.biome.desert') },
-    { value: 'savannah', text: localize('sweath.weather.biome.savannah') },
-    { value: 'rainforest', text: localize('sweath.weather.biome.rainforest') },
+    { value: 'tundra', text: localize('sweath.options.biome.tundra') },
+    { value: 'alpine', text: localize('sweath.options.biome.alpine') },
+    { value: 'taiga', text: localize('sweath.options.biome.taiga') },
+    { value: 'chapparel', text: localize('sweath.options.biome.chapparel') },
+    { value: 'grassland', text: localize('sweath.options.biome.grassland') },
+    { value: 'forest', text: localize('sweath.options.biome.forest') },
+    { value: 'desert', text: localize('sweath.options.biome.desert') },
+    { value: 'savannah', text: localize('sweath.options.biome.savannah') },
+    { value: 'rainforest', text: localize('sweath.options.biome.rainforest') },
   ];
 
   climateSelections= [
-    { value: String(Climate.Cold), text: localize('sweath.weather.climate.cold') },
-    { value: String(Climate.Temperate), text: localize('sweath.weather.climate.temperate') },
-    { value: String(Climate.Hot), text: localize('sweath.weather.climate.hot') },
+    { value: String(Climate.Cold), text: localize('sweath.options.climate.cold') },
+    { value: String(Climate.Temperate), text: localize('sweath.options.climate.temperate') },
+    { value: String(Climate.Hot), text: localize('sweath.options.climate.hot') },
   ];
 
   humiditySelections = [
-    { value: String(Humidity.Barren), text: localize('sweath.weather.humidity.barren') },
-    { value: String(Humidity.Modest), text: localize('sweath.weather.humidity.modest') },
-    { value: String(Humidity.Verdant), text: localize('sweath.weather.humidity.verdant') },
+    { value: String(Humidity.Barren), text: localize('sweath.options.humidity.barren') },
+    { value: String(Humidity.Modest), text: localize('sweath.options.humidity.modest') },
+    { value: String(Humidity.Verdant), text: localize('sweath.options.humidity.verdant') },
   ];
 
   seasonSelections = [
-    { value: String(Season.Summer), text: localize('sweath.season.summer') },
-    { value: String(Season.Fall), text: localize('sweath.season.fall') },
-    { value: String(Season.Winter), text: localize('sweath.season.winter') },
-    { value: String(Season.Spring), text: localize('sweath.season.spring') },
+    { value: String(Season.Summer), text: localize('sweath.options.season.summer') },
+    { value: String(Season.Fall), text: localize('sweath.options.season.fall') },
+    { value: String(Season.Winter), text: localize('sweath.options.season.winter') },
+    { value: String(Season.Spring), text: localize('sweath.options.season.spring') },
   ];
 
   // load weatherDescriptions
