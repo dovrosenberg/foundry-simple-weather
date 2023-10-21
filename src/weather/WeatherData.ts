@@ -1,12 +1,12 @@
-import { log } from '@/utils/log';
-import { weatherDescriptions, Season, Climate, Humidity } from '@/weather/climateData';
+import { weatherDescriptions, Season, Climate, Humidity, seasonSelections } from '@/weather/climateData';
+import { Icons } from 'foundryvtt-simple-calendar/src/constants';
   
 // describes the weather for a day
 // we can use humidity, climate, and gridCell to determine the text description
 // season is only used so that if we want to pick the next day's weather we can tell if we've changed seasons
 export class WeatherData {
   public date: SimpleCalendar.DateData | null;
-  public season: Season | null;        // which season we were in 
+  public season: Season | null;        // which season we were in (i.e. actually using for weather)
   public humidity: Humidity | null;    // the humidity selection
   public climate: Climate | null;      // the climate selection
   public hexFlowerCell: number | null;      // number of the cell in the hex flower
@@ -21,6 +21,27 @@ export class WeatherData {
     this.temperature = temperature;
   }
 
+  // getters
+  get simpleCalendarSeason(): Season | null {
+    const icon = this.date?.currentSeason?.icon || '';
+
+    switch (icon) {
+      case Icons.Fall:
+        return Season.Fall;
+
+      case Icons.Winter:
+        return Season.Winter;
+
+      case Icons.Spring:
+        return Season.Spring;
+
+      case Icons.Summer:
+        return Season.Summer;
+    }
+
+    return null;
+  }
+
   public getTemperature = (useCelsius: boolean): string => {
     if (this.temperature===null)
       return '';
@@ -32,9 +53,11 @@ export class WeatherData {
   };
 
   public getDescription = (): string => {  
-    if (this.climate===null || this.humidity===null  || this.hexFlowerCell===null)
+    if (this.climate===null || this.humidity===null  || this.hexFlowerCell===null ||
+        this.climate===undefined || this.humidity===undefined  || this.hexFlowerCell===undefined)
       return '';
 
     return weatherDescriptions[this.climate][this.humidity][this.hexFlowerCell];
   };
 }
+

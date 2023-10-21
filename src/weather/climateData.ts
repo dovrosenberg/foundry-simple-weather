@@ -34,7 +34,7 @@ export function initializeLocalizedText(): void {
   log(false, 'Loading localized climate text');
 
   biomeSelections = [
-    { value: '', text: '' },
+    { value: '', text: 'Use climate/humidity' },
     { value: 'tundra', text: localize('sweath.options.biome.tundra') },
     { value: 'alpine', text: localize('sweath.options.biome.alpine') },
     { value: 'taiga', text: localize('sweath.options.biome.taiga') },
@@ -59,10 +59,10 @@ export function initializeLocalizedText(): void {
   ];
 
   seasonSelections = [
+    { value: String(Season.Spring), text: localize('sweath.options.season.spring') },
     { value: String(Season.Summer), text: localize('sweath.options.season.summer') },
     { value: String(Season.Fall), text: localize('sweath.options.season.fall') },
     { value: String(Season.Winter), text: localize('sweath.options.season.winter') },
-    { value: String(Season.Spring), text: localize('sweath.options.season.spring') },
   ];
 
   // load weatherDescriptions
@@ -85,12 +85,18 @@ export function initializeLocalizedText(): void {
   }
 }
 
+// if we have a simple calendar, than activate the "sync" option in the drop down
+const allowSeasonSync = function() {
+  seasonSelections.splice(0,0, { value: 'sync', text: localize('sweath.options.season.sync')});
+};
+
 export { 
   humiditySelections,
   climateSelections,
   biomeSelections,
   seasonSelections,
-}
+  allowSeasonSync,
+};
 
 // these map the biomes to their climate/humidity
 export const biomeMappings: Record<string, { climate: number, humidity: number }> = {
@@ -105,7 +111,7 @@ export const biomeMappings: Record<string, { climate: number, humidity: number }
   rainforest: { climate: Climate.Hot, humidity: Humidity.Verdant },
 };
 
-// rather than specifying biomes, we take a more flexible approach (though we also define some biomes as defaults)
+// rather than specifying weather by biome, we take a more flexible approach (though we also define some biomes as defaults)
 // this approach allows GMs to create non-earth biomes (ex. what's the weather like in the Fey realm or another plane?) and 
 //    still easily use the tool
 
@@ -187,7 +193,6 @@ export const getDirection = (season: Season): Direction => {
 
   // note: this relies on the specific values of the Direction enums
   for (let direction=-1, accumulator=0; direction<=5; direction++) {
-    log(false, 'direction calc: rand=' + rand + ' direction=' + direction + ' accumulator=' + accumulator);
     accumulator += moveProbabilities[season][direction];
 
     if (rand<=accumulator) {
@@ -335,14 +340,20 @@ nextCell[Season.Spring] = nextCell[Season.Fall];
 // descriptions and temperatures are indexed by Climate, then Humidity, then cell #
 // seasons are handled by controlling which parts of the grid you can get to
 // we need to populate the descriptions because we might call them before localization happens
-export const weatherDescriptions: string[][][] = new Array(Object.keys(Climate).length)
+// note: length/2 because typescript enums have both the numbers and strings as keys
+export const weatherDescriptions: string[][][] = new Array(Object.keys(Climate).length/2)
   .fill('')
-  .map(() => new Array(Object.keys(Humidity).length)
+  .map(() => new Array(Object.keys(Humidity).length/2)
     .fill('')
     .map(() => new Array(37).fill('')));
 
 
-export const weatherTemperatures: number[][][] = [[[]], [[]], [[]], [[]]];
+export const weatherTemperatures: number[][][] = new Array(Object.keys(Climate).length/2)
+  .fill(0)
+  .map(() => new Array(Object.keys(Humidity).length/2)
+    .fill(0)
+    .map(() => new Array(37).fill(0)));
+
 
 /////////////////////////////////////////
 // these things are used to map the i18n keys to the right spot in our arrays

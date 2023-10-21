@@ -43,6 +43,7 @@
 
       "season": {
         "select": "Wähle die derzeitige Jahreszeit",
+        "sync": "Sync with Simple Calendar",
         "fall": "Herbst",
         "summer": "Sommer",
         "spring": "Frühling",
@@ -51,7 +52,7 @@
     },
 
     "labels": {
-      "openWeatherBox": "Wetter",
+      "openWeatherBox": "Offnen/schließen wetter",
       "regenerateWeather": "Wetter neu laden"
     },
 

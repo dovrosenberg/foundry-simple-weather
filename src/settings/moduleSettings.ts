@@ -16,6 +16,7 @@ export enum SettingKeys {
   windowPosition = 'windowPosition',   // the current position of the window
   lastWeatherData = 'lastWeatherData',  // the previously generated weather data
   season = 'season',   // the current season
+  seasonSync = 'seasonSync',       // should we sync with simple calendar
   biome = 'biome',  // the current biome
   climate = 'climate',   // the current climate
   humidity = 'humidity',   // the current humidity
@@ -29,6 +30,7 @@ type SettingType<K extends SettingKeys> =
     K extends SettingKeys.hideCalendar ? boolean :
     K extends SettingKeys.lastWeatherData ? (WeatherData | null) :  
     K extends SettingKeys.season ? number :
+    K extends SettingKeys.seasonSync ? boolean :
     K extends SettingKeys.windowPosition ? (WindowPosition | null) :
     K extends SettingKeys.biome ? string :
     K extends SettingKeys.climate ? number :
@@ -131,6 +133,12 @@ export class ModuleSettings {
         name: 'Last season',
         type: Number,
         default: 0
+      },
+      {
+        settingID: SettingKeys.seasonSync,
+        name: 'Season sync',
+        type: Boolean,
+        default: false
       },
       {
         settingID: SettingKeys.biome,

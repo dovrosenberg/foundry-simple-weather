@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.3.0 - Season sync to Simple Calendar
+![](https://img.shields.io/badge/release%20date-October%2021%2C%202023-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.3.0/module.zip)
+
+You can now choose to sync the season with Simple Calendar; see documentation 
+
+<hr/>
+
 ## v1.2.1 - Fix to manifest file location
 ![](https://img.shields.io/badge/release%20date-October%2020%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.2.1/module.zip)

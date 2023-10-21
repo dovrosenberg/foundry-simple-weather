@@ -4,7 +4,7 @@ import { moduleSettings, ModuleSettings, SettingKeys, updateModuleSettings } fro
 import { VersionUtils } from '@/utils/versionUtils';
 import { getGame, isClientGM } from '@/utils/game';
 import { log } from './utils/log';
-import { initializeLocalizedText } from './weather/climateData';
+import { allowSeasonSync, initializeLocalizedText } from './weather/climateData';
 import { updateWeatherApplication, weatherApplication, WeatherApplication } from './applications/WeatherApplication';
 
 // track which modules we have
@@ -42,7 +42,7 @@ Hooks.once('i18nInit', (): void => {
 
 // on non-GMs, we need to update whenever the GM changes the weather
 Hooks.on('updateSetting', (setting: Setting): void => {
-  if (setting.key === 'simple-weather.' + SettingKeys.lastWeatherData) 
+  if (!isClientGM() && setting.key === 'simple-weather.' + SettingKeys.lastWeatherData) 
     weatherApplication.setWeather();
 });
 
@@ -58,6 +58,9 @@ Hooks.once(SimpleCalendar.Hooks.Ready, async () => {
 
       await weatherApplication.updateDateTime(SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp()));   // this is really for the very 1st load; after that this date should match what was saved in settings
     }
+
+    // modify the drop-downs
+    allowSeasonSync();
 
     // add the datetime change hook - we don't use SimpleCalendar.Hooks.DateTimeChange 
     //    because it doesn't call the hook on player clients

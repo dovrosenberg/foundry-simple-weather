@@ -19,17 +19,23 @@ export function updateWeatherApplication(weatherApp: WeatherApplication): void {
 }
 
 export class WeatherApplication extends Application {
-  private currentWeather: WeatherData;
-  private weatherPanelOpen: boolean;
-  private windowID = 'sweath-container';
-  private windowDragHandler = new WindowDrag();
-  private windowPosition: WindowPosition;
-  private calendarPresent = false;   // is simple calendar present?
-  
+  private _currentWeather: WeatherData;
+  private _weatherPanelOpen: boolean;
+  private _windowID = 'sweath-container';
+  private _windowDragHandler = new WindowDrag();
+  private _windowPosition: WindowPosition;
+  private _calendarPresent = false;   // is simple calendar present?
+
+  private _currentClimate: Climate;
+  private _currentHumidity: Humidity;
+  private _currentBiome: string;
+  private _currentSeason: Season; 
+  private _currentSeasonSync: boolean;
+
   constructor() {
     super();
 
-    this.weatherPanelOpen = false;
+    this._weatherPanelOpen = false;
 
     log(false, 'WeatherApplication construction');
 
@@ -63,20 +69,21 @@ export class WeatherApplication extends Application {
     const data = {
       ...(await super.getData()),
       isGM: isClientGM(),
-      displayDate: this.currentWeather?.date?.display ? this.currentWeather.date.display.date : '',
-      formattedDate: this.currentWeather?.date ? this.currentWeather.date.day + '/' + this.currentWeather.date.month + '/' + this.currentWeather.date.year : '',
-      formattedTime: this.currentWeather?.date?.display ? this.currentWeather.date.display.time : '',
-      weekday: this.currentWeather?.date ? this.currentWeather.date.weekdays[this.currentWeather.date.dayOfTheWeek] : '',
-      currentTemperature: this.currentWeather ? this.currentWeather.getTemperature(moduleSettings.get(SettingKeys.useCelsius)) : '',
-      currentDescription: this.currentWeather ? this.currentWeather.getDescription() : '',
+      displayDate: this._currentWeather?.date?.display ? this._currentWeather.date.display.date : '',
+      formattedDate: this._currentWeather?.date ? this._currentWeather.date.day + '/' + this._currentWeather.date.month + '/' + this._currentWeather.date.year : '',
+      formattedTime: this._currentWeather?.date?.display ? this._currentWeather.date.display.time : '',
+      weekday: this._currentWeather?.date ? this._currentWeather.date.weekdays[this._currentWeather.date.dayOfTheWeek] : '',
+      currentTemperature: this._currentWeather ? this._currentWeather.getTemperature(moduleSettings.get(SettingKeys.useCelsius)) : '',
+      currentDescription: this._currentWeather ? this._currentWeather.getDescription() : '',
+      currentSeasonClass: this.currentSeasonClass(),
       biomeSelections: biomeSelections,
       seasonSelections: seasonSelections,
       humiditySelections: humiditySelections,
       climateSelections: climateSelections,
       hideDialog: (isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)) ? false : true,
-      hideCalendar: !this.calendarPresent || moduleSettings.get(SettingKeys.hideCalendar),
-      hideWeather: this.calendarPresent && !moduleSettings.get(SettingKeys.hideCalendar) && !this.weatherPanelOpen,  // can only hide weather if calendar present and setting is off
-      windowPosition: this.windowPosition,
+      hideCalendar: !this._calendarPresent || moduleSettings.get(SettingKeys.hideCalendar),
+      hideWeather: this._calendarPresent && !moduleSettings.get(SettingKeys.hideCalendar) && !this._weatherPanelOpen,  // can only hide weather if calendar present and setting is off
+      windowPosition: this._windowPosition,
     };
 
     return data;
@@ -85,7 +92,7 @@ export class WeatherApplication extends Application {
   // move the window
   // we can't use foundry's setPosition() because it doesn't work for fixed size, non popout windows
   public setWindowPosition(newPosition: WindowPosition) {
-    this.windowPosition = newPosition;
+    this._windowPosition = newPosition;
 
     // save
     moduleSettings.set(SettingKeys.windowPosition, {top: newPosition.top, left: newPosition.left});
@@ -94,14 +101,14 @@ export class WeatherApplication extends Application {
   }
 
   public activateCalendar(): void {
-    this.calendarPresent = true;
+    this._calendarPresent = true;
     this.render();
   }
 
   // called by the parent class to attach event handlers after window is rendered
   // note that saved weather has been reloaded by the time this is called when we're initializing
   // this is called on every render!  One-time functionality should be put in ????? 
-  public async activateListeners(html: JQuery<HTMLElement>) {
+  public async activateListeners(html: JQuery<HTMLElement>): Promise<void> {
     // handle window drag
     html.find('#sweath-calendar-move-handle').on('mousedown', this.onMoveHandleMouseDown);
     html.find('#sweath-weather-move-handle').on('mousedown', this.onMoveHandleMouseDown);
@@ -111,11 +118,32 @@ export class WeatherApplication extends Application {
 
     // GM-only
     if (isClientGM()) {
+      // load the values from settings if missing
+      if (this._currentClimate == undefined)
+        this._currentClimate = moduleSettings.get(SettingKeys.climate);
+
+      if (this._currentHumidity == undefined)
+        this._currentHumidity = moduleSettings.get(SettingKeys.humidity);
+
+      if (this._currentSeason == undefined)
+        this._currentSeason = moduleSettings.get(SettingKeys.season);
+
+      if (this._currentSeasonSync == undefined)
+        this._currentSeasonSync = moduleSettings.get(SettingKeys.seasonSync);
+
+      if (this._currentBiome == undefined)
+        this._currentBiome = moduleSettings.get(SettingKeys.biome);
+
       // set the drop-down values
-      html.find('#climate-selection').val(moduleSettings.get(SettingKeys.climate));
-      html.find('#humidity-selection').val(moduleSettings.get(SettingKeys.humidity));
-      html.find('#season-selection').val(moduleSettings.get(SettingKeys.season));
-      html.find('#biome-selection').val(moduleSettings.get(SettingKeys.biome));
+      html.find('#climate-selection').val(this._currentClimate);
+      html.find('#humidity-selection').val(this._currentHumidity);
+      
+      if (this._currentSeasonSync)
+        html.find('#season-selection').val('sync');
+      else
+        html.find('#season-selection').val(this._currentSeason);
+
+      html.find('#biome-selection').val(this._currentBiome);  // do this last, because setting climate/humidity clears it
 
       html.find('#sweath-weather-refresh').on('click', this.onWeatherRegenerateClick);
       html.find('#biome-selection').on('change', this.onBiomeSelectChange);
@@ -145,7 +173,7 @@ export class WeatherApplication extends Application {
       // always update because the time has likely changed even if the date didn't
       // but we don't need to save the time to the db, because every second
       //    it's getting refreshed 
-      this.currentWeather.date = currentDate;
+      this._currentWeather.date = currentDate;
     }
 
     this.render();
@@ -159,7 +187,7 @@ export class WeatherApplication extends Application {
     if (weatherData) {
       log(false, 'Using saved weather data');
 
-      this.currentWeather = weatherData;
+      this._currentWeather = weatherData;
     } else if (isClientGM()) {
       log(false, 'No saved weather data - Generating weather');
 
@@ -171,24 +199,22 @@ export class WeatherApplication extends Application {
 
   // generate weather based on drop-down settings, store locally and update db
   private generateWeather(currentDate: SimpleCalendar.DateData | null): void {
-    const climate = this.getClimate();
-    const humidity = this.getHumidity();
     const season = this.getSeason();
 
-    this.currentWeather = generate(
-      climate!==null ? climate : Climate.Cold, 
-      humidity!==null ? humidity : Humidity.Modest, 
+    this._currentWeather = generate(
+      this._currentClimate!==null ? this._currentClimate : Climate.Temperate, 
+      this._currentHumidity!==null ? this._currentHumidity : Humidity.Modest, 
       season!==null ? season : Season.Spring, 
       currentDate,
-      this.currentWeather || null
+      this._currentWeather || null
     );
 
-    moduleSettings.set(SettingKeys.lastWeatherData, this.currentWeather);        
+    moduleSettings.set(SettingKeys.lastWeatherData, this._currentWeather);        
   }
 
   // has the date part changed
   private hasDateChanged(currentDate: SimpleCalendar.DateData): boolean {
-    const previous = this.currentWeather?.date;
+    const previous = this._currentWeather?.date;
 
     if ((!previous && currentDate) || (previous && !currentDate))
       return true;
@@ -222,40 +248,27 @@ export class WeatherApplication extends Application {
 
   // access the current selections
   public getSeason(): Season | null {
-    const element = document.getElementById('season-selection') as HTMLSelectElement | null;
-    if (element)
-      return Number(element.value) as Season;
-    else 
-      return null;
-  }
-  public getClimate(): Climate | null {
-    const element = document.getElementById('climate-selection') as HTMLSelectElement | null;
-    if (element)
-      return Number(element.value) as Climate;
-    else 
-      return null;
-  }
-  public getHumidity(): Humidity | null {
-    const element = document.getElementById('humidity-selection') as HTMLSelectElement | null;
-    if (element)
-      return Number(element.value) as Humidity;
-    else 
-      return null;
+    if (this._currentSeasonSync) {
+      // if the season selector is set to "sync", then pull it off the date instead
+      return this._currentWeather.simpleCalendarSeason;
+    } else {
+      return this._currentSeason;
+    }
   }
 
-  // listener activators
+  // event handlers - note arrow functions because otherwise 'this' doesn't work
   private onWeatherToggleClick = (event): void => {
     event.preventDefault();
 
-    this.weatherPanelOpen = !this.weatherPanelOpen;
+    this._weatherPanelOpen = !this._weatherPanelOpen;
     this.render();
   } ;
 
   private onWeatherRegenerateClick = (event): void => {
     event.preventDefault();
 
-    this.generateWeather(this.currentWeather?.date || null);
-    moduleSettings.set(SettingKeys.lastWeatherData, this.currentWeather);        
+    this.generateWeather(this._currentWeather?.date || null);
+    moduleSettings.set(SettingKeys.lastWeatherData, this._currentWeather);        
 
     this.render();
   };
@@ -263,26 +276,42 @@ export class WeatherApplication extends Application {
   private onSeasonSelectChange = (event): void => {
     // save the value - we don't regenerate because we might be changing other settings, too, and don't want to trigger a bunch of chat messages
     const target = event.originalEvent?.target as HTMLSelectElement;
-    moduleSettings.set(SettingKeys.season, Number(target.value));
+    if (target.value === 'sync') {
+      this._currentSeasonSync = true;
+      this._currentSeason = Number(this._currentWeather.simpleCalendarSeason);
+    } else {
+      this._currentSeasonSync = false;
+      this._currentSeason = Number(target.value);
+    }
+
+    moduleSettings.set(SettingKeys.seasonSync, this._currentSeasonSync);
+    moduleSettings.set(SettingKeys.season, this._currentSeason);
+
+    // render to update the icon
+    this.render();
   };
 
   private onClimateSelectChange = (event): void => {
     // save the value - we don't regenerate because we might be changing other settings, too, and don't want to trigger a bunch of chat messages
     const target = event.originalEvent?.target as HTMLSelectElement;
-    moduleSettings.set(SettingKeys.climate, Number(target.value));
+    this._currentClimate = Number(target.value)
+    moduleSettings.set(SettingKeys.climate, this._currentClimate);
 
     // set biome to blank because we adjusted manually
     jQuery(document).find('#biome-selection').val('');
+    this._currentBiome = '';
     moduleSettings.set(SettingKeys.biome, '');
   };
 
   private onHumiditySelectChange = (event): void => {
     // save the value - we don't regenerate because we might be changing other settings, too, and don't want to trigger a bunch of chat messages
     const target = event.originalEvent?.target as HTMLSelectElement;
-    moduleSettings.set(SettingKeys.humidity, Number(target.value));
+    this._currentHumidity = Number(target.value);
+    moduleSettings.set(SettingKeys.humidity, this._currentHumidity);
 
     // set biome to blank because we adjusted manually
     jQuery(document).find('#biome-selection').val('');
+    this._currentBiome = '';
     moduleSettings.set(SettingKeys.biome, '');
   };
 
@@ -296,30 +325,52 @@ export class WeatherApplication extends Application {
     const biomeMapping = biomeMappings[target.value];
     if (biomeMapping) {
       // save the value - we don't regenerate because we might be changing other settings, too, and don't want to trigger a bunch of chat messages
-      moduleSettings.set(SettingKeys.biome, target.value);
+      this._currentBiome = target.value
+      moduleSettings.set(SettingKeys.biome, this._currentBiome);
 
       // update the other selects
       const climate = document.getElementById('climate-selection') as HTMLSelectElement | null;
       if (climate) {
         climate.value = String(biomeMapping.climate);
+        this._currentClimate = biomeMapping.climate;
         moduleSettings.set(SettingKeys.climate, biomeMapping.climate);
       }
       
       const humidity = document.getElementById('humidity-selection') as HTMLSelectElement | null;
       if (humidity) {
         humidity.value = String(biomeMapping.humidity);
+        this._currentHumidity = biomeMapping.humidity;
         moduleSettings.set(SettingKeys.humidity, biomeMapping.humidity);
       }
     }
   };
 
   private onMoveHandleMouseDown = (): void => {
-    const element = document.getElementById(this.windowID);
+    const element = document.getElementById(this._windowID);
     if (element) {
-      this.windowDragHandler.start(element, (position: WindowPosition) => {
+      this._windowDragHandler.start(element, (position: WindowPosition) => {
         // save the new location
         this.setWindowPosition(position);
       });
     }
   };  
+
+  // get the class to apply to get the proper icon by season
+  private currentSeasonClass = function(): string { 
+    switch (this.getSeason()) {
+      case Season.Fall: 
+        return 'fa-leaf fall';
+      
+      case Season.Winter: 
+        return 'fa-snowflake winter';
+      
+      case Season.Spring: 
+        return 'fa-seedling spring';
+      
+      case Season.Summer: 
+        return 'fa-sun summer';
+    }
+
+    return '';
+  }
 }
