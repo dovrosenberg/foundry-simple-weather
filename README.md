@@ -10,28 +10,35 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
 
 ## Features
 
-- Intuitive UI to generate weather and see current time (if using Simple Calendar) 
+- Intuitive UI to generate weather  
 - Print the weather to chat, with the option of showing to players or not
 - Choose whether players can see the dialog
-- Generate weather for every new day automatically (if using Simple Calendar; otherwise manually trigger weather changes)
 - Randomized weather for every season across 3 climates (hot, temperate, cold) and 3 humidities (barren, modest, verdant)
-- Show the current date/time from Simple Calendar in a smaller box (good for players who don't need the full Simple Calendar display), or hide it and just show the weather
 - Weather progresses naturally from day to day
 - Supports Farenheit and Celsius temperatures
 
+### And if using Simple Calendar:
+- Generate weather for every new day automatically
+- Use the Simple Calendar season to adjust season automatically
+- Show the current date/time from Simple Calendar in a smaller box (good for players who don't need the full Simple Calendar display), or hide it and just show the weather
+
 ## Controls
 
-![Main UI](https://i.imgur.com/mqhvNi9.png)
+![Main UI](https://i.imgur.com/Cv2PLVS.png)
+
+### Biomes/Climate/Humidity ###
 
 Selecting a biome will automatically pick the climate and humidity to match - providing an easy way to pick standard Earth biomes.  But you can also
 pick the climate/humidity separately so it's flexible to capture most weather conditions.
 
-Note that the **season** does not sync with Simple Calendar.  My reasoning was that a) it would then require the GM to go through the process of mapping 
-Simple Calendar seasons to "normal" ones, and more importantly b) weather patterns are opposite in the northern and southern hemisphere, so just
-knowing the calendar season isn't enough to know whether it should be hot or cold.  Plus, presumably season doesn't change very often during a 
-game, so it's just as easy to manually pick it.
+### Seasons ###
+Seasons determine the types of weather for each biome.  Winter is colder, summer is hotter, and spring/fall are in the middle (but generally tend toward getting warmer/colder).
 
-If you disagree, open an issue and let me know.
+When not using Simple Calendar, you just select the season you want to use.  
+
+When using Simple Calendar, you can choose "Sync with Simple Calendar" and the season of the current date will be used automatically.  The season icon next to the drop down will change to let you know what season it is currently using.  Simple Weather determines the Season to use based on the icon for the season in Simple Calendar.  So, if you are using a custom calendar, for season sync to work you must a) set up seasons in Simple Calendar, and b) choose one of the season icons (fall, winter, spring, summer) for each of your seasons.
+
+In some cases, you may need to override Simple Calendar's season. In particular, if you change hemispheres - because what Simple Calendar thinks is summer (ex. July) may actually be cold temperatures (ex. if in South America), so you'll want to manually override it.  "Winter" is always cold in Simple Weather.  In that case, simply pick the season you want in the drop down.  It will remain in the manual setting until you set it back to "Sync".
 
 ## Support
 
