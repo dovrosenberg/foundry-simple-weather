@@ -43,6 +43,7 @@
 
       "season": {
         "select": "Wähle die derzeitige Jahreszeit",
+        "sync": "Sync with Simple Calendar",
         "fall": "Herbst",
         "summer": "Sommer",
         "spring": "Frühling",
