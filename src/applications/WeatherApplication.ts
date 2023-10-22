@@ -43,7 +43,7 @@ export class WeatherApplication extends Application {
     this.setWindowPosition(
       moduleSettings.get(SettingKeys.windowPosition) || {
         left: 100,
-        top: 100,
+        bottom: 300,
       }
     );
 
@@ -80,6 +80,8 @@ export class WeatherApplication extends Application {
       seasonSelections: seasonSelections,
       humiditySelections: humiditySelections,
       climateSelections: climateSelections,
+
+      // hide dialog - don't show anything
       hideDialog: (isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)) ? false : true,
       hideCalendar: !this._calendarPresent || moduleSettings.get(SettingKeys.hideCalendar),
       hideWeather: this._calendarPresent && !moduleSettings.get(SettingKeys.hideCalendar) && !this._weatherPanelOpen,  // can only hide weather if calendar present and setting is off
@@ -95,7 +97,7 @@ export class WeatherApplication extends Application {
     this._windowPosition = newPosition;
 
     // save
-    moduleSettings.set(SettingKeys.windowPosition, {top: newPosition.top, left: newPosition.left});
+    moduleSettings.set(SettingKeys.windowPosition, {bottom: newPosition.bottom, left: newPosition.left});
 
     this.render();
   }

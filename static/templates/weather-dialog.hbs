@@ -1,6 +1,6 @@
-<div id="sweath-container" {{#if hideWeather}}class="hide-weather"{{/if}} style="top:{{windowPosition.top}}px; left:{{windowPosition.left}}px;">
-	<div id="sweath-wrapper" {{#if hideDialog}}style="display:none"{{/if}}>
-		<div id="calendar-box" {{#if hideCalendar}}style="visibility:hidden;overflow:hidden"{{/if}}>
+<div id="sweath-container" {{#if hideDialog}}style="display:none"{{/if}} style="bottom:{{windowPosition.bottom}}px; left:{{windowPosition.left}}px;">
+	<div id="sweath-wrapper">
+		<div id="calendar-box" {{#if hideCalendar}}style="display:none"{{/if}}>
 
 			<!-- header -->
 			<header id="calendar-header">
@@ -29,24 +29,6 @@
 				<!-- clock display -->
 				<div class="clock">
 					<div id="start-stop-clock" class="time-display">
-						{{#if isGM}}
-						<div id="clock-run-indicator" title="{{localize 'ClockRunning'}}">
-							<ul>
-								<li>
-									<i class="fas fa-hourglass-start"></i>
-								</li>
-								<li>
-									<i class="fas fa-hourglass-half"></i>
-								</li>
-								<li>
-									<i class="fas fa-hourglass-end"></i>
-								</li>
-								<li>
-									<i class="fas fa-hourglass"></i>
-								</li>
-							</ul>
-						</div>
-						{{/if}}
 						<div class="time">
 							<span class="calendar-time-disp" id="calendar-time">{{ formattedTime }}</span>
 						</div>
@@ -63,7 +45,7 @@
 			-->
 		</div>
 
-		<div id="weather-box">
+		<div id="weather-box" {{#if hideWeather}}style="display:none"{{/if}}>
 			<div id="sweath-weather-container">
 				<header id="weather-header">
 					<div class="topbar">

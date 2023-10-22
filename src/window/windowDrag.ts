@@ -1,28 +1,33 @@
 import { WindowPosition } from '@/window/WindowPosition';
 
 export class WindowDrag {
-  private parent: HTMLElement;
+  private _parent: HTMLElement;
+
   private mouseMoveCallback = (moveEvent: Event) => {
     this.mouseMove(moveEvent);
   };
 
   public start(parent: HTMLElement, mouseUpCallback: (windowPos: WindowPosition) => void) {
-    this.parent = parent;
+    this._parent = parent;
 
     document.addEventListener('mousemove', this.mouseMoveCallback);
     document.addEventListener('mouseup', () => {
       document.removeEventListener('mousemove', this.mouseMoveCallback);
+
+      const rect = this._parent.getBoundingClientRect();
       mouseUpCallback({        
-        top: this.parent.offsetTop,
-        left: this.parent.offsetLeft,
+        bottom: window.innerHeight - rect.bottom,
+        left: rect.left,
       });
     }, {once: true});  // remove listener once called once
   }
 
   private mouseMove(event: Partial<MouseEvent>) {
-    this.parent.style.top = this.parent.offsetTop + (event.movementY || 0) + 'px';
-    this.parent.style.left = this.parent.offsetLeft + (event.movementX || 0) + 'px';
-    this.parent.style.position = 'fixed';
-    this.parent.style.zIndex = '100';
+    this._parent.style.top = this._parent.offsetTop + (event.movementY || 0) + 'px';
+    this._parent.style.left = this._parent.offsetLeft + (event.movementX || 0) + 'px';
+    this._parent.style.bottom = '';
+
+    this._parent.style.position = 'fixed'; 
+    this._parent.style.zIndex = '100';
   }
 }

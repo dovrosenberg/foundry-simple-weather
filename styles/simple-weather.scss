@@ -79,75 +79,10 @@
     padding: 4px;
   }
 
-  #time-running .fa-stop,
-  #time-running.isRunning .fa-play {
-    display: none;
-  }
-
-  #time-running.isRunning .fa-stop {
-    display: inline;
-  }
-
-  .clock,
-  .time-display,
-  .day-time-cues {
+  .clock, .time-display {
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
-
-  #clock-run-indicator {
-    color: rgba(255, 255, 255, .4);
-    transition: color .3s ease;
-    width: 13px;
-    height: 13px;
-    overflow: hidden;
-    position: relative;
-    top: -1px;
-  }
-
-  #clock-run-indicator ul {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: center;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    transform: translateX(-36px);
-    position: relative;
-    top: 1px;
-  }
-
-  #clock-run-indicator li {
-    flex: 0 0 12px;
-    width: 12px;
-    height: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  #clock-run-indicator i {
-    font-size: 12px;
-    line-height: 1;
-  }
-
-  #clock-run-indicator.isRunning ul {
-    transform: translateX(0px);
-    animation: hourglass 6s steps(3, end) infinite;
-    color: rgba(0, 255, 150, 1);
-  }
-
-  .clockPaused #clock-run-indicator.isRunning ul {
-    animation: none;
-    transform: translateX(-36px);
-    color: rgba(255, 155, 0, 1);
-  }
-
-  .clockPaused #clock-run-indicator.isRunning {
-    transform: rotate(90deg);
-    top: 0;
   }
 
   .time-display {
@@ -172,61 +107,7 @@
     font-size: 10px;
     line-height: 1;
   }
-
-  @keyframes hourglass {
-    to {
-      transform: translateX(-36px);
-    }
-  }
-
-  .time-controls ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    background: transparent;
-    justify-content: space-between;
-    /*border-radius: 0 0 4px 4px;*/
-    /*overflow: hidden; */
-  }
-
-  .time-controls li {
-    flex: 1;
-    background: rgba(255, 255, 255, .65);
-    margin-right: 1px;
-    font-size: 11px;
-    line-height: 1;
-    padding: 4px;
-    text-align: center;
-    white-space: nowrap;
-    color: rgba(0, 0, 0, .9);
-    cursor: pointer;
-    transition: background .3s ease;
-  }
-
-  .time-controls li[data-display="disabled"] {
-    display: none;
-  }
-
-  .time-controls li::before {
-    content: attr(data-increment)' 'attr(data-unit-label);
-  }
-
-  .time-controls li.disabled {
-    cursor: default;
-    background: rgba(255, 255, 255, .2);
-    color: rgba(0, 0, 0, .4);
-  }
-
-  .time-controls li:hover:not(.disabled) {
-    background: rgba(255, 255, 255, 1);
-  }
-
-  .time-controls li:last-child {
-    margin-right: 0;
-  }
 }
-
 /* WEATHER DISPLAY */
 
 #sweath-container #weather-box {
@@ -355,23 +236,13 @@
 
 /* Hide controls until hover */
 
-#sweath-container .day-time-cues,
-#sweath-container .time-controls {
+#sweath-container .day-time-cues, #sweath-container .time-controls {
   opacity: 0;
   transition: opacity .3s ease;
 }
 
 #sweath-container .time-controls {
   opacity: .3;
-}
-
-#sweath-container:hover .day-time-cues,
-#sweath-container:hover .time-controls {
-  opacity: 1;
-}
-
-.calendar-form-export-import {
-  display: flex;
 }
 
 #sweath-container .row-break {
