@@ -7,18 +7,19 @@ import { WindowPosition } from '@/window/WindowPosition';
 import { SettingKeys } from '@/settings/moduleSettings';
 import { WindowDrag } from '@/window/windowDrag';
 import { isClientGM } from '@/utils/game';
-import { generate } from '@/weather/weatherGenerator';
+import { generate, outputWeather } from '@/weather/weatherGenerator';
 import { moduleSettings } from '@/settings/moduleSettings';
+import { weatherEffects } from '@/weather/WeatherEffects';
 
 // the solo instance
-export let weatherApplication: WeatherApplication;
+let weatherApplication: WeatherApplication;
 
 // set the main application; should only be called once
-export function updateWeatherApplication(weatherApp: WeatherApplication): void {
+function updateWeatherApplication(weatherApp: WeatherApplication): void {
   weatherApplication = weatherApp;
 }
 
-export class WeatherApplication extends Application {
+class WeatherApplication extends Application {
   private _currentWeather: WeatherData;
   private _weatherPanelOpen: boolean;
   private _windowID = 'sweath-container';
@@ -211,6 +212,20 @@ export class WeatherApplication extends Application {
       this._currentWeather || null
     );
 
+    this.activateWeather(this._currentWeather);
+  }
+
+  // activate the given weather; save to settings, output to chat, display FX
+  private activateWeather(weatherData: WeatherData): void {
+    // Output to chat if enabled
+    if (moduleSettings.get(SettingKeys.outputWeatherToChat)) {
+      outputWeather(weatherData);
+    }
+
+    // activate special effects
+    weatherEffects.activateFX(weatherData);
+
+    // save 
     moduleSettings.set(SettingKeys.lastWeatherData, this._currentWeather);        
   }
 
@@ -375,4 +390,10 @@ export class WeatherApplication extends Application {
 
     return '';
   }
+}
+
+export {
+  weatherApplication,
+  WeatherApplication,
+  updateWeatherApplication
 }

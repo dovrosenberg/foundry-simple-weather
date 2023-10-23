@@ -10,7 +10,13 @@
       "publicChat": "Soll die Chatausgabe öffentlich sein?",
       "publicChatHelp": "Soll jeder (wenn ausgewählt) oder nur der SL (wenn nicht ausgewählt) das Wetter im Chat sehen können?",
       "hideCalendar": "Hide calendar box?",
-      "hideCalendarHelp": "When checked, will only show the weather controls (for example, if you leave the Simple Calendar window open, this saves real estate)"
+      "hideCalendarHelp": "When checked, will only show the weather controls (for example, if you leave the Simple Calendar window open, this saves real estate)",
+      "useFX": "Display special effects?",
+      "useFXHelp": "Select the module to use when displaying special effects.  When activiate, the effects can also be turned off manually when needed.",
+      "options": {
+        "useFX.choices.off": "Off",
+        "useFX.choices.core": "FoundryVTT scene weather setting"
+      }
     },
 
     "options": {

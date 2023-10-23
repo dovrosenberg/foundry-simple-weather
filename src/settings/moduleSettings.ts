@@ -11,6 +11,7 @@ export enum SettingKeys {
   publicChat = 'publicChat',   // should everyone see the chat (true) or just the GM (false)
   useCelsius = 'useCelsius',   // should we use Celsius
   hideCalendar = 'hideCalendar',  // should we always hide the calendar side
+  useFX = 'useFX',  // the name of the package used for FX (or 'off' if none)
 
   // internal only
   windowPosition = 'windowPosition',   // the current position of the window
@@ -28,6 +29,7 @@ type SettingType<K extends SettingKeys> =
     K extends SettingKeys.outputWeatherToChat ? boolean :
     K extends SettingKeys.useCelsius ? boolean :
     K extends SettingKeys.hideCalendar ? boolean :
+    K extends SettingKeys.useFX ? string :
     K extends SettingKeys.lastWeatherData ? (WeatherData | null) :  
     K extends SettingKeys.season ? number :
     K extends SettingKeys.seasonSync ? boolean :
@@ -35,7 +37,7 @@ type SettingType<K extends SettingKeys> =
     K extends SettingKeys.biome ? string :
     K extends SettingKeys.climate ? number :
     K extends SettingKeys.humidity ? number :
-    never;  // Add more cases for other enum values as needed
+    never;  
 
 // the solo instance
 export let moduleSettings: ModuleSettings;
@@ -117,6 +119,18 @@ export class ModuleSettings {
         default: false,
         requiresReload: true,   // can't find the right typescript type, but this does work
         type: Boolean,
+      },
+      {
+        settingID: SettingKeys.useFX, 
+        name: 'sweath.settings.useFX',
+        hint: 'sweath.settings.useFXHelp',
+        requiresReload: true,   // can't find the right typescript type, but this does work
+        type: String,
+        choices: {
+          'off': 'sweath.settings.options.useFX.choices.off',
+          'core': 'sweath.settings.options.useFX.choices.core'
+        },
+        default: 'core',
       },
     ];
 

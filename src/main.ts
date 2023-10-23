@@ -5,7 +5,8 @@ import { VersionUtils } from '@/utils/versionUtils';
 import { getGame, isClientGM } from '@/utils/game';
 import { log } from './utils/log';
 import { allowSeasonSync, initializeLocalizedText } from './weather/climateData';
-import { updateWeatherApplication, weatherApplication, WeatherApplication } from './applications/WeatherApplication';
+import { updateWeatherApplication, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
+import { updateWeatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
 
 // track which modules we have
 let validSimpleCalendar = false;
@@ -26,6 +27,7 @@ Hooks.once('init', async () => {
   // settings first, so other things can use them
   updateModuleSettings(new ModuleSettings());
   updateWeatherApplication(new WeatherApplication());
+  updateWeatherEffects(new WeatherEffects());
 });
 
 Hooks.once('ready', () => {

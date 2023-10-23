@@ -10,7 +10,13 @@
       "publicChat": "Gör chatten offentlig?",
       "publicChatHelp": "Ska alla se väderchatten (om den är på) eller bara GM (om den är avstängd)?",
       "hideCalendar": "Dölj kalenderboxen?",
-      "hideCalendarHelp": "När markerad så visas endast väderkontrollerna (till exempel om du lämnar fönstret för Simple Calendar öppet sparar detta utrymme)"
+      "hideCalendarHelp": "När markerad så visas endast väderkontrollerna (till exempel om du lämnar fönstret för Simple Calendar öppet sparar detta utrymme)",
+      "useFX": "Display special effects?",
+      "useFXHelp": "Select the module to use when displaying special effects.  When activiate, the effects can also be turned off manually when needed.",
+      "options": {
+        "useFX.choices.off": "Off",
+        "useFX.choices.core": "FoundryVTT scene weather setting"
+      }
     },
 
     "options": {
