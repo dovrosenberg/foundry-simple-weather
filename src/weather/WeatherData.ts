@@ -1,4 +1,5 @@
-import { weatherDescriptions, Season, Climate, Humidity, seasonSelections } from '@/weather/climateData';
+import { Season, Climate, Humidity } from '@/weather/climateData';
+import { weatherDescriptions } from '@/weather/weatherMap';
 import { Icons } from 'foundryvtt-simple-calendar/src/constants';
   
 // describes the weather for a day
@@ -25,21 +26,14 @@ export class WeatherData {
   get simpleCalendarSeason(): Season | null {
     const icon = this.date?.currentSeason?.icon || '';
 
-    switch (icon) {
-      case Icons.Fall:
-        return Season.Fall;
+    const seasons = {
+      [Icons.Fall]: Season.Fall,
+      [Icons.Winter]: Season.Winter,
+      [Icons.Spring]: Season.Spring,
+      [Icons.Summer]: Season.Summer,
+    };
 
-      case Icons.Winter:
-        return Season.Winter;
-
-      case Icons.Spring:
-        return Season.Spring;
-
-      case Icons.Summer:
-        return Season.Summer;
-    }
-
-    return null;
+    return seasons[icon] || null;
   }
 
   public getTemperature = (useCelsius: boolean): string => {

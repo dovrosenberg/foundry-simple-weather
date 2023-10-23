@@ -4,7 +4,8 @@ import { moduleSettings, ModuleSettings, SettingKeys, updateModuleSettings } fro
 import { VersionUtils } from '@/utils/versionUtils';
 import { getGame, isClientGM } from '@/utils/game';
 import { log } from './utils/log';
-import { allowSeasonSync, initializeLocalizedText } from './weather/climateData';
+import { allowSeasonSync, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
+import { initializeLocalizedText as initializeLocalizedWeatherText } from '@/weather/weatherMap';
 import { updateWeatherApplication, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
 import { updateWeatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
 
@@ -35,7 +36,8 @@ Hooks.once('ready', () => {
 });
 
 Hooks.once('i18nInit', (): void => {
-  initializeLocalizedText();
+  initializeLocalizedClimateText();
+  initializeLocalizedWeatherText();
 
   // rerender weather
   if (weatherApplication)
