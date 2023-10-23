@@ -6,6 +6,19 @@ import { Climate, Humidity, Season } from './climateData';
 function initializeLocalizedText(): void {
   log(false, 'Loading localized weather text');
 
+  // these are used to map the localized text string to the right spot in the array
+  const localizeClimates = {
+    [Climate.Cold]: 'cold',
+    [Climate.Temperate]: 'temperate',
+    [Climate.Hot]: 'hot',
+  
+  };
+  const localizeHumidities = {
+    [Humidity.Barren]: 'barren',
+    [Humidity.Modest]: 'modest',
+    [Humidity.Verdant]: 'verdant',
+  };
+  
   // load weatherDescriptions
   // convert enums to array for safety (i.e. in case values aren't in order)
   const climateArray = Object.values(Climate);
@@ -253,7 +266,7 @@ nextCell[Season.Winter] = [
 
 nextCell[Season.Spring] = nextCell[Season.Fall];
 
-// descriptions and temperatures are indexed by Climate, then Humidity, then cell #
+// descriptions and temperatures and options are indexed by Climate, then Humidity, then cell #
 // seasons are handled by controlling which parts of the grid you can get to
 // we need to populate the descriptions because we might call them before localization happens
 // note: length/2 because typescript enums have both the numbers and strings as keys
@@ -270,7 +283,20 @@ const weatherTemperatures: number[][][] = new Array(Object.keys(Climate).length/
     .fill(0)
     .map(() => new Array(37).fill(0)));
 
+type WeatherOptions = {
+  fx: {
+    core: {
+      effect: string | null | undefined,
+    }
+  }
+}
 
+const weatherOptions: WeatherOptions[][][] = new Array(Object.keys(Climate).length/2)
+  .fill({})
+  .map(() => new Array(Object.keys(Humidity).length/2)
+    .fill({})
+    .map(() => new Array(37).fill({})));
+  
 /////////////////////////////////////////
 // these things are used to map the i18n keys to the right spot in our arrays
 // maps the localized names to the hex order
@@ -319,19 +345,150 @@ const descriptionOrder = [
   'winter.5',
   'winter.9',
 ];
-const localizeClimates = {
-  [Climate.Cold]: 'cold',
-  [Climate.Temperate]: 'temperate',
-  [Climate.Hot]: 'hot',
 
-};
-const localizeHumidities = {
-  [Humidity.Barren]: 'barren',
-  [Humidity.Modest]: 'modest',
-  [Humidity.Verdant]: 'verdant',
+const descriptioncells = {
+  'summer.1': 0,
+  'summer.5': 1,
+  'springfall.warm.1': 2,
+  'springfall.1': 3,
+
+  'summer.2': 4,
+  'summer.6': 5,
+  'springfall.warm.2': 6,
+  'springfall.2': 7,
+  'springfall.cool.1': 8,
+
+  'summer.3': 9,
+  'summer.7': 10,
+  'springfall.warm.3': 11,
+  'springfall.3': 12,
+  'springfall.cool.2': 13,
+  'winter.1': 14,
+
+  'summer.4': 15,
+  'summer.8': 16,
+  'springfall.warm.4': 17,
+  'springfall.4': 18,
+  'springfall.cool.3': 19,
+  'winter.2': 20,
+  'winter.6': 21,
+
+  'summer.9': 22,
+  'springfall.warm.5': 23,
+  'springfall.5': 24,
+  'springfall.cool.4': 25,
+  'winter.3': 26,
+  'winter.7': 27,
+
+  'springfall.warm.6': 28,
+  'springfall.6': 29,
+  'springfall.cool.5': 30,
+  'winter.4': 31,
+  'winter.8': 32,
+
+  'springfall.7': 33,
+  'springfall.cool.6': 34,
+  'winter.5': 35,
+  'winter.9': 36,
 };
 
 ///////////////////////////////////////
+// define the extra metadata for each cell
+// I don't like this because it's disconnected from the text strings, which makes it hard to debug
+// But the alternative is to to have just a massively long file here to map all the descriptions, which
+//    is likely to also lead to errors, so...
+
+// temperatures
+weatherTemperatures[Climate.Cold][Humidity.Barren] = [
+  44, 42, 30, 23,
+  51, 46, 32, 18, 11,
+  60, 49, 28, 14, 9, -3,
+  47, 75, 40, 32, 19, -53, -24,
+  36, 49, 36, 30, -15, -35,
+  32, 51, 23, 18, -9,
+  36, 32, -38, 4,
+];
+
+weatherTemperatures[Climate.Cold][Humidity.Modest] = [
+  44, 42, 30, 23,
+  51, 46, 32, 18, 11,
+  60, 49, 28, 14, 9, -3,
+  47, 80, 40, 32, 19, -53, -24,
+  36, 49, 36, 30, -15, -35,
+  32, 51, 23, 18, -9,
+  36, 32, -38, 4,
+];
+
+weatherTemperatures[Climate.Cold][Humidity.Verdant] = [
+  44, 42, 30, 23,
+  51, 46, 32, 18, 11,
+  60, 49, 28, 14, 9, -3,
+  47, 75, 40, 32, 19, -53, -24,
+  36, 49, 36, 30, -15, -35,
+  32, 51, 23, 18, -9,
+  36, 32, -38, 4,
+];
+
+weatherTemperatures[Climate.Temperate][Humidity.Barren] = [
+  79, 78, 72, 68,
+  83, 80, 73, 66, 63,
+  87, 81, 71, 64, 61, 55,
+  73, 100, 77, 73, 66, 30, 44,
+  75, 81, 75, 72, 49, 39,
+  73, 83, 68, 66, 52,
+  75, 73, 38, 59,
+];
+
+weatherTemperatures[Climate.Temperate][Humidity.Modest] = [
+  70, 68, 57, 50,
+  77, 72, 59, 45, 39,
+  86, 75, 55, 41, 37, 25,
+  73, 110, 66, 59, 46, -23, 5,
+  63, 75, 63, 57, 14, -6,
+  59, 77, 50, 45, 19,
+  63, 59, -8, 32,
+];
+
+weatherTemperatures[Climate.Temperate][Humidity.Verdant] = [
+  53, 51, 42, 36,
+  78, 54, 43, 32, 28,
+  74, 67, 41, 38, 26, 16,
+  75, 85, 66, 59, 46, -23, 0,
+  80, 75, 63, 57, 14, -6,
+  59, 77, 50, 45, 19,
+  63, 59, -10, 22,
+];
+
+weatherTemperatures[Climate.Hot][Humidity.Barren] = [
+  93, 92, 87, 84,
+  96, 94, 88, 82, 79,
+  100, 95, 86, 80, 78, 73,
+  94, 110, 91, 88, 82, 51, 66,
+  90, 95, 90, 87, 67, 59,
+  88, 96, 84, 82, 70,
+  90, 88, 58, 76,
+];
+
+weatherTemperatures[Climate.Hot][Humidity.Modest] = [
+  79, 79, 77, 75,
+  80, 79, 77, 74, 73,
+  82, 80, 76, 73, 73, 71,
+  79, 86, 78, 77, 74, 61, 63,
+  78, 80, 78, 76, 68, 65,
+  77, 80, 75, 74, 69,
+  78, 77, 64, 72,
+];
+
+weatherTemperatures[Climate.Hot][Humidity.Verdant] = [
+  85, 84, 83, 82,
+  86, 85, 83, 81, 80,
+  87, 85, 82, 80, 80, 78,
+  85, 91, 84, 83, 81, 70, 75,
+  84, 85, 84, 83, 76, 73,
+  83, 86, 82, 81, 77,
+  83, 83, 73, 79,
+];
+
 
 weatherTemperatures[Climate.Cold][Humidity.Barren] = [
   44, 42, 30, 23,
@@ -423,12 +580,180 @@ weatherTemperatures[Climate.Hot][Humidity.Verdant] = [
   83, 83, 73, 79,
 ];
 
+// temperatures
+weatherTemperatures[Climate.Cold][Humidity.Barren] = [
+  44, 42, 30, 23,
+  51, 46, 32, 18, 11,
+  60, 49, 28, 14, 9, -3,
+  47, 75, 40, 32, 19, -53, -24,
+  36, 49, 36, 30, -15, -35,
+  32, 51, 23, 18, -9,
+  36, 32, -38, 4,
+];
+
+weatherTemperatures[Climate.Cold][Humidity.Modest] = [
+  44, 42, 30, 23,
+  51, 46, 32, 18, 11,
+  60, 49, 28, 14, 9, -3,
+  47, 80, 40, 32, 19, -53, -24,
+  36, 49, 36, 30, -15, -35,
+  32, 51, 23, 18, -9,
+  36, 32, -38, 4,
+];
+
+weatherTemperatures[Climate.Cold][Humidity.Verdant] = [
+  44, 42, 30, 23,
+  51, 46, 32, 18, 11,
+  60, 49, 28, 14, 9, -3,
+  47, 75, 40, 32, 19, -53, -24,
+  36, 49, 36, 30, -15, -35,
+  32, 51, 23, 18, -9,
+  36, 32, -38, 4,
+];
+
+weatherTemperatures[Climate.Temperate][Humidity.Barren] = [
+  79, 78, 72, 68,
+  83, 80, 73, 66, 63,
+  87, 81, 71, 64, 61, 55,
+  73, 100, 77, 73, 66, 30, 44,
+  75, 81, 75, 72, 49, 39,
+  73, 83, 68, 66, 52,
+  75, 73, 38, 59,
+];
+
+weatherTemperatures[Climate.Temperate][Humidity.Modest] = [
+  70, 68, 57, 50,
+  77, 72, 59, 45, 39,
+  86, 75, 55, 41, 37, 25,
+  73, 110, 66, 59, 46, -23, 5,
+  63, 75, 63, 57, 14, -6,
+  59, 77, 50, 45, 19,
+  63, 59, -8, 32,
+];
+
+weatherTemperatures[Climate.Temperate][Humidity.Verdant] = [
+  53, 51, 42, 36,
+  78, 54, 43, 32, 28,
+  74, 67, 41, 38, 26, 16,
+  75, 85, 66, 59, 46, -23, 0,
+  80, 75, 63, 57, 14, -6,
+  59, 77, 50, 45, 19,
+  63, 59, -10, 22,
+];
+
+weatherTemperatures[Climate.Hot][Humidity.Barren] = [
+  93, 92, 87, 84,
+  96, 94, 88, 82, 79,
+  100, 95, 86, 80, 78, 73,
+  94, 110, 91, 88, 82, 51, 66,
+  90, 95, 90, 87, 67, 59,
+  88, 96, 84, 82, 70,
+  90, 88, 58, 76,
+];
+
+weatherTemperatures[Climate.Hot][Humidity.Modest] = [
+  79, 79, 77, 75,
+  80, 79, 77, 74, 73,
+  82, 80, 76, 73, 73, 71,
+  79, 86, 78, 77, 74, 61, 63,
+  78, 80, 78, 76, 68, 65,
+  77, 80, 75, 74, 69,
+  78, 77, 64, 72,
+];
+
+weatherTemperatures[Climate.Hot][Humidity.Verdant] = [
+  85, 84, 83, 82,
+  86, 85, 83, 81, 80,
+  87, 85, 82, 80, 80, 78,
+  85, 91, 84, 83, 81, 70, 75,
+  84, 85, 84, 83, 76, 73,
+  83, 86, 82, 81, 77,
+  83, 83, 73, 79,
+];
+
+// weather options
+const effects = {
+  MistyRain: { 
+    core: {
+      effect: 'rain'
+    }
+  },
+  LightRain: { 
+    core: {
+      effect: 'rain'
+    }
+  },
+  ModerateRain: { 
+    core: {
+      effect: 'rainStorm'
+    }
+  },
+  HeavyRain: {
+    core: {
+      effect: 'rainStorm'
+    }
+  },
+  LightFog: { 
+    core: {
+      effect: 'fog'
+    }
+  },
+  ModerateFog: { 
+    core: {
+      effect: 'fog'
+    }
+  },
+  HeavyFog: { 
+    core: {
+      effect: 'fog'
+    }
+  },
+  LightSnow: { 
+    core: {
+      effect: 'snow'
+    }
+  },
+  ModerateSnow: { 
+    core: {
+      effect: 'snow'
+    }
+  },
+  HeavySnow: { 
+    core: {
+      effect: 'blizzard'
+    }
+  },
+  WhiteoutSnow: { 
+    core: {
+      effect: 'blizzard'
+    }
+  },
+  Hail: { 
+    core: {
+      effect: 'rainStorm'
+    }
+  },
+}
+
+weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['summer.7']] = { fx: effects.LightRain };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['springfall.3']] = { fx: effects.MistyRain };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['springfall.cool.2']] = { fx: effects.LightFog };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['summer.9']] = { fx: effects.HeavySnow };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['springfall.5']] = { fx: effects.LightRain };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['winter.3']] = { fx: effects.WhiteoutSnow };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['springfall.warm.6']] = { fx: effects.Hail };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['winter.4']] = { fx: effects.LightSnow };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['winter.5']] = { fx: effects.LightSnow };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['winter.9']] = { fx: effects.LightSnow };
+
+
 export { 
   Direction,
   getDirection,
   initializeLocalizedText,
   weatherDescriptions,
   weatherTemperatures,
+  weatherOptions,
   startingCells,
   nextCell,
 }
