@@ -2,12 +2,10 @@
   "id": "simple-weather",
   "title": "Simple Weather",
   "description": "Add dynamic weather to your FoundryVTT world.  Note: not affiliated with creators of Simple Calendar.",
-  "## version": "will be added when we build",
 
   "compatibility": {
     "minimum": "10",
-    "verified": "11.313",
-    "maximum": "11"
+    "verified": "11.313"
   },
 
   "esmodules": [
@@ -28,6 +26,11 @@
       "lang": "de",
       "name": "Deutsch",
       "path": "lang/de.json"
+    },
+    {
+      "lang": "sv",
+      "name": "Svenska",
+      "path": "lang/sv.json"
     }
   ],
 
@@ -43,6 +46,7 @@
   "url": "https://github.com/dovrosenberg/foundry-simple-weather",
   "manifest": "https://github.com/dovrosenberg/foundry-simple-weather/releases/latest/download/module.json",
   "download": "#{DOWNLOAD}#",
+  "## version": "will be added when we build",
 
   "license": "https://github.com/dovrosenberg/foundry-simple-weather/blob/master/LICENSE.md",
   "readme": "https://github.com/dovrosenberg/foundry-simple-weather/blob/master/README.md",
