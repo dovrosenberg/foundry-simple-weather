@@ -4,7 +4,7 @@
 
 			<!-- header -->
 			<header id="calendar-header">
-				<div class="topbar">
+				<div class="sweath-topbar">
 					<div id="sweath-weather-move-handle">&nbsp;</div>
 
 					<div>
@@ -48,11 +48,11 @@
 		<div id="weather-box" {{#if hideWeather}}style="display:none"{{/if}}>
 			<div id="sweath-weather-container">
 				<header id="weather-header">
-					<div class="topbar">
+					<div class="sweath-topbar">
 						<div id="sweath-calendar-move-handle" style="flex:1 1 80%">&nbsp;</div>
 
 						{{#if isGM}}
-							<div id="sweath-weather-refresh" class="calendar-btn" title="{{localize 'sweath.labels.regenerateWeather'}}">
+							<div id="sweath-weather-refresh" class="sweath-button" title="{{localize 'sweath.labels.regenerateWeather'}}">
 								<i class="fas fa-redo"></i>
 							</div>
 						{{/if}}
@@ -97,6 +97,13 @@
 								{{/each}}
 							</select>
 						</div>			
+
+						<div class="row-break"></div>
+
+						<div id="sweath-weather-refresh" class="sweath-button" title="{{localize 'sweath.labels.regenerateWeather'}}">
+							<i class="fas fa-redo"></i>
+						</div>
+
 					{{/if}}
 				</header>
 				<div class="sweath-weather-content">
