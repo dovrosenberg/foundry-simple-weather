@@ -12,15 +12,8 @@ The current owner of the module.
 
 | Language                  | Translator(s)                                                               |
 |---------------------------|-----------------------------------------------------------------------------|
-| French (fr)               |                                                                             |
-| German (de)               | SesuUisu                                                                    |
-| Korean (ko)               |                                                                             |
-| Japanese (ja)             |                                                                             |
-| Portuguese Brasil (pt-BR) |                                                                             |
-| Spanish (es)              |                                                                             |
-| Polski (pl)               |                                                                             |
-| Svenska (sv)              |                                                                             |
-| Simplified Chinese (zh)   |                                                                             |
+| Deutsch (de)              | SesuUisu                                                                    |
+| Svenska (sv)              | Jonas Karlsson                                                              |
 
 Would love to have help providing translations to other languages
 
