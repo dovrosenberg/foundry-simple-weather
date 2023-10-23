@@ -22,20 +22,22 @@ class WeatherEffects {
       case 'core':
         if (weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell]?.fx?.core?.effect)
           getGame().scenes?.active?.update({ weather: weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell]?.fx.core.effect });
+        else
           getGame().scenes?.active?.update({ weather: '' });
-
-        break;
+        
+          break;
       
       case 'off':
       default:
-        // do nothing
-        // TODO!!! TURN OFF ANY EFFECTS FROM ALL THE OTHER SYSTEMS
+        //getGame().scenes?.active?.update({ weather: '' });
+        break;
     }
   }
 
   public deactivateFX = function(): void {
     switch (moduleSettings.get(SettingKeys.useFX)) {
       case 'core':
+        getGame().scenes?.active?.update({ weather: '' });
         break;
       
       case 'off':

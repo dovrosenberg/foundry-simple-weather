@@ -346,50 +346,51 @@ const descriptionOrder = [
   'winter.9',
 ];
 
-const descriptioncells = {
-  'summer.1': 0,
-  'summer.5': 1,
-  'springfall.warm.1': 2,
-  'springfall.1': 3,
+// maps names to the cell ID # (could use findIndex on descriptionOrder, but this lets us use intellisense)
+const descriptionCells = {
+  'summer1': 0,
+  'summer5': 1,
+  'springfall_warm1': 2,
+  'springfall1': 3,
 
-  'summer.2': 4,
-  'summer.6': 5,
-  'springfall.warm.2': 6,
-  'springfall.2': 7,
-  'springfall.cool.1': 8,
+  'summer2': 4,
+  'summer6': 5,
+  'springfall_warm2': 6,
+  'springfall2': 7,
+  'springfall_cool1': 8,
 
-  'summer.3': 9,
-  'summer.7': 10,
-  'springfall.warm.3': 11,
-  'springfall.3': 12,
-  'springfall.cool.2': 13,
-  'winter.1': 14,
+  'summer3': 9,
+  'summer7': 10,
+  'springfall_warm3': 11,
+  'springfall3': 12,
+  'springfall_cool2': 13,
+  'winter1': 14,
 
-  'summer.4': 15,
-  'summer.8': 16,
-  'springfall.warm.4': 17,
-  'springfall.4': 18,
-  'springfall.cool.3': 19,
-  'winter.2': 20,
-  'winter.6': 21,
+  'summer4': 15,
+  'summer8': 16,
+  'springfall_warm4': 17,
+  'springfall4': 18,
+  'springfall_cool3': 19,
+  'winter2': 20,
+  'winter6': 21,
 
-  'summer.9': 22,
-  'springfall.warm.5': 23,
-  'springfall.5': 24,
-  'springfall.cool.4': 25,
-  'winter.3': 26,
-  'winter.7': 27,
+  'summer9': 22,
+  'springfall_warm5': 23,
+  'springfall5': 24,
+  'springfall_cool4': 25,
+  'winter3': 26,
+  'winter7': 27,
 
-  'springfall.warm.6': 28,
-  'springfall.6': 29,
-  'springfall.cool.5': 30,
-  'winter.4': 31,
-  'winter.8': 32,
+  'springfall_warm6': 28,
+  'springfall6': 29,
+  'springfall_cool5': 30,
+  'winter4': 31,
+  'winter8': 32,
 
-  'springfall.7': 33,
-  'springfall.cool.6': 34,
-  'winter.5': 35,
-  'winter.9': 36,
+  'springfall7': 33,
+  'springfall_cool6': 34,
+  'winter5': 35,
+  'winter9': 36,
 };
 
 ///////////////////////////////////////
@@ -733,19 +734,133 @@ const effects = {
       effect: 'rainStorm'
     }
   },
+  Sleet: { 
+    core: {
+      effect: 'rainStorm'
+    }
+  },
 }
 
-weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['summer.7']] = { fx: effects.LightRain };
-weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['springfall.3']] = { fx: effects.MistyRain };
-weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['springfall.cool.2']] = { fx: effects.LightFog };
-weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['summer.9']] = { fx: effects.HeavySnow };
-weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['springfall.5']] = { fx: effects.LightRain };
-weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['winter.3']] = { fx: effects.WhiteoutSnow };
-weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['springfall.warm.6']] = { fx: effects.Hail };
-weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['winter.4']] = { fx: effects.LightSnow };
-weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['winter.5']] = { fx: effects.LightSnow };
-weatherOptions[Climate.Cold][Humidity.Barren][descriptioncells['winter.9']] = { fx: effects.LightSnow };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer7] = { fx: effects.LightRain };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall3] = { fx: effects.MistyRain };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall_cool2] = { fx: effects.LightFog };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer9] = { fx: effects.HeavySnow };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall5] = { fx: effects.LightRain };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.winter3] = { fx: effects.WhiteoutSnow };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall_warm6] = { fx: effects.Hail };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.winter4] = { fx: effects.LightSnow };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.winter5] = { fx: effects.LightSnow };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.winter9] = { fx: effects.LightSnow };
 
+weatherOptions[Climate.Cold][Humidity.Modest][descriptionCells.summer6] = { fx: effects.LightRain };
+weatherOptions[Climate.Cold][Humidity.Modest][descriptionCells.summer7] = { fx: effects.HeavyRain };
+weatherOptions[Climate.Cold][Humidity.Modest][descriptionCells.springfall3] = { fx: effects.ModerateFog };
+weatherOptions[Climate.Cold][Humidity.Modest][descriptionCells.springfall_cool2] = { fx: effects.HeavyFog };
+weatherOptions[Climate.Cold][Humidity.Modest][descriptionCells.summer8] = { fx: effects.HeavySnow };
+weatherOptions[Climate.Cold][Humidity.Modest][descriptionCells.springfall5] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Cold][Humidity.Modest][descriptionCells.winter3] = { fx: effects.HeavySnow };
+weatherOptions[Climate.Cold][Humidity.Modest][descriptionCells.winter7] = { fx: effects.HeavySnow };
+weatherOptions[Climate.Cold][Humidity.Modest][descriptionCells.springfall_warm6] = { fx: effects.Hail };
+weatherOptions[Climate.Cold][Humidity.Modest][descriptionCells.winter4] = { fx: effects.Sleet };
+weatherOptions[Climate.Cold][Humidity.Modest][descriptionCells.winter5] = { fx: effects.HeavySnow };
+weatherOptions[Climate.Cold][Humidity.Modest][descriptionCells.winter9] = { fx: effects.LightSnow };
+
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.summer5] = { fx: effects.LightRain };
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.summer6] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.springfall_cool2] = { fx: effects.LightRain };
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.summer3] = { fx: effects.LightRain };
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.summer7] = { fx: effects.HeavyRain };
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.springfall3] = { fx: effects.ModerateFog };
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.springfall_cool2] = { fx: effects.HeavyFog };
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.summer9] = { fx: effects.HeavySnow };
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.springfall_warm5] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.springfall5] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.winter3] = { fx: effects.HeavySnow };
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.winter7] = { fx: effects.HeavySnow };
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.springfall_warm6] = { fx: effects.Hail };
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.springfall6] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.winter4] = { fx: effects.Sleet };
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.springfall7] = { fx: effects.LightRain };
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.winter4] = { fx: effects.HeavySnow };
+weatherOptions[Climate.Cold][Humidity.Verdant][descriptionCells.winter9] = { fx: effects.ModerateSnow };
+
+weatherOptions[Climate.Temperate][Humidity.Barren][descriptionCells.summer7] = { fx: effects.LightRain };
+weatherOptions[Climate.Temperate][Humidity.Barren][descriptionCells.springfall3] = { fx: effects.MistyRain };
+weatherOptions[Climate.Temperate][Humidity.Barren][descriptionCells.springfall_cool2] = { fx: effects.LightFog };
+weatherOptions[Climate.Temperate][Humidity.Barren][descriptionCells.winter2] = { fx: effects.ModerateSnow };
+weatherOptions[Climate.Temperate][Humidity.Barren][descriptionCells.springfall5] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Temperate][Humidity.Barren][descriptionCells.winter4] = { fx: effects.LightRain };
+weatherOptions[Climate.Temperate][Humidity.Barren][descriptionCells.winter5] = { fx: effects.LightSnow };
+weatherOptions[Climate.Temperate][Humidity.Barren][descriptionCells.winter9] = { fx: effects.LightSnow };
+
+weatherOptions[Climate.Temperate][Humidity.Modest][descriptionCells.summer6] = { fx: effects.LightRain };
+weatherOptions[Climate.Temperate][Humidity.Modest][descriptionCells.summer7] = { fx: effects.HeavyRain };
+weatherOptions[Climate.Temperate][Humidity.Modest][descriptionCells.springfall3] = { fx: effects.ModerateFog };
+weatherOptions[Climate.Temperate][Humidity.Modest][descriptionCells.springfall_cool2] = { fx: effects.HeavyFog };
+weatherOptions[Climate.Temperate][Humidity.Modest][descriptionCells.springfall5] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Temperate][Humidity.Modest][descriptionCells.winter3] = { fx: effects.HeavySnow };
+weatherOptions[Climate.Temperate][Humidity.Modest][descriptionCells.winter7] = { fx: effects.HeavySnow };
+weatherOptions[Climate.Temperate][Humidity.Modest][descriptionCells.springfall_warm6] = { fx: effects.Hail };
+weatherOptions[Climate.Temperate][Humidity.Modest][descriptionCells.winter4] = { fx: effects.Sleet };
+weatherOptions[Climate.Temperate][Humidity.Modest][descriptionCells.winter5] = { fx: effects.HeavySnow };
+weatherOptions[Climate.Temperate][Humidity.Modest][descriptionCells.winter9] = { fx: effects.LightSnow };
+
+weatherOptions[Climate.Temperate][Humidity.Verdant][descriptionCells.summer5] = { fx: effects.LightRain };
+weatherOptions[Climate.Temperate][Humidity.Verdant][descriptionCells.summer6] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Temperate][Humidity.Verdant][descriptionCells.springfall_warm2] = { fx: effects.LightRain };
+weatherOptions[Climate.Temperate][Humidity.Verdant][descriptionCells.summer3] = { fx: effects.LightRain };
+weatherOptions[Climate.Temperate][Humidity.Verdant][descriptionCells.summer7] = { fx: effects.HeavyRain };
+weatherOptions[Climate.Temperate][Humidity.Verdant][descriptionCells.springfall3] = { fx: effects.ModerateFog };
+weatherOptions[Climate.Temperate][Humidity.Verdant][descriptionCells.springfall_cool2] = { fx: effects.HeavyFog };
+weatherOptions[Climate.Temperate][Humidity.Verdant][descriptionCells.springfall_cool5] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Temperate][Humidity.Verdant][descriptionCells.springfall5] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Temperate][Humidity.Verdant][descriptionCells.winter3] = { fx: effects.HeavySnow };
+weatherOptions[Climate.Temperate][Humidity.Verdant][descriptionCells.winter7] = { fx: effects.HeavySnow };
+weatherOptions[Climate.Temperate][Humidity.Verdant][descriptionCells.springfall_warm6] = { fx: effects.Hail };
+weatherOptions[Climate.Temperate][Humidity.Verdant][descriptionCells.springfall6] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Temperate][Humidity.Verdant][descriptionCells.winter4] = { fx: effects.Sleet };
+weatherOptions[Climate.Temperate][Humidity.Verdant][descriptionCells.springfall7] = { fx: effects.LightRain };
+weatherOptions[Climate.Temperate][Humidity.Verdant][descriptionCells.winter5] = { fx: effects.HeavySnow };
+weatherOptions[Climate.Temperate][Humidity.Verdant][descriptionCells.winter9] = { fx: effects.ModerateSnow };
+
+weatherOptions[Climate.Hot][Humidity.Barren][descriptionCells.summer7] = { fx: effects.LightRain };
+weatherOptions[Climate.Hot][Humidity.Barren][descriptionCells.springfall3] = { fx: effects.MistyRain };
+weatherOptions[Climate.Hot][Humidity.Barren][descriptionCells.springfall_cool2] = { fx: effects.LightFog };
+weatherOptions[Climate.Hot][Humidity.Barren][descriptionCells.springfall5] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Hot][Humidity.Barren][descriptionCells.winter3] = { fx: effects.HeavyRain };
+weatherOptions[Climate.Hot][Humidity.Barren][descriptionCells.winter4] = { fx: effects.LightRain };
+weatherOptions[Climate.Hot][Humidity.Barren][descriptionCells.winter5] = { fx: effects.LightRain };
+weatherOptions[Climate.Hot][Humidity.Barren][descriptionCells.winter9] = { fx: effects.LightRain };
+
+weatherOptions[Climate.Hot][Humidity.Modest][descriptionCells.summer6] = { fx: effects.LightRain };
+weatherOptions[Climate.Hot][Humidity.Modest][descriptionCells.summer7] = { fx: effects.HeavyRain };
+weatherOptions[Climate.Hot][Humidity.Modest][descriptionCells.springfall3] = { fx: effects.ModerateFog };
+weatherOptions[Climate.Hot][Humidity.Modest][descriptionCells.springfall_cool2] = { fx: effects.HeavyFog };
+weatherOptions[Climate.Hot][Humidity.Modest][descriptionCells.springfall4] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Hot][Humidity.Modest][descriptionCells.winter3] = { fx: effects.HeavyRain };
+weatherOptions[Climate.Hot][Humidity.Modest][descriptionCells.winter6] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Hot][Humidity.Modest][descriptionCells.winter4] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Hot][Humidity.Modest][descriptionCells.winter5] = { fx: effects.HeavyRain };
+weatherOptions[Climate.Hot][Humidity.Modest][descriptionCells.winter9] = { fx: effects.LightRain };
+
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.summer5] = { fx: effects.LightRain };
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.summer6] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.springfall_warm2] = { fx: effects.LightRain };
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.summer3] = { fx: effects.LightRain };
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.summer7] = { fx: effects.HeavyRain };
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.springfall3] = { fx: effects.ModerateFog };
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.springfall_cool2] = { fx: effects.HeavyFog };
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.summer9] = { fx: effects.HeavyRain };
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.springfall_warm5] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.springfall5] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.winter3] = { fx: effects.HeavyRain };
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.winter7] = { fx: effects.HeavyRain };
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.springfall_warm6] = { fx: effects.HeavyRain };
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.springfall6] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.winter4] = { fx: effects.ModerateRain };
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.springfall7] = { fx: effects.LightRain };
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.winter5] = { fx: effects.HeavyRain };
+weatherOptions[Climate.Hot][Humidity.Verdant][descriptionCells.winter9] = { fx: effects.ModerateRain };
 
 export { 
   Direction,
