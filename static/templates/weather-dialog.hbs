@@ -1,14 +1,14 @@
-<div id="sweath-container" {{#if hideDialog}}style="display:none"{{/if}} style="bottom:{{windowPosition.bottom}}px; left:{{windowPosition.left}}px;">
-	<div id="sweath-wrapper">
-		<div id="calendar-box" {{#if hideCalendar}}style="display:none"{{/if}}>
+<div id="swr-container" {{#if hideDialog}}style="display:none"{{/if}} style="bottom:{{windowPosition.bottom}}px; left:{{windowPosition.left}}px;">
+	<div id="swr-wrapper">
+		<div id="swr-calendar-box" {{#if hideCalendar}}style="display:none"{{/if}}>
 
 			<!-- header -->
 			<header id="calendar-header">
-				<div class="sweath-topbar">
-					<div id="sweath-weather-move-handle">&nbsp;</div>
+				<div class="swr-topbar">
+					<div id="swr-weather-move-handle">&nbsp;</div>
 
 					<div>
-						<div id="weather-toggle" class="sweath-icon-btn">
+						<div id="weather-toggle" class="swr-icon-btn">
 							<i class="fas fa-cloud-sun" title="{{localize 'sweath.labels.openWeatherBox'}}"></i>
 						</div>
 					</div>
@@ -16,23 +16,16 @@
 			</header>
 
 			<!-- date side -->
-			<div class="date-box">
+			<div id="swr-date-box">
 
 				<!-- date display -->
-				<div id="date-display">
-					<h2>
-						<span id="weekday">{{ weekday }}, </span>
-						<span id="date">{{ displayDate }}</span>
-					</h2>
+				<div id="swr-date-display">
+					{{ weekday }}, {{ displayDate }}
 				</div>
 
 				<!-- clock display -->
-				<div class="clock">
-					<div id="start-stop-clock" class="time-display">
-						<div class="time">
-							<span class="calendar-time-disp" id="calendar-time">{{ formattedTime }}</span>
-						</div>
-					</div>
+				<div id="swr-time-display">
+					{{ formattedTime }}
 				</div>
 			</div>
 
@@ -45,34 +38,30 @@
 			-->
 		</div>
 
-		<div id="weather-box" {{#if hideWeather}}style="display:none"{{/if}}>
-			<div id="sweath-weather-container">
+		<div id="swr-weather-box" {{#if hideWeather}}style="display:none"{{/if}}>
+			<div id="swr-weather-container">
 				<header id="weather-header">
-					<div class="sweath-topbar">
-						<div id="sweath-calendar-move-handle" style="flex:1 1 80%">&nbsp;</div>
+					<div class="swr-topbar">
+						<div id="swr-calendar-move-handle" style="flex:1 1 80%">&nbsp;</div>
 
-						{{#if isGM}}
-							<div id="sweath-weather-refresh" class="sweath-button" title="{{localize 'sweath.labels.regenerateWeather'}}">
-								<i class="fas fa-redo"></i>
-							</div>
-						{{/if}}
+						<a class="header-button control close">
+	            <i class="fas fa-times"></i>Close
+        		</a>
 					</div>
 
 					{{#if isGM}}
 						<div style="padding-left: 7px;">
-							<span id="sweath-season-icon">
+							<span id="swr-season-icon">
 								<span class="fa {{ currentSeasonClass }}"></span>
 							</span>
 						</div>
 
 						<div class="select-wrapper" style="flex:1">
-							{{#if isGM}}
-								<select id="season-selection" title="{{localize 'sweath.options.season.select'}}">
-									{{#each seasonSelections}}
-										<option title="{{text}}" value="{{value}}">{{text}}</option>
-									{{/each}}
-								</select>
-							{{/if}}
+							<select id="season-selection" title="{{localize 'sweath.options.season.select'}}">
+								{{#each seasonSelections}}
+									<option title="{{text}}" value="{{value}}">{{text}}</option>
+								{{/each}}
+							</select>
 						</div>
 						<div class="select-wrapper" style="flex:1">
 							<select id="biome-selection" title="{{localize 'sweath.options.biome.select'}}">
@@ -100,15 +89,15 @@
 
 						<div class="row-break"></div>
 
-						<div id="sweath-weather-refresh" class="sweath-button" title="{{localize 'sweath.labels.regenerateWeather'}}">
+						<div id="swr-weather-refresh" class="swr-button" title="{{localize 'sweath.labels.regenerateWeather'}}">
 							<i class="fas fa-redo"></i>
 						</div>
 
 					{{/if}}
 				</header>
-				<div class="sweath-weather-content">
-					<div class="weather-description">
-						<p id="current-description">{{ currentTemperature }} - {{ currentDescription }}</p>
+				<div class="swr-weather-content">
+					<div class="swr-weather-description">
+						<p id="swr-current-description">{{ currentTemperature }} - {{ currentDescription }}</p>
 					</div>
 				</div>
 			</div>

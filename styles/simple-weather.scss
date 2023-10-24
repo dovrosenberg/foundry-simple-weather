@@ -1,4 +1,4 @@
-#sweath-container {
+#swr-container {
   height: auto;
   border-radius: 5px;
   position: fixed;
@@ -6,7 +6,7 @@
   overflow: hidden;
   display: flex;
 
-  #sweath-wrapper {
+  #swr-wrapper {
     height: auto;
     overflow: hidden;
     display: flex;
@@ -14,17 +14,17 @@
   }
 
   // don't put on the wrapper because we need it to be transparent in spots
-  #calendar-box, #weather-box {
+  #swr-calendar-box, #swr-weather-box {
     background: rgba(34, 34, 34, 1);
     color: rgba(255, 255, 255, .87);
   }
 
-  #calendar-box {
+  #swr-calendar-box {
     flex: 1 0 255px;
     min-width: 255px;
   }
 
-  .sweath-icon-btn {
+  .swr-icon-btn {
     color: rgba(255, 255, 255, .45);
     transition: color .3s ease;
     margin-right: 4px;
@@ -33,18 +33,18 @@
     align-items: center;
   }
 
-  .sweath-icon-btn:last-child {
+  .swr-icon-btn:last-child {
     margin-right: 0;
   }
 
-  .sweath-icon-btn:hover {
+  .swr-icon-btn:hover {
     color: rgba(255, 255, 255, 1);
   }
 
-  #sweath-calendar-move-handle,
-  #sweath-weather-move-handle 
+  #swr-calendar-move-handle,
+  #swr-weather-move-handle 
   {
-    font-size: 13px;
+    font-size: 0.85rem;
     line-height: 1;
     text-align: center;
     padding: 0;
@@ -54,73 +54,38 @@
     flex: 1 0;
   }
 
-  .date-box {
+  #swr-date-box {
     padding: 0 1px;
   }
 
-  #date-display {
+  #swr-date-display {
     border-bottom: 1px solid rgba(255, 255, 255, .4);
-
-    h2 {
-      font-size: 13px;
-      margin: 0;
-      padding: 4px 4px 2px 4px;
-      border: none;
-      text-align: center;
-      font-weight: 400;
-    }
   }
-
-  #start-stop-clock {
-    cursor: pointer;
-  }
-
-  .clock {
-    padding: 4px;
-  }
-
-  .clock, .time-display {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .time-display {
-    margin: 0 auto;
-  }
-
-  .time-display .time {
-    margin: 0 4px;
-    font-size: 16px;
+  
+  #swr-date-display, #swr-time-display{
+    font-size: 0.85rem;
     line-height: 1;
-    text-transform: uppercase;
-  }
-
-  .time-display .start-stop {
-    display: flex;
-    align-items: center;
-    font-size: 10px;
-    height: 10px;
-  }
-
-  .time-display .start-stop i {
-    font-size: 10px;
-    line-height: 1;
+    margin: 0;
+    padding: 4px 4px 2px 4px;
+    text-align: center;
+    font-weight: 400;
+    height: 1.8rem;
   }
 }
+
 /* WEATHER DISPLAY */
 
-#sweath-container #weather-box {
+#swr-weather-box {
   visibility: visible;
 }
 
 // expand the box when show-weather is set
-#sweath-container.hide-weather #weather-box {
+#swr-container.hide-weather #swr-weather-box {
   visibility: hidden;
   overflow: hidden;
 }
 
-#sweath-weather-container {
+#swr-weather-container {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -128,7 +93,7 @@
   /*border-left: 1px solid rgba(0,0,0,.6);*/
 }
 
-#sweath-container header {
+#swr-container header {
   flex: 0 0 20px;
   display: flex;
   flex-flow: row wrap;
@@ -137,7 +102,7 @@
   cursor: move;
 }
 
-#sweath-container header .sweath-topbar {
+#swr-container header .swr-topbar {
   display: flex;
   flex: 1 0 100%;
   flex-flow: row wrap;
@@ -147,27 +112,17 @@
   cursor: move;
 }
 
-#sweath-current-temperature {
-  font-size: 13px;
-  padding: 0 8px 0 4px;
-  border-right: 1px solid rgba(255, 255, 255, .4);
-  height: 100%;
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-}
-
 #weather-container header div {
   display:flex;
 }
 
-#sweath-container header select {
+#swr-container header select {
   background: none;
   border: none;
   border-radius: 0;
   height: 20px;
   width:100%;
-  font-size: 13px;
+  font-size: 0.85rem;
   font-family: Signika, sans-serif;
   flex: 1;
   color: rgba(255, 255, 255, .9);
@@ -177,41 +132,41 @@
   transition: background .3s ease;
 }
 
-#sweath-container header select option {
+#swr-container header select option {
   background: #444;
   color: #fff;
 }
 
-#sweath-container header select:hover {
+#swr-container header select:hover {
   background: rgba(255, 255, 255, .2);
 }
 
-#sweath-container header select:active,
-#sweath-container header select:focus {
+#swr-container header select:active,
+#swr-container header select:focus {
   box-shadow: none;
 }
 
-#sweath-container header .select-wrapper {
+#swr-container header .select-wrapper {
   padding: 0 3px 0 3px;
 } 
 
-#sweath-weather-refresh {
+#swr-weather-refresh {
   display: flex;
   align-items: center;
   padding: 4px;
   margin-right: 2px;
-  font-size: 12px;
+  font-size: 0.85rem;
   cursor: pointer;
   width: 20px;
   border-left: 1px solid rgba(255, 255, 255, .4);
 }
 
-#sweath-weather-refresh i {
+#swr-weather-refresh i {
   position: relative;
   top: 1px;
 }
 
-.sweath-weather-content {
+.swr-weather-content {
   flex: 1;
   display: flex;
   align-items: center;
@@ -220,49 +175,38 @@
   overflow: hidden;
 }
 
-.weather-description {
+.swr-weather-description {
   padding: 4px 10px;
-  font-size: 15px;
+  font-size: 1rem;
   line-height: 17px;
   margin: auto;
-  height: 60px;
+  height: 3.6rem;
 }
 
-#current-description {
+#swr-current-description {
   margin: 0;
   width: 230px;
   text-align: center;
 }
 
-/* Hide controls until hover */
-
-#sweath-container .day-time-cues, #sweath-container .time-controls {
-  opacity: 0;
-  transition: opacity .3s ease;
-}
-
-#sweath-container .time-controls {
-  opacity: .3;
-}
-
-#sweath-container .row-break {
+#swr-container .row-break {
   flex-basis: 100%;
   height: 0;
 }
 
 // seasons
-#sweath-season-icon .fa.winter {
+#swr-season-icon .fa.winter {
   color:#479dff;
 } 
 
-#sweath-season-icon .fa.spring {
+#swr-season-icon .fa.spring {
   color:#46b946;
 } 
 
-#sweath-season-icon .fa.summer {
+#swr-season-icon .fa.summer {
   color:#e0c40b;
 } 
 
-#sweath-season-icon .fa.fall {
+#swr-season-icon .fa.fall {
   color:#ff8e47;
 } 

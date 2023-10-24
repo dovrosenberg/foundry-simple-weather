@@ -22,7 +22,7 @@ function updateWeatherApplication(weatherApp: WeatherApplication): void {
 class WeatherApplication extends Application {
   private _currentWeather: WeatherData;
   private _weatherPanelOpen: boolean;
-  private _windowID = 'sweath-container';
+  private _windowID = 'swr-container';
   private _windowDragHandler = new WindowDrag();
   private _windowPosition: WindowPosition;
   private _calendarPresent = false;   // is simple calendar present?
@@ -113,8 +113,8 @@ class WeatherApplication extends Application {
   // this is called on every render!  One-time functionality should be put in ????? 
   public async activateListeners(html: JQuery<HTMLElement>): Promise<void> {
     // handle window drag
-    html.find('#sweath-calendar-move-handle').on('mousedown', this.onMoveHandleMouseDown);
-    html.find('#sweath-weather-move-handle').on('mousedown', this.onMoveHandleMouseDown);
+    html.find('#swr-calendar-move-handle').on('mousedown', this.onMoveHandleMouseDown);
+    html.find('#swr-weather-move-handle').on('mousedown', this.onMoveHandleMouseDown);
 
     // setup handlers and values for everyone
     html.find('#weather-toggle').on('click', this.onWeatherToggleClick);
@@ -148,7 +148,7 @@ class WeatherApplication extends Application {
 
       html.find('#biome-selection').val(this._currentBiome);  // do this last, because setting climate/humidity clears it
 
-      html.find('#sweath-weather-refresh').on('click', this.onWeatherRegenerateClick);
+      html.find('#swr-weather-refresh').on('click', this.onWeatherRegenerateClick);
       html.find('#biome-selection').on('change', this.onBiomeSelectChange);
       html.find('#climate-selection').on('change', this.onClimateSelectChange);
       html.find('#humidity-selection').on('change', this.onHumiditySelectChange);
