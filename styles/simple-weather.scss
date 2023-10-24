@@ -25,12 +25,16 @@
   }
 
   .swr-icon-btn {
+    background-color: transparent;
     color: rgba(255, 255, 255, .45);
-    transition: color .3s ease;
-    margin-right: 4px;
     cursor: pointer;
     display: flex;
     align-items: center;
+    border-radius: 3px;
+    border: 1px solid #dcdcdc;
+    font-size: 0.65rem;
+    padding: 2px;
+    margin: 1px;
   }
 
   .swr-icon-btn:last-child {
@@ -78,6 +82,10 @@
 #swr-weather-box {
   visibility: visible;
   width: 450px;
+}
+
+#swr-weather-box.swr-player-box {
+  width: 250px;
 }
 
 // expand the box when show-weather is set
@@ -153,12 +161,16 @@
   display: flex;
 }
 
-
 #swr-season-bar, #swr-biome-bar, #swr-tool-bar {
   flex: 1 0 100%;
   flex-flow: row wrap;
   align-items: center;
   min-height: 20px;
+  justify-content: space-around;
+}
+
+#swr-season-bar.displayBar, #swr-biome-bar.display-bar {
+  display: flex;
 }
 
 #swr-season-bar, #swr-biome-bar {

@@ -35,7 +35,7 @@
 			-->
 		</div>
 
-		<div id="swr-weather-box" {{#if hideWeather}}style="display:none"{{/if}}>
+		<div id="swr-weather-box" {{#unless isGM}}class="swr-player-box"{{/unless}} {{#if hideWeather}}style="display:none"{{/if}}>
 			<div id="swr-weather-container">
 				<header id="weather-header">
 					<div class="swr-top-bar">
@@ -93,13 +93,16 @@
 						<div class="row-break"></div>
 
 						<div id="swr-tool-bar">
+							<button class="swr-icon-btn">A</button>
+							<button class="swr-icon-btn">B</button>
+							<button class="swr-icon-btn">C</button>
 						</div>
 
 					{{/if}}
 				</header>
 				<div class="swr-weather-content">
 					{{#if isGM}}
-						<div id="swr-weather-refresh" class="swr-button" title="{{localize 'sweath.labels.regenerateWeather'}}">
+						<div id="swr-weather-refresh" title="{{localize 'sweath.labels.regenerateWeather'}}">
 							<i class="fas fa-redo"></i>
 						</div>
 					{{/if}}
