@@ -4,7 +4,7 @@
 
 			<!-- header -->
 			<header id="calendar-header">
-				<div class="swr-topbar">
+				<div class="swr-top-bar">
 					<div id="swr-weather-move-handle">&nbsp;</div>
 
 					<div>
@@ -17,13 +17,10 @@
 
 			<!-- date side -->
 			<div id="swr-date-box">
-
-				<!-- date display -->
 				<div id="swr-date-display">
 					{{ weekday }}, {{ displayDate }}
 				</div>
 
-				<!-- clock display -->
 				<div id="swr-time-display">
 					{{ formattedTime }}
 				</div>
@@ -41,7 +38,7 @@
 		<div id="swr-weather-box" {{#if hideWeather}}style="display:none"{{/if}}>
 			<div id="swr-weather-container">
 				<header id="weather-header">
-					<div class="swr-topbar">
+					<div class="swr-top-bar">
 						<div id="swr-calendar-move-handle" style="flex:1 1 80%">&nbsp;</div>
 
 						<a class="header-button control close">
@@ -50,52 +47,63 @@
 					</div>
 
 					{{#if isGM}}
-						<div style="padding-left: 7px;">
-							<span id="swr-season-icon">
-								<span class="fa {{ currentSeasonClass }}"></span>
-							</span>
-						</div>
+						<div id="swr-season-bar">
+							<div style="padding-left: 7px;">
+								<span id="swr-season-icon">
+									<span class="fa {{ currentSeasonClass }}"></span>
+								</span>
+							</div>
 
-						<div class="select-wrapper" style="flex:1">
-							<select id="season-selection" title="{{localize 'sweath.options.season.select'}}">
-								{{#each seasonSelections}}
-									<option title="{{text}}" value="{{value}}">{{text}}</option>
-								{{/each}}
-							</select>
-						</div>
-						<div class="select-wrapper" style="flex:1">
-							<select id="biome-selection" title="{{localize 'sweath.options.biome.select'}}">
-								{{#each biomeSelections}}
-									<option title="{{text}}" value="{{value}}">{{text}}</option>
-								{{/each}}
-							</select>
+							<div class="select-wrapper" style="flex:1">
+								<select id="season-selection" title="{{localize 'sweath.options.season.select'}}">
+									{{#each seasonSelections}}
+										<option title="{{text}}" value="{{value}}">{{text}}</option>
+									{{/each}}
+								</select>
+							</div>
 						</div>
 						<div class="row-break"></div>
 
-						<div class="select-wrapper" style="flex:0 0 50%">
-							<select id="climate-selection" title="{{localize 'sweath.options.climate.select'}}">
-								{{#each climateSelections}}
-									<option title="{{text}}" value="{{value}}">{{text}}</option>
-								{{/each}}
-							</select>
-						</div>
-						<div class="select-wrapper" style="flex: 0 0 50%">
-							<select id="humidity-selection" title="{{localize 'sweath.options.humidity.select'}}">
-								{{#each humiditySelections}}
-									<option title="{{text}}" value="{{value}}">{{text}}</option>
-								{{/each}}
-							</select>
-						</div>			
+						<div id="swr-biome-bar">
+							<div style="flex: 1"></div>  <!-- to right align the biome box -->
+							<div class="select-wrapper" style="flex:1">
+								<select id="biome-selection" title="{{localize 'sweath.options.biome.select'}}">
+									{{#each biomeSelections}}
+										<option title="{{text}}" value="{{value}}">{{text}}</option>
+									{{/each}}
+								</select>
+							</div>
+							<div class="row-break"></div>
 
+							<div class="select-wrapper" style="flex:0 0 50%">
+								<select id="climate-selection" title="{{localize 'sweath.options.climate.select'}}">
+									{{#each climateSelections}}
+										<option title="{{text}}" value="{{value}}">{{text}}</option>
+									{{/each}}
+								</select>
+							</div>
+							<div class="select-wrapper" style="flex: 0 0 50%">
+								<select id="humidity-selection" title="{{localize 'sweath.options.humidity.select'}}">
+									{{#each humiditySelections}}
+										<option title="{{text}}" value="{{value}}">{{text}}</option>
+									{{/each}}
+								</select>
+							</div>			
+						</div>
 						<div class="row-break"></div>
 
-						<div id="swr-weather-refresh" class="swr-button" title="{{localize 'sweath.labels.regenerateWeather'}}">
-							<i class="fas fa-redo"></i>
+						<div id="swr-tool-bar">
 						</div>
 
 					{{/if}}
 				</header>
 				<div class="swr-weather-content">
+					{{#if isGM}}
+						<div id="swr-weather-refresh" class="swr-button" title="{{localize 'sweath.labels.regenerateWeather'}}">
+							<i class="fas fa-redo"></i>
+						</div>
+					{{/if}}
+
 					<div class="swr-weather-description">
 						<p id="swr-current-description">{{ currentTemperature }} - {{ currentDescription }}</p>
 					</div>

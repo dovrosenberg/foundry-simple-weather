@@ -77,6 +77,7 @@
 
 #swr-weather-box {
   visibility: visible;
+  width: 450px;
 }
 
 // expand the box when show-weather is set
@@ -89,8 +90,6 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 450px;
-  /*border-left: 1px solid rgba(0,0,0,.6);*/
 }
 
 #swr-container header {
@@ -102,7 +101,7 @@
   cursor: move;
 }
 
-#swr-container header .swr-topbar {
+#swr-container header .swr-top-bar {
   display: flex;
   flex: 1 0 100%;
   flex-flow: row wrap;
@@ -150,15 +149,23 @@
   padding: 0 3px 0 3px;
 } 
 
-#swr-weather-refresh {
+#swr-season-bar, #swr-biome-bar, #swr-tool-bar {
   display: flex;
+  flex: 1 0 100%;
+  flex-flow: row wrap;
   align-items: center;
+  min-height: 20px;
+}
+
+#swr-weather-refresh {
+  position: absolute;
+  right: 0;
+  top: 0;
   padding: 4px;
-  margin-right: 2px;
+  margin: 2px;
   font-size: 0.85rem;
   cursor: pointer;
   width: 20px;
-  border-left: 1px solid rgba(255, 255, 255, .4);
 }
 
 #swr-weather-refresh i {
@@ -167,12 +174,9 @@
 }
 
 .swr-weather-content {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  /*border-left: 1px solid rgba(255,255,255,.4);*/
   background: rgba(0, 0, 0, .5);
   overflow: hidden;
+  position: relative;
 }
 
 .swr-weather-description {
@@ -181,11 +185,6 @@
   line-height: 17px;
   margin: auto;
   height: 3.6rem;
-}
-
-#swr-current-description {
-  margin: 0;
-  width: 230px;
   text-align: center;
 }
 
