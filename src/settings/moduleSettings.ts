@@ -3,6 +3,7 @@ import moduleJson from '@module';
 import { WindowPosition } from '@/window/WindowPosition';
 import { getGame, localize } from '@/utils/game';
 import { WeatherData } from '@/weather/WeatherData';
+import { DisplayOptions } from '@/types/DisplayOptions';
 
 export enum SettingKeys {
   // displayed in settings
@@ -10,11 +11,11 @@ export enum SettingKeys {
   outputWeatherToChat = 'outputWeatherChat',   // when new weather is generated, should it be put in the chat box
   publicChat = 'publicChat',   // should everyone see the chat (true) or just the GM (false)
   useCelsius = 'useCelsius',   // should we use Celsius
-  hideCalendar = 'hideCalendar',  // should we always hide the calendar side
   useFX = 'useFX',  // the name of the package used for FX (or 'off' if none)
 
   // internal only
   windowPosition = 'windowPosition',   // the current position of the window
+  displayOptions = 'displayOptions',  // how is the application window configured
   lastWeatherData = 'lastWeatherData',  // the previously generated weather data
   season = 'season',   // the current season
   seasonSync = 'seasonSync',       // should we sync with simple calendar
@@ -28,8 +29,8 @@ type SettingType<K extends SettingKeys> =
     K extends SettingKeys.publicChat ? boolean :
     K extends SettingKeys.outputWeatherToChat ? boolean :
     K extends SettingKeys.useCelsius ? boolean :
-    K extends SettingKeys.hideCalendar ? boolean :
     K extends SettingKeys.useFX ? string :
+    K extends SettingKeys.displayOptions ? DisplayOptions :
     K extends SettingKeys.lastWeatherData ? (WeatherData | null) :  
     K extends SettingKeys.season ? number :
     K extends SettingKeys.seasonSync ? boolean :
@@ -113,14 +114,6 @@ export class ModuleSettings {
         type: Boolean,
       },
       {
-        settingID: SettingKeys.hideCalendar, 
-        name: 'sweath.settings.hideCalendar',
-        hint: 'sweath.settings.hideCalendarHelp',
-        default: false,
-        requiresReload: true,   // can't find the right typescript type, but this does work
-        type: Boolean,
-      },
-      {
         settingID: SettingKeys.useFX, 
         name: 'sweath.settings.useFX',
         hint: 'sweath.settings.useFXHelp',
@@ -174,13 +167,24 @@ export class ModuleSettings {
       },
     ];
    
-    // these are locals only used internally
+    // these are client-specfic only used internally
     const localInternalParams: (InexactPartial<Omit<SettingConfig<unknown>, 'key' | 'namespace'>> & { settingID: string })[] = [
       {
         settingID: SettingKeys.windowPosition,
         name: 'Window Position',
         type: Object,
         default: null
+      },
+      {
+        settingID: SettingKeys.displayOptions,
+        name: 'Display Options',
+        type: Object,
+        default: {
+          dateBox: true,
+          weatherBox: false,
+          seasonBar: false,
+          biomeBar: false,
+        }
       },
     ];
 

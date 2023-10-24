@@ -10,6 +10,7 @@ import { isClientGM } from '@/utils/game';
 import { generate, outputWeather } from '@/weather/weatherGenerator';
 import { moduleSettings } from '@/settings/moduleSettings';
 import { weatherEffects } from '@/weather/WeatherEffects';
+import { DisplayOptions } from '@/types/DisplayOptions';
 
 // the solo instance
 let weatherApplication: WeatherApplication;
@@ -21,10 +22,10 @@ function updateWeatherApplication(weatherApp: WeatherApplication): void {
 
 class WeatherApplication extends Application {
   private _currentWeather: WeatherData;
-  private _weatherPanelOpen: boolean;
   private _windowID = 'swr-container';
   private _windowDragHandler = new WindowDrag();
   private _windowPosition: WindowPosition;
+  private _displayOptions: DisplayOptions;
   private _calendarPresent = false;   // is simple calendar present?
 
   private _currentClimate: Climate;
@@ -36,21 +37,17 @@ class WeatherApplication extends Application {
   constructor() {
     super();
 
-    this._weatherPanelOpen = false;
-
     log(false, 'WeatherApplication construction');
 
+    // set the initial display
+    this._displayOptions = moduleSettings.get(SettingKeys.displayOptions) || { dateBox: true, weatherBox: false, biomeBar: true, seasonBar: true }    
+
     // get default position or set default
-    this.setWindowPosition(
-      moduleSettings.get(SettingKeys.windowPosition) || {
-        left: 100,
-        bottom: 300,
-      }
-    );
+    this._windowPosition = moduleSettings.get(SettingKeys.windowPosition) || { left: 100, bottom: 300 }
 
     this.setWeather();  
 
-    // initial render -- needed even though setWeather will render because we need to force
+    // initial render -- needed even though setWeather and setWindowPosition will render because we need to force
     this.render(true);
   }
 
@@ -84,8 +81,8 @@ class WeatherApplication extends Application {
 
       // hide dialog - don't show anything
       hideDialog: (isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)) ? false : true,
-      hideCalendar: !this._calendarPresent || moduleSettings.get(SettingKeys.hideCalendar),
-      hideWeather: this._calendarPresent && !moduleSettings.get(SettingKeys.hideCalendar) && !this._weatherPanelOpen,  // can only hide weather if calendar present and setting is off
+      hideCalendar: !this._calendarPresent || !this._displayOptions.dateBox,
+      hideWeather: this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
       windowPosition: this._windowPosition,
     };
 
@@ -94,11 +91,23 @@ class WeatherApplication extends Application {
 
   // move the window
   // we can't use foundry's setPosition() because it doesn't work for fixed size, non popout windows
-  public setWindowPosition(newPosition: WindowPosition) {
+  public updateWindowPosition(newPosition: WindowPosition) {
     this._windowPosition = newPosition;
 
     // save
-    moduleSettings.set(SettingKeys.windowPosition, {bottom: newPosition.bottom, left: newPosition.left});
+    moduleSettings.set(SettingKeys.windowPosition, this._windowPosition);
+
+    this.render();
+  }
+
+  public updateDisplayOptions(options: Partial<DisplayOptions>): void {
+    this._displayOptions = {
+      ...this._displayOptions,
+      ...options
+    }
+
+    // save
+    moduleSettings.set(SettingKeys.displayOptions, this._displayOptions);
 
     this.render();
   }
@@ -277,8 +286,7 @@ class WeatherApplication extends Application {
   private onWeatherToggleClick = (event): void => {
     event.preventDefault();
 
-    this._weatherPanelOpen = !this._weatherPanelOpen;
-    this.render();
+    this.updateDisplayOptions({ weatherBox: !this._displayOptions.weatherBox })
   } ;
 
   private onWeatherRegenerateClick = (event): void => {

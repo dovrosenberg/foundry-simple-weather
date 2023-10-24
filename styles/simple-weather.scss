@@ -149,12 +149,24 @@
   padding: 0 3px 0 3px;
 } 
 
-#swr-season-bar, #swr-biome-bar, #swr-tool-bar {
+#swr-tool-bar {
   display: flex;
+}
+
+
+#swr-season-bar, #swr-biome-bar, #swr-tool-bar {
   flex: 1 0 100%;
   flex-flow: row wrap;
   align-items: center;
   min-height: 20px;
+}
+
+#swr-season-bar, #swr-biome-bar {
+  display: none;
+}
+
+#swr-season-bar.displayBar, #swr-biome-bar.display-bar {
+  display: flex;
 }
 
 #swr-weather-refresh {

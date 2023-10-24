@@ -47,7 +47,7 @@
 					</div>
 
 					{{#if isGM}}
-						<div id="swr-season-bar">
+						<div id="swr-season-bar" {{#if displayOptions.seasonBar}}class="display-bar"{{/if}}>
 							<div style="padding-left: 7px;">
 								<span id="swr-season-icon">
 									<span class="fa {{ currentSeasonClass }}"></span>
@@ -64,7 +64,7 @@
 						</div>
 						<div class="row-break"></div>
 
-						<div id="swr-biome-bar">
+						<div id="swr-biome-bar" {{#if displayOptions.biomeBar}}class="display-bar"{{/if}}>
 							<div style="flex: 1"></div>  <!-- to right align the biome box -->
 							<div class="select-wrapper" style="flex:1">
 								<select id="biome-selection" title="{{localize 'sweath.options.biome.select'}}">
