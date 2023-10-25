@@ -9,8 +9,12 @@
       "outputweatherToChatHelp": "La météo nouvellement générée doit-elle être affichée dans le chat ?",
       "publicChat": "Rendre le chat public ?",
       "publicChatHelp": "Tout le monde doit-il voir le chat météo (s'il est activé) ou seulement le GM (s'il est désactivé) ?",
-      "hideCalendar": "Cacher la fenêtre du calendrier ?",
-      "hideCalendarHelp": "Si la case est cochée, seuls les contrôles météorologiques seront affichés (par exemple, si vous laissez la fenêtre de Simple Calendar ouverte, cela permet d'économiser de l'espace)."
+      "useFX": "Display special effects?",
+      "useFXHelp": "Select the module to use when displaying special effects.  When activiate, the effects can also be turned off manually when needed.",
+      "options": {
+        "useFX.choices.off": "Off",
+        "useFX.choices.core": "FoundryVTT scene weather setting"
+      }
     },
 
     "options": {

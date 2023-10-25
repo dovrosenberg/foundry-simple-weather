@@ -105,6 +105,7 @@
           "winter.8": "Graue, schnelle Wolken",
           "winter.9": "Schneegestöber, windig"
         },
+
         "modest": {
           "springfall.1": "Kalte Winde, sehr trocken",
           "springfall.2": "Grauer Himmel",
@@ -144,6 +145,7 @@
           "winter.8": "Graue, schnelle Wolken",
           "winter.9": "Leichter Schneefall, windig"
         },
+
         "verdant": {
           "springfall.1": "Kalte Winde, sehr trocken",
           "springfall.2": "Grauer Himmel",
@@ -184,6 +186,7 @@
           "winter.9": "Mäßiger Schneefall, windig"
         }
       },
+
       "temperate": {
         "barren": {
           "springfall.1": "Kalte Winde, sehr trocken",
@@ -224,6 +227,7 @@
           "winter.8": "Grau, schnelle Wolken",
           "winter.9": "Schneefall, windig"
         },
+
         "modest": {
           "springfall.1": "Kalte Winde, sehr trocken",
           "springfall.2": "Grauer Himmel",
@@ -263,6 +267,7 @@
           "winter.8": "Graue, schnelle Wolken",
           "winter.9": "Leichter Schneefall, windig"
         },
+
         "verdant": {
           "springfall.1": "Kalte Winde, sehr trocken",
           "springfall.2": "Grauer Himmel",
@@ -303,6 +308,7 @@
           "winter.9": "Mäßiger Schneefall, windig"
         }
       },
+
       "hot": {
         "barren": {
           "springfall.1": "Windig, sehr trocken",
@@ -343,6 +349,7 @@
           "winter.8": "Grau, schnelle Wolken",
           "winter.9": "Sprühregen, windig"
         },
+
         "modest": {
           "springfall.1": "Windig, sehr trocken",
           "springfall.2": "Grauer Himmel",
@@ -382,6 +389,7 @@
           "winter.8": "Graue, schnelle Wolken",
           "winter.9": "Leichter Regen, windig"
         },
+
         "verdant": {
           "springfall.1": "Trocken",
           "springfall.2": "Grauer Himmel",
