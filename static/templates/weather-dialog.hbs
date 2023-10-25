@@ -8,8 +8,7 @@
 					<div id="swr-weather-move-handle">&nbsp;</div>
 
 					<div>
-						<!--<div id="weather-toggle" class="swr-icon-btn">-->
-						<button id="weather-toggle" class="swr-toggle-btn">
+						<button id="weather-toggle" class="swr-toggle-btn {{#unless hideWeather}}on{{/unless}}">
 							<i class="fas fa-cloud-sun" title="{{localize 'sweath.labels.openWeatherBox'}}"></i>
 						</button>
 					</div>
@@ -94,7 +93,7 @@
 						<div class="row-break"></div>
 
 						<div id="swr-tool-bar">
-							<button id="swr-toggle-date-box" class="swr-toggle-btn">
+							<button id="swr-toggle-date-box" class="swr-toggle-btn {{#unless hideCalendar}}on{{/unless}}">
 								<i class="fas fa-calendar" title="{{localize ''}}"></i>
 							</button> 
 							<button id="swr-toggle-season-bar" class="swr-toggle-btn {{#if displayOptions.seasonBar}}on{{/if}}">

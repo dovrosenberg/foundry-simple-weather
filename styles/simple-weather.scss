@@ -32,18 +32,40 @@
     display: flex;
     align-items: center;
     border-radius: 3px;
-    border: 1px solid #dcdcdc;
+    border: 1px solid rgb(181, 179, 164);
     font-size: 1rem;
-    padding: 2px;
+    padding: 2px;   
     margin: 1px;
+    min-width: 1.1rem;
+    min-height: 1.1rem;
+    width: auto;
+    box-sizing: content-box;  // make sure the content is at least 1.1rem square
   }
 
-  button.swr-toggle-btn:hover {
-    color: rgba(255, 255, 255, 1);
+  button.swr-toggle-btn:last-of-type {
+    margin-right: 4px;
+  }
+
+  button.swr-toggle-btn:first-of-type {
+    margin-left: 4px;
+  }
+
+  button.swr-toggle-btn:active {
+    -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+       -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+            box-shadow: inset 0px 0px 5px #c1c1c1;
+     outline: none;
   }
 
   button.swr-toggle-btn.on {
-    color: red;
+    -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+       -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+            box-shadow: inset 0px 0px 5px #c1c1c1;
+     outline: none;
+  }
+
+  button.swr-toggle-btn i {
+    margin: 0;  // this is to override default button
   }
 
   #swr-calendar-move-handle,
@@ -114,7 +136,7 @@
   display: flex;
   flex: 1 0 100%;
   flex-flow: row wrap;
-  height: 20px;
+  min-height: 20px;
   justify-content: space-between;
   align-items: center;
   cursor: move;
