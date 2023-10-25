@@ -21,6 +21,8 @@ function updateWeatherApplication(weatherApp: WeatherApplication): void {
 }
 
 class WeatherApplication extends Application {
+  private _ready = false;   // is foundry fully loaded?
+
   private _currentWeather: WeatherData;
   private _windowID = 'swr-container';
   private _windowDragHandler = new WindowDrag();
@@ -46,9 +48,6 @@ class WeatherApplication extends Application {
     this._windowPosition = moduleSettings.get(SettingKeys.windowPosition) || { left: 100, bottom: 300 }
 
     this.setWeather();  
-
-    // initial render -- needed even though setWeather will render because we need to force
-    this.render(true);
   }
 
   // window options; called by parent class
@@ -80,7 +79,7 @@ class WeatherApplication extends Application {
       climateSelections: climateSelections,
 
       displayOptions: this._displayOptions,
-      hideDialog: (isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)) ? false : true,  // hide dialog - don't show anything
+      hideDialog: !this.ready || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
       hideCalendar: !this._calendarPresent || !this._displayOptions.dateBox,
       hideWeather: this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
       windowPosition: this._windowPosition,
@@ -88,6 +87,12 @@ class WeatherApplication extends Application {
 
     return data;
   }
+
+  // call this after simple calendar should have loaded so we know whether to draw the calendar box or not
+  public ready(): void {
+    this._ready = true;
+    this.render(true);
+  };
 
   // move the window
   // we can't use foundry's setPosition() because it doesn't work for fixed size, non popout windows

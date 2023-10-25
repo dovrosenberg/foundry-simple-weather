@@ -78,6 +78,11 @@ Hooks.once(SimpleCalendar.Hooks.Ready, async () => {
   }
 });
 
+// once we've given calendar time to load, show the box
+Hooks.once('renderMainApp', () => {
+  weatherApplication.ready();
+});
+
 // make sure we have a compatible version of simple-calendar installed
 function checkDependencies() {
   const minimumVersion = '2.4.0';
