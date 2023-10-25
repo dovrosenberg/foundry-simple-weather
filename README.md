@@ -6,7 +6,7 @@ A module that provides dynamic weather generation, by season and biome.  If [Sim
 
 An alternative to [Weather Control](https://foundryvtt.com/packages/weather-control) with an updated algorithm (or for those not wishing to rely on Simple Calendar), **Simple Weather** aims to provide the most seamless experience to add dynamic weather to your game based on climates.
 
-I built this as a way to learn Foundry better, but I plan to maintain it for now and am happy to consider feature requests (open an issue at (https://github.com/dovrosenberg/foundry-simple-weather/issues))
+I built this as a way to learn Foundry better, but I plan to maintain it for now and am happy to consider [feature requests](https://github.com/dovrosenberg/foundry-simple-weather/issues/new/choose)
 
 ## Features
 
@@ -42,7 +42,7 @@ In some cases, you may need to override Simple Calendar's season. In particular,
 
 ## Support
 
-If you believe you found a bug or would like to post a feature request, head over to the module's [Github repo](https://github.com/dovrosenberg/foundry-simple-weather) and [open a new issue](https://github.com/dovrosenberg/foundry-simple-weather/issues/new).
+If you believe you found a bug or would like to post a feature request, head over to the module's [Github repo](https://github.com/dovrosenberg/foundry-simple-weather) and [open a new issue](https://github.com/dovrosenberg/foundry-simple-weather/issues/new/choose).
 
 
 ## Credits

@@ -1,10 +1,30 @@
 # Change Log
 
-## v1.3.1 - Season sync to Simple Calendar
+## v1.3.2 - Now in French (Français)!
+![](https://img.shields.io/badge/release%20date-October%2024%2C%202023-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.3.3/module.zip)
+
+Swedish language support
+
+Thanks to Zakarik for adding French translations!
+
+<hr/>
+
+## v1.3.2 - Now in Swedish (Svenska)!
+![](https://img.shields.io/badge/release%20date-October%2022%2C%202023-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.3.2/module.zip)
+
+Swedish language support
+
+Thanks to Jonas Karlsson for adding Swedish translations!
+
+<hr/>
+
+## v1.3.1 - Bug fix
 ![](https://img.shields.io/badge/release%20date-October%2021%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.3.1/module.zip)
 
-Bug fix - weather box no longer blocks elementswhen hidden
+Bug fix - weather box no longer blocks elements when hidden
 
 <hr/>
 
@@ -24,7 +44,7 @@ Fixed bad manifest file location in module.json preventing updates
 
 <hr/>
 
-## v1.2.0 - Now in German!  Also, reduced screen footprint
+## v1.2.0 - Now in German (Deutsch)!  Also, reduced screen footprint
 
 ![](https://img.shields.io/badge/release%20date-October%2020%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.2.0/module.zip)
