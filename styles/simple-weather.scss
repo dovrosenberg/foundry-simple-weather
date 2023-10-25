@@ -24,7 +24,8 @@
     min-width: 255px;
   }
 
-  .swr-icon-btn {
+  button.swr-toggle-btn {
+    flex: 0 1 0%;
     background-color: transparent;
     color: rgba(255, 255, 255, .45);
     cursor: pointer;
@@ -32,17 +33,17 @@
     align-items: center;
     border-radius: 3px;
     border: 1px solid #dcdcdc;
-    font-size: 0.65rem;
+    font-size: 1rem;
     padding: 2px;
     margin: 1px;
   }
 
-  .swr-icon-btn:last-child {
-    margin-right: 0;
+  button.swr-toggle-btn:hover {
+    color: rgba(255, 255, 255, 1);
   }
 
-  .swr-icon-btn:hover {
-    color: rgba(255, 255, 255, 1);
+  button.swr-toggle-btn.on {
+    color: red;
   }
 
   #swr-calendar-move-handle,
@@ -119,10 +120,6 @@
   cursor: move;
 }
 
-#weather-container header div {
-  display:flex;
-}
-
 #swr-container header select {
   background: none;
   border: none;
@@ -159,6 +156,7 @@
 
 #swr-tool-bar {
   display: flex;
+  justify-content: start;
 }
 
 #swr-season-bar, #swr-biome-bar, #swr-tool-bar {
@@ -166,10 +164,13 @@
   flex-flow: row wrap;
   align-items: center;
   min-height: 20px;
+}
+
+#swr-season-bar, #swr-biome-bar {
   justify-content: space-around;
 }
 
-#swr-season-bar.displayBar, #swr-biome-bar.display-bar {
+#swr-season-bar.display-bar, #swr-biome-bar.display-bar {
   display: flex;
 }
 

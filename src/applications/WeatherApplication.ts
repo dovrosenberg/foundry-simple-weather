@@ -47,7 +47,7 @@ class WeatherApplication extends Application {
 
     this.setWeather();  
 
-    // initial render -- needed even though setWeather and setWindowPosition will render because we need to force
+    // initial render -- needed even though setWeather will render because we need to force
     this.render(true);
   }
 
@@ -79,8 +79,8 @@ class WeatherApplication extends Application {
       humiditySelections: humiditySelections,
       climateSelections: climateSelections,
 
-      // hide dialog - don't show anything
-      hideDialog: (isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)) ? false : true,
+      displayOptions: this._displayOptions,
+      hideDialog: (isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)) ? false : true,  // hide dialog - don't show anything
       hideCalendar: !this._calendarPresent || !this._displayOptions.dateBox,
       hideWeather: this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
       windowPosition: this._windowPosition,
@@ -162,6 +162,10 @@ class WeatherApplication extends Application {
       html.find('#climate-selection').on('change', this.onClimateSelectChange);
       html.find('#humidity-selection').on('change', this.onHumiditySelectChange);
       html.find('#season-selection').on('change', this.onSeasonSelectChange);
+
+      // toggle buttons
+      html.find('#swr-toggle-season-bar').on('mousedown', this.onToggleSeasonBar);
+      html.find('#swr-toggle-biome-bar').on('mousedown', this.onToggleBiomeBar);
     }
 
     super.activateListeners(html);
@@ -370,6 +374,14 @@ class WeatherApplication extends Application {
     }
   };
 
+  private setWindowPosition(position: WindowPosition): void {
+    this._windowPosition = position;
+
+    moduleSettings.set(SettingKeys.windowPosition, position);
+
+    this.render();
+  }
+
   private onMoveHandleMouseDown = (): void => {
     const element = document.getElementById(this._windowID);
     if (element) {
@@ -379,6 +391,18 @@ class WeatherApplication extends Application {
       });
     }
   };  
+
+  private onToggleSeasonBar = (): void => {
+    this._displayOptions.seasonBar = !this._displayOptions.seasonBar;
+
+    this.updateDisplayOptions(this._displayOptions);
+  }
+
+  private onToggleBiomeBar = (): void => {
+    this._displayOptions.biomeBar = !this._displayOptions.biomeBar;
+
+    this.updateDisplayOptions(this._displayOptions);
+  }
 
   // get the class to apply to get the proper icon by season
   private currentSeasonClass = function(): string { 
