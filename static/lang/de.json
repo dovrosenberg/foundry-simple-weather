@@ -56,8 +56,11 @@
     },
 
     "labels": {
-      "openWeatherBox": "Offnen/schließen wetter",
-      "regenerateWeather": "Wetter neu laden"
+      "regenerateWeather": "Wetter neu laden",
+      "toggleWeatherBox": "Offnen/schließen wetter",
+      "toggleDateBox": "Open/close calendar",
+      "toggleSeasonBar": "Open/close season selection",
+      "toggleBiomeBar": "Open/close biome/climate/humidity selection"
     },
 
     "chat": {
@@ -447,6 +450,11 @@
       "season": {
         "sync":"Sync with Simple Calendar"
       }
-    }
+    },
+    "labels": {
+      "toggleDateBox": "Open/close calendar",
+      "toggleSeasonBar": "Open/close season selection",
+      "toggleBiomeBar": "Open/close biome/climate/humidity selection"
+    }  
   }
 }

@@ -9,7 +9,7 @@
 
 					<div>
 						<button id="weather-toggle" class="swr-toggle-btn {{#unless hideWeather}}on{{/unless}}">
-							<i class="fas fa-cloud-sun" title="{{localize 'sweath.labels.openWeatherBox'}}"></i>
+							<i class="fas fa-cloud-sun" title="{{localize 'sweath.labels.toggleWeatherBox'}}"></i>
 						</button>
 					</div>
 				</div>
@@ -95,13 +95,13 @@
 
 						<div id="swr-tool-bar">
 							<button id="swr-toggle-date-box" class="swr-toggle-btn {{#unless hideCalendar}}on{{/unless}}">
-								<i class="fas fa-calendar" title="{{localize ''}}"></i>
+								<i class="fas fa-calendar" title="{{localize 'sweath.labels.toggleDateBox'}}"></i>
 							</button> 
 							<button id="swr-toggle-season-bar" class="swr-toggle-btn {{#if displayOptions.seasonBar}}on{{/if}}">
-								<i class="fas {{ currentSeasonClass }}" title="{{localize ''}}"></i>
+								<i class="fas {{ currentSeasonClass }}" title="{{localize 'sweath.labels.toggleSeasonBar'}}"></i>
 							</button>
 							<button id="swr-toggle-biome-bar" class="swr-toggle-btn {{#if displayOptions.biomeBar}}on{{/if}}">
-								<i class="fas fa-thermometer-half" title="{{localize ''}}"></i>
+								<i class="fas fa-thermometer-half" title="{{localize 'sweath.labels.toggleBiomeBar'}}"></i>
 							</button>
 						</div>
 

@@ -50,6 +50,18 @@ class WeatherApplication extends Application {
     this.setWeather();  
   }
 
+  // draw the window
+  public render(force?: boolean): void {
+    // make sure simple calendar is present if we're trying to sync
+    // this could happen if we had sync on but then uninstalled calendar and reloaded
+    if (!this._calendarPresent && this._currentSeasonSync) {
+      this._currentSeasonSync = false;
+      moduleSettings.set(SettingKeys.seasonSync, false);
+    }
+
+    super.render(force);
+  }
+
   // window options; called by parent class
   static get defaultOptions() {
     const options = super.defaultOptions;
@@ -91,6 +103,26 @@ class WeatherApplication extends Application {
   // call this after simple calendar should have loaded so we know whether to draw the calendar box or not
   public ready(): void {
     this._ready = true;
+
+    // GM-only
+    if (isClientGM()) {
+      // load the values from settings if missing
+      if (this._currentClimate == undefined)
+        this._currentClimate = moduleSettings.get(SettingKeys.climate);
+
+      if (this._currentHumidity == undefined)
+        this._currentHumidity = moduleSettings.get(SettingKeys.humidity);
+
+      if (this._currentSeason == undefined)
+        this._currentSeason = moduleSettings.get(SettingKeys.season);
+
+      if (this._currentSeasonSync == undefined)
+        this._currentSeasonSync = moduleSettings.get(SettingKeys.seasonSync);
+
+      if (this._currentBiome == undefined)
+        this._currentBiome = moduleSettings.get(SettingKeys.biome);
+    }
+
     this.render(true);
   };
 
@@ -135,22 +167,6 @@ class WeatherApplication extends Application {
 
     // GM-only
     if (isClientGM()) {
-      // load the values from settings if missing
-      if (this._currentClimate == undefined)
-        this._currentClimate = moduleSettings.get(SettingKeys.climate);
-
-      if (this._currentHumidity == undefined)
-        this._currentHumidity = moduleSettings.get(SettingKeys.humidity);
-
-      if (this._currentSeason == undefined)
-        this._currentSeason = moduleSettings.get(SettingKeys.season);
-
-      if (this._currentSeasonSync == undefined)
-        this._currentSeasonSync = moduleSettings.get(SettingKeys.seasonSync);
-
-      if (this._currentBiome == undefined)
-        this._currentBiome = moduleSettings.get(SettingKeys.biome);
-
       // set the drop-down values
       html.find('#climate-selection').val(this._currentClimate);
       html.find('#humidity-selection').val(this._currentHumidity);

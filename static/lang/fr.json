@@ -56,8 +56,11 @@
     },
 
     "labels": {
-      "openWeatherBox": "Ouvrir/fermer climat",
-      "regenerateWeather": "Régénérer la météo"
+      "regenerateWeather": "Régénérer la météo",
+      "toggleWeatherBox": "Ouvrir/fermer climat",
+      "toggleDateBox": "Open/close calendar",
+      "toggleSeasonBar": "Open/close season selection",
+      "toggleBiomeBar": "Open/close biome/climate/humidity selection"
     },
 
     "chat": {
@@ -441,6 +444,11 @@
         "useFX.choices.off": "None",
         "useFX.choices.core": "FoundryVTT scene weather setting"
       }
+    },
+    "labels": {
+      "toggleDateBox": "Open/close calendar",
+      "toggleSeasonBar": "Open/close season selection",
+      "toggleBiomeBar": "Open/close biome/climate/humidity selection"
     }  
   }
 }

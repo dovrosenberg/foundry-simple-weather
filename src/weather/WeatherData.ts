@@ -33,7 +33,7 @@ export class WeatherData {
       [Icons.Summer]: Season.Summer,
     };
 
-    return seasons[icon] || null;
+    return seasons[icon] !== undefined ? seasons[icon] : null;
   }
 
   public getTemperature = (useCelsius: boolean): string => {
