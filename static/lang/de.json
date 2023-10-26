@@ -431,5 +431,22 @@
         }
       }
     }    
+  },
+
+  "missing translations": {
+    "settings": {
+      "useFX": "Display special effects?",
+      "useFXHelp": "Select the module to use when displaying special effects.  When activiate, the effects can also be turned off manually when needed.",
+      "options": {
+        "useFX.choices.off": "None",
+        "useFX.choices.core": "FoundryVTT scene weather setting"
+      }
+    },
+    
+    "options": {
+      "season": {
+        "sync":"Sync with Simple Calendar"
+      }
+    }
   }
 }
