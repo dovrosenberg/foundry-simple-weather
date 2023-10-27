@@ -164,6 +164,7 @@ class WeatherApplication extends Application {
 
     // setup handlers and values for everyone
     html.find('#weather-toggle').on('click', this.onWeatherToggleClick);
+    html.find('#swr-close-button').on('click', this.onCloseClick);
 
     // GM-only
     if (isClientGM()) {
@@ -188,6 +189,8 @@ class WeatherApplication extends Application {
       html.find('#swr-toggle-season-bar').on('mousedown', this.onToggleSeasonBar);
       html.find('#swr-toggle-biome-bar').on('mousedown', this.onToggleBiomeBar);
     }
+
+
 
     super.activateListeners(html);
   }
@@ -312,7 +315,12 @@ class WeatherApplication extends Application {
     event.preventDefault();
 
     this.updateDisplayOptions({ weatherBox: !this._displayOptions.weatherBox })
-  } ;
+  };
+
+  private onCloseClick = (event): void => {
+    event.preventDefault();
+    this.close();
+  }
 
   private onWeatherRegenerateClick = (event): void => {
     event.preventDefault();
