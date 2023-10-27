@@ -31,6 +31,7 @@
     cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: center;
     border-radius: 3px;
     border: 1px solid rgb(181, 179, 164);
     font-size: 1rem;
@@ -189,7 +190,7 @@
 }
 
 #swr-season-bar, #swr-biome-bar {
-  justify-content: space-around;
+  //justify-content: space-around;
 }
 
 #swr-season-bar.display-bar, #swr-biome-bar.display-bar {

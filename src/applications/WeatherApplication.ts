@@ -163,7 +163,8 @@ class WeatherApplication extends Application {
     html.find('#swr-weather-move-handle').on('mousedown', this.onMoveHandleMouseDown);
 
     // setup handlers and values for everyone
-    html.find('#weather-toggle').on('click', this.onWeatherToggleClick);
+    html.find('#swr-weather-box-toggle').on('click', this.onWeatherToggleClick);
+    html.find('#swr-date-box-toggle').on('click', this.onDateToggleClick);
     html.find('#swr-close-button').on('click', this.onCloseClick);
 
     // GM-only
@@ -186,8 +187,8 @@ class WeatherApplication extends Application {
       html.find('#season-selection').on('change', this.onSeasonSelectChange);
 
       // toggle buttons
-      html.find('#swr-toggle-season-bar').on('mousedown', this.onToggleSeasonBar);
-      html.find('#swr-toggle-biome-bar').on('mousedown', this.onToggleBiomeBar);
+      html.find('#swr-season-bar-toggle').on('mousedown', this.onToggleSeasonBar);
+      html.find('#swr-biome-bar-toggle').on('mousedown', this.onToggleBiomeBar);
     }
 
 
@@ -315,6 +316,27 @@ class WeatherApplication extends Application {
     event.preventDefault();
 
     this.updateDisplayOptions({ weatherBox: !this._displayOptions.weatherBox })
+  };
+
+  private onDateToggleClick = (event): void => {
+    event.preventDefault();
+
+    // if we're turning off, need to move the box right to adjust; reverse for turning on
+    if (this._displayOptions.dateBox) 
+      this._windowPosition.left += document.getElementById('swr-calendar-box')?.offsetWidth || 0;
+    else {
+      // little tricker to get width when hidden
+      const box = document.getElementById('swr-calendar-box');
+      if (box) {
+        box.style.visibility = 'hidden';
+        box.style.display = 'block';
+        const width = box.offsetWidth;
+
+        this._windowPosition.left -= width || 0;
+      }
+    }
+
+    this.updateDisplayOptions({ dateBox: !this._displayOptions.dateBox })
   };
 
   private onCloseClick = (event): void => {

@@ -8,7 +8,7 @@
 					<div id="swr-weather-move-handle">&nbsp;</div>
 
 					<div>
-						<button id="weather-toggle" class="swr-toggle-btn {{#unless hideWeather}}on{{/unless}}">
+						<button id="swr-weather-box-toggle" class="swr-toggle-btn {{#unless hideWeather}}on{{/unless}}">
 							<i class="fas fa-cloud-sun" title="{{localize 'sweath.labels.toggleWeatherBox'}}"></i>
 						</button>
 					</div>
@@ -41,8 +41,7 @@
 					<div class="swr-top-bar">
 						<div id="swr-calendar-move-handle" style="flex:1 1 80%">&nbsp;</div>
 
-						<!-- TODO: make this close it; also add button in configuration to reopen it; do we need a close button on the left side if right is hidden? -->
-						<a class="header-button control close">
+						<a style="margin: 0 4px 0 4px;">
 	            <i id="swr-close-button" class="fas fa-times"></i>
         		</a>
 					</div>
@@ -66,8 +65,7 @@
 						<div class="row-break"></div>
 
 						<div id="swr-biome-bar" class="{{#if displayOptions.biomeBar}}display-bar{{/if}}">
-							<div style="flex: 1"></div>  <!-- to right align the biome box -->
-							<div class="select-wrapper" style="flex:1">
+							<div class="select-wrapper" style="flex:0 0 50%">
 								<select id="biome-selection" title="{{localize 'sweath.options.biome.select'}}">
 									{{#each biomeSelections}}
 										<option title="{{text}}" value="{{value}}">{{text}}</option>
@@ -94,13 +92,13 @@
 						<div class="row-break"></div>
 
 						<div id="swr-tool-bar">
-							<button id="swr-toggle-date-box" class="swr-toggle-btn {{#unless hideCalendar}}on{{/unless}}">
+							<button id="swr-date-box-toggle" class="swr-toggle-btn {{#unless hideCalendar}}on{{/unless}}">
 								<i class="fas fa-calendar" title="{{localize 'sweath.labels.toggleDateBox'}}"></i>
 							</button> 
-							<button id="swr-toggle-season-bar" class="swr-toggle-btn {{#if displayOptions.seasonBar}}on{{/if}}">
+							<button id="swr-season-bar-toggle" class="swr-toggle-btn {{#if displayOptions.seasonBar}}on{{/if}}">
 								<i class="fas {{ currentSeasonClass }}" title="{{localize 'sweath.labels.toggleSeasonBar'}}"></i>
 							</button>
-							<button id="swr-toggle-biome-bar" class="swr-toggle-btn {{#if displayOptions.biomeBar}}on{{/if}}">
+							<button id="swr-biome-bar-toggle" class="swr-toggle-btn {{#if displayOptions.biomeBar}}on{{/if}}">
 								<i class="fas fa-thermometer-half" title="{{localize 'sweath.labels.toggleBiomeBar'}}"></i>
 							</button>
 						</div>
