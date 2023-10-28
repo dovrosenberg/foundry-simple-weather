@@ -60,7 +60,8 @@
       "toggleWeatherBox": "Offnen/schließen wetter",
       "toggleDateBox": "Open/close calendar",
       "toggleSeasonBar": "Open/close season selection",
-      "toggleBiomeBar": "Open/close biome/climate/humidity selection"
+      "toggleBiomeBar": "Open/close biome/climate/humidity selection",
+      "toggleFX": "Toggle weather effects"
     },
 
     "chat": {
@@ -454,7 +455,8 @@
     "labels": {
       "toggleDateBox": "Open/close calendar",
       "toggleSeasonBar": "Open/close season selection",
-      "toggleBiomeBar": "Open/close biome/climate/humidity selection"
+      "toggleBiomeBar": "Open/close biome/climate/humidity selection",
+      "toggleFX": "Toggle weather effects"
     }  
   }
 }

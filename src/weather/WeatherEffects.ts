@@ -1,5 +1,5 @@
 import { moduleSettings, SettingKeys } from '@/settings/moduleSettings';
-import { getGame } from '@/utils/game';
+import { getGame, isClientGM } from '@/utils/game';
 import { WeatherData } from '@/weather/WeatherData';
 import { weatherOptions } from '@/weather/weatherMap';
 
@@ -40,12 +40,14 @@ class WeatherEffects {
     if (this._fxActive) {
       switch (moduleSettings.get(SettingKeys.useFX)) {
         case 'core':
-          if (weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell]?.fx?.core?.effect)
-            getGame().scenes?.active?.update({ weather: weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell]?.fx.core.effect });
-          else
-            getGame().scenes?.active?.update({ weather: '' });
+          if (isClientGM()) {
+            if (weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell]?.fx?.core?.effect) 
+              getGame().scenes?.active?.update({ weather: weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell]?.fx.core.effect });
+            else
+              getGame().scenes?.active?.update({ weather: '' });
+          }
           
-            break;
+          break;
         
         case 'off':
         default:
@@ -55,7 +57,9 @@ class WeatherEffects {
     } else {
       switch (moduleSettings.get(SettingKeys.useFX)) {
         case 'core':
-          getGame().scenes?.active?.update({ weather: '' });
+          if (isClientGM()) {
+            getGame().scenes?.active?.update({ weather: '' });
+          }
           break;
         
         case 'off':
@@ -68,7 +72,9 @@ class WeatherEffects {
   public deactivateFX = function(): void {
     switch (moduleSettings.get(SettingKeys.useFX)) {
       case 'core':
-        getGame().scenes?.active?.update({ weather: '' });
+        if (isClientGM()) {
+          getGame().scenes?.active?.update({ weather: '' });
+        }
         break;
       
       case 'off':
