@@ -52,13 +52,24 @@
 								<input id="swr-manual-pause" type="checkbox" title="{{localize 'sweath.labels.manualPauseHint'}}" {{#if manualPause}}checked{{/if}} />
 								<label for="swr-manual-pause">{{localize 'sweath.labels.manualPause'}}</label>
 							</div>
-							<div class="select-wrapper">
-								<select id="manual-weather-selection" title="{{localize 'sweath.options.manualWeather.select'}}">
+
+							<div class="row-break"></div>
+
+							<div class="select-wrapper" style="flex: 0 0 50%">
+								<select id="swr-manual-weather-selection" title="{{localize 'sweath.options.manualWeather.select'}}">
 									{{#each manualSelections}}
 										<option title="{{text}}" value="{{value}}">{{text}}</option>
 									{{/each}}
 								</select>
 							</div>
+							<div class="select-wrapper" style="flex: 1 1 10%">
+								<input id="swr-manual-temperature" title="{{localize 'sweath.options.manualWeather.select'}}" maxlength="4" style="width: 45px;">
+								°{{#if useCelsius }}C{{else}}F{{/if}}
+							</div>
+							<button id='swr-submit-weather' style="flex: 0 0 25px;" disabled="disabled">
+								<i class="fas fa-redo"></i>
+							</button>
+							<div class="select-wrapper" style="flex: 1 0 10%"></div> 
 						</div>
 
 						<div class="row-break"></div>
@@ -131,7 +142,7 @@
 				</header>
 				<div class="swr-weather-content">
 					{{#if isGM}}
-						<div id="swr-weather-refresh" title="{{localize 'sweath.labels.regenerateWeather'}}" style="{{#if manualPause}}display:none;{{/if}}"">
+						<div id="swr-weather-refresh" title="{{localize 'sweath.labels.regenerateWeather'}}" style="{{#if manualPause}}display:none;{{/if}}">
 							<i class="fas fa-redo"></i>
 						</div>
 					{{/if}}

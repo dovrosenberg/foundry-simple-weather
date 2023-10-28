@@ -2,7 +2,8 @@ import { localize } from '@/utils/game';
 import { log } from '@/utils/log';
 import { Climate, Humidity, Season } from './climateData';
 
-let manualSelections: SelectOptions[];
+// drop down selections for manually setting weather
+let manualSelections: { text:string, value: string}[];
 
 // call to set everything up after the game has loaded
 function initializeLocalizedText(): void {
@@ -40,39 +41,10 @@ function initializeLocalizedText(): void {
     }
   }
 
-  // build list of manual weather options; for simplicity, we steal them from ones that already exist
-  const manualLookups = [
-    { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.springfall_cool1 },   // clear sky
-    { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.summer4},   // clouds
-    { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.winter6},   // overcast
-    { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall_warm5},,   // dark sky
-    { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.summer7 },   // light rain
-    { climate: Climate.Cold, humidity: Humidity.Verdant, hexCell: descriptionCells.summer6 },   // moderate rain
-    { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.summer7 },   // heavy rain
-    { climate: Climate.Temperate, humidity: Humidity.Barren, hexCell: descriptionCells.springfall_cool2 },   // light fog
-    { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall3 },   // moderate fog
-    { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall_cool2},   // heavy fog
-    { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.winter5 },   // light snow
-    { climate: Climate.Temperate, humidity: Humidity.Verdant, hexCell: descriptionCells.winter9 },   // moderate snow
-    { climate: Climate.Cold , humidity: Humidity.Modest, hexCell: descriptionCells.winter3},   // heavy snow
-    { climate: Climate.Cold , humidity: Humidity.Modest, hexCell: descriptionCells.springfall_warm6},   // hail
-  ];
-
   // need value and text, and then a way to map the values back to the weather
   //    for effects
-  manualSelections = manualLookups.map() [
-    { value: '', text: localize('sweath.options.biome.useClimateHumidity') },
-    { value: 'tundra', text: localize('sweath.options.biome.tundra') },
-    { value: 'alpine', text: localize('sweath.options.biome.alpine') },
-    { value: 'taiga', text: localize('sweath.options.biome.taiga') },
-    { value: 'chapparel', text: localize('sweath.options.biome.chapparel') },
-    { value: 'grassland', text: localize('sweath.options.biome.grassland') },
-    { value: 'forest', text: localize('sweath.options.biome.forest') },
-    { value: 'desert', text: localize('sweath.options.biome.desert') },
-    { value: 'savannah', text: localize('sweath.options.biome.savannah') },
-    { value: 'rainforest', text: localize('sweath.options.biome.rainforest') },
-  ];
-
+  manualSelections = manualOptions.map((val, i) =>
+      ({ value: i.toString(), text: weatherDescriptions[val?.climate as number][val?.humidity as number][val?.hexCell as number] }));
 }
 
 // rather than specifying weather by biome, we take a more flexible approach (though we also define some biomes as defaults)
@@ -428,6 +400,24 @@ const descriptionCells = {
   'winter5': 35,
   'winter9': 36,
 };
+
+const manualOptions = [  // build list of manual weather options; for simplicity, we steal them from ones that already exist
+  { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.springfall_cool1 },   // clear sky
+  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.summer4},   // clouds
+  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.winter6},   // overcast
+  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall_warm5},,   // dark sky
+  { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.summer7 },   // light rain
+  { climate: Climate.Cold, humidity: Humidity.Verdant, hexCell: descriptionCells.summer6 },   // moderate rain
+  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.summer7 },   // heavy rain
+  { climate: Climate.Temperate, humidity: Humidity.Barren, hexCell: descriptionCells.springfall_cool2 },   // light fog
+  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall3 },   // moderate fog
+  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall_cool2},   // heavy fog
+  { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.winter5 },   // light snow
+  { climate: Climate.Temperate, humidity: Humidity.Verdant, hexCell: descriptionCells.winter9 },   // moderate snow
+  { climate: Climate.Cold , humidity: Humidity.Modest, hexCell: descriptionCells.winter3},   // heavy snow
+  { climate: Climate.Cold , humidity: Humidity.Modest, hexCell: descriptionCells.springfall_warm6},   // hail
+];
+
 
 ///////////////////////////////////////
 // define the extra metadata for each cell
@@ -908,4 +898,5 @@ export {
   startingCells,
   nextCell,
   manualSelections,
+  manualOptions,
 }

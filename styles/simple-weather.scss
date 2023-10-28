@@ -247,6 +247,13 @@
   height: 0;
 }
 
+#swr-submit-weather {
+  display: flex;
+  height: 20px;
+  justify-content: center;
+  align-items: center;  
+}
+
 // seasons
 #swr-season-icon .fa.winter {
   color:#479dff;

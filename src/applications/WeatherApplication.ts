@@ -2,12 +2,13 @@ import moduleJson from '@module';
 
 import { log } from '@/utils/log';
 import { WeatherData } from '@/weather/WeatherData';
-import { seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings, manualSelections } from '@/weather/climateData';
+import { seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings } from '@/weather/climateData';
+import { manualSelections } from '@/weather/weatherMap';
 import { WindowPosition } from '@/window/WindowPosition';
 import { SettingKeys } from '@/settings/moduleSettings';
 import { WindowDrag } from '@/window/windowDrag';
 import { isClientGM } from '@/utils/game';
-import { generate, outputWeather } from '@/weather/weatherGenerator';
+import { generate, outputWeather, setManual } from '@/weather/weatherGenerator';
 import { moduleSettings } from '@/settings/moduleSettings';
 import { weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
@@ -28,6 +29,7 @@ class WeatherApplication extends Application {
   private _displayOptions: DisplayOptions;
   private _calendarPresent = false;   // is simple calendar present?
   private _manualPause = false;
+  private _manualTemp = '';   // the temperature to use for posting manual weather
 
   private _currentClimate: Climate;
   private _currentHumidity: Humidity;
@@ -92,7 +94,7 @@ class WeatherApplication extends Application {
       seasonSelections: seasonSelections,
       humiditySelections: humiditySelections,
       climateSelections: climateSelections,
-      manualSalections: manualSelections,
+      manualSelections: manualSelections,
 
       displayOptions: this._displayOptions,
       hideDialog: !this.ready || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
@@ -103,7 +105,9 @@ class WeatherApplication extends Application {
       manualPause: this._manualPause,
       fxActive: weatherEffects.fxActive,
       windowPosition: this._windowPosition,
+      useCelsius: moduleSettings.get(SettingKeys.useCelsius),
     };
+    console.log(data);
 
     return data;
   }
@@ -202,6 +206,12 @@ class WeatherApplication extends Application {
       html.find('#swr-biome-bar-toggle').on('mousedown', this.onToggleBiomeBar);
       html.find('#swr-manual-bar-toggle').on('mousedown', this.onToggleManualBar);
       html.find('#swr-fx-toggle').on('mousedown', this.onToggleFX);
+
+      // validation
+      html.find('#swr-manual-temperature').on('input', this.onManualTempInput);
+
+      // buttons
+      html.find('#swr-submit-weather').on('click', this.onSubmitWeatherClick);
     }
 
 
@@ -268,6 +278,14 @@ class WeatherApplication extends Application {
 
       this.activateWeather(this._currentWeather);
     }
+  }
+
+  // temperature is avg temperature to use; weatherIndex is the index into the set of manual options
+  private setManualWeather(temperature: number, weatherIndex: number): void {
+    const season = this.getSeason();
+
+    this._currentWeather = setManual(temperature, weatherIndex);
+    this.activateWeather(this._currentWeather);
   }
 
   // activate the given weather; save to settings, output to chat, display FX
@@ -497,6 +515,38 @@ class WeatherApplication extends Application {
 
   private onToggleFX = (): void => {
     weatherEffects.fxActive = !weatherEffects.fxActive;
+  }
+
+  private onManualTempInput = (event: KeyboardEvent): void => {
+    const btn = document.getElementById('swr-submit-weather') as HTMLButtonElement;
+
+    btn.disabled = !this.isTempValid();
+  }
+
+  private isTempValid(): boolean {
+    const input = document.getElementById('swr-manual-temperature') as HTMLInputElement;
+    const inputValue = input?.value;
+
+    // can only be a number
+    return (/^-?[0-9]+$/.test(inputValue));
+  }
+
+  private onSubmitWeatherClick = (): void => {
+    // confirm temp is valid, though the input filter above should prevent this
+    const input = document.getElementById('swr-manual-temperature') as HTMLInputElement;
+    let temp = Number(input?.value);
+
+    const select = document.getElementById('swr-manual-weather-selection') as HTMLSelectElement;
+
+    if (isNaN(temp) || !select.value) {
+      log(false, 'Attempt to submit invalid temperature or no selection');
+      return;
+    }
+
+    if (moduleSettings.get(SettingKeys.useCelsius))
+      temp = Math.round((temp*9/5)+32);
+
+    this.setManualWeather(temp, Number(select.value));
   }
 
   // get the class to apply to get the proper icon by season
