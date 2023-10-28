@@ -53,6 +53,10 @@
         "summer": "Sommer",
         "spring": "Frühling",
         "winter": "Winter"
+      },
+
+      "manualWeather": {
+        "select": "Select new weather"
       }
     },
 
@@ -65,7 +69,9 @@
       "toggleManualBar": "Open/close manual weather selection",
       "toggleFX": "Toggle weather effects",
       "manualPause": "Pause updates?",
-      "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)"
+      "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)",
+      "manualWeatherTemperature": "Temperature to set (will vary slightly from this)",
+      "manualWeatherSubmit": "Set selected weather and temperature"
     },
 
     "chat": {
@@ -457,6 +463,9 @@
       }, 
       "biome": {
         "useClimateHumidity": "Use climate/humidity"
+      },
+      "manualWeather": {
+        "select": "Select new weather"
       }
     },
     "labels": {
@@ -466,7 +475,9 @@
       "toggleManualBar": "Open/close manual weather selection",
       "toggleFX": "Toggle weather effects",
       "manualPause": "Pause updates?",
-      "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)"
+      "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)",
+      "manualWeatherTemperature": "Temperature to set (will vary slightly from this)",
+      "manualWeatherSubmit": "Set selected weather and temperature"
     }  
   }
 }
