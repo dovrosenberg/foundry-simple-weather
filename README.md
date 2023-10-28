@@ -16,6 +16,7 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
   - Choose whether players can see the dialog (with a limited UI)
 - Randomized weather for every season across 3 climates (hot, temperate, cold) and 3 humidities (barren, modest, verdant)
 - Weather progresses naturally from day to day
+- Ability to manually pick weather for special events
 - Supports Farenheit and Celsius temperatures
 
 ### And if using Simple Calendar:
@@ -27,7 +28,7 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
 
 ### Gamemaster controls
 
-![Main UI](https://i.imgur.com/Taotzi7.png)
+![Main UI](https://i.imgur.com/v1uT7Ie.png)
 
 ### Player controls
 
@@ -46,6 +47,11 @@ When not using Simple Calendar, you just select the season you want to use.
 When using Simple Calendar, you can choose "Sync with Simple Calendar" and the season of the current date will be used automatically.  The season icon next to the drop down will change to let you know what season it is currently using.  Simple Weather determines the Season to use based on the icon for the season in Simple Calendar.  So, if you are using a custom calendar, for season sync to work you must a) set up seasons in Simple Calendar, and b) choose one of the season icons (fall, winter, spring, summer) for each of your seasons.
 
 In some cases, you may need to override Simple Calendar's season. In particular, if you change hemispheres - because what Simple Calendar thinks is summer (ex. July) may actually be cold temperatures (ex. if in South America), so you'll want to manually override it.  "Winter" is always cold in Simple Weather.  In that case, simply pick the season you want in the drop down.  It will remain in the manual setting until you set it back to "Sync".
+
+### Manual weather
+Sometimes you might want to specify the exact weather that you need, rather than having it randomly generated (for example when approaching the lair of a frost witch).  To do this, open the manual toolbar and check "Pause updates" (which will collapse the season and biome toolbars for simplicity).  Note that pausing isn't technically required, but if you don't then if you hit "regenerate" or advance the date, the weather will go back to the normal weather pattern.  You can then choose the weather desired from the dropdown and enter a temperature before hitting the submit button.  This will then cause the weather to appear in the chat, player dialogs, and weather effects just as if the system generated it (as determined by your settings).  
+
+Unchecking "Pause updates" won't immediately trigger a regeneration of weather, but if you want one without advancing the date, just then hit the "regenerate" button.
 
 ### Weather Effects 
 The GM can activate weather effects in the module settings.  For now, the only option is to use the scene weather in the Fondry core, but future support for Weather FX and other modules is planned.
