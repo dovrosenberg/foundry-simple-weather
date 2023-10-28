@@ -12,25 +12,56 @@ function updateWeatherEffects(effects: WeatherEffects): void {
 }
 
 class WeatherEffects {
+  private _fxActive = true;
+  private _lastWeatherData: WeatherData;   // we save it so we can toggle back on 
+
+  constructor() {
+    this._fxActive = moduleSettings.get(SettingKeys.fxActive);
+  }
+
+  public set fxActive(active: boolean) {
+    this._fxActive = active;
+
+    this.activateFX(this._lastWeatherData);
+  }
+
+  public get fxActive(): boolean {
+    return this._fxActive;
+  }
+
   public activateFX = function(weatherData: WeatherData) {
+    this._lastWeatherData = weatherData;
+
     if (weatherData.climate === null || weatherData.humidity === null || weatherData.hexFlowerCell === null)
       return;
 
     console.log(false, 'Activating weather using: ' + moduleSettings.get(SettingKeys.useFX));
 
-    switch (moduleSettings.get(SettingKeys.useFX)) {
-      case 'core':
-        if (weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell]?.fx?.core?.effect)
-          getGame().scenes?.active?.update({ weather: weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell]?.fx.core.effect });
-        else
-          getGame().scenes?.active?.update({ weather: '' });
+    if (this._fxActive) {
+      switch (moduleSettings.get(SettingKeys.useFX)) {
+        case 'core':
+          if (weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell]?.fx?.core?.effect)
+            getGame().scenes?.active?.update({ weather: weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell]?.fx.core.effect });
+          else
+            getGame().scenes?.active?.update({ weather: '' });
+          
+            break;
         
+        case 'off':
+        default:
+          getGame().scenes?.active?.update({ weather: '' });
           break;
-      
-      case 'off':
-      default:
-        //getGame().scenes?.active?.update({ weather: '' });
-        break;
+      }
+    } else {
+      switch (moduleSettings.get(SettingKeys.useFX)) {
+        case 'core':
+          getGame().scenes?.active?.update({ weather: '' });
+          break;
+        
+        case 'off':
+        default:
+          break;
+      }
     }
   }
 

@@ -16,6 +16,7 @@ export enum SettingKeys {
   useFX = 'useFX',  // the name of the package used for FX (or 'off' if none)
 
   // internal only
+  fxActive = 'fxActive',   // are the fx currently showing
   windowPosition = 'windowPosition',   // the current position of the window
   displayOptions = 'displayOptions',  // how is the application window configured
   lastWeatherData = 'lastWeatherData',  // the previously generated weather data
@@ -37,6 +38,7 @@ type SettingType<K extends SettingKeys> =
     K extends SettingKeys.lastWeatherData ? (WeatherData | null) :  
     K extends SettingKeys.season ? number :
     K extends SettingKeys.seasonSync ? boolean :
+    K extends SettingKeys.fxActive ? boolean :
     K extends SettingKeys.windowPosition ? (WindowPosition | null) :
     K extends SettingKeys.biome ? string :
     K extends SettingKeys.climate ? number :
@@ -126,17 +128,6 @@ export class ModuleSettings {
         default: true,
         type: Boolean,
       },
-    ];
-
-    // these are client-specific and displayed in settings
-    const localDisplayParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
-      {
-        settingID: SettingKeys.useCelsius, 
-        name: 'sweath.settings.useCelsius',
-        hint: 'sweath.settings.useCelsiusHelp',
-        default: false,
-        type: Boolean,
-      },
       {
         settingID: SettingKeys.useFX, 
         name: 'sweath.settings.useFX',
@@ -148,6 +139,17 @@ export class ModuleSettings {
           'core': 'sweath.settings.options.useFX.choices.core'
         },
         default: 'core',
+      },
+    ];
+
+    // these are client-specific and displayed in settings
+    const localDisplayParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
+      {
+        settingID: SettingKeys.useCelsius, 
+        name: 'sweath.settings.useCelsius',
+        hint: 'sweath.settings.useCelsiusHelp',
+        default: false,
+        type: Boolean,
       },
     ];
 
@@ -193,6 +195,12 @@ export class ModuleSettings {
    
     // these are client-specfic only used internally
     const localInternalParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
+      {
+        settingID: SettingKeys.fxActive,
+        name: 'FX Active',
+        type: Object,
+        default: true,
+      },
       {
         settingID: SettingKeys.windowPosition,
         name: 'Window Position',

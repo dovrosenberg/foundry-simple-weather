@@ -90,20 +90,25 @@
 							</div>			
 						</div>
 						<div class="row-break"></div>
+					{{/if}}
 
-						<div id="swr-tool-bar">
-							<button id="swr-date-box-toggle" class="swr-toggle-btn {{#unless hideCalendar}}on{{/unless}}">
-								<i class="fas fa-calendar" title="{{localize 'sweath.labels.toggleDateBox'}}"></i>
-							</button> 
+					<div id="swr-tool-bar">
+						<button id="swr-date-box-toggle" class="swr-toggle-btn {{#unless hideCalendar}}on{{/unless}}">
+							<i class="fas fa-calendar" title="{{localize 'sweath.labels.toggleDateBox'}}"></i>
+						</button> 
+
+						{{#if isGM }}
 							<button id="swr-season-bar-toggle" class="swr-toggle-btn {{#if displayOptions.seasonBar}}on{{/if}}">
 								<i class="fas {{ currentSeasonClass }}" title="{{localize 'sweath.labels.toggleSeasonBar'}}"></i>
 							</button>
 							<button id="swr-biome-bar-toggle" class="swr-toggle-btn {{#if displayOptions.biomeBar}}on{{/if}}">
 								<i class="fas fa-thermometer-half" title="{{localize 'sweath.labels.toggleBiomeBar'}}"></i>
 							</button>
-						</div>
-
-					{{/if}}
+						<button id="swr-fx-toggle" class="swr-toggle-btn {{#if fxActive }}on{{/if}}" style="{{#if hideFXToggle}}display:none; {{/if}}">
+							<i class="fas fa-cloud-showers-heavy" title="{{localize 'sweath.labels.toggleFX'}}"></i>
+						</button>
+						{{/if}}
+					</div>
 				</header>
 				<div class="swr-weather-content">
 					{{#if isGM}}

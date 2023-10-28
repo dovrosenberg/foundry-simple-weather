@@ -94,6 +94,8 @@ class WeatherApplication extends Application {
       hideDialog: !this.ready || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
       hideCalendar: !this._calendarPresent || !this._displayOptions.dateBox,
       hideWeather: this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
+      hideFXToggle: moduleSettings.get(SettingKeys.useFX) === 'off',
+      fxActive: weatherEffects.fxActive,
       windowPosition: this._windowPosition,
     };
 
@@ -122,6 +124,8 @@ class WeatherApplication extends Application {
       if (this._currentBiome == undefined)
         this._currentBiome = moduleSettings.get(SettingKeys.biome);
     }
+
+    weatherEffects.activateFX(this._currentWeather);
 
     this.render(true);
   };
@@ -189,6 +193,7 @@ class WeatherApplication extends Application {
       // toggle buttons
       html.find('#swr-season-bar-toggle').on('mousedown', this.onToggleSeasonBar);
       html.find('#swr-biome-bar-toggle').on('mousedown', this.onToggleBiomeBar);
+      html.find('#swr-fx-toggle').on('mousedown', this.onToggleFX);
     }
 
 
@@ -229,6 +234,7 @@ class WeatherApplication extends Application {
       log(false, 'Using saved weather data');
 
       this._currentWeather = weatherData;
+      weatherEffects.activateFX(weatherData);
     } else if (isClientGM()) {
       log(false, 'No saved weather data - Generating weather');
 
@@ -453,6 +459,10 @@ class WeatherApplication extends Application {
     this._displayOptions.biomeBar = !this._displayOptions.biomeBar;
 
     this.updateDisplayOptions(this._displayOptions);
+  }
+
+  private onToggleFX = (): void => {
+    weatherEffects.fxActive = !weatherEffects.fxActive;
   }
 
   // get the class to apply to get the proper icon by season

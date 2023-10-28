@@ -7,7 +7,7 @@ import { log } from './utils/log';
 import { allowSeasonSync, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
 import { initializeLocalizedText as initializeLocalizedWeatherText } from '@/weather/weatherMap';
 import { updateWeatherApplication, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
-import { updateWeatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
+import { updateWeatherEffects, weatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
 
 // track which modules we have
 let validSimpleCalendar = false;
@@ -27,8 +27,8 @@ Hooks.once('init', async () => {
   // initialize the solo instances of the various classes
   // settings first, so other things can use them
   updateModuleSettings(new ModuleSettings());
+  updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
   updateWeatherApplication(new WeatherApplication());
-  updateWeatherEffects(new WeatherEffects());
 });
 
 Hooks.once('ready', () => {
