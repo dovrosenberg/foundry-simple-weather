@@ -52,17 +52,20 @@ const generate = function(climate: Climate, humidity: Humidity, season: Season, 
   return weatherData;
 };
 
-// used to set manual weather
-const setManual = function(temperature: number, weatherIndex: number): WeatherData {
+// used to set manual weather; returns null if data is invalid (weatherIndex in particular)
+const setManual = function(today: SimpleCalendar.DateData | null, temperature: number, weatherIndex: number): WeatherData | null {
   const options = manualOptions[weatherIndex];   // get the details behind the option
 
-  const weatherData = new WeatherData(null, null, options.humidity, options.climate, options.hexCell, null);
-  weatherData.isManual = true;
+  if (!options)
+    return null;
 
   // randomize the temperature (+/- # degrees)
   // margin of error is 4% of temperature, but always at least 2 degrees
   const plusMinus = Math.max(2, Math.ceil(.04*temperature));
-  weatherData.temperature = temperature + Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
+  const temp = temperature + Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
+
+  const weatherData = new WeatherData(today, null, options.humidity, options.climate, options.hexCell, temp);
+  weatherData.isManual = true;
 
   return weatherData;
 }

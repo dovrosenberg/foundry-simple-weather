@@ -29,7 +29,6 @@ class WeatherApplication extends Application {
   private _displayOptions: DisplayOptions;
   private _calendarPresent = false;   // is simple calendar present?
   private _manualPause = false;
-  private _manualTemp = '';   // the temperature to use for posting manual weather
 
   private _currentClimate: Climate;
   private _currentHumidity: Humidity;
@@ -264,7 +263,7 @@ class WeatherApplication extends Application {
 
   // generate weather based on drop-down settings, store locally and update db
   private generateWeather(currentDate: SimpleCalendar.DateData | null): void {
-    // if we're paused, do nothing
+    // if we're paused, do nothing (except update the date)
     if (!this._manualPause) {
       const season = this.getSeason();
 
@@ -277,15 +276,20 @@ class WeatherApplication extends Application {
       );
 
       this.activateWeather(this._currentWeather);
+    } else {
+      this._currentWeather.date = currentDate;
     }
   }
 
   // temperature is avg temperature to use; weatherIndex is the index into the set of manual options
-  private setManualWeather(temperature: number, weatherIndex: number): void {
+  private setManualWeather(currentDate: SimpleCalendar.DateData | null, temperature: number, weatherIndex: number): void {
     const season = this.getSeason();
 
-    this._currentWeather = setManual(temperature, weatherIndex);
-    this.activateWeather(this._currentWeather);
+    const result = setManual(currentDate, temperature, weatherIndex);
+    if (result) {
+      this._currentWeather = result;
+      this.activateWeather(this._currentWeather);
+    }
   }
 
   // activate the given weather; save to settings, output to chat, display FX
@@ -546,7 +550,8 @@ class WeatherApplication extends Application {
     if (moduleSettings.get(SettingKeys.useCelsius))
       temp = Math.round((temp*9/5)+32);
 
-    this.setManualWeather(temp, Number(select.value));
+    this.setManualWeather(this._currentWeather?.date || null, temp, Number(select.value));
+    this.render();
   }
 
   // get the class to apply to get the proper icon by season
