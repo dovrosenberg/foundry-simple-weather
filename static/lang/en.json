@@ -20,6 +20,7 @@
     "options": {
       "biome": {
         "select": "Select a biome to auto-populate climate and humidity",
+        "useClimateHumidity": "Use climate/humidity",
         "tundra": "Tundra",
         "alpine": "Alpine",
         "taiga": "Taiga",
@@ -52,6 +53,10 @@
         "summer": "Summer",
         "spring": "Spring",
         "winter": "Winter"
+      },
+
+      "manualWeather": {
+        "select": "Select new weather"
       }
     },
 
@@ -61,7 +66,12 @@
       "toggleDateBox": "Open/close calendar",
       "toggleSeasonBar": "Open/close season selection",
       "toggleBiomeBar": "Open/close biome/climate/humidity selection",
-      "toggleFX": "Toggle weather effects"
+      "toggleManualBar": "Open/close manual weather selection",
+      "toggleFX": "Toggle weather effects",
+      "manualPause": "Pause updates?",
+      "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)",
+      "manualWeatherTemperature": "Temperature to set (will vary slightly from this)",
+      "manualWeatherSubmit": "Set selected weather and temperature"
     },
 
     "chat": {

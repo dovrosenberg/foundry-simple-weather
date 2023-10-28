@@ -47,7 +47,34 @@
 					</div>
 
 					{{#if isGM}}
-						<div id="swr-season-bar" class="{{#if displayOptions.seasonBar}}display-bar{{/if}}">
+						<div id="swr-manual-bar" class="swr-optional-bar {{#if displayOptions.manualBar}}swr-display-bar{{/if}}">
+							<div class="select-wrapper" style="flex:1">
+								<input id="swr-manual-pause" type="checkbox" title="{{localize 'sweath.labels.manualPauseHint'}}" {{#if manualPause}}checked{{/if}} />
+								<label for="swr-manual-pause">{{localize 'sweath.labels.manualPause'}}</label>
+							</div>
+
+							<div class="row-break"></div>
+
+							<div class="select-wrapper" style="flex: 0 0 50%">
+								<select id="swr-manual-weather-selection" title="{{localize 'sweath.options.manualWeather.select'}}">
+									{{#each manualSelections}}
+										<option title="{{text}}" value="{{value}}">{{text}}</option>
+									{{/each}}
+								</select>
+							</div>
+							<div class="select-wrapper" style="flex: 1 1 10%">
+								<input id="swr-manual-temperature" title="{{localize 'sweath.labels.manualWeatherTemperature'}}" maxlength="4" style="width: 45px;">
+								°{{#if useCelsius }}C{{else}}F{{/if}}
+							</div>
+							<button id='swr-submit-weather' style="flex: 0 0 25px;" title="{{localize 'sweath.labels.manualWeatherSubmit'}}" disabled="disabled">
+								<i class="fas fa-redo"></i>
+							</button>
+							<div class="select-wrapper" style="flex: 1 0 10%"></div> 
+						</div>
+
+						<div class="row-break"></div>
+
+						<div id="swr-season-bar" class="swr-optional-bar {{#if displayOptions.seasonBar}}swr-display-bar{{/if}}">
 							<div style="padding-left: 7px;">
 								<span id="swr-season-icon">
 									<span class="fa {{ currentSeasonClass }}"></span>
@@ -64,7 +91,7 @@
 						</div>
 						<div class="row-break"></div>
 
-						<div id="swr-biome-bar" class="{{#if displayOptions.biomeBar}}display-bar{{/if}}">
+						<div id="swr-biome-bar" class="swr-optional-bar {{#if displayOptions.biomeBar}}swr-display-bar{{/if}}">
 							<div class="select-wrapper" style="flex:0 0 50%">
 								<select id="biome-selection" title="{{localize 'sweath.options.biome.select'}}">
 									{{#each biomeSelections}}
@@ -104,15 +131,18 @@
 							<button id="swr-biome-bar-toggle" class="swr-toggle-btn {{#if displayOptions.biomeBar}}on{{/if}}">
 								<i class="fas fa-thermometer-half" title="{{localize 'sweath.labels.toggleBiomeBar'}}"></i>
 							</button>
-						<button id="swr-fx-toggle" class="swr-toggle-btn {{#if fxActive }}on{{/if}}" style="{{#if hideFXToggle}}display:none; {{/if}}">
-							<i class="fas fa-cloud-showers-heavy" title="{{localize 'sweath.labels.toggleFX'}}"></i>
-						</button>
+							<button id="swr-manual-bar-toggle" class="swr-toggle-btn {{#if displayOptions.manualBar }}on{{/if}}">
+								<i class="fas fa-hand-point-down" title="{{localize 'sweath.labels.toggleManualBar'}}"></i>
+							</button>
+							<button id="swr-fx-toggle" class="swr-toggle-btn {{#if fxActive }}on{{/if}}" style="{{#if hideFXToggle}}display:none; {{/if}}">
+								<i class="fas fa-cloud-showers-heavy" title="{{localize 'sweath.labels.toggleFX'}}"></i>
+							</button>
 						{{/if}}
 					</div>
 				</header>
 				<div class="swr-weather-content">
 					{{#if isGM}}
-						<div id="swr-weather-refresh" title="{{localize 'sweath.labels.regenerateWeather'}}">
+						<div id="swr-weather-refresh" title="{{localize 'sweath.labels.regenerateWeather'}}" style="{{#if manualPause}}display:none;{{/if}}">
 							<i class="fas fa-redo"></i>
 						</div>
 					{{/if}}

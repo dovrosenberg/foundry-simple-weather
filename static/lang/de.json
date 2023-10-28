@@ -20,6 +20,7 @@
     "options": {
       "biome": {
         "select": "Wähle eine Vegetation, um das Klima und Luftfeuchtigkeit auszuwählen",
+        "useClimateHumidity": "Use climate/humidity",
         "tundra": "Tundra",
         "alpine": "Alpin",
         "taiga": "Taiga",
@@ -52,6 +53,10 @@
         "summer": "Sommer",
         "spring": "Frühling",
         "winter": "Winter"
+      },
+
+      "manualWeather": {
+        "select": "Select new weather"
       }
     },
 
@@ -61,7 +66,12 @@
       "toggleDateBox": "Open/close calendar",
       "toggleSeasonBar": "Open/close season selection",
       "toggleBiomeBar": "Open/close biome/climate/humidity selection",
-      "toggleFX": "Toggle weather effects"
+      "toggleManualBar": "Open/close manual weather selection",
+      "toggleFX": "Toggle weather effects",
+      "manualPause": "Pause updates?",
+      "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)",
+      "manualWeatherTemperature": "Temperature to set (will vary slightly from this)",
+      "manualWeatherSubmit": "Set selected weather and temperature"
     },
 
     "chat": {
@@ -450,13 +460,24 @@
     "options": {
       "season": {
         "sync":"Sync with Simple Calendar"
+      }, 
+      "biome": {
+        "useClimateHumidity": "Use climate/humidity"
+      },
+      "manualWeather": {
+        "select": "Select new weather"
       }
     },
     "labels": {
       "toggleDateBox": "Open/close calendar",
       "toggleSeasonBar": "Open/close season selection",
       "toggleBiomeBar": "Open/close biome/climate/humidity selection",
-      "toggleFX": "Toggle weather effects"
+      "toggleManualBar": "Open/close manual weather selection",
+      "toggleFX": "Toggle weather effects",
+      "manualPause": "Pause updates?",
+      "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)",
+      "manualWeatherTemperature": "Temperature to set (will vary slightly from this)",
+      "manualWeatherSubmit": "Set selected weather and temperature"
     }  
   }
 }

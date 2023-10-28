@@ -3,11 +3,12 @@ import moduleJson from '@module';
 import { log } from '@/utils/log';
 import { WeatherData } from '@/weather/WeatherData';
 import { seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings } from '@/weather/climateData';
+import { manualSelections } from '@/weather/weatherMap';
 import { WindowPosition } from '@/window/WindowPosition';
 import { SettingKeys } from '@/settings/moduleSettings';
 import { WindowDrag } from '@/window/windowDrag';
 import { isClientGM } from '@/utils/game';
-import { generate, outputWeather } from '@/weather/weatherGenerator';
+import { generate, outputWeather, setManual } from '@/weather/weatherGenerator';
 import { moduleSettings } from '@/settings/moduleSettings';
 import { weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
@@ -27,12 +28,14 @@ class WeatherApplication extends Application {
   private _windowPosition: WindowPosition;
   private _displayOptions: DisplayOptions;
   private _calendarPresent = false;   // is simple calendar present?
+  private _manualPause = false;
 
   private _currentClimate: Climate;
   private _currentHumidity: Humidity;
   private _currentBiome: string;
   private _currentSeason: Season; 
   private _currentSeasonSync: boolean;
+
 
   constructor() {
     super();
@@ -44,6 +47,9 @@ class WeatherApplication extends Application {
 
     // get default position or set default
     this._windowPosition = moduleSettings.get(SettingKeys.windowPosition) || { left: 100, bottom: 300 }
+
+    // get whether the manual pause is on
+    this._manualPause = moduleSettings.get(SettingKeys.manualPause || false);
 
     this.setWeather();  
   }
@@ -87,6 +93,7 @@ class WeatherApplication extends Application {
       seasonSelections: seasonSelections,
       humiditySelections: humiditySelections,
       climateSelections: climateSelections,
+      manualSelections: manualSelections,
 
       displayOptions: this._displayOptions,
       hideDialog: !this.ready || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
@@ -94,9 +101,12 @@ class WeatherApplication extends Application {
       hideCalendarToggle: !this._calendarPresent,
       hideWeather: this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
       hideFXToggle: moduleSettings.get(SettingKeys.useFX) === 'off',
+      manualPause: this._manualPause,
       fxActive: weatherEffects.fxActive,
       windowPosition: this._windowPosition,
+      useCelsius: moduleSettings.get(SettingKeys.useCelsius),
     };
+    console.log(data);
 
     return data;
   }
@@ -188,10 +198,19 @@ class WeatherApplication extends Application {
       html.find('#humidity-selection').on('change', this.onHumiditySelectChange);
       html.find('#season-selection').on('change', this.onSeasonSelectChange);
 
+      html.find('#swr-manual-pause').on('change', this.onManualPauseChange);
+
       // toggle buttons
       html.find('#swr-season-bar-toggle').on('mousedown', this.onToggleSeasonBar);
       html.find('#swr-biome-bar-toggle').on('mousedown', this.onToggleBiomeBar);
+      html.find('#swr-manual-bar-toggle').on('mousedown', this.onToggleManualBar);
       html.find('#swr-fx-toggle').on('mousedown', this.onToggleFX);
+
+      // validation
+      html.find('#swr-manual-temperature').on('input', this.onManualTempInput);
+
+      // buttons
+      html.find('#swr-submit-weather').on('click', this.onSubmitWeatherClick);
     }
 
 
@@ -244,17 +263,33 @@ class WeatherApplication extends Application {
 
   // generate weather based on drop-down settings, store locally and update db
   private generateWeather(currentDate: SimpleCalendar.DateData | null): void {
+    // if we're paused, do nothing (except update the date)
+    if (!this._manualPause) {
+      const season = this.getSeason();
+
+      this._currentWeather = generate(
+        this._currentClimate!==null ? this._currentClimate : Climate.Temperate, 
+        this._currentHumidity!==null ? this._currentHumidity : Humidity.Modest, 
+        season!==null ? season : Season.Spring, 
+        currentDate,
+        this._currentWeather || null
+      );
+
+      this.activateWeather(this._currentWeather);
+    } else {
+      this._currentWeather.date = currentDate;
+    }
+  }
+
+  // temperature is avg temperature to use; weatherIndex is the index into the set of manual options
+  private setManualWeather(currentDate: SimpleCalendar.DateData | null, temperature: number, weatherIndex: number): void {
     const season = this.getSeason();
 
-    this._currentWeather = generate(
-      this._currentClimate!==null ? this._currentClimate : Climate.Temperate, 
-      this._currentHumidity!==null ? this._currentHumidity : Humidity.Modest, 
-      season!==null ? season : Season.Spring, 
-      currentDate,
-      this._currentWeather || null
-    );
-
-    this.activateWeather(this._currentWeather);
+    const result = setManual(currentDate, temperature, weatherIndex);
+    if (result) {
+      this._currentWeather = result;
+      this.activateWeather(this._currentWeather);
+    }
   }
 
   // activate the given weather; save to settings, output to chat, display FX
@@ -429,6 +464,23 @@ class WeatherApplication extends Application {
     }
   };
 
+  private onManualPauseChange = (event): void => {
+    this._manualPause = !this._manualPause;
+    moduleSettings.set(SettingKeys.manualPause, this._manualPause);
+
+    // if we're turning it on, hide the weather bars
+    if (this._manualPause) {
+      this.updateDisplayOptions({
+        ...this._displayOptions,
+        biomeBar: false,
+        seasonBar: false,
+      })
+    }
+
+    this.render();
+  };
+
+
   private setWindowPosition(position: WindowPosition): void {
     this._windowPosition = position;
 
@@ -459,8 +511,47 @@ class WeatherApplication extends Application {
     this.updateDisplayOptions(this._displayOptions);
   }
 
+  private onToggleManualBar = (): void => {
+    this._displayOptions.manualBar = !this._displayOptions.manualBar;
+
+    this.updateDisplayOptions(this._displayOptions);
+  }
+
   private onToggleFX = (): void => {
     weatherEffects.fxActive = !weatherEffects.fxActive;
+  }
+
+  private onManualTempInput = (event: KeyboardEvent): void => {
+    const btn = document.getElementById('swr-submit-weather') as HTMLButtonElement;
+
+    btn.disabled = !this.isTempValid();
+  }
+
+  private isTempValid(): boolean {
+    const input = document.getElementById('swr-manual-temperature') as HTMLInputElement;
+    const inputValue = input?.value;
+
+    // can only be a number
+    return (/^-?[0-9]+$/.test(inputValue));
+  }
+
+  private onSubmitWeatherClick = (): void => {
+    // confirm temp is valid, though the input filter above should prevent this
+    const input = document.getElementById('swr-manual-temperature') as HTMLInputElement;
+    let temp = Number(input?.value);
+
+    const select = document.getElementById('swr-manual-weather-selection') as HTMLSelectElement;
+
+    if (isNaN(temp) || !select.value) {
+      log(false, 'Attempt to submit invalid temperature or no selection');
+      return;
+    }
+
+    if (moduleSettings.get(SettingKeys.useCelsius))
+      temp = Math.round((temp*9/5)+32);
+
+    this.setManualWeather(this._currentWeather?.date || null, temp, Number(select.value));
+    this.render();
   }
 
   // get the class to apply to get the proper icon by season

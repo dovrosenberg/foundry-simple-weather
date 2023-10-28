@@ -1,4 +1,4 @@
-import { nextCell, startingCells, getDirection, weatherTemperatures, Direction, weatherDescriptions } from '@/weather/weatherMap';
+import { nextCell, startingCells, getDirection, weatherTemperatures, Direction, weatherDescriptions, manualOptions } from '@/weather/weatherMap';
 import { moduleSettings, SettingKeys } from '@/settings/moduleSettings';
 import { getGame, localize } from '@/utils/game';
 import { Climate, Humidity, Season } from './climateData';
@@ -17,7 +17,8 @@ const generate = function(climate: Climate, humidity: Humidity, season: Season, 
   log(false, 'Climate: ' + Object.values(Climate)[climate]);
   log(false, 'Humidity: ' + Object.values(Humidity)[humidity]);
 
-  if (!yesterday || yesterday.season !== season || !yesterday.hexFlowerCell) {
+  // random start if no valid prior day or the prior day" was manually set
+  if (!yesterday || yesterday.season !== season || !yesterday.hexFlowerCell || yesterday.isManual) {
     // no yesterday data (or starting a new season), so just pick a random starting point based on the season
     weatherData.hexFlowerCell = getDefaultStart(season);
   } else {
@@ -51,6 +52,24 @@ const generate = function(climate: Climate, humidity: Humidity, season: Season, 
   return weatherData;
 };
 
+// used to set manual weather; returns null if data is invalid (weatherIndex in particular)
+const setManual = function(today: SimpleCalendar.DateData | null, temperature: number, weatherIndex: number): WeatherData | null {
+  const options = manualOptions[weatherIndex];   // get the details behind the option
+
+  if (!options)
+    return null;
+
+  // randomize the temperature (+/- # degrees)
+  // margin of error is 4% of temperature, but always at least 2 degrees
+  const plusMinus = Math.max(2, Math.ceil(.04*temperature));
+  const temp = temperature + Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
+
+  const weatherData = new WeatherData(today, null, options.humidity, options.climate, options.hexCell, temp);
+  weatherData.isManual = true;
+
+  return weatherData;
+}
+
 const outputWeather = function(weatherData: WeatherData) {
   let messageRecipients: string[];
 
@@ -83,4 +102,5 @@ const getDefaultStart = function(season: Season) {
 export {
   generate,
   outputWeather,
+  setManual
 };
