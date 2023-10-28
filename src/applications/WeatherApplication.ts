@@ -21,8 +21,6 @@ function updateWeatherApplication(weatherApp: WeatherApplication): void {
 }
 
 class WeatherApplication extends Application {
-  private _ready = false;   // is foundry fully loaded?
-
   private _currentWeather: WeatherData;
   private _windowID = 'swr-container';
   private _windowDragHandler = new WindowDrag();
@@ -93,6 +91,7 @@ class WeatherApplication extends Application {
       displayOptions: this._displayOptions,
       hideDialog: !this.ready || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
       hideCalendar: !this._calendarPresent || !this._displayOptions.dateBox,
+      hideCalendarToggle: !this._calendarPresent,
       hideWeather: this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
       hideFXToggle: moduleSettings.get(SettingKeys.useFX) === 'off',
       fxActive: weatherEffects.fxActive,
@@ -102,10 +101,9 @@ class WeatherApplication extends Application {
     return data;
   }
 
-  // call this after simple calendar should have loaded so we know whether to draw the calendar box or not
+  // call this when either a) foundry loaded and no simple calendar or b) after simple calendar loaded
+  // this is needed so that we can properly handle calendar box and sync
   public ready(): void {
-    this._ready = true;
-
     // GM-only
     if (isClientGM()) {
       // load the values from settings if missing

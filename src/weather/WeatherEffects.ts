@@ -34,7 +34,7 @@ class WeatherEffects {
   public activateFX = function(weatherData: WeatherData) {
     this._lastWeatherData = weatherData;
 
-    if (weatherData.climate === null || weatherData.humidity === null || weatherData.hexFlowerCell === null)
+    if (!weatherData || weatherData.climate === null || weatherData.humidity === null || weatherData.hexFlowerCell === null)
       return;
 
     console.log(false, 'Activating weather using: ' + this._useFX);

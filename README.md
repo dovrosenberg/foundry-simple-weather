@@ -33,12 +33,12 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
 
 ![Main UI](https://i.imgur.com/8tmHSFu.png)
 
-### Biomes/Climate/Humidity ###
+### Biomes/Climate/Humidity 
 
 Selecting a biome will automatically pick the climate and humidity to match - providing an easy way to pick standard Earth biomes.  But you can also
 pick the climate/humidity separately so it's flexible to capture most weather conditions.
 
-### Seasons ###
+### Seasons 
 Seasons determine the types of weather for each biome.  Winter is colder, summer is hotter, and spring/fall are in the middle (but generally tend toward getting warmer/colder).
 
 When not using Simple Calendar, you just select the season you want to use.  
@@ -47,7 +47,7 @@ When using Simple Calendar, you can choose "Sync with Simple Calendar" and the s
 
 In some cases, you may need to override Simple Calendar's season. In particular, if you change hemispheres - because what Simple Calendar thinks is summer (ex. July) may actually be cold temperatures (ex. if in South America), so you'll want to manually override it.  "Winter" is always cold in Simple Weather.  In that case, simply pick the season you want in the drop down.  It will remain in the manual setting until you set it back to "Sync".
 
-### Weather Effects ###
+### Weather Effects 
 The GM can activate weather effects in the module settings.  For now, the only option is to use the scene weather in the Fondry core, but future support for Weather FX and other modules is planned.
 
 Once activated in settings, the scene weather will automatically be changed whenever the weather warrants it.  There is currently only support for inclement weather (rain, hail, snow, fog).  Let me know if there's any desire to do something to show sunny days, as I wasn't sure what made the most sense.

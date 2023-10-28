@@ -33,6 +33,12 @@ Hooks.once('init', async () => {
 
 Hooks.once('ready', () => {
   checkDependencies();
+
+  // if we don't have simple calendar installed, we're ready to go 
+  //    (otherwise wait for it to call the renderMainApp hook)
+  console.log(validSimpleCalendar);
+  if (!validSimpleCalendar)
+    weatherApplication.ready();
 });
 
 Hooks.once('i18nInit', (): void => {
@@ -78,7 +84,7 @@ Hooks.once(SimpleCalendar.Hooks.Ready, async () => {
   }
 });
 
-// once we've given calendar time to load, show the box
+// called after simple calendar is fully loaded
 Hooks.once('renderMainApp', () => {
   weatherApplication.ready();
 });
@@ -86,6 +92,11 @@ Hooks.once('renderMainApp', () => {
 // make sure we have a compatible version of simple-calendar installed
 function checkDependencies() {
   const minimumVersion = '2.4.0';
+
+  const module = getGame().modules.get('foundryvtt-simple-calendar');
+
+  if (!module || !module.active) return;
+
   const scVersion = getGame().modules.get('foundryvtt-simple-calendar')?.version;
 
   if (scVersion && (scVersion===minimumVersion || VersionUtils.isMoreRecent(scVersion, minimumVersion))) {
