@@ -1,7 +1,7 @@
 # Change Log
 
 ## v1.4.2 - Bug fix
-![](https://img.shields.io/badge/release%20date-October%2084%2C%202023-blue)
+![](https://img.shields.io/badge/release%20date-October%2028%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.4.2/module.zip)
 
 Fixed issue where calendar would not properly refresh.
@@ -9,7 +9,7 @@ Fixed issue where calendar would not properly refresh.
 <hr/>
 
 ## v1.4.1 - Now in Hindi!  (and a bug fix)
-![](https://img.shields.io/badge/release%20date-October%2084%2C%202023-blue)
+![](https://img.shields.io/badge/release%20date-October%2028%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.4.1/module.zip)
 
 Hindi language support
@@ -21,7 +21,7 @@ Also fixed issue introduced in 1.4.0 where the dialog would never show if Simple
 <hr/>
 
 ## v1.4.0 - New UI and added weather effects
-![](https://img.shields.io/badge/release%20date-October%2084%2C%202023-blue)
+![](https://img.shields.io/badge/release%20date-October%2028%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.4.0/module.zip)
 
 Some big changes:
