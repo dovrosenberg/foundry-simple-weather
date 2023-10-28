@@ -27,12 +27,14 @@ class WeatherApplication extends Application {
   private _windowPosition: WindowPosition;
   private _displayOptions: DisplayOptions;
   private _calendarPresent = false;   // is simple calendar present?
+  private _manualPause = false;
 
   private _currentClimate: Climate;
   private _currentHumidity: Humidity;
   private _currentBiome: string;
   private _currentSeason: Season; 
   private _currentSeasonSync: boolean;
+
 
   constructor() {
     super();
@@ -44,6 +46,9 @@ class WeatherApplication extends Application {
 
     // get default position or set default
     this._windowPosition = moduleSettings.get(SettingKeys.windowPosition) || { left: 100, bottom: 300 }
+
+    // get whether the manual pause is on
+    this._manualPause = moduleSettings.get(SettingKeys.manualPause || false);
 
     this.setWeather();  
   }
@@ -94,6 +99,7 @@ class WeatherApplication extends Application {
       hideCalendarToggle: !this._calendarPresent,
       hideWeather: this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
       hideFXToggle: moduleSettings.get(SettingKeys.useFX) === 'off',
+      manualPause: this._manualPause,
       fxActive: weatherEffects.fxActive,
       windowPosition: this._windowPosition,
     };
@@ -188,9 +194,12 @@ class WeatherApplication extends Application {
       html.find('#humidity-selection').on('change', this.onHumiditySelectChange);
       html.find('#season-selection').on('change', this.onSeasonSelectChange);
 
+      html.find('#swr-manual-pause').on('change', this.onManualPauseChange);
+
       // toggle buttons
       html.find('#swr-season-bar-toggle').on('mousedown', this.onToggleSeasonBar);
       html.find('#swr-biome-bar-toggle').on('mousedown', this.onToggleBiomeBar);
+      html.find('#swr-manual-bar-toggle').on('mousedown', this.onToggleManualBar);
       html.find('#swr-fx-toggle').on('mousedown', this.onToggleFX);
     }
 
@@ -429,6 +438,23 @@ class WeatherApplication extends Application {
     }
   };
 
+  private onManualPauseChange = (event): void => {
+    this._manualPause = !this._manualPause;
+    moduleSettings.set(SettingKeys.manualPause, this._manualPause);
+
+    // if we're turning it on, hide the weather bars
+    if (this._manualPause) {
+      this.updateDisplayOptions({
+        ...this._displayOptions,
+        biomeBar: false,
+        seasonBar: false,
+      })
+    }
+
+    this.render();
+  };
+
+
   private setWindowPosition(position: WindowPosition): void {
     this._windowPosition = position;
 
@@ -455,6 +481,12 @@ class WeatherApplication extends Application {
 
   private onToggleBiomeBar = (): void => {
     this._displayOptions.biomeBar = !this._displayOptions.biomeBar;
+
+    this.updateDisplayOptions(this._displayOptions);
+  }
+
+  private onToggleManualBar = (): void => {
+    this._displayOptions.manualBar = !this._displayOptions.manualBar;
 
     this.updateDisplayOptions(this._displayOptions);
   }

@@ -6,4 +6,5 @@ export type DisplayOptions = {
   // toolbars
   seasonBar: boolean;
   biomeBar: boolean;
+  manualBar: boolean;
 }

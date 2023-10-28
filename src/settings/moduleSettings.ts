@@ -25,6 +25,7 @@ export enum SettingKeys {
   biome = 'biome',  // the current biome
   climate = 'climate',   // the current climate
   humidity = 'humidity',   // the current humidity
+  manualPause = 'manualPause',   // is the manual pause currently active (will prevent any auto or regen updates)
 }
 
 type SettingType<K extends SettingKeys> =
@@ -43,6 +44,7 @@ type SettingType<K extends SettingKeys> =
     K extends SettingKeys.biome ? string :
     K extends SettingKeys.climate ? number :
     K extends SettingKeys.humidity ? number :
+    K extends SettingKeys.manualPause ? boolean :
     never;  
 
 // the solo instance
@@ -190,6 +192,12 @@ export class ModuleSettings {
         name: 'Last humidity',
         type: Number,
         default: 0
+      },
+      {
+        settingID: SettingKeys.manualPause,
+        name: 'Manual Pause',
+        type: Boolean,
+        default: false
       },
     ];
    
