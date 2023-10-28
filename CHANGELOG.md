@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.4.2 - Bug fix
+![](https://img.shields.io/badge/release%20date-October%2084%2C%202023-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.4.2/module.zip)
+
+Fixed issue where calendar would not properly refresh.
+
+<hr/>
+
 ## v1.4.1 - Now in Hindi!  (and a bug fix)
 ![](https://img.shields.io/badge/release%20date-October%2084%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.4.1/module.zip)

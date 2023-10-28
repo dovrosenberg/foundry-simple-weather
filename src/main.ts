@@ -36,7 +36,6 @@ Hooks.once('ready', () => {
 
   // if we don't have simple calendar installed, we're ready to go 
   //    (otherwise wait for it to call the renderMainApp hook)
-  console.log(validSimpleCalendar);
   if (!validSimpleCalendar)
     weatherApplication.ready();
 });
@@ -56,7 +55,10 @@ Hooks.on('updateSetting', (setting: Setting): void => {
     weatherApplication.setWeather();
 });
 
-Hooks.once(SimpleCalendar.Hooks.Ready, async () => {
+// called after simple calendar is fully loaded
+Hooks.once('renderMainApp', () => {
+  weatherApplication.ready();
+
   log(false, 'simple-calendar-ready');
 
   // it's possible this gets called but the version # is too low - just ignore in that case
@@ -66,7 +68,7 @@ Hooks.once(SimpleCalendar.Hooks.Ready, async () => {
       // tell the application we're using the calendar
       weatherApplication.activateCalendar();
 
-      await weatherApplication.updateDateTime(SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp()));   // this is really for the very 1st load; after that this date should match what was saved in settings
+      weatherApplication.updateDateTime(SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp()));   // this is really for the very 1st load; after that this date should match what was saved in settings
     }
 
     // modify the drop-downs
@@ -77,16 +79,7 @@ Hooks.once(SimpleCalendar.Hooks.Ready, async () => {
     Hooks.on('updateWorldTime', (timestamp) => {
       weatherApplication.updateDateTime(SimpleCalendar.api.timestampToDate(timestamp));
     });
-
-    // Hooks.on(SimpleCalendar.Hooks.DateTimeChange, ({date}: { date: SimpleCalendar.DateData }) => {
-    //   weatherApplication.updateDateTime(date);
-    // });
   }
-});
-
-// called after simple calendar is fully loaded
-Hooks.once('renderMainApp', () => {
-  weatherApplication.ready();
 });
 
 // make sure we have a compatible version of simple-calendar installed

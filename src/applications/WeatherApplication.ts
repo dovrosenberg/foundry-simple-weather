@@ -201,7 +201,7 @@ class WeatherApplication extends Application {
 
   // updates the current date/time showing in the weather dialog
   // generates new weather if the date has changed
-  public async updateDateTime(currentDate: SimpleCalendar.DateData | null) {
+  public updateDateTime(currentDate: SimpleCalendar.DateData | null): void {
     if (!currentDate)
       return;
 
