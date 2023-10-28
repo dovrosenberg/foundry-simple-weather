@@ -14,6 +14,7 @@ The current owner of the module.
 |---------------------------|-----------------------------------------------------------------------------|
 | Deutsch (de)              | SesuUisu                                                                    |
 | Français (fr)             | Zakarik                                                                     |
+| Hindi (hi)                | Harshavardhan Bajoria                                                       |
 | Svenska (sv)              | Jonas Karlsson                                                              |
 
 Would love to have help providing translations to other languages
