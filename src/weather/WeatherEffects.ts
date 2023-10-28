@@ -12,11 +12,13 @@ function updateWeatherEffects(effects: WeatherEffects): void {
 }
 
 class WeatherEffects {
+  private _useFX: string;
   private _fxActive = true;
   private _lastWeatherData: WeatherData;   // we save it so we can toggle back on 
 
   constructor() {
     this._fxActive = moduleSettings.get(SettingKeys.fxActive);
+    this._useFX = moduleSettings.get(SettingKeys.useFX);
   }
 
   public set fxActive(active: boolean) {
@@ -35,10 +37,10 @@ class WeatherEffects {
     if (weatherData.climate === null || weatherData.humidity === null || weatherData.hexFlowerCell === null)
       return;
 
-    console.log(false, 'Activating weather using: ' + moduleSettings.get(SettingKeys.useFX));
+    console.log(false, 'Activating weather using: ' + this._useFX);
 
     if (this._fxActive) {
-      switch (moduleSettings.get(SettingKeys.useFX)) {
+      switch (this._useFX) {
         case 'core':
           if (isClientGM()) {
             if (weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell]?.fx?.core?.effect) 
@@ -55,7 +57,7 @@ class WeatherEffects {
           break;
       }
     } else {
-      switch (moduleSettings.get(SettingKeys.useFX)) {
+      switch (this._useFX) {
         case 'core':
           if (isClientGM()) {
             getGame().scenes?.active?.update({ weather: '' });
@@ -70,7 +72,7 @@ class WeatherEffects {
   }
 
   public deactivateFX = function(): void {
-    switch (moduleSettings.get(SettingKeys.useFX)) {
+    switch (this._useFX) {
       case 'core':
         if (isClientGM()) {
           getGame().scenes?.active?.update({ weather: '' });

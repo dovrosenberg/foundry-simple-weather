@@ -138,7 +138,7 @@ export class ModuleSettings {
           'off': 'sweath.settings.options.useFX.choices.off',
           'core': 'sweath.settings.options.useFX.choices.core'
         },
-        default: 'core',
+        default: 'off',
       },
     ];
 
