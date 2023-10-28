@@ -7,23 +7,27 @@ import { WindowPosition } from '@/window/WindowPosition';
 import { SettingKeys } from '@/settings/moduleSettings';
 import { WindowDrag } from '@/window/windowDrag';
 import { isClientGM } from '@/utils/game';
-import { generate } from '@/weather/weatherGenerator';
+import { generate, outputWeather } from '@/weather/weatherGenerator';
 import { moduleSettings } from '@/settings/moduleSettings';
+import { weatherEffects } from '@/weather/WeatherEffects';
+import { DisplayOptions } from '@/types/DisplayOptions';
 
 // the solo instance
-export let weatherApplication: WeatherApplication;
+let weatherApplication: WeatherApplication;
 
 // set the main application; should only be called once
-export function updateWeatherApplication(weatherApp: WeatherApplication): void {
+function updateWeatherApplication(weatherApp: WeatherApplication): void {
   weatherApplication = weatherApp;
 }
 
-export class WeatherApplication extends Application {
+class WeatherApplication extends Application {
+  private _ready = false;   // is foundry fully loaded?
+
   private _currentWeather: WeatherData;
-  private _weatherPanelOpen: boolean;
-  private _windowID = 'sweath-container';
+  private _windowID = 'swr-container';
   private _windowDragHandler = new WindowDrag();
   private _windowPosition: WindowPosition;
+  private _displayOptions: DisplayOptions;
   private _calendarPresent = false;   // is simple calendar present?
 
   private _currentClimate: Climate;
@@ -35,22 +39,27 @@ export class WeatherApplication extends Application {
   constructor() {
     super();
 
-    this._weatherPanelOpen = false;
-
     log(false, 'WeatherApplication construction');
 
+    // set the initial display
+    this._displayOptions = moduleSettings.get(SettingKeys.displayOptions) || { dateBox: true, weatherBox: false, biomeBar: true, seasonBar: true }    
+
     // get default position or set default
-    this.setWindowPosition(
-      moduleSettings.get(SettingKeys.windowPosition) || {
-        left: 100,
-        bottom: 300,
-      }
-    );
+    this._windowPosition = moduleSettings.get(SettingKeys.windowPosition) || { left: 100, bottom: 300 }
 
     this.setWeather();  
+  }
 
-    // initial render -- needed even though setWeather will render because we need to force
-    this.render(true);
+  // draw the window
+  public render(force?: boolean): void {
+    // make sure simple calendar is present if we're trying to sync
+    // this could happen if we had sync on but then uninstalled calendar and reloaded
+    if (!this._calendarPresent && this._currentSeasonSync) {
+      this._currentSeasonSync = false;
+      moduleSettings.set(SettingKeys.seasonSync, false);
+    }
+
+    super.render(force);
   }
 
   // window options; called by parent class
@@ -81,42 +90,21 @@ export class WeatherApplication extends Application {
       humiditySelections: humiditySelections,
       climateSelections: climateSelections,
 
-      // hide dialog - don't show anything
-      hideDialog: (isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)) ? false : true,
-      hideCalendar: !this._calendarPresent || moduleSettings.get(SettingKeys.hideCalendar),
-      hideWeather: this._calendarPresent && !moduleSettings.get(SettingKeys.hideCalendar) && !this._weatherPanelOpen,  // can only hide weather if calendar present and setting is off
+      displayOptions: this._displayOptions,
+      hideDialog: !this.ready || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
+      hideCalendar: !this._calendarPresent || !this._displayOptions.dateBox,
+      hideWeather: this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
+      hideFXToggle: moduleSettings.get(SettingKeys.useFX) === 'off',
+      fxActive: weatherEffects.fxActive,
       windowPosition: this._windowPosition,
     };
 
     return data;
   }
 
-  // move the window
-  // we can't use foundry's setPosition() because it doesn't work for fixed size, non popout windows
-  public setWindowPosition(newPosition: WindowPosition) {
-    this._windowPosition = newPosition;
-
-    // save
-    moduleSettings.set(SettingKeys.windowPosition, {bottom: newPosition.bottom, left: newPosition.left});
-
-    this.render();
-  }
-
-  public activateCalendar(): void {
-    this._calendarPresent = true;
-    this.render();
-  }
-
-  // called by the parent class to attach event handlers after window is rendered
-  // note that saved weather has been reloaded by the time this is called when we're initializing
-  // this is called on every render!  One-time functionality should be put in ????? 
-  public async activateListeners(html: JQuery<HTMLElement>): Promise<void> {
-    // handle window drag
-    html.find('#sweath-calendar-move-handle').on('mousedown', this.onMoveHandleMouseDown);
-    html.find('#sweath-weather-move-handle').on('mousedown', this.onMoveHandleMouseDown);
-
-    // setup handlers and values for everyone
-    html.find('#weather-toggle').on('click', this.onWeatherToggleClick);
+  // call this after simple calendar should have loaded so we know whether to draw the calendar box or not
+  public ready(): void {
+    this._ready = true;
 
     // GM-only
     if (isClientGM()) {
@@ -135,7 +123,56 @@ export class WeatherApplication extends Application {
 
       if (this._currentBiome == undefined)
         this._currentBiome = moduleSettings.get(SettingKeys.biome);
+    }
 
+    weatherEffects.activateFX(this._currentWeather);
+
+    this.render(true);
+  };
+
+  // move the window
+  // we can't use foundry's setPosition() because it doesn't work for fixed size, non popout windows
+  public updateWindowPosition(newPosition: WindowPosition) {
+    this._windowPosition = newPosition;
+
+    // save
+    moduleSettings.set(SettingKeys.windowPosition, this._windowPosition);
+
+    this.render();
+  }
+
+  public updateDisplayOptions(options: Partial<DisplayOptions>): void {
+    this._displayOptions = {
+      ...this._displayOptions,
+      ...options
+    }
+
+    // save
+    moduleSettings.set(SettingKeys.displayOptions, this._displayOptions);
+
+    this.render();
+  }
+
+  public activateCalendar(): void {
+    this._calendarPresent = true;
+    this.render();
+  }
+
+  // called by the parent class to attach event handlers after window is rendered
+  // note that saved weather has been reloaded by the time this is called when we're initializing
+  // this is called on every render!  One-time functionality should be put in ????? 
+  public async activateListeners(html: JQuery<HTMLElement>): Promise<void> {
+    // handle window drag
+    html.find('#swr-calendar-move-handle').on('mousedown', this.onMoveHandleMouseDown);
+    html.find('#swr-weather-move-handle').on('mousedown', this.onMoveHandleMouseDown);
+
+    // setup handlers and values for everyone
+    html.find('#swr-weather-box-toggle').on('click', this.onWeatherToggleClick);
+    html.find('#swr-date-box-toggle').on('click', this.onDateToggleClick);
+    html.find('#swr-close-button').on('click', this.onCloseClick);
+
+    // GM-only
+    if (isClientGM()) {
       // set the drop-down values
       html.find('#climate-selection').val(this._currentClimate);
       html.find('#humidity-selection').val(this._currentHumidity);
@@ -147,12 +184,19 @@ export class WeatherApplication extends Application {
 
       html.find('#biome-selection').val(this._currentBiome);  // do this last, because setting climate/humidity clears it
 
-      html.find('#sweath-weather-refresh').on('click', this.onWeatherRegenerateClick);
+      html.find('#swr-weather-refresh').on('click', this.onWeatherRegenerateClick);
       html.find('#biome-selection').on('change', this.onBiomeSelectChange);
       html.find('#climate-selection').on('change', this.onClimateSelectChange);
       html.find('#humidity-selection').on('change', this.onHumiditySelectChange);
       html.find('#season-selection').on('change', this.onSeasonSelectChange);
+
+      // toggle buttons
+      html.find('#swr-season-bar-toggle').on('mousedown', this.onToggleSeasonBar);
+      html.find('#swr-biome-bar-toggle').on('mousedown', this.onToggleBiomeBar);
+      html.find('#swr-fx-toggle').on('mousedown', this.onToggleFX);
     }
+
+
 
     super.activateListeners(html);
   }
@@ -190,6 +234,7 @@ export class WeatherApplication extends Application {
       log(false, 'Using saved weather data');
 
       this._currentWeather = weatherData;
+      weatherEffects.activateFX(weatherData);
     } else if (isClientGM()) {
       log(false, 'No saved weather data - Generating weather');
 
@@ -211,6 +256,20 @@ export class WeatherApplication extends Application {
       this._currentWeather || null
     );
 
+    this.activateWeather(this._currentWeather);
+  }
+
+  // activate the given weather; save to settings, output to chat, display FX
+  private activateWeather(weatherData: WeatherData): void {
+    // Output to chat if enabled
+    if (moduleSettings.get(SettingKeys.outputWeatherToChat)) {
+      outputWeather(weatherData);
+    }
+
+    // activate special effects
+    weatherEffects.activateFX(weatherData);
+
+    // save 
     moduleSettings.set(SettingKeys.lastWeatherData, this._currentWeather);        
   }
 
@@ -262,9 +321,34 @@ export class WeatherApplication extends Application {
   private onWeatherToggleClick = (event): void => {
     event.preventDefault();
 
-    this._weatherPanelOpen = !this._weatherPanelOpen;
-    this.render();
-  } ;
+    this.updateDisplayOptions({ weatherBox: !this._displayOptions.weatherBox })
+  };
+
+  private onDateToggleClick = (event): void => {
+    event.preventDefault();
+
+    // if we're turning off, need to move the box right to adjust; reverse for turning on
+    if (this._displayOptions.dateBox) 
+      this._windowPosition.left += document.getElementById('swr-calendar-box')?.offsetWidth || 0;
+    else {
+      // little tricker to get width when hidden
+      const box = document.getElementById('swr-calendar-box');
+      if (box) {
+        box.style.visibility = 'hidden';
+        box.style.display = 'block';
+        const width = box.offsetWidth;
+
+        this._windowPosition.left -= width || 0;
+      }
+    }
+
+    this.updateDisplayOptions({ dateBox: !this._displayOptions.dateBox })
+  };
+
+  private onCloseClick = (event): void => {
+    event.preventDefault();
+    this.close();
+  }
 
   private onWeatherRegenerateClick = (event): void => {
     event.preventDefault();
@@ -347,6 +431,14 @@ export class WeatherApplication extends Application {
     }
   };
 
+  private setWindowPosition(position: WindowPosition): void {
+    this._windowPosition = position;
+
+    moduleSettings.set(SettingKeys.windowPosition, position);
+
+    this.render();
+  }
+
   private onMoveHandleMouseDown = (): void => {
     const element = document.getElementById(this._windowID);
     if (element) {
@@ -356,6 +448,22 @@ export class WeatherApplication extends Application {
       });
     }
   };  
+
+  private onToggleSeasonBar = (): void => {
+    this._displayOptions.seasonBar = !this._displayOptions.seasonBar;
+
+    this.updateDisplayOptions(this._displayOptions);
+  }
+
+  private onToggleBiomeBar = (): void => {
+    this._displayOptions.biomeBar = !this._displayOptions.biomeBar;
+
+    this.updateDisplayOptions(this._displayOptions);
+  }
+
+  private onToggleFX = (): void => {
+    weatherEffects.fxActive = !weatherEffects.fxActive;
+  }
 
   // get the class to apply to get the proper icon by season
   private currentSeasonClass = function(): string { 
@@ -375,4 +483,10 @@ export class WeatherApplication extends Application {
 
     return '';
   }
+}
+
+export {
+  weatherApplication,
+  WeatherApplication,
+  updateWeatherApplication
 }

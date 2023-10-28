@@ -4,8 +4,10 @@ import { moduleSettings, ModuleSettings, SettingKeys, updateModuleSettings } fro
 import { VersionUtils } from '@/utils/versionUtils';
 import { getGame, isClientGM } from '@/utils/game';
 import { log } from './utils/log';
-import { allowSeasonSync, initializeLocalizedText } from './weather/climateData';
-import { updateWeatherApplication, weatherApplication, WeatherApplication } from './applications/WeatherApplication';
+import { allowSeasonSync, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
+import { initializeLocalizedText as initializeLocalizedWeatherText } from '@/weather/weatherMap';
+import { updateWeatherApplication, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
+import { updateWeatherEffects, weatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
 
 // track which modules we have
 let validSimpleCalendar = false;
@@ -25,6 +27,7 @@ Hooks.once('init', async () => {
   // initialize the solo instances of the various classes
   // settings first, so other things can use them
   updateModuleSettings(new ModuleSettings());
+  updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
   updateWeatherApplication(new WeatherApplication());
 });
 
@@ -33,7 +36,8 @@ Hooks.once('ready', () => {
 });
 
 Hooks.once('i18nInit', (): void => {
-  initializeLocalizedText();
+  initializeLocalizedClimateText();
+  initializeLocalizedWeatherText();
 
   // rerender weather
   if (weatherApplication)
@@ -72,6 +76,11 @@ Hooks.once(SimpleCalendar.Hooks.Ready, async () => {
     //   weatherApplication.updateDateTime(date);
     // });
   }
+});
+
+// once we've given calendar time to load, show the box
+Hooks.once('renderMainApp', () => {
+  weatherApplication.ready();
 });
 
 // make sure we have a compatible version of simple-calendar installed

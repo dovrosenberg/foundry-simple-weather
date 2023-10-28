@@ -1,4 +1,4 @@
-import { nextCell, startingCells, getDirection, weatherTemperatures, Direction, seasonSelections, climateSelections, humiditySelections, weatherDescriptions } from '@/weather/climateData';
+import { nextCell, startingCells, getDirection, weatherTemperatures, Direction, weatherDescriptions } from '@/weather/weatherMap';
 import { moduleSettings, SettingKeys } from '@/settings/moduleSettings';
 import { getGame, localize } from '@/utils/game';
 import { Climate, Humidity, Season } from './climateData';
@@ -48,15 +48,10 @@ const generate = function(climate: Climate, humidity: Humidity, season: Season, 
   const plusMinus = Math.max(2, Math.ceil(.04*weatherData.temperature));
   weatherData.temperature += Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
 
-  // Output to chat if enabled
-  if (moduleSettings.get(SettingKeys.outputWeatherToChat)) {
-    output(weatherData);
-  }
-
   return weatherData;
 };
 
-const output = function(weatherData: WeatherData) {
+const outputWeather = function(weatherData: WeatherData) {
   let messageRecipients: string[];
 
   if (moduleSettings.get(SettingKeys.publicChat)) {
@@ -87,4 +82,5 @@ const getDefaultStart = function(season: Season) {
 
 export {
   generate,
+  outputWeather,
 };

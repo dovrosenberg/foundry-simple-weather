@@ -2,17 +2,18 @@
 
 [![Supported Foundry Versions](https://img.shields.io/endpoint?url=https://foundryshields.com/version?url=https://github.com/dovrosenberg/foundry-simple-weather/raw/master/static/module.json)](https://github.com/dovrosenberg/foundry-simple-weather)
 
-A module that provides dynamic weather generation, by season and biome.  If [Simple Calendar](https://foundryvtt.com/packages/foundryvtt-simple-calendar) (minimum version 2.4.0) is present, Simple Weather will integrate to it and display the date/time and automatically generate new weather when the date changes.  Without Simple Calendar, no date is shown and weather regeneration can be manually triggered. (NOTE: THIS MODULE IS NOT AFFILIATED WITH THE CREATORS OF SIMPLE CALENDAR)
+A module that provides dynamic weather generation, by season and biome, including automatically activating weather effects.  If [Simple Calendar](https://foundryvtt.com/packages/foundryvtt-simple-calendar) (minimum version 2.4.0) is present, Simple Weather will integrate to it and display the date/time and automatically generate new weather when the date changes.  Without Simple Calendar, no date is shown and weather regeneration can be manually triggered. (NOTE: THIS MODULE IS NOT AFFILIATED WITH THE CREATORS OF SIMPLE CALENDAR)
 
-An alternative to [Weather Control](https://foundryvtt.com/packages/weather-control) with an updated algorithm (or for those not wishing to rely on Simple Calendar), **Simple Weather** aims to provide the most seamless experience to add dynamic weather to your game based on climates.
 
 I built this as a way to learn Foundry better, but I plan to maintain it for now and am happy to consider [feature requests](https://github.com/dovrosenberg/foundry-simple-weather/issues/new/choose)
 
 ## Features
 
 - Intuitive UI to generate weather  
-- Print the weather to chat, with the option of showing to players or not
-- Choose whether players can see the dialog
+- Use Foundry scene weather to automatically show rain, snow, etc. when appropriate
+- Various ways to share weather with players
+  - Print the weather to chat, with the option of showing to players or not
+  - Choose whether players can see the dialog (with a limited UI)
 - Randomized weather for every season across 3 climates (hot, temperate, cold) and 3 humidities (barren, modest, verdant)
 - Weather progresses naturally from day to day
 - Supports Farenheit and Celsius temperatures
@@ -24,7 +25,13 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
 
 ## Controls
 
-![Main UI](https://i.imgur.com/Cv2PLVS.png)
+### Gamemaster controls
+
+![Main UI](https://i.imgur.com/Taotzi7.png)
+
+### Player controls
+
+![Main UI](https://i.imgur.com/8tmHSFu.png)
 
 ### Biomes/Climate/Humidity ###
 
@@ -39,6 +46,13 @@ When not using Simple Calendar, you just select the season you want to use.
 When using Simple Calendar, you can choose "Sync with Simple Calendar" and the season of the current date will be used automatically.  The season icon next to the drop down will change to let you know what season it is currently using.  Simple Weather determines the Season to use based on the icon for the season in Simple Calendar.  So, if you are using a custom calendar, for season sync to work you must a) set up seasons in Simple Calendar, and b) choose one of the season icons (fall, winter, spring, summer) for each of your seasons.
 
 In some cases, you may need to override Simple Calendar's season. In particular, if you change hemispheres - because what Simple Calendar thinks is summer (ex. July) may actually be cold temperatures (ex. if in South America), so you'll want to manually override it.  "Winter" is always cold in Simple Weather.  In that case, simply pick the season you want in the drop down.  It will remain in the manual setting until you set it back to "Sync".
+
+### Weather Effects ###
+The GM can activate weather effects in the module settings.  For now, the only option is to use the scene weather in the Fondry core, but future support for Weather FX and other modules is planned.
+
+Once activated in settings, the scene weather will automatically be changed whenever the weather warrants it.  There is currently only support for inclement weather (rain, hail, snow, fog).  Let me know if there's any desire to do something to show sunny days, as I wasn't sure what made the most sense.
+
+When players go inside, you can easily toggle the fx on/off temporarily using the toggle button on the toolbar.
 
 ## Support
 

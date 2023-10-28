@@ -9,8 +9,12 @@
       "outputweatherToChatHelp": "La météo nouvellement générée doit-elle être affichée dans le chat ?",
       "publicChat": "Rendre le chat public ?",
       "publicChatHelp": "Tout le monde doit-il voir le chat météo (s'il est activé) ou seulement le GM (s'il est désactivé) ?",
-      "hideCalendar": "Cacher la fenêtre du calendrier ?",
-      "hideCalendarHelp": "Si la case est cochée, seuls les contrôles météorologiques seront affichés (par exemple, si vous laissez la fenêtre de Simple Calendar ouverte, cela permet d'économiser de l'espace)."
+      "useFX": "Display special effects?",
+      "useFXHelp": "Select the module to use when displaying special effects.  When activiate, the effects can also be turned off manually when needed.",
+      "options": {
+        "useFX.choices.off": "Off",
+        "useFX.choices.core": "FoundryVTT scene weather setting"
+      }
     },
 
     "options": {
@@ -52,8 +56,12 @@
     },
 
     "labels": {
-      "openWeatherBox": "Ouvrir/fermer climat",
-      "regenerateWeather": "Régénérer la météo"
+      "regenerateWeather": "Régénérer la météo",
+      "toggleWeatherBox": "Ouvrir/fermer climat",
+      "toggleDateBox": "Open/close calendar",
+      "toggleSeasonBar": "Open/close season selection",
+      "toggleBiomeBar": "Open/close biome/climate/humidity selection",
+      "toggleFX": "Toggle weather effects"
     },
 
     "chat": {
@@ -427,5 +435,22 @@
         }
       }
     }
+  },
+
+  "missing translations": {
+    "settings": {
+      "useFX": "Display special effects?",
+      "useFXHelp": "Select the module to use when displaying special effects.  When activiate, the effects can also be turned off manually when needed.",
+      "options": {
+        "useFX.choices.off": "None",
+        "useFX.choices.core": "FoundryVTT scene weather setting"
+      }
+    },
+    "labels": {
+      "toggleDateBox": "Open/close calendar",
+      "toggleSeasonBar": "Open/close season selection",
+      "toggleBiomeBar": "Open/close biome/climate/humidity selection",
+      "toggleFX": "Toggle weather effects"
+    }  
   }
 }

@@ -1,10 +1,20 @@
 # Change Log
 
+## v1.4.0 - New UI and added weather effects
+![](https://img.shields.io/badge/release%20date-October%2084%2C%202023-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.4.0/module.zip)
+
+Some big changes:
+- Reworked UI to shrink screen real estate by letting you toggle various control bars on/off based on your needs 
+- Added first cut at weather effects; you can enable in the settings.  For now, only uses core scene weather functionality, but plan to add support for more sophisticated modules.
+
+<hr/>
+
 ## v1.3.3 - Now in French (Français)!
 ![](https://img.shields.io/badge/release%20date-October%2024%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.3.3/module.zip)
 
-Swedish language support
+French language support
 
 Thanks to Zakarik for adding French translations!
 
