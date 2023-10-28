@@ -9,18 +9,18 @@
       "outputweatherToChatHelp": "Soll neu-generiertes Wetter im Chat angezeigt werden?",
       "publicChat": "Soll die Chatausgabe öffentlich sein?",
       "publicChatHelp": "Soll jeder (wenn ausgewählt) oder nur der SL (wenn nicht ausgewählt) das Wetter im Chat sehen können?",
-      "useFX": "Display special effects?",
-      "useFXHelp": "Select the module to use when displaying special effects.  When activiate, the effects can also be turned off manually when needed.",
+      "useFX": "Spezial-/Wettereffekte anzeigen?",
+      "useFXHelp": "Wähle das Modul aus, welches die Spezial-/Wettereffekte darstellen soll. Wenn aktiviert, kann es bei Bedarf manuell ausgeschaltet werden.",
       "options": {
-        "useFX.choices.off": "Off",
-        "useFX.choices.core": "FoundryVTT scene weather setting"
+        "useFX.choices.off": "Aus",
+        "useFX.choices.core": "FoundryVTT-Szenenwettereinstellung"
       }
     },
 
     "options": {
       "biome": {
         "select": "Wähle eine Vegetation, um das Klima und Luftfeuchtigkeit auszuwählen",
-        "useClimateHumidity": "Use climate/humidity",
+        "useClimateHumidity": "Verwende Klima/Luftfeuchtigkeit",
         "tundra": "Tundra",
         "alpine": "Alpin",
         "taiga": "Taiga",
@@ -56,22 +56,22 @@
       },
 
       "manualWeather": {
-        "select": "Select new weather"
+        "select": "Wähle neues Wetter"
       }
     },
 
     "labels": {
       "regenerateWeather": "Wetter neu laden",
-      "toggleWeatherBox": "Offnen/schließen wetter",
-      "toggleDateBox": "Open/close calendar",
-      "toggleSeasonBar": "Open/close season selection",
-      "toggleBiomeBar": "Open/close biome/climate/humidity selection",
-      "toggleManualBar": "Open/close manual weather selection",
-      "toggleFX": "Toggle weather effects",
-      "manualPause": "Pause updates?",
-      "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)",
-      "manualWeatherTemperature": "Temperature to set (will vary slightly from this)",
-      "manualWeatherSubmit": "Set selected weather and temperature"
+      "toggleWeatherBox": "Öffne/Schließe die Wetteranzeige",
+      "toggleDateBox": "Öffne/Schließe den Kalendar",
+      "toggleSeasonBar": "Öffne/Schließe die Jahreszeitauswahl",
+      "toggleBiomeBar": "Öffne/Schließe die Auswahl für Vegetation/Klima/Luftfeuchtigkeit",
+      "toggleManualBar": "Öffne/Schließe die manuelle Wetterauswahl",
+      "toggleFX": "Schalte Wettereffekte um",
+      "manualPause": "Wetteraktualisierung pausieren?",
+      "manualPauseHint": " Auswählen, wenn die automatische Wetterauswahl verhindert werden soll (nützlich, wenn es manuell eingestellt wird)",
+      "manualWeatherTemperature": "Trage Temperatur ein (kann leicht abweichen)",
+      "manualWeatherSubmit": "Bestätige Wetter und Temperatur"
     },
 
     "chat": {
@@ -445,39 +445,5 @@
         }
       }
     }    
-  },
-
-  "missing translations": {
-    "settings": {
-      "useFX": "Display special effects?",
-      "useFXHelp": "Select the module to use when displaying special effects.  When activiate, the effects can also be turned off manually when needed.",
-      "options": {
-        "useFX.choices.off": "None",
-        "useFX.choices.core": "FoundryVTT scene weather setting"
-      }
-    },
-    
-    "options": {
-      "season": {
-        "sync":"Sync with Simple Calendar"
-      }, 
-      "biome": {
-        "useClimateHumidity": "Use climate/humidity"
-      },
-      "manualWeather": {
-        "select": "Select new weather"
-      }
-    },
-    "labels": {
-      "toggleDateBox": "Open/close calendar",
-      "toggleSeasonBar": "Open/close season selection",
-      "toggleBiomeBar": "Open/close biome/climate/humidity selection",
-      "toggleManualBar": "Open/close manual weather selection",
-      "toggleFX": "Toggle weather effects",
-      "manualPause": "Pause updates?",
-      "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)",
-      "manualWeatherTemperature": "Temperature to set (will vary slightly from this)",
-      "manualWeatherSubmit": "Set selected weather and temperature"
-    }  
   }
 }
