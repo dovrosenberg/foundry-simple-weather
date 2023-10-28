@@ -20,6 +20,7 @@
     "options": {
       "biome": {
         "select": "Sélectionnez un biome pour que le climat et l'humidité s'y ajoutent automatiquement.",
+        "useClimateHumidity": "Use climate/humidity",
         "tundra": "Toundra",
         "alpine": "Alpin",
         "taiga": "Taïga",
@@ -63,7 +64,7 @@
       "toggleBiomeBar": "Open/close biome/climate/humidity selection",
       "toggleManualBar": "Open/close manual weather selection",
       "toggleFX": "Toggle weather effects",
-      "manualPause": "Pause auto weather?",
+      "manualPause": "Pause updates?",
       "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)"
     },
 
@@ -449,13 +450,18 @@
         "useFX.choices.core": "FoundryVTT scene weather setting"
       }
     },
+    "options": {
+      "biome": {
+        "useClimateHumidity": "Use climate/humidity"
+      }
+    },
     "labels": {
       "toggleDateBox": "Open/close calendar",
       "toggleSeasonBar": "Open/close season selection",
       "toggleBiomeBar": "Open/close biome/climate/humidity selection",
       "toggleManualBar": "Open/close manual weather selection",
       "toggleFX": "Toggle weather effects",
-      "manualPause": "Pause auto weather?",
+      "manualPause": "Pause updates?",
       "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)"
     }  
   }

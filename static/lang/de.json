@@ -20,6 +20,7 @@
     "options": {
       "biome": {
         "select": "Wähle eine Vegetation, um das Klima und Luftfeuchtigkeit auszuwählen",
+        "useClimateHumidity": "Use climate/humidity",
         "tundra": "Tundra",
         "alpine": "Alpin",
         "taiga": "Taiga",
@@ -63,7 +64,7 @@
       "toggleBiomeBar": "Open/close biome/climate/humidity selection",
       "toggleManualBar": "Open/close manual weather selection",
       "toggleFX": "Toggle weather effects",
-      "manualPause": "Pause auto weather?",
+      "manualPause": "Pause updates?",
       "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)"
     },
 
@@ -453,6 +454,9 @@
     "options": {
       "season": {
         "sync":"Sync with Simple Calendar"
+      }, 
+      "biome": {
+        "useClimateHumidity": "Use climate/humidity"
       }
     },
     "labels": {
@@ -461,7 +465,7 @@
       "toggleBiomeBar": "Open/close biome/climate/humidity selection",
       "toggleManualBar": "Open/close manual weather selection",
       "toggleFX": "Toggle weather effects",
-      "manualPause": "Pause auto weather?",
+      "manualPause": "Pause updates?",
       "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)"
     }  
   }

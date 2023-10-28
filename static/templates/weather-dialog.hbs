@@ -50,7 +50,14 @@
 						<div id="swr-manual-bar" class="swr-optional-bar {{#if displayOptions.manualBar}}swr-display-bar{{/if}}">
 							<div class="select-wrapper" style="flex:1">
 								<input id="swr-manual-pause" type="checkbox" title="{{localize 'sweath.labels.manualPauseHint'}}" {{#if manualPause}}checked{{/if}} />
-								<label for="swr-manual-pause" type="checkbox">{{localize 'sweath.labels.manualPause'}} </label>
+								<label for="swr-manual-pause">{{localize 'sweath.labels.manualPause'}}</label>
+							</div>
+							<div class="select-wrapper">
+								<select id="manual-weather-selection" title="{{localize 'sweath.options.manualWeather.select'}}">
+									{{#each manualSelections}}
+										<option title="{{text}}" value="{{value}}">{{text}}</option>
+									{{/each}}
+								</select>
 							</div>
 						</div>
 
@@ -124,7 +131,7 @@
 				</header>
 				<div class="swr-weather-content">
 					{{#if isGM}}
-						<div id="swr-weather-refresh" title="{{localize 'sweath.labels.regenerateWeather'}}">
+						<div id="swr-weather-refresh" title="{{localize 'sweath.labels.regenerateWeather'}}" style="{{#if manualPause}}display:none;{{/if}}"">
 							<i class="fas fa-redo"></i>
 						</div>
 					{{/if}}

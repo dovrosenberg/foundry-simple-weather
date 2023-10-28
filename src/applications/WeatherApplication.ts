@@ -2,7 +2,7 @@ import moduleJson from '@module';
 
 import { log } from '@/utils/log';
 import { WeatherData } from '@/weather/WeatherData';
-import { seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings } from '@/weather/climateData';
+import { seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings, manualSelections } from '@/weather/climateData';
 import { WindowPosition } from '@/window/WindowPosition';
 import { SettingKeys } from '@/settings/moduleSettings';
 import { WindowDrag } from '@/window/windowDrag';
@@ -92,6 +92,7 @@ class WeatherApplication extends Application {
       seasonSelections: seasonSelections,
       humiditySelections: humiditySelections,
       climateSelections: climateSelections,
+      manualSalections: manualSelections,
 
       displayOptions: this._displayOptions,
       hideDialog: !this.ready || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
@@ -253,17 +254,20 @@ class WeatherApplication extends Application {
 
   // generate weather based on drop-down settings, store locally and update db
   private generateWeather(currentDate: SimpleCalendar.DateData | null): void {
-    const season = this.getSeason();
+    // if we're paused, do nothing
+    if (!this._manualPause) {
+      const season = this.getSeason();
 
-    this._currentWeather = generate(
-      this._currentClimate!==null ? this._currentClimate : Climate.Temperate, 
-      this._currentHumidity!==null ? this._currentHumidity : Humidity.Modest, 
-      season!==null ? season : Season.Spring, 
-      currentDate,
-      this._currentWeather || null
-    );
+      this._currentWeather = generate(
+        this._currentClimate!==null ? this._currentClimate : Climate.Temperate, 
+        this._currentHumidity!==null ? this._currentHumidity : Humidity.Modest, 
+        season!==null ? season : Season.Spring, 
+        currentDate,
+        this._currentWeather || null
+      );
 
-    this.activateWeather(this._currentWeather);
+      this.activateWeather(this._currentWeather);
+    }
   }
 
   // activate the given weather; save to settings, output to chat, display FX

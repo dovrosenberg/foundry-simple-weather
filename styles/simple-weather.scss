@@ -177,14 +177,18 @@
   padding: 0 3px 0 3px;
 } 
 
-#swr-container header input[type="checkbox"] {
+#swr-container header .select-wrapper input[type="checkbox"] {
   height: 20px;
+  vertical-align: middle;
   width: auto;
   font-size: 0.85rem;
   font-family: Signika, sans-serif;
   flex: 1;
-  align-self: flex-start;
   color: rgba(255, 255, 255, .9);
+}
+
+#swr-container header .select-wrapper label {
+  vertical-align: middle;
 }
 
 #swr-tool-bar {

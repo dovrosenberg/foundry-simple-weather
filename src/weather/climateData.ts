@@ -34,7 +34,7 @@ export function initializeLocalizedText(): void {
   log(false, 'Loading localized climate text');
 
   biomeSelections = [
-    { value: '', text: 'Use climate/humidity' },
+    { value: '', text: localize('sweath.options.biome.useClimateHumidity') },
     { value: 'tundra', text: localize('sweath.options.biome.tundra') },
     { value: 'alpine', text: localize('sweath.options.biome.alpine') },
     { value: 'taiga', text: localize('sweath.options.biome.taiga') },
