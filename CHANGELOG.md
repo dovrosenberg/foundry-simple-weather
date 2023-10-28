@@ -1,6 +1,6 @@
 # Change Log
 
-## v1.3.2 - Now in French (Français)!
+## v1.3.3 - Now in French (Français)!
 ![](https://img.shields.io/badge/release%20date-October%2024%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.3.3/module.zip)
 
