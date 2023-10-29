@@ -4,7 +4,6 @@ import { WindowPosition } from '@/window/WindowPosition';
 import { getGame, localize } from '@/utils/game';
 import { WeatherData } from '@/weather/WeatherData';
 import { DisplayOptions } from '@/types/DisplayOptions';
-import { WeatherApplication } from '@/applications/WeatherApplication';
 
 export enum SettingKeys {
   // displayed in settings
