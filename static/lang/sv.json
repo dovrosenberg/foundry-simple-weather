@@ -9,18 +9,17 @@
       "outputweatherToChatHelp": "Ska nyligen genererat väder visas i chatten?",
       "publicChat": "Gör chatten offentlig?",
       "publicChatHelp": "Ska alla se väderchatten (om den är på) eller bara GM (om den är avstängd)?",
-      "useFX": "Display special effects?",
-      "useFXHelp": "Select the module to use when displaying special effects.  When activiate, the effects can also be turned off manually when needed.",
+      "useFX": "Visa specialeffekter?",
+      "useFXHelp": "Välj modulen som används för att visa specialeffekter. När den är aktiverad kan effekterna även stängas av manuellt vid behov.",
       "options": {
-        "useFX.choices.off": "Off",
-        "useFX.choices.core": "FoundryVTT scene weather setting"
+        "useFX.choices.off": "Inget",
+        "useFX.choices.core": "FoundryVTT-scenens väderinställning"
       }
     },
-
     "options": {
       "biome": {
         "select": "Välj ett biom för att automatiskt fylla i klimat och luftfuktighet",
-        "useClimateHumidity": "Use climate/humidity",
+        "useClimateHumidity": "Använd klimat/fuktighet",
         "tundra": "Tundra",
         "alpine": "Alpin",
         "taiga": "Taiga",
@@ -31,21 +30,18 @@
         "savannah": "Savann",
         "rainforest": "Regnskog"
       },
-
       "humidity": {
         "select": "Välj en luftfuktighetsnivå",
         "barren": "Öken",
         "modest": "Måttlig",
         "verdant": "Frodig"
       },
-
       "climate": {
         "select": "Välj ett klimat",
         "cold": "Kallt",
         "temperate": "Tempererat",
         "hot": "Hett"
       },
-
       "season": {
         "select": "Välj den aktuella säsongen",
         "sync": "Synkronisera med Simple Calendar",
@@ -54,30 +50,25 @@
         "spring": "Vår",
         "winter": "Vinter"
       },
-
       "manualWeather": {
-        "select": "Select new weather"
+        "select": "Välj nytt väder"
       }
     },
-
     "labels": {
       "regenerateWeather": "Regenerera väder",
-      "toggleWeatherBox": "Öppna/stäng väder",
-      "toggleDateBox": "Open/close calendar",
-      "toggleSeasonBar": "Open/close season selection",
-      "toggleBiomeBar": "Open/close biome/climate/humidity selection",
-      "toggleManualBar": "Open/close manual weather selection",
-      "toggleFX": "Toggle weather effects",
-      "manualPause": "Pause updates?",
-      "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)",
-      "manualWeatherTemperature": "Temperature to set (will vary slightly from this)",
-      "manualWeatherSubmit": "Set selected weather and temperature"
+      "toggleDateBox": "Öppna/stäng kalendern",
+      "toggleSeasonBar": "Öppna/stäng säsongsväljaren",
+      "toggleBiomeBar": "Öppna/stäng biom/klimat/fuktighet-väljaren",
+      "toggleManualBar": "Öppna/stäng manuell väderväljare",
+      "toggleFX": "Växla vädereffekter",
+      "manualPause": "Pausa uppdateringar?",
+      "manualPauseHint": "Aktivera för att förhindra automatiskt väder (användbart när du vill ställa in det manuellt)",
+      "manualWeatherTemperature": "Temperatur att ställa in (kommer att variera något från detta)",
+      "manualWeatherSubmit": "Ställ in valt väder och temperatur"
     },
-
     "chat": {
       "header": "Dagens väder:"
     },
-
     "description": {
       "cold": {
         "barren": {
@@ -119,7 +110,6 @@
           "winter.8": "Grått, snabba moln",
           "winter.9": "Snöbyar, blåsigt"
         },
-
         "modest": {
           "springfall.1": "Kall vind, mycket torrt",
           "springfall.2": "Grå himmel",
@@ -159,7 +149,6 @@
           "winter.8": "Grått, snabba moln",
           "winter.9": "Lätt snöfall, blåsigt"
         },
-
         "verdant": {
           "springfall.1": "Kall vind, mycket torrt",
           "springfall.2": "Grå himmel",
@@ -200,7 +189,6 @@
           "winter.9": "Måttligt snöfall, blåsigt"
         }
       },
-
       "temperate": {
         "barren": {
           "springfall.1": "Kall vind, mycket torrt",
@@ -241,7 +229,6 @@
           "winter.8": "Grått, snabba moln",
           "winter.9": "Snöblandat snöfall, blåsigt"
         },
-
         "modest": {
           "springfall.1": "Kall vind, mycket torrt",
           "springfall.2": "Grå himmel",
@@ -281,7 +268,6 @@
           "winter.8": "Grått, snabba moln",
           "winter.9": "Lätt snöfall, blåsigt"
         },
-
         "verdant": {
           "springfall.1": "Kall vind, mycket torrt",
           "springfall.2": "Grå himmel",
@@ -322,7 +308,6 @@
           "winter.9": "Lätt snöfall, blåsigt"
         }
       },
-
       "hot": {
         "barren": {
           "springfall.1": "Blåsigt, mycket torrt",
@@ -363,7 +348,6 @@
           "winter.8": "Grått, snabba moln",
           "winter.9": "Måttligt regn, blåsigt"
         },
-
         "modest": {
           "springfall.1": "Blåsigt, mycket torrt",
           "springfall.2": "Grå himmel",
@@ -403,7 +387,6 @@
           "winter.8": "Grått, snabba moln",
           "winter.9": "Lätt snöfall, blåsigt"
         },
-
         "verdant": {
           "springfall.1": "Blåsigt, mycket torrt",
           "springfall.2": "Grå himmel",
@@ -445,35 +428,5 @@
         }
       }
     }
-  },
-
-  "missing translations": {
-    "settings": {
-      "useFX": "Display special effects?",
-      "useFXHelp": "Select the module to use when displaying special effects.  When activiate, the effects can also be turned off manually when needed.",
-      "options": {
-        "useFX.choices.off": "None",
-        "useFX.choices.core": "FoundryVTT scene weather setting"
-      }
-    },
-    "options": {
-      "biome": {
-        "useClimateHumidity": "Use climate/humidity"
-      },
-      "manualWeather": {
-        "select": "Select new weather"
-      }
-    },
-    "labels": {
-      "toggleDateBox": "Open/close calendar",
-      "toggleSeasonBar": "Open/close season selection",
-      "toggleBiomeBar": "Open/close biome/climate/humidity selection",
-      "toggleManualBar": "Open/close manual weather selection",
-      "toggleFX": "Toggle weather effects",
-      "manualPause": "Pause updates?",
-      "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)",
-      "manualWeatherTemperature": "Temperature to set (will vary slightly from this)",
-      "manualWeatherSubmit": "Set selected weather and temperature"
-    }  
   }
 }
