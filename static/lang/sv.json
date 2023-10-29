@@ -16,6 +16,7 @@
         "useFX.choices.core": "FoundryVTT-scenens väderinställning"
       }
     },
+  
     "options": {
       "biome": {
         "select": "Välj ett biom för att automatiskt fylla i klimat och luftfuktighet",
@@ -30,18 +31,21 @@
         "savannah": "Savann",
         "rainforest": "Regnskog"
       },
+      
       "humidity": {
         "select": "Välj en luftfuktighetsnivå",
         "barren": "Öken",
         "modest": "Måttlig",
         "verdant": "Frodig"
       },
+      
       "climate": {
         "select": "Välj ett klimat",
         "cold": "Kallt",
         "temperate": "Tempererat",
         "hot": "Hett"
       },
+      
       "season": {
         "select": "Välj den aktuella säsongen",
         "sync": "Synkronisera med Simple Calendar",
@@ -50,12 +54,15 @@
         "spring": "Vår",
         "winter": "Vinter"
       },
+
       "manualWeather": {
         "select": "Välj nytt väder"
       }
     },
+
     "labels": {
       "regenerateWeather": "Regenerera väder",
+      "toggleWeatherBox": "Öppna/stäng väder",
       "toggleDateBox": "Öppna/stäng kalendern",
       "toggleSeasonBar": "Öppna/stäng säsongsväljaren",
       "toggleBiomeBar": "Öppna/stäng biom/klimat/fuktighet-väljaren",
@@ -66,9 +73,11 @@
       "manualWeatherTemperature": "Temperatur att ställa in (kommer att variera något från detta)",
       "manualWeatherSubmit": "Ställ in valt väder och temperatur"
     },
+
     "chat": {
       "header": "Dagens väder:"
     },
+
     "description": {
       "cold": {
         "barren": {
@@ -110,6 +119,7 @@
           "winter.8": "Grått, snabba moln",
           "winter.9": "Snöbyar, blåsigt"
         },
+
         "modest": {
           "springfall.1": "Kall vind, mycket torrt",
           "springfall.2": "Grå himmel",
@@ -149,6 +159,7 @@
           "winter.8": "Grått, snabba moln",
           "winter.9": "Lätt snöfall, blåsigt"
         },
+
         "verdant": {
           "springfall.1": "Kall vind, mycket torrt",
           "springfall.2": "Grå himmel",
@@ -189,6 +200,7 @@
           "winter.9": "Måttligt snöfall, blåsigt"
         }
       },
+
       "temperate": {
         "barren": {
           "springfall.1": "Kall vind, mycket torrt",
@@ -229,6 +241,7 @@
           "winter.8": "Grått, snabba moln",
           "winter.9": "Snöblandat snöfall, blåsigt"
         },
+
         "modest": {
           "springfall.1": "Kall vind, mycket torrt",
           "springfall.2": "Grå himmel",
@@ -268,6 +281,7 @@
           "winter.8": "Grått, snabba moln",
           "winter.9": "Lätt snöfall, blåsigt"
         },
+
         "verdant": {
           "springfall.1": "Kall vind, mycket torrt",
           "springfall.2": "Grå himmel",
@@ -308,6 +322,7 @@
           "winter.9": "Lätt snöfall, blåsigt"
         }
       },
+
       "hot": {
         "barren": {
           "springfall.1": "Blåsigt, mycket torrt",
@@ -348,6 +363,7 @@
           "winter.8": "Grått, snabba moln",
           "winter.9": "Måttligt regn, blåsigt"
         },
+
         "modest": {
           "springfall.1": "Blåsigt, mycket torrt",
           "springfall.2": "Grå himmel",
@@ -387,6 +403,7 @@
           "winter.8": "Grått, snabba moln",
           "winter.9": "Lätt snöfall, blåsigt"
         },
+
         "verdant": {
           "springfall.1": "Blåsigt, mycket torrt",
           "springfall.2": "Grå himmel",

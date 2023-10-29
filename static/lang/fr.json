@@ -9,18 +9,18 @@
       "outputweatherToChatHelp": "La météo nouvellement générée doit-elle être affichée dans le chat ?",
       "publicChat": "Rendre le chat public ?",
       "publicChatHelp": "Tout le monde doit-il voir le chat météo (s'il est activé) ou seulement le GM (s'il est désactivé) ?",
-      "useFX": "Display special effects?",
-      "useFXHelp": "Select the module to use when displaying special effects.  When activiate, the effects can also be turned off manually when needed.",
+      "useFX": "Afficher les effets spéciaux ?",
+      "useFXHelp": "Sélectionnez le module à utiliser pour afficher les effets spéciaux.  Lorsqu'ils sont activés, les effets peuvent également être désactivés manuellement en cas de besoin.",
       "options": {
-        "useFX.choices.off": "Off",
-        "useFX.choices.core": "FoundryVTT scene weather setting"
+        "useFX.choices.off": "Désactivé",
+        "useFX.choices.core": "FoundryVTT paramètres de la scène et de la météo"
       }
     },
 
     "options": {
       "biome": {
         "select": "Sélectionnez un biome pour que le climat et l'humidité s'y ajoutent automatiquement.",
-        "useClimateHumidity": "Use climate/humidity",
+        "useClimateHumidity": "Utiliser le climat/l'humidité",
         "tundra": "Toundra",
         "alpine": "Alpin",
         "taiga": "Taïga",
@@ -56,22 +56,22 @@
       },
 
       "manualWeather": {
-        "select": "Select new weather"
+        "select": "Sélectionner une nouvelle météo"
       }
     },
 
     "labels": {
       "regenerateWeather": "Régénérer la météo",
       "toggleWeatherBox": "Ouvrir/fermer climat",
-      "toggleDateBox": "Open/close calendar",
-      "toggleSeasonBar": "Open/close season selection",
-      "toggleBiomeBar": "Open/close biome/climate/humidity selection",
-      "toggleManualBar": "Open/close manual weather selection",
-      "toggleFX": "Toggle weather effects",
-      "manualPause": "Pause updates?",
-      "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)",
-      "manualWeatherTemperature": "Temperature to set (will vary slightly from this)",
-      "manualWeatherSubmit": "Set selected weather and temperature"
+      "toggleDateBox": "Ouvrir/fermer calendrier",
+      "toggleSeasonBar": "Ouvrir/fermer la sélection de la saison",
+      "toggleBiomeBar": "Ouvrir/fermer la sélection du biome/climat/humidité",
+      "toggleManualBar": "Ouverture/fermeture de la sélection manuelle de la météo",
+      "toggleFX": "Activer/Désactiver les effets météo",
+      "manualPause": "Pause des mises à jour ?",
+      "manualPauseHint": "Activer pour empêcher la météo automatique (utile lorsque vous voulez la régler manuellement)",
+      "manualWeatherTemperature": "Régler la Température (variera légèrement par rapport à celle-ci)",
+      "manualWeatherSubmit": "Activer la météo et la température sélectionnées"
     },
 
     "chat": {
@@ -119,7 +119,7 @@
           "winter.8" : "Gris, nuages rapides",
           "winter.9" : "Averses de neige, vent"
         },
-        
+
         "modest": {
           "springfall.1" : "Vents froids, très sec",
           "springfall.2" : "Ciel gris",
@@ -159,7 +159,7 @@
           "winter.8" : "Gris, nuages rapides",
           "winter.9" : "Chute de neige légère, vent"
         },
-        
+
         "verdant": {
           "springfall.1" : "Vents froids, très sec",
           "springfall.2" : "Ciel gris",
@@ -363,7 +363,7 @@
           "winter.8" : "Gris, nuages rapides",
           "winter.9" : "Quelques gouttes, vent"
         },
-        
+
         "modest": {
           "springfall.1" : "venteux, très sec",
           "springfall.2" : "Ciel gris",
@@ -403,7 +403,7 @@
           "winter.8" : "Gris, nuages rapides",
           "winter.9" : "pluie légère, vent"
         },
-        
+
         "verdant": {
           "springfall.1" : "sec",
           "springfall.2" : "Ciel gris",
@@ -445,35 +445,5 @@
         }
       }
     }
-  },
-
-  "missing translations": {
-    "settings": {
-      "useFX": "Display special effects?",
-      "useFXHelp": "Select the module to use when displaying special effects.  When activiate, the effects can also be turned off manually when needed.",
-      "options": {
-        "useFX.choices.off": "None",
-        "useFX.choices.core": "FoundryVTT scene weather setting"
-      }
-    },
-    "options": {
-      "biome": {
-        "useClimateHumidity": "Use climate/humidity"
-      },
-      "manualWeather": {
-        "select": "Select new weather"
-      }
-    },
-    "labels": {
-      "toggleDateBox": "Open/close calendar",
-      "toggleSeasonBar": "Open/close season selection",
-      "toggleBiomeBar": "Open/close biome/climate/humidity selection",
-      "toggleManualBar": "Open/close manual weather selection",
-      "toggleFX": "Toggle weather effects",
-      "manualPause": "Pause updates?",
-      "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)",
-      "manualWeatherTemperature": "Temperature to set (will vary slightly from this)",
-      "manualWeatherSubmit": "Set selected weather and temperature"
-    }  
   }
 }

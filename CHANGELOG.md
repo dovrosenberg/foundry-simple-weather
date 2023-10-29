@@ -1,6 +1,6 @@
 # Change Log
 
-## v1.5.2 - Sweish and French localization update
+## v1.5.2 - Swedish and French localization update
 ![](https://img.shields.io/badge/release%20date-October%2029%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.5.2/module.zip)
 
