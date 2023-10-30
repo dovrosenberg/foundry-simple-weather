@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.5.3 - Bug fix
+![](https://img.shields.io/badge/release%20date-October%2030%2C%202023-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.5.3/module.zip)
+
+Pressing both mouse buttons simultaneously on header bars no longer causes the dialog to disappear.
+
+<hr/>
+
 ## v1.5.2 - Swedish and French localization update
 ![](https://img.shields.io/badge/release%20date-October%2029%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.5.2/module.zip)
