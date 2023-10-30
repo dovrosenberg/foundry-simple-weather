@@ -1,13 +1,13 @@
-type CoreDetails = {
+export type CoreDetails = {
   effect: string;
 }
 
-type FXColor = {
+export type FXColor = {
   value: string;
   apply: boolean;
 }
 
-enum FXOptionTypes {
+export enum FXOptionTypes {
   Snowstorm = 'snowstorm',
   Bubbles = 'bubbles',
   Clouds = 'clouds',
@@ -24,31 +24,32 @@ enum FXOptionTypes {
   Snow = 'snow',
 };
 
-type FXOptions = {
-  [FXOptionTypes.Snowstorm] : { scale: number; direction: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor },
-  [FXOptionTypes.Bubbles] : { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor },
-  [FXOptionTypes.Clouds] : { scale: number; direction: number; speed: number; lifetime: number; alpha: number; tint: FXColor },
-  [FXOptionTypes.Embers] : { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor },
-  [FXOptionTypes.RainSimple] : { scale: number; direction: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor },
-  [FXOptionTypes.Stars] : { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor },
-  [FXOptionTypes.Crows] : { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor },
-  [FXOptionTypes.Bats] : { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor },
-  [FXOptionTypes.Spiders] : { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor },
-  [FXOptionTypes.Fog] : { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor },
-  [FXOptionTypes.RainTop] : { scale: number; direction: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor },
-  [FXOptionTypes.Leaves] : { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor },
-  [FXOptionTypes.Rain] : { scale: number; direction: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor },
-  [FXOptionTypes.Snow] : { scale: number; direction: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor },
+// used to specify that this parameter will have a random value between the two specified
+export type RandomRange = {
+  start: number;
+  end: number;
 }
 
-type FXDetail<T extends FXOptionTypes> = {
-  type: T;
-  options: FXOptions[T]
-}
+export type FXDetail = 
+  { type: FXOptionTypes.Snowstorm; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
+  { type: FXOptionTypes.Bubbles; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
+  { type: FXOptionTypes.Clouds; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; alpha: number; tint: FXColor }, } |
+  { type: FXOptionTypes.Embers; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
+  { type: FXOptionTypes.RainSimple; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
+  { type: FXOptionTypes.Stars; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
+  { type: FXOptionTypes.Crows; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
+  { type: FXOptionTypes.Bats; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
+  { type: FXOptionTypes.Spiders; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
+  { type: FXOptionTypes.Fog; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
+  { type: FXOptionTypes.RainTop; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
+  { type: FXOptionTypes.Leaves; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
+  { type: FXOptionTypes.Rain; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
+  { type: FXOptionTypes.Snow; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } 
+
     
-type EffectDetails = {
-  core: CoreDetails,
-  fxMaster: FXDetail<FXOptionTypes>[],
+export type EffectDetails = {
+  core: CoreDetails | null,
+  fxMaster: FXDetail[] | null,
 }
 
 // weather options
@@ -62,6 +63,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         type: FXOptionTypes.Rain,
         options: {
           scale: 3, 
+          direction: {start: 0, end: 360},
           speed: 1, 
           lifetime: 1, 
           density: 1, 
@@ -75,63 +77,85 @@ export const availableEffects: Record<string, EffectDetails> = {
     core: {
       effect: 'rain'
     },
-    fxMaster: {
-
-    }
+    fxMaster: [
+      {
+        type: FXOptionTypes.Rain,
+        options: {
+          scale: 1, 
+          direction: {start: 60, end: 120},
+          speed: 0.1, 
+          lifetime: 0.8, 
+          density: 0.4, 
+          alpha: 0.7, 
+          tint: { value: '0xffffff', apply: false },
+        },
+      },
+    ],
   },
   ModerateRain: { 
     core: {
       effect: 'rainStorm'
-    }
+    },
+    fxMaster: null,
   },
   HeavyRain: {
     core: {
       effect: 'rainStorm'
-    }
+    },
+    fxMaster: null,
   },
   LightFog: { 
     core: {
       effect: 'fog'
-    }
+    },
+    fxMaster: null,
   },
   ModerateFog: { 
     core: {
       effect: 'fog'
-    }
+    },
+    fxMaster: null,
   },
   HeavyFog: { 
     core: {
       effect: 'fog'
-    }
+    },
+    fxMaster: null,
   },
   LightSnow: { 
     core: {
       effect: 'snow'
-    }
+    },
+    fxMaster: null,
   },
   ModerateSnow: { 
     core: {
       effect: 'snow'
-    }
+    },
+    fxMaster: null,
   },
   HeavySnow: { 
     core: {
       effect: 'blizzard'
-    }
+    },
+    fxMaster: null,
   },
   WhiteoutSnow: { 
     core: {
       effect: 'blizzard'
-    }
+    },
+    fxMaster: null,
   },
   Hail: { 
     core: {
       effect: 'rainStorm'
-    }
+    },
+    fxMaster: null,
   },
   Sleet: { 
     core: {
       effect: 'rainStorm'
-    }
+    },
+    fxMaster: null,
   },
 }

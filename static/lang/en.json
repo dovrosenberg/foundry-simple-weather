@@ -445,5 +445,8 @@
         }
       }
     }
-  }
+  },
+  "missing": [
+    "sweath.settings.options.useFX.choices.fxmaster"
+  ]
 }

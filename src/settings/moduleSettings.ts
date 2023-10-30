@@ -137,7 +137,8 @@ export class ModuleSettings {
         type: String,
         choices: {
           'off': 'sweath.settings.options.useFX.choices.off',
-          'core': 'sweath.settings.options.useFX.choices.core'
+          'core': 'sweath.settings.options.useFX.choices.core',
+          'fxmaster': 'sweath.settings.options.useFX.choices.fxmaster',
         },
         default: 'off',
       },

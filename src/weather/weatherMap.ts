@@ -1,7 +1,7 @@
 import { localize } from '@/utils/game';
 import { log } from '@/utils/log';
 import { Climate, Humidity, Season } from './climateData';
-import { availableEffects } from '@/weather/effectsMap';
+import { availableEffects, EffectDetails } from '@/weather/effectsMap';
 
 // drop down selections for manually setting weather
 let manualSelections: { text:string, value: string}[];
@@ -293,11 +293,7 @@ const weatherTemperatures: number[][][] = new Array(Object.keys(Climate).length/
     .map(() => new Array(37).fill(0)));
 
 type WeatherOptions = {
-  fx: {
-    core: {
-      effect: string | null | undefined,
-    }
-  }
+  fx: EffectDetails
 }
 
 const weatherOptions: WeatherOptions[][][] = new Array(Object.keys(Climate).length/2)

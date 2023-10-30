@@ -106,7 +106,7 @@ class WeatherApplication extends Application {
       windowPosition: this._windowPosition,
       useCelsius: moduleSettings.get(SettingKeys.useCelsius),
     };
-    console.log(data);
+    log(false, data);
 
     return data;
   }
@@ -489,7 +489,11 @@ class WeatherApplication extends Application {
     this.render();
   }
 
-  private onMoveHandleMouseDown = (): void => {
+  private onMoveHandleMouseDown = (event: MouseEvent): void => {
+    // only allow drag with left button (also prevents craziness from clicking a button while other is still down)
+    if (event.button !== 0)
+      return;
+
     const element = document.getElementById(this._windowID);
     if (element) {
       this._windowDragHandler.start(element, (position: WindowPosition) => {
