@@ -23,7 +23,7 @@
       "regenerate": "Régénérer la météo",
       "regenerateHelp": "Cela équivaut à appuyer sur le bouton 'Régénérer la météo'.",
       "manualPause": "Mettre en pause les mises à jour",
-      "manualPauseHelp": "Met en pause les mises à jours de la météo (comme le fait de cocher la case 'Pause des mises à jour'.)",
+      "manualPauseHelp": "Met en pause les mises à jours de la météo (comme le fait de cocher la case 'Pause des mises à jour ?'.)",
       "pauseFX": "Activer les effets météorologiques",
       "pauseFXHelp": "Activer/désactiver les effets spéciaux"
     },
