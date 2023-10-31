@@ -396,9 +396,11 @@ class WeatherApplication extends Application {
   };
 
   public regenerateWeather() {
-    this.generateWeather(this._currentWeather?.date || null);
-    moduleSettings.set(SettingKeys.lastWeatherData, this._currentWeather);        
-    this.render();
+    if (isClientGM()) {
+      this.generateWeather(this._currentWeather?.date || null);
+      moduleSettings.set(SettingKeys.lastWeatherData, this._currentWeather);        
+      this.render();
+    }
   }
 
   private onSeasonSelectChange = (event): void => {
@@ -478,19 +480,21 @@ class WeatherApplication extends Application {
   };
 
   public manualPauseToggle() {
-    this._manualPause = !this._manualPause;
-    moduleSettings.set(SettingKeys.manualPause, this._manualPause);
+    if (isClientGM()) {
+      this._manualPause = !this._manualPause;
+      moduleSettings.set(SettingKeys.manualPause, this._manualPause);
 
-    // if we're turning it on, hide the weather bars
-    if (this._manualPause) {
-      this.updateDisplayOptions({
-        ...this._displayOptions,
-        biomeBar: false,
-        seasonBar: false,
-      })
+      // if we're turning it on, hide the weather bars
+      if (this._manualPause) {
+        this.updateDisplayOptions({
+          ...this._displayOptions,
+          biomeBar: false,
+          seasonBar: false,
+        })
+      }
+
+      this.render();
     }
-
-    this.render();
   }
 
 
@@ -539,7 +543,8 @@ class WeatherApplication extends Application {
   }
 
   public toggleFX() {
-    weatherEffects.fxActive = !weatherEffects.fxActive;
+    if (isClientGM())
+      weatherEffects.fxActive = !weatherEffects.fxActive;
   }
 
   private onManualTempInput = (event: KeyboardEvent): void => {
