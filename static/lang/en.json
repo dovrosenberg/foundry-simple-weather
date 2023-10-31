@@ -445,5 +445,10 @@
         }
       }
     }
-  }
+  },
+  "missing": [
+    "sweath.settings.options.useFX.choices.fxmaster",
+    "sweath.keybindings.toggle",
+    "sweath.keybindings.toggleHelp"
+  ]
 }
