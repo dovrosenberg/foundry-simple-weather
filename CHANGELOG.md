@@ -1,16 +1,16 @@
 # Change Log
 
 ## v1.6.1 - Bug fix
-![](https://img.shields.io/badge/release%20date-October%2030%2C%202023-blue)
-![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.5.3/module.zip)
+![](https://img.shields.io/badge/release%20date-October%2031%2C%202023-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.6.1/module.zip)
 
 Disabled ability for non-GMs to use keybindings to do things they shouldn't be allowed to do. :)
 
 <hr/>
 
 ## v1.6.0 - Keybindings
-![](https://img.shields.io/badge/release%20date-October%2030%2C%202023-blue)
-![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.5.3/module.zip)
+![](https://img.shields.io/badge/release%20date-October%2031%2C%202023-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.6.0/module.zip)
 
 There are now keybinding options available under 'Configure Controls'
 
