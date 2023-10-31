@@ -17,6 +17,17 @@
       }
     },
 
+    "keybindings": {
+      "toggle": "Display/hide window",
+      "toggleHelp": "Hide and then redisplay the entire window",
+      "regenerate": "Regenerate weather",
+      "regenerateHelp": "Equivalent to hitting the 'Regenerate Weather' button",
+      "manualPause": "Pause updates",
+      "manualPauseHelp": "Pause weather updates (like checking the 'Pause updates?' checkbox)",
+      "pauseFX": "Toggle weather effects",
+      "pauseFXHelp": "Turn special effects on/off"
+    },
+
     "options": {
       "biome": {
         "select": "Sélectionnez un biome pour que le climat et l'humidité s'y ajoutent automatiquement.",
@@ -444,6 +455,19 @@
           "winter.9" : "Pluie modérée, vent"
         }
       }
+    }
+  },
+
+  "missing translations":{
+    "keybindings": {
+      "sweath.keybindings.toggle": "Display/hide window",
+      "sweath.keybindings.toggleHelp": "Hide and then redisplay the entire window",
+      "sweath.keybindings.regenerate": "Regenerate weather",
+      "sweath.keybindings.regenerateHelp": "Equivalent to hitting the 'Regenerate Weather' button",
+      "sweath.keybindings.manualPause": "Pause updates",
+      "sweath.keybindings.manualPauseHelp": "Pause weather updates (like checking the 'Pause updates?' checkbox)",
+      "sweath.keybindings.pauseFX": "Toggle weather effects",
+      "sweath.keybindings.pauseFXHelp": "Turn special effects on/off"
     }
   }
 }

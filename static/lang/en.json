@@ -17,6 +17,17 @@
       }
     },
 
+    "keybindings": {
+      "toggle": "Display/hide window",
+      "toggleHelp": "Hide and then redisplay the entire window",
+      "regenerate": "Regenerate weather",
+      "regenerateHelp": "Equivalent to hitting the 'Regenerate Weather' button",
+      "manualPause": "Pause updates",
+      "manualPauseHelp": "Pause weather updates (like checking the 'Pause updates?' checkbox)",
+      "pauseFX": "Toggle weather effects",
+      "pauseFXHelp": "Turn special effects on/off"
+    },
+
     "options": {
       "biome": {
         "select": "Select a biome to auto-populate climate and humidity",

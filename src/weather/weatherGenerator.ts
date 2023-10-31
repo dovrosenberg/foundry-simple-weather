@@ -1,5 +1,5 @@
 import { nextCell, startingCells, getDirection, weatherTemperatures, Direction, weatherDescriptions, manualOptions } from '@/weather/weatherMap';
-import { moduleSettings, SettingKeys } from '@/settings/moduleSettings';
+import { moduleSettings, SettingKeys } from '@/settings/ModuleSettings';
 import { getGame, localize } from '@/utils/game';
 import { Climate, Humidity, Season } from './climateData';
 import { WeatherData } from './WeatherData';
