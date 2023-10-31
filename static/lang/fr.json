@@ -18,14 +18,14 @@
     },
 
     "keybindings": {
-      "toggle": "Display/hide window",
-      "toggleHelp": "Hide and then redisplay the entire window",
-      "regenerate": "Regenerate weather",
-      "regenerateHelp": "Equivalent to hitting the 'Regenerate Weather' button",
-      "manualPause": "Pause updates",
-      "manualPauseHelp": "Pause weather updates (like checking the 'Pause updates?' checkbox)",
-      "pauseFX": "Toggle weather effects",
-      "pauseFXHelp": "Turn special effects on/off"
+      "toggle": "Afficher/masquer la fenêtre",
+      "toggleHelp": "Masquer puis réafficher l'ensemble de la fenêtre",
+      "regenerate": "Régénérer la météo",
+      "regenerateHelp": "Cela équivaut à appuyer sur le bouton 'Régénérer la météo'.",
+      "manualPause": "Pause des mises à jour",
+      "manualPauseHelp": "Met en pause la mise à jour de la météo (comme le fait de cocher la case 'Pause des mises à jour'.)",
+      "pauseFX": "Activer les effets météorologiques",
+      "pauseFXHelp": "Activer/désactiver les effets spéciaux"
     },
 
     "options": {
@@ -455,19 +455,6 @@
           "winter.9" : "Pluie modérée, vent"
         }
       }
-    }
-  },
-
-  "missing translations":{
-    "keybindings": {
-      "sweath.keybindings.toggle": "Display/hide window",
-      "sweath.keybindings.toggleHelp": "Hide and then redisplay the entire window",
-      "sweath.keybindings.regenerate": "Regenerate weather",
-      "sweath.keybindings.regenerateHelp": "Equivalent to hitting the 'Regenerate Weather' button",
-      "sweath.keybindings.manualPause": "Pause updates",
-      "sweath.keybindings.manualPauseHelp": "Pause weather updates (like checking the 'Pause updates?' checkbox)",
-      "sweath.keybindings.pauseFX": "Toggle weather effects",
-      "sweath.keybindings.pauseFXHelp": "Turn special effects on/off"
     }
   }
 }
