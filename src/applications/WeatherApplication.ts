@@ -392,11 +392,14 @@ class WeatherApplication extends Application {
   private onWeatherRegenerateClick = (event): void => {
     event.preventDefault();
 
+    this.regenerateWeather();
+  };
+
+  public regenerateWeather() {
     this.generateWeather(this._currentWeather?.date || null);
     moduleSettings.set(SettingKeys.lastWeatherData, this._currentWeather);        
-
     this.render();
-  };
+  }
 
   private onSeasonSelectChange = (event): void => {
     // save the value - we don't regenerate because we might be changing other settings, too, and don't want to trigger a bunch of chat messages
@@ -471,6 +474,10 @@ class WeatherApplication extends Application {
   };
 
   private onManualPauseChange = (event): void => {
+    this.manualPauseToggle();
+  };
+
+  public manualPauseToggle() {
     this._manualPause = !this._manualPause;
     moduleSettings.set(SettingKeys.manualPause, this._manualPause);
 
@@ -484,7 +491,7 @@ class WeatherApplication extends Application {
     }
 
     this.render();
-  };
+  }
 
 
   private setWindowPosition(position: WindowPosition): void {
@@ -528,6 +535,10 @@ class WeatherApplication extends Application {
   }
 
   private onToggleFX = (): void => {
+    this.toggleFX();
+  }
+
+  public toggleFX() {
     weatherEffects.fxActive = !weatherEffects.fxActive;
   }
 

@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.6.0 - Keybindings
+![](https://img.shields.io/badge/release%20date-October%2030%2C%202023-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.5.3/module.zip)
+
+There are now keybinding options available under 'Configure Controls'
+
+<hr/>
+
 ## v1.5.3 - Bug fix
 ![](https://img.shields.io/badge/release%20date-October%2030%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.5.3/module.zip)

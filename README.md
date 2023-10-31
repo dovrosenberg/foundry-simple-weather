@@ -18,6 +18,7 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
 - Weather progresses naturally from day to day
 - Ability to manually pick weather for special events
 - Supports Farenheit and Celsius temperatures
+- Helpful keybinding options
 
 ### And if using Simple Calendar:
 - Generate weather for every new day automatically
@@ -59,6 +60,9 @@ The GM can activate weather effects in the module settings.  For now, the only o
 Once activated in settings, the scene weather will automatically be changed whenever the weather warrants it.  There is currently only support for inclement weather (rain, hail, snow, fog).  Let me know if there's any desire to do something to show sunny days, as I wasn't sure what made the most sense.
 
 When players go inside, you can easily toggle the fx on/off temporarily using the toggle button on the toolbar.
+
+### Keybindings
+There are keybinding options under "Configure Controls" in the main Foundry Game Settings section.  You can toggle the whole window on/off, regenerate weather, pause automatic changes to the weather, and toggle weather effects on/off.  Note that these keybindings work even when the window is hidden.  So you can in theory run the whole weather system while the window is hidden (autogenerating weather by calendar, manually generating new weather, turning effects on/off).
 
 ## Support
 
