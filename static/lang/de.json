@@ -18,14 +18,14 @@
     },
 
     "keybindings": {
-      "toggle": "Display/hide window",
-      "toggleHelp": "Hide and then redisplay the entire window",
-      "regenerate": "Regenerate weather",
-      "regenerateHelp": "Equivalent to hitting the 'Regenerate Weather' button",
-      "manualPause": "Pause updates",
-      "manualPauseHelp": "Pause weather updates (like checking the 'Pause updates?' checkbox)",
-      "pauseFX": "Toggle weather effects",
-      "pauseFXHelp": "Turn special effects on/off"
+      "toggle": "Zeige/Verstecke Fenster",
+      "toggleHelp": "Verstecke und zeige anschließend das komplette Fenster wieder",
+      "regenerate": "Wetter neu generieren",
+      "regenerateHelp": "Alternative für den 'Wetter neu generieren'-Button",
+      "manualPause": "Wetteraktualisierung pausieren",
+      "manualPauseHelp": "Alternative für den 'Wetteraktualisierung pausieren'-Button",
+      "pauseFX": "Schalte Wettereffekte um",
+      "pauseFXHelp": "Aktiviert oder deaktiviert Wettereffekte"
     },
 
     "options": {
@@ -72,7 +72,7 @@
     },
 
     "labels": {
-      "regenerateWeather": "Wetter neu laden",
+      "regenerateWeather": "Wetter neu generieren",
       "toggleWeatherBox": "Öffne/Schließe die Wetteranzeige",
       "toggleDateBox": "Öffne/Schließe den Kalendar",
       "toggleSeasonBar": "Öffne/Schließe die Jahreszeitauswahl",
@@ -456,18 +456,5 @@
         }
       }
     }    
-  },
-
-  "missing translations":{
-    "keybindings": {
-      "sweath.keybindings.toggle": "Display/hide window",
-      "sweath.keybindings.toggleHelp": "Hide and then redisplay the entire window",
-      "sweath.keybindings.regenerate": "Regenerate weather",
-      "sweath.keybindings.regenerateHelp": "Equivalent to hitting the 'Regenerate Weather' button",
-      "sweath.keybindings.manualPause": "Pause updates",
-      "sweath.keybindings.manualPauseHelp": "Pause weather updates (like checking the 'Pause updates?' checkbox)",
-      "sweath.keybindings.pauseFX": "Toggle weather effects",
-      "sweath.keybindings.pauseFXHelp": "Turn special effects on/off"
-    }
   }
 }
