@@ -5,11 +5,11 @@ import { WeatherData } from '@/weather/WeatherData';
 import { seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings } from '@/weather/climateData';
 import { manualSelections } from '@/weather/weatherMap';
 import { WindowPosition } from '@/window/WindowPosition';
-import { SettingKeys } from '@/settings/moduleSettings';
+import { SettingKeys } from '@/settings/ModuleSettings';
 import { WindowDrag } from '@/window/windowDrag';
 import { isClientGM } from '@/utils/game';
 import { generate, outputWeather, setManual } from '@/weather/weatherGenerator';
-import { moduleSettings } from '@/settings/moduleSettings';
+import { moduleSettings } from '@/settings/ModuleSettings';
 import { weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
 
@@ -29,6 +29,7 @@ class WeatherApplication extends Application {
   private _displayOptions: DisplayOptions;
   private _calendarPresent = false;   // is simple calendar present?
   private _manualPause = false;
+  private _currentlyHidden = false;  // for toggling... we DO NOT save this state
 
   private _currentClimate: Climate;
   private _currentHumidity: Humidity;
@@ -96,7 +97,7 @@ class WeatherApplication extends Application {
       manualSelections: manualSelections,
 
       displayOptions: this._displayOptions,
-      hideDialog: !this.ready || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
+      hideDialog: this._currentlyHidden || !this.ready || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
       hideCalendar: !this._calendarPresent || !this._displayOptions.dateBox,
       hideCalendarToggle: !this._calendarPresent,
       hideWeather: this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
@@ -163,6 +164,11 @@ class WeatherApplication extends Application {
 
   public activateCalendar(): void {
     this._calendarPresent = true;
+    this.render();
+  }
+
+  public toggleWindow(): void {
+    this._currentlyHidden = !this._currentlyHidden;
     this.render();
   }
 
@@ -386,11 +392,16 @@ class WeatherApplication extends Application {
   private onWeatherRegenerateClick = (event): void => {
     event.preventDefault();
 
-    this.generateWeather(this._currentWeather?.date || null);
-    moduleSettings.set(SettingKeys.lastWeatherData, this._currentWeather);        
-
-    this.render();
+    this.regenerateWeather();
   };
+
+  public regenerateWeather() {
+    if (isClientGM()) {
+      this.generateWeather(this._currentWeather?.date || null);
+      moduleSettings.set(SettingKeys.lastWeatherData, this._currentWeather);        
+      this.render();
+    }
+  }
 
   private onSeasonSelectChange = (event): void => {
     // save the value - we don't regenerate because we might be changing other settings, too, and don't want to trigger a bunch of chat messages
@@ -465,20 +476,26 @@ class WeatherApplication extends Application {
   };
 
   private onManualPauseChange = (event): void => {
-    this._manualPause = !this._manualPause;
-    moduleSettings.set(SettingKeys.manualPause, this._manualPause);
-
-    // if we're turning it on, hide the weather bars
-    if (this._manualPause) {
-      this.updateDisplayOptions({
-        ...this._displayOptions,
-        biomeBar: false,
-        seasonBar: false,
-      })
-    }
-
-    this.render();
+    this.manualPauseToggle();
   };
+
+  public manualPauseToggle() {
+    if (isClientGM()) {
+      this._manualPause = !this._manualPause;
+      moduleSettings.set(SettingKeys.manualPause, this._manualPause);
+
+      // if we're turning it on, hide the weather bars
+      if (this._manualPause) {
+        this.updateDisplayOptions({
+          ...this._displayOptions,
+          biomeBar: false,
+          seasonBar: false,
+        })
+      }
+
+      this.render();
+    }
+  }
 
 
   private setWindowPosition(position: WindowPosition): void {
@@ -522,7 +539,12 @@ class WeatherApplication extends Application {
   }
 
   private onToggleFX = (): void => {
-    weatherEffects.fxActive = !weatherEffects.fxActive;
+    this.toggleFX();
+  }
+
+  public toggleFX() {
+    if (isClientGM())
+      weatherEffects.fxActive = !weatherEffects.fxActive;
   }
 
   private onManualTempInput = (event: KeyboardEvent): void => {

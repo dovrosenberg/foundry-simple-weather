@@ -1,6 +1,6 @@
 import '@/../styles/simple-weather.scss';
 
-import { moduleSettings, ModuleSettings, SettingKeys, updateModuleSettings } from '@/settings/moduleSettings';
+import { moduleSettings, ModuleSettings, SettingKeys, updateModuleSettings } from '@/settings/ModuleSettings';
 import { VersionUtils } from '@/utils/versionUtils';
 import { getGame, isClientGM } from '@/utils/game';
 import { log } from './utils/log';
@@ -8,6 +8,7 @@ import { allowSeasonSync, initializeLocalizedText as initializeLocalizedClimateT
 import { initializeLocalizedText as initializeLocalizedWeatherText } from '@/weather/weatherMap';
 import { updateWeatherApplication, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
 import { updateWeatherEffects, weatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
+import KeyBindings from './settings/KeyBindings';
 
 // track which modules we have
 let validSimpleCalendar = false;
@@ -29,6 +30,8 @@ Hooks.once('init', async () => {
   updateModuleSettings(new ModuleSettings());
   updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
   updateWeatherApplication(new WeatherApplication());
+
+  KeyBindings.register();
 });
 
 Hooks.once('ready', () => {

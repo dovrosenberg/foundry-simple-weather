@@ -1,4 +1,4 @@
-import { moduleSettings, SettingKeys } from '@/settings/moduleSettings';
+import { moduleSettings, SettingKeys } from '@/settings/ModuleSettings';
 import { getGame, isClientGM } from '@/utils/game';
 import { log } from '@/utils/log';
 import { WeatherData } from '@/weather/WeatherData';
