@@ -386,7 +386,7 @@ class WeatherApplication extends Application {
 
   private onCloseClick = (event): void => {
     event.preventDefault();
-    this.close();
+    this.toggleWindow();
   }
 
   private onWeatherRegenerateClick = (event): void => {
