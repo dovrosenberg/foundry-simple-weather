@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.6.2 - French localization update
+![](https://img.shields.io/badge/release%20date-November%203%2C%202023-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.6.2/module.zip)
+
+Updates to French localization to fully support v1.6.
+
+<hr/>
+
 ## v1.6.1 - Bug fix
 ![](https://img.shields.io/badge/release%20date-October%2031%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.6.1/module.zip)
@@ -28,7 +36,7 @@ Pressing both mouse buttons simultaneously on header bars no longer causes the d
 ![](https://img.shields.io/badge/release%20date-October%2029%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.5.2/module.zip)
 
-Updates to Swedish and French localization to fully support v1.5.0.
+Updates to Swedish and French localization to fully support v1.5.
 
 <hr/>
 
@@ -36,7 +44,7 @@ Updates to Swedish and French localization to fully support v1.5.0.
 ![](https://img.shields.io/badge/release%20date-October%2029%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.5.1/module.zip)
 
-Updates to German localization to fully support v1.5.0.
+Updates to German localization to fully support v1.5.
 
 <hr/>
 
