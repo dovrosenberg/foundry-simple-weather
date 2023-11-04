@@ -695,6 +695,7 @@ weatherTemperatures[Climate.Hot][Humidity.Verdant] = [
   83, 83, 73, 79,
 ];
 
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer5] = { fx: availableEffects.FleecyClouds };
 weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer7] = { fx: availableEffects.LightRain };
 weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall3] = { fx: availableEffects.MistyRain };
 weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall_cool2] = { fx: availableEffects.LightFog };

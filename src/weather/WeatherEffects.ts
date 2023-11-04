@@ -40,40 +40,50 @@ class WeatherEffects {
     if (!weatherData || weatherData.climate === null || weatherData.humidity === null || weatherData.hexFlowerCell === null)
       return;
 
+    const effectOptions = weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell].fx;
+
     log(false, 'Activating weather using: ' + this._useFX);
 
     if (this._fxActive && isClientGM()) {
+      // turn off any old ones
+      this.deactivateFX();
+
+      if (!effectOptions)  // no fx specified
+        return;
+
       switch (this._useFX) {
         case 'core':
-          if (weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell]?.fx?.core?.effect) 
-            getGame().scenes?.active?.update({ weather: weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell].fx.core?.effect });
-          else
-            getGame().scenes?.active?.update({ weather: '' });
-          
+          if (effectOptions.core?.effect) 
+            getGame().scenes?.active?.update({ weather: effectOptions.core?.effect });
           break;
 
         case 'fxmaster':
-          if (weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell]?.fx?.fxMaster) {
-            const effects = weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell]?.fx?.fxMaster as FXDetail[];
+          if (effectOptions.fxMaster) {
+            const effects = effectOptions.fxMaster as FXDetail[];
 
-            // note: because it uses hooks, we don't even need to check if the 
-            //    module is present or the version is correct
+            // note: because it uses hooks, we don't even need to check if the module is present or the version is correct
+            // TODO... uh - actually do need to check version
             for (let e=0; e<effects.length; e++) {
               const name = this.getUniqueName(effects[e].type);
+
+              // adjust options
+              const options = structuredClone(effects[e].options);
+              
+              // override direction
+              if (options.direction) {
+                 options.direction = Math.floor(Math.random() * (options.direction.end - options.direction.start)) + 1;
+              }
+
+              log(false, 'Adding fxmaster: ' + name);
               Hooks.call('fxmaster.switchParticleEffect', {
                  name,
                  type: effects[e].type,
-                 options: effects[e].options,
+                 options: options,
               });
               this._activeFXParticleEffects.push(name);
             }
           }
 
-          for (let i=0; i<this._activeFXParticleEffects.length; i++) {
-            Hooks.call('fxmaster.switchParticleEffect', { name: this._activeFXParticleEffects[i] });
-          }
-          
-          this._activeFXParticleEffects = [];
           break;
 
         
@@ -83,23 +93,7 @@ class WeatherEffects {
           break;
       }
     } else {
-      switch (this._useFX) {
-        case 'core':
-          getGame().scenes?.active?.update({ weather: '' });
-          break;
-        
-        case 'fxmaster':
-          // note: because it uses hooks, we don't even need to check if the 
-          //    module is present or the version is correct
-          for (let i=0; i<this._activeFXParticleEffects.length; i++)
-            Hooks.call('fxmaster.switchParticleEffect', { name: this._activeFXParticleEffects[i] });
-          this._activeFXParticleEffects = [];
-          break;
-        
-        case 'off':
-        default:
-          break;
-      }
+      this.deactivateFX();
     }
   }
 
@@ -111,6 +105,14 @@ class WeatherEffects {
         }
         break;
       
+      case 'fxmaster':
+        // note: because it uses hooks, we don't even need to check if the module is present or the version is correct
+        for (let i=0; i<this._activeFXParticleEffects.length; i++)
+          Hooks.call('fxmaster.switchParticleEffect', { name: this._activeFXParticleEffects[i] });
+        this._activeFXParticleEffects = [];
+
+        break;
+
       case 'off':
       default:
         // do nothing

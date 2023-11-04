@@ -33,7 +33,7 @@ export type RandomRange = {
 export type FXDetail = 
   { type: FXOptionTypes.Snowstorm; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
   { type: FXOptionTypes.Bubbles; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
-  { type: FXOptionTypes.Clouds; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; alpha: number; tint: FXColor }, } |
+  { type: FXOptionTypes.Clouds; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number, alpha: number; tint: FXColor }, } |
   { type: FXOptionTypes.Embers; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
   { type: FXOptionTypes.RainSimple; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
   { type: FXOptionTypes.Stars; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
@@ -54,6 +54,42 @@ export type EffectDetails = {
 
 // weather options
 export const availableEffects: Record<string, EffectDetails> = {
+  FleecyClouds: {
+    core: null,
+    fxMaster: [
+      {
+        type: FXOptionTypes.Clouds,
+        options: {
+          scale: 1, 
+          direction: {start: 0, end: 0},
+          speed: 0.4, 
+          lifetime: 1, 
+          density: 0.06, 
+          alpha: 1, 
+          tint: { value: '0x000000', apply: false },
+        },
+      },
+    ],
+  },
+
+  LightWind: {
+    core: null,
+    fxMaster: [
+      {
+        type: FXOptionTypes.Clouds,
+        options: {
+          scale: 1, 
+          direction: {start: 0, end: 0},
+          speed: 0.4, 
+          lifetime: 1, 
+          density: 0.06, 
+          alpha: 1, 
+          tint: { value: '0x000000', apply: false },
+        },
+      },
+    ],
+  },
+
   MistyRain: { 
     core: {
       effect: 'rain'
@@ -96,7 +132,20 @@ export const availableEffects: Record<string, EffectDetails> = {
     core: {
       effect: 'rainStorm'
     },
-    fxMaster: null,
+    fxMaster: [
+      {
+        type: FXOptionTypes.Rain,
+        options: {
+          scale: 1, 
+          direction: {start: 60, end: 120},
+          speed: 0.1, 
+          lifetime: 0.8, 
+          density: 0.4, 
+          alpha: 0.7, 
+          tint: { value: '0xffffff', apply: false },
+        },
+      },
+    ]
   },
   HeavyRain: {
     core: {

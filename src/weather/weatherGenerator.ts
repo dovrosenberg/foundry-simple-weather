@@ -1,7 +1,7 @@
 import { nextCell, startingCells, getDirection, weatherTemperatures, Direction, weatherDescriptions, manualOptions } from '@/weather/weatherMap';
 import { moduleSettings, SettingKeys } from '@/settings/ModuleSettings';
 import { getGame, localize } from '@/utils/game';
-import { Climate, Humidity, Season } from './climateData';
+import { Climate, Humidity, Season, seasonSelections } from './climateData';
 import { WeatherData } from './WeatherData';
 import { log } from '@/utils/log';
 
@@ -52,8 +52,8 @@ const generate = function(climate: Climate, humidity: Humidity, season: Season, 
   return weatherData;
 };
 
-// used to set manual weather; returns null if data is invalid (weatherIndex in particular)
-const setManual = function(today: SimpleCalendar.DateData | null, temperature: number, weatherIndex: number): WeatherData | null {
+// used to create manual weather; returns null if data is invalid (weatherIndex in particular)
+const createManual = function(today: SimpleCalendar.DateData | null, temperature: number, weatherIndex: number): WeatherData | null {
   const options = manualOptions[weatherIndex];   // get the details behind the option
 
   if (!options)
@@ -65,6 +65,19 @@ const setManual = function(today: SimpleCalendar.DateData | null, temperature: n
   const temp = temperature + Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
 
   const weatherData = new WeatherData(today, null, options.humidity, options.climate, options.hexCell, temp);
+  weatherData.isManual = true;
+
+  return weatherData;
+}
+
+// used to pick a specific cell for weather (for testing or use by other applications)
+const createSpecificWeather = function(today: SimpleCalendar.DateData | null, climate: Climate, humidity: Humidity, hexFlowerCell: number): WeatherData | null {
+  let temp = weatherTemperatures[climate][humidity][hexFlowerCell];
+
+  const plusMinus = Math.max(2, Math.ceil(.04*temp));
+  temp += Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
+
+  const weatherData = new WeatherData(today, null, humidity, climate, hexFlowerCell, temp);
   weatherData.isManual = true;
 
   return weatherData;
@@ -102,5 +115,6 @@ const getDefaultStart = function(season: Season) {
 export {
   generate,
   outputWeather,
-  setManual
+  createManual,
+  createSpecificWeather
 };

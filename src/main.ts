@@ -4,11 +4,12 @@ import { moduleSettings, ModuleSettings, SettingKeys, updateModuleSettings } fro
 import { VersionUtils } from '@/utils/versionUtils';
 import { getGame, isClientGM } from '@/utils/game';
 import { log } from './utils/log';
-import { allowSeasonSync, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
+import { allowSeasonSync, Climate, Humidity, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
 import { initializeLocalizedText as initializeLocalizedWeatherText } from '@/weather/weatherMap';
 import { updateWeatherApplication, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
 import { updateWeatherEffects, weatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
-import KeyBindings from './settings/KeyBindings';
+import { KeyBindings } from '@/settings/KeyBindings';
+import moduleJson from '@module';
 
 // track which modules we have
 let validSimpleCalendar = false;
@@ -31,7 +32,16 @@ Hooks.once('init', async () => {
   updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
   updateWeatherApplication(new WeatherApplication());
 
+  // register keybindings
   KeyBindings.register();
+
+  // expose the api
+  const module = getGame().modules.get(moduleJson.id);
+  if (module) {
+    module.api = {
+      runWeather(climate: Climate, humidity: Humidity, hexFlowerCell: number): void { weatherApplication.setSpecificWeather(climate, humidity, hexFlowerCell); }
+    }
+  }
 });
 
 Hooks.once('ready', () => {
