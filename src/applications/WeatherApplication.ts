@@ -295,6 +295,7 @@ class WeatherApplication extends Application {
     if (result) {
       this._currentWeather = result;
       this.activateWeather(this._currentWeather);
+      this.render();
     }
   }
 
@@ -303,11 +304,12 @@ class WeatherApplication extends Application {
     const season = this.getSeason();
 
     log(false, 'Running weather for ' + weatherDescriptions[climate][humidity][hexFlowerCell]);
-    
+
     const result = createSpecificWeather(this._currentWeather?.date || null, climate, humidity, hexFlowerCell);
     if (result) {
       this._currentWeather = result;
       this.activateWeather(this._currentWeather);
+      this.render();
     }
   }
 
@@ -590,7 +592,6 @@ class WeatherApplication extends Application {
       temp = Math.round((temp*9/5)+32);
 
     this.setManualWeather(this._currentWeather?.date || null, temp, Number(select.value));
-    this.render();
   }
 
   // get the class to apply to get the proper icon by season

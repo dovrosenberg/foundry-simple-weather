@@ -1,4 +1,4 @@
-import { moduleSettings, SettingKeys } from '@/settings/ModuleSettings';
+import { ModuleSettings, moduleSettings, SettingKeys } from '@/settings/ModuleSettings';
 import { getGame, isClientGM } from '@/utils/game';
 import { log } from '@/utils/log';
 import { WeatherData } from '@/weather/WeatherData';
@@ -22,7 +22,16 @@ class WeatherEffects {
   constructor() {
     this._fxActive = moduleSettings.get(SettingKeys.fxActive);
     this._useFX = moduleSettings.get(SettingKeys.useFX);
+    this._activeFXParticleEffects = moduleSettings.get(SettingKeys.activeFXParticleEffects);
   }
+
+  public ready(weatherData: WeatherData | null): void {
+    // disable any old weather; will turn back on when we finish loading
+    this.deactivateFX();
+
+    if (weatherData)
+      this.activateFX(weatherData);
+  };
 
   public set fxActive(active: boolean) {
     this._fxActive = active;
@@ -34,7 +43,8 @@ class WeatherEffects {
     return this._fxActive;
   }
 
-  public activateFX = function(weatherData: WeatherData) {
+  public activateFX(weatherData: WeatherData): void {
+    return;
     this._lastWeatherData = weatherData;
 
     if (!weatherData || weatherData.climate === null || weatherData.humidity === null || weatherData.hexFlowerCell === null)
@@ -64,14 +74,14 @@ class WeatherEffects {
             // note: because it uses hooks, we don't even need to check if the module is present or the version is correct
             // TODO... uh - actually do need to check version
             for (let e=0; e<effects.length; e++) {
-              const name = this.getUniqueName(effects[e].type);
+              const name = `swr-${effects[e].type}-${foundry.utils.randomID()}`;
 
               // adjust options
               const options = structuredClone(effects[e].options);
               
               // override direction
               if (options.direction) {
-                 options.direction = Math.floor(Math.random() * (options.direction.end - options.direction.start)) + 1;
+                 options.direction = Math.floor(Math.random() * (options.direction.end - options.direction.start)) + options.direction.start;
               }
 
               log(false, 'Adding fxmaster: ' + name);
@@ -80,7 +90,7 @@ class WeatherEffects {
                  type: effects[e].type,
                  options: options,
               });
-              this._activeFXParticleEffects.push(name);
+              this.addFXParticleEffect(name);
             }
           }
 
@@ -97,7 +107,7 @@ class WeatherEffects {
     }
   }
 
-  public deactivateFX = function(): void {
+  public deactivateFX(): void {
     switch (this._useFX) {
       case 'core':
         if (isClientGM()) {
@@ -109,7 +119,7 @@ class WeatherEffects {
         // note: because it uses hooks, we don't even need to check if the module is present or the version is correct
         for (let i=0; i<this._activeFXParticleEffects.length; i++)
           Hooks.call('fxmaster.switchParticleEffect', { name: this._activeFXParticleEffects[i] });
-        this._activeFXParticleEffects = [];
+        this.clearFXParticleEffects();
 
         break;
 
@@ -119,17 +129,16 @@ class WeatherEffects {
     }     
   }
 
-  private getUniqueName(type: string): string {
-    const root = 'swr-' + type;
-    let name: string;
-  
-    do {
-      // just add the current milliseconds; if somehow we produce
-      //    2 at the same time, just do it again;
-      name = root + Date.now();
-    } while (name in this._activeFXParticleEffects);
-  
-    return name;
+  private addFXParticleEffect(name: string): void {
+    this._activeFXParticleEffects.push(name);
+
+    moduleSettings.set(SettingKeys.activeFXParticleEffects, this._activeFXParticleEffects);
+  }
+
+  private clearFXParticleEffects(): void {
+    this._activeFXParticleEffects = [];
+
+    moduleSettings.set(SettingKeys.activeFXParticleEffects, this._activeFXParticleEffects);
   }
 }
 

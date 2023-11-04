@@ -26,9 +26,9 @@ Hooks.once('devModeReady', ({ registerPackageDebugFlag: registerPackageDebugFlag
 });
 
 Hooks.once('init', async () => {
-  // initialize the solo instances of the various classes
-  // settings first, so other things can use them
+  // initialize settings first, so other things can use them
   updateModuleSettings(new ModuleSettings());
+  // we setup WeatherEffects here because we need the scene to be loaded (since interacting with fxmaster requires that)
   updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
   updateWeatherApplication(new WeatherApplication());
 
@@ -39,9 +39,16 @@ Hooks.once('init', async () => {
   const module = getGame().modules.get(moduleJson.id);
   if (module) {
     module.api = {
-      runWeather(climate: Climate, humidity: Humidity, hexFlowerCell: number): void { weatherApplication.setSpecificWeather(climate, humidity, hexFlowerCell); }
+      runWeather(climate: Climate, humidity: Humidity, hexFlowerCell: number): void { 
+        weatherApplication.setSpecificWeather(climate, humidity, hexFlowerCell); 
+      }
     }
   }
+});
+
+// we need to setup the weather after the scene loads
+Hooks.once('renderSceneNavigation', () => {
+  weatherEffects.ready(null);
 });
 
 Hooks.once('ready', () => {

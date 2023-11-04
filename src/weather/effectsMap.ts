@@ -61,11 +61,11 @@ export const availableEffects: Record<string, EffectDetails> = {
         type: FXOptionTypes.Clouds,
         options: {
           scale: 1, 
-          direction: {start: 0, end: 0},
+          direction: {start: -30, end: 30},
           speed: 0.4, 
           lifetime: 1, 
-          density: 0.06, 
-          alpha: 1, 
+          density: 0.05, 
+          alpha: 0.7, 
           tint: { value: '0x000000', apply: false },
         },
       },
@@ -76,15 +76,33 @@ export const availableEffects: Record<string, EffectDetails> = {
     core: null,
     fxMaster: [
       {
-        type: FXOptionTypes.Clouds,
+        type: FXOptionTypes.RainSimple,
         options: {
-          scale: 1, 
-          direction: {start: 0, end: 0},
-          speed: 0.4, 
-          lifetime: 1, 
-          density: 0.06, 
+          scale: 0.6, 
+          direction: {start: -15, end: 15},
+          speed: 0.1, 
+          lifetime: 0.8, 
+          density: 0.2, 
           alpha: 1, 
-          tint: { value: '0x000000', apply: false },
+          tint: { value: '0x1d1d1b', apply: true },
+        },
+      },
+    ],
+  },
+
+  ModestWind: {
+    core: null,
+    fxMaster: [
+      {
+        type: FXOptionTypes.RainSimple,
+        options: {
+          scale: 0.6, 
+          direction: {start: -15, end: 15},
+          speed: 0.3, 
+          lifetime: 0.8, 
+          density: 0.2, 
+          alpha: 1, 
+          tint: { value: '0x1d1d1b', apply: true },
         },
       },
     ],
