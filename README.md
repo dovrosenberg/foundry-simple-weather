@@ -10,7 +10,7 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
 ## Features
 
 - Intuitive UI to generate weather  
-- Use Foundry scene weather to automatically show rain, snow, etc. when appropriate
+- Use Foundry scene weather or FX Master to automatically show rain, snow, etc. when appropriate
 - Various ways to share weather with players
   - Print the weather to chat, with the option of showing to players or not
   - Choose whether players can see the dialog (with a limited UI)
