@@ -1,6 +1,7 @@
 import { ModuleSettings, moduleSettings, SettingKeys } from '@/settings/ModuleSettings';
 import { getGame, isClientGM } from '@/utils/game';
 import { log } from '@/utils/log';
+import { VersionUtils } from '@/utils/versionUtils';
 import { WeatherData } from '@/weather/WeatherData';
 import { weatherOptions } from '@/weather/weatherMap';
 import { FXDetail, FXMStyleTypes } from './effectsMap';
@@ -24,8 +25,28 @@ class WeatherEffects {
   constructor() {
     this._fxActive = moduleSettings.get(SettingKeys.fxActive);
     this._useFX = moduleSettings.get(SettingKeys.useFX);
+
+    // check the version
+    if (this._useFX==='fxmaster') {
+      const fxVersion = getGame().modules.get('fxmaster')?.version;
+
+      if (!fxVersion || !getGame().modules.get('fxmaster')?.active) {
+        // module is missing... but they picked it so just disable for now
+        this._useFX = 'off';
+        log(false, 'Disabling FXMaster because module not present');
+      } else if (fxVersion!=='3.0.0' && !VersionUtils.isMoreRecent(fxVersion, '3.0.0')) {
+        ui.notifications?.error('FX Master found, but version prior to v3.0.0. Make sure the latest version of FX Master is installed to use for weather effects.');
+        ui.notifications?.error('Version found: ' + fxVersion);
+      }
+    }
+
     this._activeFXMParticleEffects = moduleSettings.get(SettingKeys.activeFXMParticleEffects);
     this._sceneReady = false;
+  }
+
+  // are we using any special effects?
+  public get useFX(): boolean {
+    return (this._useFX !== 'off');
   }
 
   // call when the scene is ready
@@ -82,8 +103,6 @@ class WeatherEffects {
           if (effectOptions.fxMaster) {
             const effects = effectOptions.fxMaster as FXDetail[];
 
-            // note: because it uses hooks, we don't even need to check if the module is present or the version is correct
-            // TODO... uh - actually do need to check version
             for (let e=0; e<effects.length; e++) {
               const name = `swr-${effects[e].type}-${foundry.utils.randomID()}`;
 
@@ -130,8 +149,6 @@ class WeatherEffects {
         break;
       
       case 'fxmaster':
-        // note: because it uses hooks, we don't even need to check if the module is present or the version is correct
-        // TODO: actually we do need to check the version
         // this isn't really safe because this is checking an internal setting but it's too easy to 
         //    get out of sync with FX master, in which case attempting to turn something off may actually
         //    add it instead

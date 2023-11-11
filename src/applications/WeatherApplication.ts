@@ -10,7 +10,7 @@ import { WindowDrag } from '@/window/windowDrag';
 import { isClientGM } from '@/utils/game';
 import { generate, outputWeather, createManual, createSpecificWeather } from '@/weather/weatherGenerator';
 import { moduleSettings } from '@/settings/ModuleSettings';
-import { weatherEffects } from '@/weather/WeatherEffects';
+import { WeatherEffects, weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
 
 // the solo instance
@@ -101,7 +101,7 @@ class WeatherApplication extends Application {
       hideCalendar: !this._calendarPresent || !this._displayOptions.dateBox,
       hideCalendarToggle: !this._calendarPresent,
       hideWeather: this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
-      hideFXToggle: moduleSettings.get(SettingKeys.useFX) === 'off',
+      hideFXToggle: !weatherEffects.useFX,
       manualPause: this._manualPause,
       fxActive: weatherEffects.fxActive,
       windowPosition: this._windowPosition,
