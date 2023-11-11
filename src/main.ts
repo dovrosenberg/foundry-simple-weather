@@ -28,7 +28,6 @@ Hooks.once('devModeReady', ({ registerPackageDebugFlag: registerPackageDebugFlag
 Hooks.once('init', async () => {
   // initialize settings first, so other things can use them
   updateModuleSettings(new ModuleSettings());
-  // we setup WeatherEffects here because we need the scene to be loaded (since interacting with fxmaster requires that)
   updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
   updateWeatherApplication(new WeatherApplication());
 
@@ -46,18 +45,14 @@ Hooks.once('init', async () => {
   }
 });
 
-// we need to setup the weather after the scene loads
-Hooks.once('renderSceneNavigation', () => {
-  weatherEffects.ready(null);
-});
-
 Hooks.once('ready', () => {
   checkDependencies();
 
   // if we don't have simple calendar installed, we're ready to go 
   //    (otherwise wait for it to call the renderMainApp hook)
-  if (!validSimpleCalendar)
+  if (!validSimpleCalendar) {
     weatherApplication.ready();
+  }
 });
 
 Hooks.once('i18nInit', (): void => {

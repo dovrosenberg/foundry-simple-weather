@@ -14,6 +14,7 @@ function updateWeatherEffects(effects: WeatherEffects): void {
 }
 
 class WeatherEffects {
+  private _sceneReady: boolean;  // we don't want to try to activate effects before the scene is ready
   private _useFX: string;
   private _fxActive = true;
   private _lastWeatherData: WeatherData;   // we save it so we can toggle back on 
@@ -23,20 +24,29 @@ class WeatherEffects {
     this._fxActive = moduleSettings.get(SettingKeys.fxActive);
     this._useFX = moduleSettings.get(SettingKeys.useFX);
     this._activeFXParticleEffects = moduleSettings.get(SettingKeys.activeFXParticleEffects);
+    this._sceneReady = false;
   }
 
+  // call when the scene is ready
   public ready(weatherData: WeatherData | null): void {
+    this._sceneReady = true;
+
     // disable any old weather; will turn back on when we finish loading
     this.deactivateFX();
 
     if (weatherData)
       this.activateFX(weatherData);
+    else if (this._lastWeatherData)
+      this.activateFX(this._lastWeatherData);
   };
 
   public set fxActive(active: boolean) {
     this._fxActive = active;
 
-    this.activateFX(this._lastWeatherData);
+    if (active)
+      this.activateFX(this._lastWeatherData);
+    else  
+      this.deactivateFX();
   }
 
   public get fxActive(): boolean {
@@ -44,8 +54,10 @@ class WeatherEffects {
   }
 
   public activateFX(weatherData: WeatherData): void {
-    return;
     this._lastWeatherData = weatherData;
+
+    if (!this._sceneReady)
+      return;
 
     if (!weatherData || weatherData.climate === null || weatherData.humidity === null || weatherData.hexFlowerCell === null)
       return;
@@ -54,7 +66,7 @@ class WeatherEffects {
 
     log(false, 'Activating weather using: ' + this._useFX);
 
-    if (this._fxActive && isClientGM()) {
+    if (isClientGM()) {
       // turn off any old ones
       this.deactivateFX();
 
@@ -99,12 +111,9 @@ class WeatherEffects {
         
         case 'off':
         default:
-          getGame().scenes?.active?.update({ weather: '' });
           break;
       }
-    } else {
-      this.deactivateFX();
-    }
+    } 
   }
 
   public deactivateFX(): void {
@@ -117,8 +126,16 @@ class WeatherEffects {
       
       case 'fxmaster':
         // note: because it uses hooks, we don't even need to check if the module is present or the version is correct
-        for (let i=0; i<this._activeFXParticleEffects.length; i++)
-          Hooks.call('fxmaster.switchParticleEffect', { name: this._activeFXParticleEffects[i] });
+        // TODO: actually we do need to check the version
+        // this isn't really safe because this is checking an internal setting but it's too easy to 
+        //    get out of sync with FX master, in which case attempting to turn something off may actually
+        //    add it instead
+        for (let i=0; i<this._activeFXParticleEffects.length; i++) {
+          const effectName = this._activeFXParticleEffects[i];
+
+          if (effectName in (getGame().scenes?.active?.getFlag('fxmaster', 'effects') as string[]))
+            Hooks.call('fxmaster.switchParticleEffect', { name: this._activeFXParticleEffects[i] });
+        }
         this.clearFXParticleEffects();
 
         break;

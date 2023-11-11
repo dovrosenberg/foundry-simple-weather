@@ -134,8 +134,7 @@ class WeatherApplication extends Application {
         this._currentBiome = moduleSettings.get(SettingKeys.biome);
     }
 
-    weatherEffects.activateFX(this._currentWeather);
-
+    weatherEffects.ready(this._currentWeather);
     this.render(true);
   };
 
