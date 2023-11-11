@@ -1,7 +1,7 @@
 import { localize } from '@/utils/game';
 import { log } from '@/utils/log';
 import { Climate, Humidity, Season } from './climateData';
-import { availableEffects, EffectDetails } from '@/weather/effectsMap';
+import { availableEffects, EffectDetails, joinEffects } from '@/weather/effectsMap';
 
 // drop down selections for manually setting weather
 let manualSelections: { text:string, value: string}[];
@@ -513,7 +513,9 @@ weatherTemperatures[Climate.Hot][Humidity.Verdant] = [
   75, 73, 77, 79,
 ];
 
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer2] = { fx: availableEffects.LightBlusterWind };
 weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer4] = { fx: availableEffects.FleecyClouds };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer5] = { fx: joinEffects(availableEffects.FleecyClouds, availableEffects.LightWind) };
 weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer7] = { fx: availableEffects.LightRain };
 weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer9] = { fx: availableEffects.HeavySnow };
 weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall_warm1] = { fx: availableEffects.LightWind };

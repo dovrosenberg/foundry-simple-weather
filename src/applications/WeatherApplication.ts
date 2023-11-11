@@ -107,7 +107,7 @@ class WeatherApplication extends Application {
       windowPosition: this._windowPosition,
       useCelsius: moduleSettings.get(SettingKeys.useCelsius),
     };
-    log(false, data);
+    //log(false, data);
 
     return data;
   }

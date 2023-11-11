@@ -61,6 +61,8 @@ Once activated in settings, the scene weather will automatically be changed when
 
 When players go inside, you can easily toggle the fx on/off temporarily using the toggle button on the toolbar.
 
+Note: When using FXMaster, effects can take up to 20 seconds to full transition when changing.  This is a result of the way FX Master's API works.  Feel free to chime in on [this](https://github.com/ghost-fvtt/fxmaster/issues/635) issue to encourage them to add support for just turning things off immediately.
+
 ### Keybindings
 There are keybinding options under "Configure Controls" in the main Foundry Game Settings section.  You can toggle the whole window on/off, regenerate weather, pause automatic changes to the weather, and toggle weather effects on/off.  Note that these keybindings work even when the window is hidden.  So you can in theory run the whole weather system while the window is hidden (autogenerating weather by calendar, manually generating new weather, turning effects on/off).
 

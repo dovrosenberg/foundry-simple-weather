@@ -72,36 +72,72 @@ export const availableEffects: Record<string, EffectDetails> = {
     ],
   },
 
+  // drifting around, not linear
+  LightBlusterWind: {
+    core: null,
+    fxMaster: [
+      {
+        type: FXOptionTypes.Leaves,
+        options: {
+          scale: 0.7, 
+          speed: 2.8, 
+          lifetime: 1, 
+          density: 0.1, 
+          alpha: 0.8, 
+          tint: { value: '#4F4040', apply: true },
+        },
+      },
+    ],
+  },
+
   LightWind: {
     core: null,
     fxMaster: [
       {
-        type: FXOptionTypes.RainSimple,
+        type: FXOptionTypes.Snow,
         options: {
           scale: 0.6, 
           direction: {start: -15, end: 15},
-          speed: 0.1, 
-          lifetime: 0.8, 
-          density: 0.2, 
-          alpha: 1, 
+          speed: 1.0, 
+          lifetime: 1.0, 
+          density: 0.1, 
+          alpha: 1.0, 
           tint: { value: '#1d1d1b', apply: true },
         },
       },
     ],
   },
 
-  ModestWind: {
+  ModerateWind: {
     core: null,
     fxMaster: [
       {
-        type: FXOptionTypes.RainSimple,
+        type: FXOptionTypes.Snow,
         options: {
           scale: 0.6, 
           direction: {start: -15, end: 15},
-          speed: 0.3, 
-          lifetime: 0.8, 
+          speed: 2.0, 
+          lifetime: 1.0, 
+          density: 0.1, 
+          alpha: 1.0, 
+          tint: { value: '#1d1d1b', apply: true },
+        },
+      },
+    ],
+  },
+
+  HighWind: {
+    core: null,
+    fxMaster: [
+      {
+        type: FXOptionTypes.Snow,
+        options: {
+          scale: 0.6, 
+          direction: {start: -15, end: 15},
+          speed: 3.0, 
+          lifetime: 1.0, 
           density: 0.2, 
-          alpha: 1, 
+          alpha: 1.0, 
           tint: { value: '#1d1d1b', apply: true },
         },
       },
@@ -225,4 +261,22 @@ export const availableEffects: Record<string, EffectDetails> = {
     },
     fxMaster: null,
   },
+}
+
+// combine two effects into one
+// for fx like core where there can only be one option, effect1 is used if present
+export const joinEffects = function(effect1: EffectDetails, effect2: EffectDetails): EffectDetails {
+  const output = foundry.utils.deepClone({
+    ...effect1
+  });
+
+  if (!output.core)
+    output.core = { effect: '' };
+  if (!output.fxMaster)
+    output.fxMaster = [];
+
+  output.core.effect = output.core?.effect || effect2.core?.effect || '';
+  output.fxMaster = output.fxMaster.concat(effect2.fxMaster || []);
+
+  return output;
 }
