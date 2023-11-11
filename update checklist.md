@@ -1,5 +1,5 @@
 - update version in package.json
-- update changelog
+- update changelog (including the date/version tags)
 - update readme
 - update credits, if needed
 - create release
