@@ -65,8 +65,6 @@ class WeatherEffects {
 
     const effectOptions = weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell].fx;
 
-    this.deactivateFX();
-
     if (isClientGM()) {
       // turn off any old ones
       this.deactivateFX();

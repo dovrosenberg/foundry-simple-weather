@@ -446,6 +446,34 @@ export const availableEffects: Record<string, EffectDetails> = {
     ],
   },
 
+  Wildfire: {
+    core: null,
+    fxMaster: [
+      // use lightning to make a flicker
+      {
+        style: FXMStyleTypes.Filter,
+        type: FXMFilterTypes.Lightning,
+        options: {
+          frequency: 100,
+          spark_duration: 2000,
+          brightness: 1.1,
+        },
+      },
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Embers,
+        options: {
+          scale: 1.0, 
+          speed: 1.0, 
+          lifetime: 1.0, 
+          density: 0.9, 
+          alpha: 1.0, 
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+    ],
+  },
+
   LightSnow: { 
     core: {
       effect: 'snow'
@@ -470,7 +498,21 @@ export const availableEffects: Record<string, EffectDetails> = {
     core: {
       effect: 'snow'
     },
-    fxMaster: null,
+    fxMaster: [
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Snowstorm,
+        options: {
+          scale: 1.0, 
+          direction: {start: 60, end: 120},
+          speed: 1.0, 
+          lifetime: 1.0, 
+          density: 0.9, 
+          alpha: 1.0, 
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+    ],
   },
   HeavySnow: { 
     core: {
@@ -569,12 +611,58 @@ export const availableEffects: Record<string, EffectDetails> = {
         tint: { value: '#ffffff', apply: false },
       },
     }],
-},
+  },
   Sleet: { 
     core: {
       effect: 'rainStorm'
     },
     fxMaster: null,
+  },
+  // like a colored blizzard, with smaller particles
+  DustStorm: { 
+    core: {
+      effect: ''
+    },  
+    fxMaster: [
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Snowstorm,
+        options: {
+          scale: 0.5, 
+          direction: {start: -30, end: 30},
+          speed: 1.9, 
+          lifetime: 1.0, 
+          density: 0.9, 
+          alpha: 1.0, 
+          tint: { value: '#8f8c61', apply: true },
+        },
+      },
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Snowstorm,
+        options: {
+          scale: 0.5, 
+          direction: {start: 150, end: 210},
+          speed: 1.5, 
+          lifetime: 1.0, 
+          density: 0.9, 
+          alpha: 1.0, 
+          tint: { value: '#8f8c61', apply: true },
+        },
+      },
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Fog,
+        options: {
+          scale: 1.0, 
+          speed: 1.0, 
+          lifetime: 1.0, 
+          density: 0.15, 
+          alpha: 0.9, 
+          tint: { value: '#8f8c61', apply: true },
+        },
+      },
+    ],
   },
 }
 
