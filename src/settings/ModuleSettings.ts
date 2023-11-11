@@ -16,7 +16,8 @@ export enum SettingKeys {
 
   // internal only
   fxActive = 'fxActive',   // are the fx currently showing
-  activeFXParticleEffects = 'activeFXParticleEffects',     // the list of active fx particle effects; need to save because FXMaster saves them
+  activeFXMParticleEffects = 'activeFXMParticleEffects',     // the list of active fx particle effects; need to save because FXMaster saves them
+  activeFXMFilterEffects = 'activeFXMFilterEffects',     // the list of active fx filter effects; need to save because FXMaster saves them
   windowPosition = 'windowPosition',   // the current position of the window
   displayOptions = 'displayOptions',  // how is the application window configured
   lastWeatherData = 'lastWeatherData',  // the previously generated weather data
@@ -40,7 +41,8 @@ type SettingType<K extends SettingKeys> =
     K extends SettingKeys.season ? number :
     K extends SettingKeys.seasonSync ? boolean :
     K extends SettingKeys.fxActive ? boolean :
-    K extends SettingKeys.activeFXParticleEffects ? string[] :
+    K extends SettingKeys.activeFXMParticleEffects ? string[] :
+    K extends SettingKeys.activeFXMFilterEffects ? string[] :
     K extends SettingKeys.windowPosition ? (WindowPosition | null) :
     K extends SettingKeys.biome ? string :
     K extends SettingKeys.climate ? number :
@@ -160,8 +162,14 @@ export class ModuleSettings {
     // these are globals only used internally
     const internalParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
       {
-        settingID: SettingKeys.activeFXParticleEffects,
+        settingID: SettingKeys.activeFXMParticleEffects,
         name: 'Active FX particle effects',
+        type: Array,
+        default: []
+      },
+      {
+        settingID: SettingKeys.activeFXMFilterEffects,
+        name: 'Active FX filter effects',
         type: Array,
         default: []
       },

@@ -513,20 +513,39 @@ weatherTemperatures[Climate.Hot][Humidity.Verdant] = [
   75, 73, 77, 79,
 ];
 
-weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer2] = { fx: availableEffects.LightBlusterWind };
-weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer4] = { fx: availableEffects.FleecyClouds };
-weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer5] = { fx: joinEffects(availableEffects.FleecyClouds, availableEffects.LightWind) };
+//0-8 - summer
+//9-14 - warm
+//15-21 - spring/fall
+//22-27 - cold
+//28-36 - winter
+
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer2] = { fx: joinEffects(availableEffects.Overcast, availableEffects.BlusterWind) };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer4] = { fx: availableEffects.LightClouds };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer5] = { fx: joinEffects(availableEffects.LightClouds, availableEffects.LightWind) };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer6] = { fx: availableEffects.ModerateClouds };
 weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer7] = { fx: availableEffects.LightRain };
 weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.summer9] = { fx: availableEffects.HeavySnow };
 weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall_warm1] = { fx: availableEffects.LightWind };
-weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall_warm6] = { fx: availableEffects.Hail };
-weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall3] = { fx: availableEffects.MistyRain };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall_warm3] = { fx: availableEffects.LightClouds };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall_warm5] = { fx: availableEffects.StormClouds };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall_warm6] = { fx: joinEffects(availableEffects.Hail, availableEffects.StormClouds) };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall1] = { fx: availableEffects.ModerateWind };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall2] = { fx: availableEffects.Overcast };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall3] = { fx: joinEffects(availableEffects.LightFog, availableEffects.BlusterRain) };
 weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall5] = { fx: availableEffects.LightRain };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall6] = { fx: availableEffects.ModerateClouds };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall7] = { fx: joinEffects(availableEffects.StormClouds, availableEffects.Lightning) };
 weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall_cool2] = { fx: availableEffects.LightFog };
-weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.winter3] = { fx: availableEffects.HeavySnow };
-weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.winter4] = { fx: availableEffects.LightSnow };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall_cool4] = { fx: availableEffects.StormClouds };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall_cool5] = { fx: availableEffects.HeavyWind };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.springfall_cool6] = { fx: availableEffects.HeavyWind };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.winter3] = { fx: availableEffects.WhiteoutSnow };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.winter4] = { fx: availableEffects.BlusterSnow };
 weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.winter5] = { fx: availableEffects.LightSnow };
-weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.winter9] = { fx: availableEffects.LightSnow };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.winter6] = { fx: joinEffects(availableEffects.Overcast, availableEffects.ModerateWind) };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.winter7] = { fx: availableEffects.ModerateClouds };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.winter8] = { fx: joinEffects(availableEffects.Overcast, availableEffects.LightClouds) };
+weatherOptions[Climate.Cold][Humidity.Barren][descriptionCells.winter9] = { fx: availableEffects.BlusterSnow };
 
 weatherOptions[Climate.Cold][Humidity.Modest][descriptionCells.summer6] = { fx: availableEffects.LightRain };
 weatherOptions[Climate.Cold][Humidity.Modest][descriptionCells.summer7] = { fx: availableEffects.HeavyRain };

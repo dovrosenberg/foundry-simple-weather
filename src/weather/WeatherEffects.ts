@@ -3,7 +3,7 @@ import { getGame, isClientGM } from '@/utils/game';
 import { log } from '@/utils/log';
 import { WeatherData } from '@/weather/WeatherData';
 import { weatherOptions } from '@/weather/weatherMap';
-import { FXDetail } from './effectsMap';
+import { FXDetail, FXMStyleTypes } from './effectsMap';
 
 // the solo instance
 let weatherEffects: WeatherEffects;
@@ -18,12 +18,13 @@ class WeatherEffects {
   private _useFX: string;
   private _fxActive = true;
   private _lastWeatherData: WeatherData;   // we save it so we can toggle back on 
-  private _activeFXParticleEffects: string[] = [];   // names of the active particle effects (so we can turn off)
+  private _activeFXMParticleEffects: string[] = [];   // names of the active particle effects (so we can turn off)
+  private _activeFXMFilterEffects: string[] = [];   // names of the active filter effects (so we can turn off)
 
   constructor() {
     this._fxActive = moduleSettings.get(SettingKeys.fxActive);
     this._useFX = moduleSettings.get(SettingKeys.useFX);
-    this._activeFXParticleEffects = moduleSettings.get(SettingKeys.activeFXParticleEffects);
+    this._activeFXMParticleEffects = moduleSettings.get(SettingKeys.activeFXMParticleEffects);
     this._sceneReady = false;
   }
 
@@ -88,21 +89,27 @@ class WeatherEffects {
             for (let e=0; e<effects.length; e++) {
               const name = `swr-${effects[e].type}-${foundry.utils.randomID()}`;
 
-              // adjust options
-              const options = structuredClone(effects[e].options);
-              
-              // override direction
-              if (options.direction) {
-                 options.direction = Math.floor(Math.random() * (options.direction.end - options.direction.start)) + options.direction.start;
-              }
+              if (effects[e].style === FXMStyleTypes.Particle) {
+                // adjust options
+                const options = structuredClone(effects[e].options);
+                
+                // override direction
+                if (options.direction) {
+                  options.direction = Math.floor(Math.random() * (options.direction.end - options.direction.start)) + options.direction.start;
+                }
 
-              log(false, 'Adding fxmaster: ' + name);
-              Hooks.call('fxmaster.switchParticleEffect', {
-                 name,
-                 type: effects[e].type,
-                 options: options,
-              });
-              this.addFXParticleEffect(name);
+                log(false, 'Adding fxmaster: ' + name);
+                Hooks.call('fxmaster.switchParticleEffect', {
+                  name,
+                  type: effects[e].type,
+                  options: options,
+                });
+                this.addFXMParticleEffect(name);
+              } else if (effects[e].style === FXMStyleTypes.Filter) {
+                log(false, 'Adding fxmaster: ' + name);
+                FXMASTER.filters.addFilter(name, effects[e].type, effects[e].options);
+                this.addFXMFilterEffect(name);
+              }
             }
           }
 
@@ -130,13 +137,20 @@ class WeatherEffects {
         // this isn't really safe because this is checking an internal setting but it's too easy to 
         //    get out of sync with FX master, in which case attempting to turn something off may actually
         //    add it instead
-        for (let i=0; i<this._activeFXParticleEffects.length; i++) {
-          const effectName = this._activeFXParticleEffects[i];
+        for (let i=0; i<this._activeFXMParticleEffects.length; i++) {
+          const effectName = this._activeFXMParticleEffects[i];
 
           if (effectName in (getGame().scenes?.active?.getFlag('fxmaster', 'effects') as string[]))
-            Hooks.call('fxmaster.switchParticleEffect', { name: this._activeFXParticleEffects[i] });
+            Hooks.call('fxmaster.switchParticleEffect', { name: this._activeFXMParticleEffects[i] });
         }
-        this.clearFXParticleEffects();
+        this.clearFXMParticleEffects();
+
+        for (let i=0; i<this._activeFXMFilterEffects.length; i++) {
+          const effectName = this._activeFXMFilterEffects[i];
+
+          FXMASTER.filters.removeFilter(effectName);
+        }
+        this.clearFXMFilterEffects();
 
         break;
 
@@ -146,16 +160,28 @@ class WeatherEffects {
     }     
   }
 
-  private addFXParticleEffect(name: string): void {
-    this._activeFXParticleEffects.push(name);
+  private addFXMParticleEffect(name: string): void {
+    this._activeFXMParticleEffects.push(name);
 
-    moduleSettings.set(SettingKeys.activeFXParticleEffects, this._activeFXParticleEffects);
+    moduleSettings.set(SettingKeys.activeFXMParticleEffects, this._activeFXMParticleEffects);
   }
 
-  private clearFXParticleEffects(): void {
-    this._activeFXParticleEffects = [];
+  private addFXMFilterEffect(name: string): void {
+    this._activeFXMFilterEffects.push(name);
 
-    moduleSettings.set(SettingKeys.activeFXParticleEffects, this._activeFXParticleEffects);
+    moduleSettings.set(SettingKeys.activeFXMFilterEffects, this._activeFXMFilterEffects);
+  }
+
+  private clearFXMParticleEffects(): void {
+    this._activeFXMParticleEffects = [];
+
+    moduleSettings.set(SettingKeys.activeFXMParticleEffects, this._activeFXMParticleEffects);
+  }
+
+  private clearFXMFilterEffects(): void {
+    this._activeFXMFilterEffects = [];
+
+    moduleSettings.set(SettingKeys.activeFXMFilterEffects, this._activeFXMFilterEffects);
   }
 }
 

@@ -2,12 +2,17 @@ export type CoreDetails = {
   effect: string;
 }
 
-export type FXColor = {
+export type FXMColor = {
   value: string;
   apply: boolean;
 }
 
-export enum FXOptionTypes {
+export enum FXMStyleTypes {
+  Filter,
+  Particle,
+}
+
+export enum FXMParticleTypes {
   Snowstorm = 'snowstorm',
   Bubbles = 'bubbles',
   Clouds = 'clouds',
@@ -24,6 +29,11 @@ export enum FXOptionTypes {
   Snow = 'snow',
 };
 
+export enum FXMFilterTypes {
+  Lightning = 'lightning',
+  Bloom = 'bloom',
+}
+
 // used to specify that this parameter will have a random value between the two specified
 export type RandomRange = {
   start: number;
@@ -31,20 +41,22 @@ export type RandomRange = {
 }
 
 export type FXDetail = 
-  { type: FXOptionTypes.Snowstorm; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
-  { type: FXOptionTypes.Bubbles; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
-  { type: FXOptionTypes.Clouds; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number, alpha: number; tint: FXColor }, } |
-  { type: FXOptionTypes.Embers; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
-  { type: FXOptionTypes.RainSimple; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
-  { type: FXOptionTypes.Stars; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
-  { type: FXOptionTypes.Crows; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
-  { type: FXOptionTypes.Bats; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
-  { type: FXOptionTypes.Spiders; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
-  { type: FXOptionTypes.Fog; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
-  { type: FXOptionTypes.RainTop; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
-  { type: FXOptionTypes.Leaves; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
-  { type: FXOptionTypes.Rain; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } |
-  { type: FXOptionTypes.Snow; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXColor }, } 
+  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Snowstorm; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
+  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Bubbles; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
+  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Clouds; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number, alpha: number; tint: FXMColor }, } |
+  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Embers; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
+  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.RainSimple; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
+  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Stars; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
+  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Crows; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
+  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Bats; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
+  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Spiders; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
+  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Fog; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
+  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.RainTop; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
+  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Leaves; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
+  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Rain; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
+  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Snow; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
+  { style: FXMStyleTypes.Filter, type: FXMFilterTypes.Bloom, options: { blur: number; bloomScale: number; threshold: number }, } |
+  { style: FXMStyleTypes.Filter, type: FXMFilterTypes.Lightning, options: { frequency: number; spark_duration: number; brightness: number }, }
 
     
 export type EffectDetails = {
@@ -54,11 +66,12 @@ export type EffectDetails = {
 
 // weather options
 export const availableEffects: Record<string, EffectDetails> = {
-  FleecyClouds: {
+  LightClouds: {
     core: null,
     fxMaster: [
       {
-        type: FXOptionTypes.Clouds,
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Clouds,
         options: {
           scale: 1, 
           direction: {start: -30, end: 30},
@@ -72,12 +85,88 @@ export const availableEffects: Record<string, EffectDetails> = {
     ],
   },
 
-  // drifting around, not linear
-  LightBlusterWind: {
+  ModerateClouds: {
     core: null,
     fxMaster: [
       {
-        type: FXOptionTypes.Leaves,
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Clouds,
+        options: {
+          scale: 1, 
+          direction: {start: -30, end: 30},
+          speed: 0.2, 
+          lifetime: 2.6, 
+          density: 0.1, 
+          alpha: 0.7, 
+          tint: { value: '#ffffff', apply: true },
+        },
+      },
+    ],
+  },
+
+  HeavyClouds: {
+    core: null,
+    fxMaster: [
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Clouds,
+        options: {
+          scale: 1, 
+          direction: {start: -30, end: 30},
+          speed: 0.1, 
+          lifetime: 2.6, 
+          density: 0.3, 
+          alpha: 0.5, 
+          tint: { value: '#ffffff', apply: true },
+        },
+      },
+    ],
+  },
+
+  StormClouds: {
+    core: null,
+    fxMaster: [
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Clouds,
+        options: {
+          scale: 1, 
+          direction: {start: -30, end: 30},
+          speed: 0.1, 
+          lifetime: 2.6, 
+          density: 0.6, 
+          alpha: 1.0, 
+          tint: { value: '#776e6e', apply: true },
+        },
+      },
+    ],
+  },
+
+  Overcast: {
+    core: null,
+    fxMaster: [
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Fog,
+        options: {
+          scale: 1.0, 
+          speed: 0.3, 
+          lifetime: 1.0,
+          density: 0.08, 
+          alpha: 1.0,
+          tint: { value: '#c2bdbd', apply: true },
+        },
+      },
+    ],
+  },
+
+  // drifting around, not linear
+  BlusterWind: {
+    core: null,
+    fxMaster: [
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Leaves,
         options: {
           scale: 0.7, 
           speed: 2.8, 
@@ -90,11 +179,71 @@ export const availableEffects: Record<string, EffectDetails> = {
     ],
   },
 
+  // snow in each direction
+  BlusterSnow: {
+    core: { effect: 'snow' },
+    fxMaster: [
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Snow,
+        options: {
+          scale: 1.0, 
+          direction: {start: -30, end: 30},
+          speed: 1.0, 
+          lifetime: 1.0, 
+          density: 0.1, 
+          alpha: 1.0, 
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Snow,
+        options: {
+          scale: 1.0, 
+          direction: {start: 60, end: 120},
+          speed: 1.0, 
+          lifetime: 1.0, 
+          density: 0.1, 
+          alpha: 1.0, 
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Snow,
+        options: {
+          scale: 1.0, 
+          direction: {start:150, end: 210},
+          speed: 1.0, 
+          lifetime: 1.0, 
+          density: 0.1, 
+          alpha: 1.0, 
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Snow,
+        options: {
+          scale: 1.0, 
+          direction: {start: 240, end: 300},
+          speed: 1.0, 
+          lifetime: 1.0, 
+          density: 0.1, 
+          alpha: 1.0, 
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+    ],
+  },
+
   LightWind: {
     core: null,
     fxMaster: [
       {
-        type: FXOptionTypes.Snow,
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Snow,
         options: {
           scale: 0.6, 
           direction: {start: -15, end: 15},
@@ -112,7 +261,8 @@ export const availableEffects: Record<string, EffectDetails> = {
     core: null,
     fxMaster: [
       {
-        type: FXOptionTypes.Snow,
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Snow,
         options: {
           scale: 0.6, 
           direction: {start: -15, end: 15},
@@ -126,11 +276,12 @@ export const availableEffects: Record<string, EffectDetails> = {
     ],
   },
 
-  HighWind: {
+  HeavyWind: {
     core: null,
     fxMaster: [
       {
-        type: FXOptionTypes.Snow,
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Snow,
         options: {
           scale: 0.6, 
           direction: {start: -15, end: 15},
@@ -144,21 +295,61 @@ export const availableEffects: Record<string, EffectDetails> = {
     ],
   },
 
-  MistyRain: { 
+  BlusterRain: { 
     core: {
       effect: 'rain'
     }, 
     fxMaster: [
       {
-        type: FXOptionTypes.Rain,
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Rain,
         options: {
-          scale: 3, 
-          direction: {start: 0, end: 360},
-          speed: 1, 
-          lifetime: 1, 
-          density: 1, 
-          alpha: 1, 
-          tint: { value: '#000000', apply: true },
+          scale: 0.4, 
+          direction: {start: -30, end: 30},
+          speed: 0.1, 
+          lifetime: 0.8, 
+          density: 0.1, 
+          alpha: 0.7, 
+          tint: { value: '#000000', apply: false },
+        },
+      },
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Rain,
+        options: {
+          scale: 0.4, 
+          direction: {start: 60, end: 120},
+          speed: 0.1, 
+          lifetime: 0.8, 
+          density: 0.1, 
+          alpha: 0.7, 
+          tint: { value: '#000000', apply: false },
+        },
+      },
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Rain,
+        options: {
+          scale: 0.4, 
+          direction: {start: 150, end: 210 },
+          speed: 0.1, 
+          lifetime: 0.8, 
+          density: 0.1, 
+          alpha: 0.7, 
+          tint: { value: '#000000', apply: false },
+        },
+      },
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Rain,
+        options: {
+          scale: 0.4, 
+          direction: {start: 240, end: 300 },
+          speed: 0.1, 
+          lifetime: 0.8, 
+          density: 0.1, 
+          alpha: 0.7, 
+          tint: { value: '#000000', apply: false },
         },
       },
     ],
@@ -169,13 +360,14 @@ export const availableEffects: Record<string, EffectDetails> = {
     },
     fxMaster: [
       {
-        type: FXOptionTypes.Rain,
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Rain,
         options: {
           scale: 1, 
           direction: {start: 60, end: 120},
           speed: 0.1, 
           lifetime: 0.8, 
-          density: 0.4, 
+          density: 0.1, 
           alpha: 0.7, 
           tint: { value: '#ffffff', apply: false },
         },
@@ -188,7 +380,8 @@ export const availableEffects: Record<string, EffectDetails> = {
     },
     fxMaster: [
       {
-        type: FXOptionTypes.Rain,
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Rain,
         options: {
           scale: 1, 
           direction: {start: 60, end: 120},
@@ -211,7 +404,20 @@ export const availableEffects: Record<string, EffectDetails> = {
     core: {
       effect: 'fog'
     },
-    fxMaster: null,
+    fxMaster: [
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Fog,
+        options: {
+          scale: 1.0, 
+          speed: 0.5, 
+          lifetime: 1.0,
+          density: 0.08, 
+          alpha: 0.4,
+          tint: { value: '#c2bdbd', apply: true },
+        },
+      },
+    ]
   },
   ModerateFog: { 
     core: {
@@ -225,11 +431,40 @@ export const availableEffects: Record<string, EffectDetails> = {
     },
     fxMaster: null,
   },
+  Lightning: {
+    core: null,
+    fxMaster: [
+      {
+        style: FXMStyleTypes.Filter,
+        type: FXMFilterTypes.Lightning,
+        options: {
+          frequency: 500,
+          spark_duration: 300,
+          brightness: 1.3,
+        },
+      },
+    ],
+  },
+
   LightSnow: { 
     core: {
       effect: 'snow'
     },
-    fxMaster: null,
+    fxMaster: [
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Snow,
+        options: {
+          scale: 1.0, 
+          direction: {start: 60, end: 120},
+          speed: 1.0, 
+          lifetime: 1.0, 
+          density: 0.1, 
+          alpha: 1.0, 
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+    ],
   },
   ModerateSnow: { 
     core: {
@@ -241,20 +476,100 @@ export const availableEffects: Record<string, EffectDetails> = {
     core: {
       effect: 'blizzard'
     },
-    fxMaster: null,
+    fxMaster: [
+      // two different snow effects
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Snowstorm,
+        options: {
+          scale: 1, 
+          direction: {start: 60, end: 90},
+          speed: 1.9, 
+          lifetime: 1.0, 
+          density: 0.9, 
+          alpha: 1.0, 
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Snowstorm,
+        options: {
+          scale: 1, 
+          direction: {start: 90, end: 120},
+          speed: 1.5, 
+          lifetime: 1.0, 
+          density: 0.9, 
+          alpha: 1.0, 
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+    ],
   },
   WhiteoutSnow: { 
     core: {
       effect: 'blizzard'
     },
-    fxMaster: null,
+    // two different snow effects plus fog
+    fxMaster: [
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Snowstorm,
+        options: {
+          scale: 1, 
+          direction: {start: 60, end: 90},
+          speed: 1.9, 
+          lifetime: 1.0, 
+          density: 0.9, 
+          alpha: 1.0, 
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Snowstorm,
+        options: {
+          scale: 1, 
+          direction: {start: 90, end: 120},
+          speed: 1.5, 
+          lifetime: 1.0, 
+          density: 0.9, 
+          alpha: 1.0, 
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Fog,
+        options: {
+          scale: 1.0, 
+          speed: 1.0, 
+          lifetime: 1.0, 
+          density: 0.15, 
+          alpha: 0.9, 
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+    ],
   },
   Hail: { 
     core: {
       effect: 'rainStorm'
     },
-    fxMaster: null,
-  },
+    fxMaster: [{
+      style: FXMStyleTypes.Particle,
+      type: FXMParticleTypes.RainSimple,
+      options: {
+        scale: 4.0, 
+        direction: {start: 60, end: 120},
+        speed: 0.2, 
+        lifetime: 0.2, 
+        density: 0.05, 
+        alpha: 1.0, 
+        tint: { value: '#ffffff', apply: false },
+      },
+    }],
+},
   Sleet: { 
     core: {
       effect: 'rainStorm'
