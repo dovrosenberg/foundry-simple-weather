@@ -61,6 +61,10 @@ Once activated in settings, the scene weather will automatically be changed when
 
 When players go inside, you can easily toggle the fx on/off temporarily using the toggle button on the toolbar.
 
+***Note: When using FXMaster, effects can take up to 20 seconds to fully transition when changing (or enabling/disabling with the toolbar).  In particular, clouds and fog take a long time to get going and stop.  This is a result of the way FX Master's API works.  Feel free to chime in on [this](https://github.com/ghost-fvtt/fxmaster/issues/635) issue to encourage them to add support for just turning things off immediately (though I'm not sure if it's still maintained).  Sometimes the new weather never shows up at all (again, clouds and fog) -- this might be a bug or it might be a bug in FX Master.  In all of these cases, refreshing the browser will immediately show the correct weather (each player needs to refresh, unfortunately).*** 
+
+***Note 2: I've mixed up the weather effects a bit - in particular whether or not clouds show up when it's raining.  In all cases, I'd love to hear if there are setups you'd like to change how they work.  I suspect different types of gameplay will have issues with different FX.  Simply open an issue.  At the very least, I need the text description of the weather at issue.  Preferably, the biome, climate and/or humidity as well.  Whatever you have. A description of the type of scene would be helpful, too (battle map, theater of the mind image, etc.) ***
+
 ### Keybindings
 There are keybinding options under "Configure Controls" in the main Foundry Game Settings section.  You can toggle the whole window on/off, regenerate weather, pause automatic changes to the weather, and toggle weather effects on/off.  Note that these keybindings work even when the window is hidden.  So you can in theory run the whole weather system while the window is hidden (autogenerating weather by calendar, manually generating new weather, turning effects on/off).
 

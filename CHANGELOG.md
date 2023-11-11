@@ -1,5 +1,14 @@
 # Change Log
 
+## v1.7.0 - Improved weather results and FX Master support
+![](https://img.shields.io/badge/release%20date-November%2011%2C%202023-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.7.0/module.zip)
+
+Enabled FX Master support for weather effects.  See readme/package description for more details.
+
+Fixed cases where sometimes summer weather could get too cold or winter weather could get too hot.  Also fixed some temperate 
+weather results that had temperatures that didn't make sense.
+
 ## v1.6.3 - German localization update and bug fix
 ![](https://img.shields.io/badge/release%20date-November%203%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.6.3/module.zip)

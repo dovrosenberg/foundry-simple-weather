@@ -13,7 +13,8 @@
       "useFXHelp": "Select the module to use when displaying special effects.  When activiate, the effects can also be turned off manually when needed.",
       "options": {
         "useFX.choices.off": "None",
-        "useFX.choices.core": "FoundryVTT scene weather setting"
+        "useFX.choices.core": "FoundryVTT scene weather setting",
+        "useFX.choices.fxmaster": "FX Master"
       }
     },
 
@@ -220,7 +221,7 @@
           "springfall.4": "Blue white sky",
           "springfall.5": "Warm rain",
           "springfall.6": "Cumulonimbus clouds",
-          "springfall.7": "Dry thunderstom",
+          "springfall.7": "Dry thunderstorm",
           "springfall.cool.1": "Clear sky",
           "springfall.cool.2": "Light fog",
           "springfall.cool.3": "Cool, clear sky",
@@ -366,7 +367,7 @@
           "summer.9": "Dust devil",
           "winter.1": "Cold, clear sky",
           "winter.2": "Clear, dry, no wind",
-          "winter.3": "Thunder storm",
+          "winter.3": "Thunderstorm",
           "winter.4": "Drizzle, windy",
           "winter.5": "Spitting rain",
           "winter.6": "Grey, windy",
@@ -456,5 +457,8 @@
         }
       }
     }
-  }
+  },
+  "missing": [
+    "sweath.settings.options.useFX.choices.fxmaster"
+  ]
 }

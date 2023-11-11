@@ -9,7 +9,7 @@ export enum KeyBindingKeys {
   pauseFX = 'pauseFX',    // pause weather effects
 }
 
-export default class KeyBindings {
+export class KeyBindings {
   public static register() {
     const keybindings = [
       {

@@ -3,14 +3,14 @@ import moduleJson from '@module';
 import { log } from '@/utils/log';
 import { WeatherData } from '@/weather/WeatherData';
 import { seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings } from '@/weather/climateData';
-import { manualSelections } from '@/weather/weatherMap';
+import { manualSelections, weatherDescriptions } from '@/weather/weatherMap';
 import { WindowPosition } from '@/window/WindowPosition';
 import { SettingKeys } from '@/settings/ModuleSettings';
 import { WindowDrag } from '@/window/windowDrag';
 import { isClientGM } from '@/utils/game';
-import { generate, outputWeather, setManual } from '@/weather/weatherGenerator';
+import { generate, outputWeather, createManual, createSpecificWeather } from '@/weather/weatherGenerator';
 import { moduleSettings } from '@/settings/ModuleSettings';
-import { weatherEffects } from '@/weather/WeatherEffects';
+import { WeatherEffects, weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
 
 // the solo instance
@@ -101,13 +101,13 @@ class WeatherApplication extends Application {
       hideCalendar: !this._calendarPresent || !this._displayOptions.dateBox,
       hideCalendarToggle: !this._calendarPresent,
       hideWeather: this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
-      hideFXToggle: moduleSettings.get(SettingKeys.useFX) === 'off',
+      hideFXToggle: !weatherEffects.useFX,
       manualPause: this._manualPause,
       fxActive: weatherEffects.fxActive,
       windowPosition: this._windowPosition,
       useCelsius: moduleSettings.get(SettingKeys.useCelsius),
     };
-    console.log(data);
+    //log(false, data);
 
     return data;
   }
@@ -134,8 +134,7 @@ class WeatherApplication extends Application {
         this._currentBiome = moduleSettings.get(SettingKeys.biome);
     }
 
-    weatherEffects.activateFX(this._currentWeather);
-
+    weatherEffects.ready(this._currentWeather);
     this.render(true);
   };
 
@@ -291,10 +290,25 @@ class WeatherApplication extends Application {
   private setManualWeather(currentDate: SimpleCalendar.DateData | null, temperature: number, weatherIndex: number): void {
     const season = this.getSeason();
 
-    const result = setManual(currentDate, temperature, weatherIndex);
+    const result = createManual(currentDate, temperature, weatherIndex);
     if (result) {
       this._currentWeather = result;
       this.activateWeather(this._currentWeather);
+      this.render();
+    }
+  }
+
+  // temperature is avg temperature to use; weatherIndex is the index into the set of manual options
+  public setSpecificWeather(climate: Climate, humidity: Humidity, hexFlowerCell: number): void {
+    const season = this.getSeason();
+
+    log(false, 'Running weather for ' + weatherDescriptions[climate][humidity][hexFlowerCell]);
+
+    const result = createSpecificWeather(this._currentWeather?.date || null, climate, humidity, hexFlowerCell);
+    if (result) {
+      this._currentWeather = result;
+      this.activateWeather(this._currentWeather);
+      this.render();
     }
   }
 
@@ -577,7 +591,6 @@ class WeatherApplication extends Application {
       temp = Math.round((temp*9/5)+32);
 
     this.setManualWeather(this._currentWeather?.date || null, temp, Number(select.value));
-    this.render();
   }
 
   // get the class to apply to get the proper icon by season
