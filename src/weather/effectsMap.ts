@@ -189,7 +189,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         options: {
           scale: 1.0, 
           direction: {start: -30, end: 30},
-          speed: 1.0, 
+          speed: 2.8, 
           lifetime: 1.0, 
           density: 0.1, 
           alpha: 1.0, 
@@ -202,7 +202,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         options: {
           scale: 1.0, 
           direction: {start: 60, end: 120},
-          speed: 1.0, 
+          speed: 2.8, 
           lifetime: 1.0, 
           density: 0.1, 
           alpha: 1.0, 
@@ -215,7 +215,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         options: {
           scale: 1.0, 
           direction: {start:150, end: 210},
-          speed: 1.0, 
+          speed: 2.8, 
           lifetime: 1.0, 
           density: 0.1, 
           alpha: 1.0, 
@@ -228,7 +228,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         options: {
           scale: 1.0, 
           direction: {start: 240, end: 300},
-          speed: 1.0, 
+          speed: 2.8, 
           lifetime: 1.0, 
           density: 0.1, 
           alpha: 1.0, 
@@ -385,9 +385,9 @@ export const availableEffects: Record<string, EffectDetails> = {
         options: {
           scale: 1, 
           direction: {start: 60, end: 120},
-          speed: 0.1, 
+          speed: 0.5, 
           lifetime: 0.8, 
-          density: 0.4, 
+          density: 1.0, 
           alpha: 0.7, 
           tint: { value: '#ffffff', apply: false },
         },
@@ -398,7 +398,21 @@ export const availableEffects: Record<string, EffectDetails> = {
     core: {
       effect: 'rainStorm'
     },
-    fxMaster: null,
+    fxMaster: [
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Rain,
+        options: {
+          scale: 1.3,
+          direction: {start: 60, end: 120},
+          speed: 0.5, 
+          lifetime: 0.8, 
+          density: 1.7, 
+          alpha: 0.7, 
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+    ]
   },
   LightFog: { 
     core: {
@@ -412,9 +426,9 @@ export const availableEffects: Record<string, EffectDetails> = {
           scale: 1.0, 
           speed: 0.5, 
           lifetime: 1.0,
-          density: 0.08, 
+          density: 0.05, 
           alpha: 0.4,
-          tint: { value: '#c2bdbd', apply: true },
+          tint: { value: '#ffffff', apply: false },
         },
       },
     ]
@@ -423,13 +437,58 @@ export const availableEffects: Record<string, EffectDetails> = {
     core: {
       effect: 'fog'
     },
-    fxMaster: null,
+    fxMaster: [
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Fog,
+        options: {
+          scale: 1.0, 
+          speed: 0.5, 
+          lifetime: 1.0,
+          density: 0.08, 
+          alpha: 0.4,
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+    ]
   },
   HeavyFog: { 
     core: {
       effect: 'fog'
     },
-    fxMaster: null,
+    fxMaster: [
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Fog,
+        options: {
+          scale: 1.0, 
+          speed: 0.5, 
+          lifetime: 1.0,
+          density: 0.12, 
+          alpha: 0.4,
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+    ]
+  },
+  RollingFog: { 
+    core: {
+      effect: 'fog'
+    },
+    fxMaster: [
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Fog,
+        options: {
+          scale: 1.0, 
+          speed: 3.5, 
+          lifetime: 1.0,
+          density: 0.08, 
+          alpha: 0.4,
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+    ]
   },
   Lightning: {
     core: null,
@@ -463,7 +522,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         style: FXMStyleTypes.Particle,
         type: FXMParticleTypes.Embers,
         options: {
-          scale: 1.0, 
+          scale: 1.3, 
           speed: 1.0, 
           lifetime: 1.0, 
           density: 0.9, 
@@ -616,7 +675,35 @@ export const availableEffects: Record<string, EffectDetails> = {
     core: {
       effect: 'rainStorm'
     },
-    fxMaster: null,
+    // rain plus snow
+    fxMaster: [
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Rain,
+        options: {
+          scale: 1, 
+          direction: {start: 60, end: 90 },  // tighter range because we need snow direction to be similar
+          speed: 0.5, 
+          lifetime: 0.8, 
+          density: 1.0, 
+          alpha: 0.7, 
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+      {
+        style: FXMStyleTypes.Particle,
+        type: FXMParticleTypes.Snowstorm,
+        options: {
+          scale: 1.0, 
+          direction: {start: 60, end: 90 },
+          speed: 1.0, 
+          lifetime: 1.0, 
+          density: 0.9, 
+          alpha: 1.0, 
+          tint: { value: '#ffffff', apply: false },
+        },
+      },
+    ]
   },
   // like a colored blizzard, with smaller particles
   DustStorm: { 
