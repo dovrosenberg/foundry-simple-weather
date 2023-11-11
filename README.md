@@ -2,7 +2,7 @@
 
 [![Supported Foundry Versions](https://img.shields.io/endpoint?url=https://foundryshields.com/version?url=https://github.com/dovrosenberg/foundry-simple-weather/raw/master/static/module.json)](https://github.com/dovrosenberg/foundry-simple-weather)
 
-A module that provides dynamic weather generation, by season and biome, including automatically activating weather effects.  If [Simple Calendar](https://foundryvtt.com/packages/foundryvtt-simple-calendar) (minimum version 2.4.0) is present, Simple Weather will integrate to it and display the date/time and automatically generate new weather when the date changes.  Without Simple Calendar, no date is shown and weather regeneration can be manually triggered. (NOTE: THIS MODULE IS NOT AFFILIATED WITH THE CREATORS OF SIMPLE CALENDAR)
+Dynamic weather generation, by season and biome, including automatically activating weather effects.  If [Simple Calendar](https://foundryvtt.com/packages/foundryvtt-simple-calendar) (minimum version 2.4.0) is present, Simple Weather will integrate to it and display the date/time and automatically generate new weather when the date changes.  Without Simple Calendar, no date is shown and weather regeneration can be manually triggered. (NOTE: THIS MODULE IS NOT AFFILIATED WITH THE CREATORS OF SIMPLE CALENDAR)
 
 
 I built this as a way to learn Foundry better, but I plan to maintain it for now and am happy to consider [feature requests](https://github.com/dovrosenberg/foundry-simple-weather/issues/new/choose)
@@ -55,7 +55,7 @@ Sometimes you might want to specify the exact weather that you need, rather than
 Unchecking "Pause updates" won't immediately trigger a regeneration of weather, but if you want one without advancing the date, just then hit the "regenerate" button.
 
 ### Weather Effects 
-The GM can activate weather effects in the module settings.  For now, the only option is to use the scene weather in the Fondry core, but future support for FX Master and other modules is planned.
+The GM can activate weather effects in the module settings.  This includes support for the scene weather in the Foundry core, as well as FX Master.  Weather is not scene specific.
 
 Once activated in settings, the scene weather will automatically be changed whenever the weather warrants it.  There is currently only support for inclement weather (rain, hail, snow, fog).  Let me know if there's any desire to do something to show sunny days, as I wasn't sure what made the most sense.
 
