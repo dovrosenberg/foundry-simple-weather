@@ -387,7 +387,7 @@ class WeatherApplication extends Application {
       // little tricker to get width when hidden
       const box = document.getElementById('swr-calendar-box');
       if (box) {
-        box.style.visibility = 'hidden';
+        box.style.visibility = 'hidden';  // use visibility to change display temporarily without flashing
         box.style.display = 'block';
         const width = box.offsetWidth;
 

@@ -112,12 +112,6 @@
   width: 250px;
 }
 
-// expand the box when show-weather is set
-#swr-container.hide-weather #swr-weather-box {
-  visibility: hidden;
-  overflow: hidden;
-}
-
 #swr-weather-container {
   display: flex;
   flex-direction: column;
