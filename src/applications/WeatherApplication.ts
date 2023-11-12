@@ -203,6 +203,11 @@ _______________________________________
     this.render();
   }
 
+  public showWindow(): void {
+    this._currentlyHidden = false;
+    this.render();
+  }
+
   // called by the parent class to attach event handlers after window is rendered
   // note that saved weather has been reloaded by the time this is called when we're initializing
   // this is called on every render!  One-time functionality should be put in ????? 

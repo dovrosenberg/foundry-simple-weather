@@ -74,6 +74,27 @@ Hooks.on('updateSetting', async (setting: Setting): void => {
     weatherApplication.setWeather();
 });
 
+// add the button to re-open the app
+Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
+  if (isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)) {
+    // find the journal notes 
+    const noteControls = controls.find((c) => {
+        return c.name === "notes";
+    });
+
+    // add our own button
+    if (noteControls && Object.prototype.hasOwnProperty.call(noteControls, "tools")) {
+      noteControls.tools.push({
+          name: "simple-weather",
+          title: "blah blah blah",
+          icon: "fas fa-calendar simple-calendar-icon",
+          button: true,
+          onClick: () => { weatherApplication.showWindow(); }
+      });
+    }
+}
+})
+
 // called after simple calendar is fully loaded
 Hooks.once('renderMainApp', async () => {
   weatherApplication.ready();

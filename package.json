@@ -12,7 +12,7 @@
   "main": "main.ts",
   "scripts": {
     "build": "vite build",
-    "dev": "vite",
+    "debug": "vite build --minify=false",
     "copy": "rm -rf ~/foundryData/Data/modules/simple-weather/* && cp -r $(pwd)/dist/* ~/foundryData/Data/modules/simple-weather",
     "linkdata": "ln -s $PWD/dist ~/foundryData/Data/modules/simple-weather",
     "tsc": "tsc --noEmit --skipLibCheck",

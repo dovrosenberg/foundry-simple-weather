@@ -7,7 +7,6 @@ import { DisplayOptions } from '@/types/DisplayOptions';
 
 export enum SettingKeys {
   // displayed in settings
-  showApplication = 'showApplication',   // re-open the window if closed
   dialogDisplay = 'dialogDisplay',   // can non-GM clients see the dialog box
   outputWeatherToChat = 'outputWeatherChat',   // when new weather is generated, should it be put in the chat box
   publicChat = 'publicChat',   // should everyone see the chat (true) or just the GM (false)
@@ -30,7 +29,6 @@ export enum SettingKeys {
 }
 
 type SettingType<K extends SettingKeys> =
-    K extends SettingKeys.showApplication ? never :
     K extends SettingKeys.dialogDisplay ? boolean :
     K extends SettingKeys.publicChat ? boolean :
     K extends SettingKeys.outputWeatherToChat ? boolean :
