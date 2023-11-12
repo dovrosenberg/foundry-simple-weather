@@ -29,6 +29,7 @@ If applicable, add screenshots to help explain your problem.
  - OS: [e.g. iOS]
  - Browser [e.g. chrome, safari] or Foundry desktop?
  - Foundry version
+ - Logging in as GM or player?
 
 **Additional context**
 Add any other context about the problem here.
