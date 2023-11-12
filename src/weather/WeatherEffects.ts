@@ -159,7 +159,7 @@ class WeatherEffects {
             Hooks.call('fxmaster.switchParticleEffect', { name: this._activeFXMParticleEffects[i] });
         }
         this.clearFXMParticleEffects();
-
+        
         for (let i=0; i<this._activeFXMFilterEffects.length; i++) {
           const effectName = this._activeFXMFilterEffects[i];
 
