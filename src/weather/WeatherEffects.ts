@@ -155,7 +155,7 @@ class WeatherEffects {
         for (let i=0; i<this._activeFXMParticleEffects.length; i++) {
           const effectName = this._activeFXMParticleEffects[i];
 
-          if (effectName in (getGame().scenes?.active?.getFlag('fxmaster', 'effects') as string[]))
+          if (effectName in ((getGame().scenes?.active?.getFlag('fxmaster', 'effects') || []) as string[]))
             Hooks.call('fxmaster.switchParticleEffect', { name: this._activeFXMParticleEffects[i] });
         }
         this.clearFXMParticleEffects();

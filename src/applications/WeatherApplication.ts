@@ -10,7 +10,7 @@ import { WindowDrag } from '@/window/windowDrag';
 import { isClientGM } from '@/utils/game';
 import { generate, outputWeather, createManual, createSpecificWeather } from '@/weather/weatherGenerator';
 import { moduleSettings } from '@/settings/ModuleSettings';
-import { WeatherEffects, weatherEffects } from '@/weather/WeatherEffects';
+import { weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
 
 // the solo instance
@@ -145,14 +145,25 @@ class WeatherApplication extends Application {
   // output a bunch of info that might be useful for debugging
   public async debugOutput(): Promise<void> {
     let output = `
-DEBUG OUTPUT
+simple-weather DEBUG OUTPUT
 _______________________________________
 isGM: ${isClientGM()}
 displayOptions: ${JSON.stringify(this._displayOptions, null, 2)}
 dialogDisplay: ${moduleSettings.get(SettingKeys.dialogDisplay)}
 windowPosition: ${JSON.stringify(this._windowPosition, null, 2)}
 currentlyHidden: ${this._currentlyHidden}
+calendarPresent: ${this._calendarPresent}
+manualPause: ${this._manualPause}
+currentlyHidden: ${this._currentlyHidden}
+currentClimate: ${this._currentClimate}
+currentHumidity: ${this._currentHumidity}
+currentBiome: ${this._currentBiome}
+currentSeason: ${this._currentSeason}
+currentSeasonSync: ${this._currentSeasonSync}
+WeatherEffects.fxActive = ${moduleSettings.get(SettingKeys.fxActive)}
+WeatherEffects.useFX = ${moduleSettings.get(SettingKeys.useFX)}
 getData: ${JSON.stringify(await this.getData(), null, 2)}
+_______________________________________
     `;
 
 

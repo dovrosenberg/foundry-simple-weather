@@ -1,5 +1,11 @@
 # Change Log
 
+## v1.7.2 - Fixed console error related to FXMaster on new scenes
+![](https://img.shields.io/badge/release%20date-November%2012%2C%202023-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.7.2/module.zip)
+
+Added some api code to support debugging
+
 ## v1.7.1 - Nothing to see here
 ![](https://img.shields.io/badge/release%20date-November%2012%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.7.1/module.zip)
