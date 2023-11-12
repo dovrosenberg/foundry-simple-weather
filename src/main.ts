@@ -20,7 +20,7 @@ let validSimpleCalendar = false;
 */
 
 // note: for the logs to actually work, you have to activate it in the UI under the config for the developer mode module
-Hooks.once('devModeReady', ({ registerPackageDebugFlag: registerPackageDebugFlag }: DevModeApi) => {
+Hooks.once('devModeReady', async ({ registerPackageDebugFlag: registerPackageDebugFlag }: DevModeApi) => {
   registerPackageDebugFlag('simple-weather', 'boolean');
   //CONFIG.debug.hooks = true;
 });
@@ -49,17 +49,17 @@ Hooks.once('init', async () => {
   }
 });
 
-Hooks.once('ready', () => {
+Hooks.once('ready', async () => {
   checkDependencies();
 
   // if we don't have simple calendar installed, we're ready to go 
   //    (otherwise wait for it to call the renderMainApp hook)
   if (!validSimpleCalendar) {
     weatherApplication.ready();
-  }
+  }  
 });
 
-Hooks.once('i18nInit', (): void => {
+Hooks.once('i18nInit', async () => {
   initializeLocalizedClimateText();
   initializeLocalizedWeatherText();
 
@@ -69,13 +69,13 @@ Hooks.once('i18nInit', (): void => {
 });
 
 // on non-GMs, we need to update whenever the GM changes the weather
-Hooks.on('updateSetting', (setting: Setting): void => {
+Hooks.on('updateSetting', async (setting: Setting): void => {
   if (!isClientGM() && setting.key === 'simple-weather.' + SettingKeys.lastWeatherData) 
     weatherApplication.setWeather();
 });
 
 // called after simple calendar is fully loaded
-Hooks.once('renderMainApp', () => {
+Hooks.once('renderMainApp', async () => {
   weatherApplication.ready();
 
   log(false, 'simple-calendar-ready');
