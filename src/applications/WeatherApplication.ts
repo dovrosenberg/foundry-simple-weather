@@ -144,12 +144,19 @@ class WeatherApplication extends Application {
 
   // output a bunch of info that might be useful for debugging
   public async debugOutput(): Promise<void> {
-    console.log('isGM: ' + isClientGM());
-    console.log('displayOptions: ' + JSON.stringify(this._displayOptions));
-    console.log('dialogDisplay: ' + moduleSettings.get(SettingKeys.dialogDisplay));
-    console.log('windowPosition: ' + JSON.stringify(this._windowPosition));
-    console.log('currentlyHidden: ' + this._currentlyHidden);
-    console.log('getData: ' + JSON.stringify(await this.getData()));
+    let output = `
+DEBUG OUTPUT
+_______________________________________
+isGM: ${isClientGM()}
+displayOptions: ${JSON.stringify(this._displayOptions, null, 2)}
+dialogDisplay: ${moduleSettings.get(SettingKeys.dialogDisplay)}
+windowPosition: ${JSON.stringify(this._windowPosition, null, 2)}
+currentlyHidden: ${this._currentlyHidden}
+getData: ${JSON.stringify(await this.getData(), null, 2)}
+    `;
+
+
+    console.log(output);
   }
 
   // move the window
