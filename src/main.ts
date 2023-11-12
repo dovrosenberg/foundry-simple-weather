@@ -38,8 +38,12 @@ Hooks.once('init', async () => {
   const module = getGame().modules.get(moduleJson.id);
   if (module) {
     module.api = {
-      runWeather(climate: Climate, humidity: Humidity, hexFlowerCell: number): void { 
+      runWeather: function(climate: Climate, humidity: Humidity, hexFlowerCell: number): void { 
         weatherApplication.setSpecificWeather(climate, humidity, hexFlowerCell); 
+      },
+
+      debugOutput: function(): void {
+        weatherApplication.debugOutput();
       }
     }
   }

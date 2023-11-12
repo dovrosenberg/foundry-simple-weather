@@ -52,6 +52,9 @@ class WeatherApplication extends Application {
     // get whether the manual pause is on
     this._manualPause = moduleSettings.get(SettingKeys.manualPause || false);
 
+    // don't show it until ready() has been called
+    this._currentlyHidden = true;
+
     this.setWeather();  
   }
 
@@ -97,7 +100,7 @@ class WeatherApplication extends Application {
       manualSelections: manualSelections,
 
       displayOptions: this._displayOptions,
-      hideDialog: this._currentlyHidden || !this.ready || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
+      hideDialog: this._currentlyHidden || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
       hideCalendar: !this._calendarPresent || !this._displayOptions.dateBox,
       hideCalendarToggle: !this._calendarPresent,
       hideWeather: this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
@@ -134,9 +137,20 @@ class WeatherApplication extends Application {
         this._currentBiome = moduleSettings.get(SettingKeys.biome);
     }
 
+    this._currentlyHidden = false;
     weatherEffects.ready(this._currentWeather);
     this.render(true);
   };
+
+  // output a bunch of info that might be useful for debugging
+  public async debugOutput(): Promise<void> {
+    console.log('isGM: ' + isClientGM());
+    console.log('displayOptions: ' + JSON.stringify(this._displayOptions));
+    console.log('dialogDisplay: ' + moduleSettings.get(SettingKeys.dialogDisplay));
+    console.log('windowPosition: ' + JSON.stringify(this._windowPosition));
+    console.log('currentlyHidden: ' + this._currentlyHidden);
+    console.log('getData: ' + JSON.stringify(await this.getData()));
+  }
 
   // move the window
   // we can't use foundry's setPosition() because it doesn't work for fixed size, non popout windows
@@ -400,7 +414,7 @@ class WeatherApplication extends Application {
 
   private onCloseClick = (event): void => {
     event.preventDefault();
-    this.close();
+    this.toggleWindow();   // must be on if we are clicking the button, so this will close it
   }
 
   private onWeatherRegenerateClick = (event): void => {
