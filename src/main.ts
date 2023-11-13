@@ -1,4 +1,5 @@
 import '@/../styles/simple-weather.scss';
+import '@/../styles/menu-icon.scss';
 
 import { moduleSettings, ModuleSettings, SettingKeys, updateModuleSettings } from '@/settings/ModuleSettings';
 import { VersionUtils } from '@/utils/versionUtils';
@@ -7,7 +8,7 @@ import { log } from './utils/log';
 import { allowSeasonSync, Climate, Humidity, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
 import { initializeLocalizedText as initializeLocalizedWeatherText } from '@/weather/weatherMap';
 import { updateWeatherApplication, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
-import { updateWeatherEffects, weatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
+import { updateWeatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
 import { KeyBindings } from '@/settings/KeyBindings';
 import moduleJson from '@module';
 
@@ -69,7 +70,7 @@ Hooks.once('i18nInit', async () => {
 });
 
 // on non-GMs, we need to update whenever the GM changes the weather
-Hooks.on('updateSetting', async (setting: Setting): void => {
+Hooks.on('updateSetting', async (setting: Setting) => {
   if (!isClientGM() && setting.key === 'simple-weather.' + SettingKeys.lastWeatherData) 
     weatherApplication.setWeather();
 });
@@ -86,8 +87,8 @@ Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
     if (noteControls && Object.prototype.hasOwnProperty.call(noteControls, "tools")) {
       noteControls.tools.push({
           name: "simple-weather",
-          title: "blah blah blah",
-          icon: "fas fa-calendar simple-calendar-icon",
+          title: "blah blah blah",   // "Open Simple Weather"--i18n
+          icon: "fas swr-icon",
           button: true,
           onClick: () => { weatherApplication.showWindow(); }
       });
