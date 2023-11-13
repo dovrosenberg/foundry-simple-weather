@@ -1,13 +1,12 @@
 import moduleJson from '@module';
 
 import { WindowPosition } from '@/window/WindowPosition';
-import { getGame, localize } from '@/utils/game';
+import { getGame, isClientGM, localize } from '@/utils/game';
 import { WeatherData } from '@/weather/WeatherData';
 import { DisplayOptions } from '@/types/DisplayOptions';
 
 export enum SettingKeys {
   // displayed in settings
-  showApplication = 'showApplication',   // re-open the window if closed
   dialogDisplay = 'dialogDisplay',   // can non-GM clients see the dialog box
   outputWeatherToChat = 'outputWeatherChat',   // when new weather is generated, should it be put in the chat box
   publicChat = 'publicChat',   // should everyone see the chat (true) or just the GM (false)
@@ -30,7 +29,6 @@ export enum SettingKeys {
 }
 
 type SettingType<K extends SettingKeys> =
-    K extends SettingKeys.showApplication ? never :
     K extends SettingKeys.dialogDisplay ? boolean :
     K extends SettingKeys.publicChat ? boolean :
     K extends SettingKeys.outputWeatherToChat ? boolean :
@@ -80,6 +78,15 @@ export class ModuleSettings {
   }
 
   public async set<T extends SettingKeys>(setting: T, value: SettingType<T>): Promise<void> {
+    // confirm the user can set it
+    if (!isClientGM()) {
+      // if it's any of the global param lists, don't do the set
+      if (this.menuParams.find(({settingID}): boolean => (settingID === setting)) || 
+        this.displayParams.find(({settingID}): boolean => (settingID === setting)) || 
+        this.internalParams.find(({settingID}): boolean => (settingID === setting)))
+      return;
+    }
+
     await getGame().settings.set(moduleJson.id, setting, value);
   }
 
@@ -91,10 +98,8 @@ export class ModuleSettings {
     getGame().settings.registerMenu(moduleJson.id, settingKey, settingConfig);
   }
 
-  private registerSettings(): void {
     // these are global menus (shown at top)
-    // these are local menus (shown at top)
-    const menuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: string })[] = [
+    private menuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: string })[] = [
       // couldn't get this to work because it creates a new instance but I can't figure out how to attach it to the weatherInstance variable in main.js
       // {
       //     settingID: SettingKeys.showApplication,
@@ -106,12 +111,13 @@ export class ModuleSettings {
       // },
     ];
 
-    const localMenuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: string })[] = [
+    // these are local menus (shown at top)
+    private localMenuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: string })[] = [
     ];
 
     // these are globals shown in the options
     // name and hint should be the id of a localization string
-    const displayParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
+    private displayParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
       {
         settingID: SettingKeys.outputWeatherToChat,
         name: 'sweath.settings.outputweatherToChat',
@@ -149,7 +155,7 @@ export class ModuleSettings {
     ];
 
     // these are client-specific and displayed in settings
-    const localDisplayParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
+    private localDisplayParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
       {
         settingID: SettingKeys.useCelsius, 
         name: 'sweath.settings.useCelsius',
@@ -160,7 +166,7 @@ export class ModuleSettings {
     ];
 
     // these are globals only used internally
-    const internalParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
+    private internalParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
       {
         settingID: SettingKeys.activeFXMParticleEffects,
         name: 'Active FX particle effects',
@@ -218,7 +224,7 @@ export class ModuleSettings {
     ];
    
     // these are client-specfic only used internally
-    const localInternalParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
+    private localInternalParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
       {
         settingID: SettingKeys.fxActive,
         name: 'FX Active',
@@ -244,8 +250,9 @@ export class ModuleSettings {
       },
     ];
 
-    for (let i=0; i<menuParams.length; i++) {
-      const { settingID, ...settings} = menuParams[i];
+    private registerSettings(): void {
+    for (let i=0; i<this.menuParams.length; i++) {
+      const { settingID, ...settings} = this.menuParams[i];
       this.registerMenu(settingID, {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
@@ -254,8 +261,8 @@ export class ModuleSettings {
       });
     }
 
-    for (let i=0; i<localMenuParams.length; i++) {
-      const { settingID, ...settings} = localMenuParams[i];
+    for (let i=0; i<this.localMenuParams.length; i++) {
+      const { settingID, ...settings} = this.localMenuParams[i];
       this.registerMenu(settingID, {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
@@ -264,8 +271,8 @@ export class ModuleSettings {
       });
     }
 
-    for (let i=0; i<displayParams.length; i++) {
-      const { settingID, ...settings} = displayParams[i];
+    for (let i=0; i<this.displayParams.length; i++) {
+      const { settingID, ...settings} = this.displayParams[i];
       this.register(settingID, {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
@@ -275,8 +282,8 @@ export class ModuleSettings {
       });
     }
 
-    for (let i=0; i<localDisplayParams.length; i++) {
-      const { settingID, ...settings} = localDisplayParams[i];
+    for (let i=0; i<this.localDisplayParams.length; i++) {
+      const { settingID, ...settings} = this.localDisplayParams[i];
       this.register(settingID, {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
@@ -286,8 +293,8 @@ export class ModuleSettings {
       });
     }
 
-    for (let i=0; i<internalParams.length; i++) {
-      const { settingID, ...settings} = internalParams[i];
+    for (let i=0; i<this.internalParams.length; i++) {
+      const { settingID, ...settings} = this.internalParams[i];
       this.register(settingID, {
         ...settings,
         scope: 'world',
@@ -295,8 +302,8 @@ export class ModuleSettings {
       });
     }
 
-    for (let i=0; i<localInternalParams.length; i++) {
-      const { settingID, ...settings} = localInternalParams[i];
+    for (let i=0; i<this.localInternalParams.length; i++) {
+      const { settingID, ...settings} = this.localInternalParams[i];
       this.register(settingID, {
         ...settings,
         scope: 'client',
