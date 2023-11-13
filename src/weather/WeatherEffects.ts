@@ -141,38 +141,40 @@ class WeatherEffects {
   }
 
   public deactivateFX(): void {
-    switch (this._useFX) {
-      case 'core':
-        if (isClientGM()) {
-          getGame().scenes?.active?.update({ weather: '' });
-        }
-        break;
-      
-      case 'fxmaster':
-        // this isn't really safe because this is checking an internal setting but it's too easy to 
-        //    get out of sync with FX master, in which case attempting to turn something off may actually
-        //    add it instead
-        for (let i=0; i<this._activeFXMParticleEffects.length; i++) {
-          const effectName = this._activeFXMParticleEffects[i];
-
-          if (effectName in ((getGame().scenes?.active?.getFlag('fxmaster', 'effects') || []) as string[]))
-            Hooks.call('fxmaster.switchParticleEffect', { name: this._activeFXMParticleEffects[i] });
-        }
-        this.clearFXMParticleEffects();
+    if (isClientGM()) {
+      switch (this._useFX) {
+        case 'core':
+          if (isClientGM()) {
+            getGame().scenes?.active?.update({ weather: '' });
+          }
+          break;
         
-        for (let i=0; i<this._activeFXMFilterEffects.length; i++) {
-          const effectName = this._activeFXMFilterEffects[i];
+        case 'fxmaster':
+          // this isn't really safe because this is checking an internal setting but it's too easy to 
+          //    get out of sync with FX master, in which case attempting to turn something off may actually
+          //    add it instead
+          for (let i=0; i<this._activeFXMParticleEffects.length; i++) {
+            const effectName = this._activeFXMParticleEffects[i];
 
-          FXMASTER.filters.removeFilter(effectName);
-        }
-        this.clearFXMFilterEffects();
+            if (effectName in ((getGame().scenes?.active?.getFlag('fxmaster', 'effects') || []) as string[]))
+              Hooks.call('fxmaster.switchParticleEffect', { name: this._activeFXMParticleEffects[i] });
+          }
+          this.clearFXMParticleEffects();
+          
+          for (let i=0; i<this._activeFXMFilterEffects.length; i++) {
+            const effectName = this._activeFXMFilterEffects[i];
 
-        break;
+            FXMASTER.filters.removeFilter(effectName);
+          }
+          this.clearFXMFilterEffects();
 
-      case 'off':
-      default:
-        // do nothing
-    }     
+          break;
+
+        case 'off':
+        default:
+          // do nothing
+      }     
+    }
   }
 
   private addFXMParticleEffect(name: string): void {

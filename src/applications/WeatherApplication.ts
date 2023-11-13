@@ -351,16 +351,18 @@ _______________________________________
 
   // activate the given weather; save to settings, output to chat, display FX
   private activateWeather(weatherData: WeatherData): void {
-    // Output to chat if enabled
-    if (moduleSettings.get(SettingKeys.outputWeatherToChat)) {
-      outputWeather(weatherData);
+    if (isClientGM()) {
+      // Output to chat if enabled
+      if (moduleSettings.get(SettingKeys.outputWeatherToChat)) {
+        outputWeather(weatherData);
+      }
+
+      // activate special effects
+      weatherEffects.activateFX(weatherData);
+
+      // save 
+      moduleSettings.set(SettingKeys.lastWeatherData, this._currentWeather);        
     }
-
-    // activate special effects
-    weatherEffects.activateFX(weatherData);
-
-    // save 
-    moduleSettings.set(SettingKeys.lastWeatherData, this._currentWeather);        
   }
 
   // has the date part changed
