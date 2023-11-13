@@ -1,10 +1,16 @@
 # Change Log
 
+## v1.8.0 - Added scene control button to reopen dialog
+![](https://img.shields.io/badge/release%20date-November%2012%2C%202023-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.8.0/module.zip)
+
+Added button to "journal notes" menu to open the dialog after it's been closed.
+
 ## v1.7.3 - Nothing to see here
 ![](https://img.shields.io/badge/release%20date-November%2012%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.7.3/module.zip)
 
-More debugging support.
+More debugging support
 
 ## v1.7.2 - Fixed console error related to FXMaster on new scenes
 ![](https://img.shields.io/badge/release%20date-November%2012%2C%202023-blue)
