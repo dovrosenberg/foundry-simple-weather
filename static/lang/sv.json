@@ -13,7 +13,8 @@
       "useFXHelp": "Välj modulen som används för att visa specialeffekter. När den är aktiverad kan effekterna även stängas av manuellt vid behov.",
       "options": {
         "useFX.choices.off": "Inget",
-        "useFX.choices.core": "FoundryVTT-scenens väderinställning"
+        "useFX.choices.core": "FoundryVTT-scenens väderinställning",
+        "useFX.choices.fxmaster": "FX Master"
       }
     },
   
@@ -72,6 +73,7 @@
     },
 
     "labels": {
+      "openButton": "Open Simple Weather",
       "regenerateWeather": "Regenerera väder",
       "toggleWeatherBox": "Öppna/stäng väder",
       "toggleDateBox": "Öppna/stäng kalendern",
@@ -459,6 +461,10 @@
   },
 
   "missing translations":{
+    "labels": {
+      "openButton": "Open Simple Weather"
+    },
+    
     "keybindings": {
       "sweath.keybindings.toggle": "Display/hide window",
       "sweath.keybindings.toggleHelp": "Hide and then redisplay the entire window",

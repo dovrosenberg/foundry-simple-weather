@@ -87,7 +87,7 @@ Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
     if (noteControls && Object.prototype.hasOwnProperty.call(noteControls, "tools")) {
       noteControls.tools.push({
           name: "simple-weather",
-          title: "blah blah blah",   // "Open Simple Weather"--i18n
+          title: "sweath.labels.openButton",
           icon: "fas swr-icon",
           button: true,
           onClick: () => { weatherApplication.showWindow(); }

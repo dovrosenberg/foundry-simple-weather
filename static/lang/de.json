@@ -13,7 +13,8 @@
       "useFXHelp": "Wähle das Modul aus, welches die Spezial-/Wettereffekte darstellen soll. Wenn aktiviert, kann es bei Bedarf manuell ausgeschaltet werden.",
       "options": {
         "useFX.choices.off": "Aus",
-        "useFX.choices.core": "FoundryVTT-Szenenwettereinstellung"
+        "useFX.choices.core": "FoundryVTT-Szenenwettereinstellung",
+        "useFX.choices.fxmaster": "FX Master"
       }
     },
 
@@ -72,6 +73,7 @@
     },
 
     "labels": {
+      "openButton": "Open Simple Weather",
       "regenerateWeather": "Wetter neu generieren",
       "toggleWeatherBox": "Öffne/Schließe die Wetteranzeige",
       "toggleDateBox": "Öffne/Schließe den Kalendar",
@@ -456,5 +458,10 @@
         }
       }
     }    
+  },
+  "missing": {
+    "labels": {
+      "openButton": "Open Simple Weather"
+    } 
   }
 }

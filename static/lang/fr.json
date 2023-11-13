@@ -13,7 +13,8 @@
       "useFXHelp": "Sélectionnez le module à utiliser pour afficher les effets spéciaux.  Lorsqu'ils sont activés, les effets peuvent également être désactivés manuellement en cas de besoin.",
       "options": {
         "useFX.choices.off": "Désactivé",
-        "useFX.choices.core": "FoundryVTT paramètres de la scène et de la météo"
+        "useFX.choices.core": "FoundryVTT paramètres de la scène et de la météo",
+        "useFX.choices.fxmaster": "FX Master"
       }
     },
 
@@ -72,6 +73,7 @@
     },
 
     "labels": {
+      "openButton": "Open Simple Weather",
       "regenerateWeather": "Régénérer la météo",
       "toggleWeatherBox": "Ouvrir/fermer climat",
       "toggleDateBox": "Ouvrir/fermer calendrier",
@@ -456,5 +458,10 @@
         }
       }
     }
+  },
+  "missing": {
+    "labels": {
+      "openButton": "Open Simple Weather"
+    } 
   }
 }

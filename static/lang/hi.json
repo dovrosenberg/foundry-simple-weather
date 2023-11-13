@@ -13,7 +13,8 @@
       "useFXHelp": "विशेष प्रभाव प्रदर्शन करते समय उपयोग करने के लिए मॉड्यूल का चयन करें। जब आवश्यक हो तो प्रभाव को भी मैन्युअल रूप से बंद किया जा सकता है।",
       "options": {
         "useFX.choices.off": "कोई नहीं",
-        "useFX.choices.core": "FoundryVTT सीन मौसम सेटिंग"
+        "useFX.choices.core": "FoundryVTT सीन मौसम सेटिंग",
+        "useFX.choices.fxmaster": "FX Master"
       }
     },
 
@@ -72,6 +73,7 @@
     },
 
     "labels": {
+      "openButton": "Open Simple Weather",
       "regenerateWeather": "मौसम पुनर्जन्म दें",
       "toggleWeatherBox": "मौसम खोलें/बंद करें",
       "toggleDateBox": "कैलेंडर खोलें/बंद करें",
@@ -465,6 +467,11 @@
       },
       "manualWeather": {
         "select": "Select new weather"
+      },
+      "useFX": {
+        "choices": {
+          "fxmaster": "FX Master"
+        }
       }
     },
     
@@ -482,6 +489,7 @@
     },
 
     "labels": {
+      "openButton": "Open Simple Weather",
       "toggleManualBar": "Open/close manual weather selection",
       "manualPause": "Pause updates?",
       "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)",

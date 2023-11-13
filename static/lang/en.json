@@ -73,6 +73,7 @@
     },
 
     "labels": {
+      "openButton": "Open Simple Weather",
       "regenerateWeather": "Regenerate weather",
       "toggleWeatherBox": "Open/close weather",
       "toggleDateBox": "Open/close calendar",
@@ -459,6 +460,5 @@
     }
   },
   "missing": [
-    "sweath.settings.options.useFX.choices.fxmaster"
   ]
 }
