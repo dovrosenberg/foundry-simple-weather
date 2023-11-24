@@ -66,9 +66,20 @@ When players go inside, you can easily toggle the fx on/off temporarily using th
 ### Keybindings
 There are keybinding options under "Configure Controls" in the main Foundry Game Settings section.  You can toggle the whole window on/off, regenerate weather, pause automatic changes to the weather, and toggle weather effects on/off.  Note that these keybindings work even when the window is hidden.  So you can in theory run the whole weather system while the window is hidden (autogenerating weather by calendar, manually generating new weather, turning effects on/off).
 
-## Support
+## Known Issue
+Some people occasionally have issues where the box will disappear and won't come back.  We haven't been able to consistently reproduce it, and I suspect it's a conflict with another module somehow.  If this happens to you, though, for now the workaround is to open your browser console (usually f12) and run this command to reset the window position: 
+
+`game.settings.set('simple-weather', 'windowPosition', { bottom: 100, left: 100})`
+
+Then refresh (F5).  That should make the window reappear.  If that doesn't work (or if anyone can find a way to reproduce this consistently) please create an issue report.  
+
+## Problems?
 
 If you believe you found a bug or would like to post a feature request, head over to the module's [Github repo](https://github.com/dovrosenberg/foundry-simple-weather) and [open a new issue](https://github.com/dovrosenberg/foundry-simple-weather/issues/new/choose).
+
+## Support
+
+I'm happy to do this for free, as I primarily work on things I like to use myself.  But if you'd like to [buy me a root beer](https://ko-fi.com/phloro), I love knowing that people are using my projects and like them enough to make the effort. It's really appreciated!  
 
 
 ## Credits
