@@ -1,6 +1,11 @@
 # Change Log
 
-## v1.8.0 - Added scene control button to reopen dialog
+## v1.8.1 - Fixed "sync to calendar" setting not saving between sessions
+![](https://img.shields.io/badge/release%20date-December%2026%2C%202023-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.8.0/module.zip)
+
+Added button to "journal notes" menu to open the dialog after it's been closed.
+## v1.8.0 - Added scene control button to reopen dialog1
 ![](https://img.shields.io/badge/release%20date-November%2012%2C%202023-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.8.0/module.zip)
 
