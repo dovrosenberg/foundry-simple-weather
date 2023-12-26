@@ -98,8 +98,6 @@ Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
 
 // called after simple calendar is fully loaded
 Hooks.once('renderMainApp', async () => {
-  weatherApplication.ready();
-
   log(false, 'simple-calendar-ready');
 
   // it's possible this gets called but the version # is too low - just ignore in that case
@@ -115,11 +113,17 @@ Hooks.once('renderMainApp', async () => {
     // modify the drop-downs
     allowSeasonSync();
 
+    // check the setting to see if we should be in sync mode (because if we did initial render before getting here, 
+    //    it will have cleared it)
+    weatherApplication.ready();
+
     // add the datetime change hook - we don't use SimpleCalendar.Hooks.DateTimeChange 
     //    because it doesn't call the hook on player clients
     Hooks.on('updateWorldTime', (timestamp) => {
       weatherApplication.updateDateTime(SimpleCalendar.api.timestampToDate(timestamp));
     });
+  } else {
+    weatherApplication.ready();
   }
 });
 

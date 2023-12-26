@@ -64,7 +64,11 @@ class WeatherApplication extends Application {
     // this could happen if we had sync on but then uninstalled calendar and reloaded
     if (!this._calendarPresent && this._currentSeasonSync) {
       this._currentSeasonSync = false;
-      moduleSettings.set(SettingKeys.seasonSync, false);
+
+      // don't update the setting because a) no need... will update if anything changes anyway, and b)
+      //    this may be called before the calendar is loaded so we don't want to overwrite it (it will
+      //    get requeried later)
+      //moduleSettings.set(SettingKeys.seasonSync, false);
     }
 
     super.render(force);
@@ -151,7 +155,6 @@ isGM: ${isClientGM()}
 displayOptions: ${JSON.stringify(this._displayOptions, null, 2)}
 dialogDisplay: ${moduleSettings.get(SettingKeys.dialogDisplay)}
 windowPosition: ${JSON.stringify(this._windowPosition, null, 2)}
-currentlyHidden: ${this._currentlyHidden}
 calendarPresent: ${this._calendarPresent}
 manualPause: ${this._manualPause}
 currentlyHidden: ${this._currentlyHidden}
@@ -227,10 +230,11 @@ _______________________________________
       html.find('#climate-selection').val(this._currentClimate);
       html.find('#humidity-selection').val(this._currentHumidity);
       
-      if (this._currentSeasonSync)
+      if (this._currentSeasonSync) {
         html.find('#season-selection').val('sync');
-      else
+      } else {
         html.find('#season-selection').val(this._currentSeason);
+      }
 
       html.find('#biome-selection').val(this._currentBiome);  // do this last, because setting climate/humidity clears it
 
@@ -310,9 +314,9 @@ _______________________________________
       const season = this.getSeason();
 
       this._currentWeather = generate(
-        this._currentClimate!==null ? this._currentClimate : Climate.Temperate, 
-        this._currentHumidity!==null ? this._currentHumidity : Humidity.Modest, 
-        season!==null ? season : Season.Spring, 
+        this._currentClimate ?? Climate.Temperate, 
+        this._currentHumidity ?? Humidity.Modest, 
+        season ?? Season.Spring, 
         currentDate,
         this._currentWeather || null
       );

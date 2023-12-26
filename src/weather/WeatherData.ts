@@ -49,7 +49,7 @@ export class WeatherData {
   };
 
   public getDescription = (): string => {  
-    if (this.climate===null || this.humidity===null  || this.hexFlowerCell===null ||
+    if (this.climate===null || this.humidity===null || this.hexFlowerCell===null ||
         this.climate===undefined || this.humidity===undefined  || this.hexFlowerCell===undefined)
       return '';
 
