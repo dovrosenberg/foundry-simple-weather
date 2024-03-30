@@ -145,3 +145,26 @@ function checkDependencies() {
   }
 }
 
+Hooks.once(SimpleCalendar.Hooks.Init, async () => {
+  // check the setting to see if we want to dock
+
+  // if so, register the sidepanel
+
+  // Adding a button that should show a side panel
+  // Clicking the button will show a side panel that will have the title "My Custom Button"
+  SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", true, populateSidePanel);
+
+});
+
+// this function displays just the weather panel inside of the element passed in
+// used when we're attaching as a side panel to simple weather
+// this is called just one time - not when it opens/closes
+const populateSidePanel = async (_event: Event | null, element: HTMLElement | null | undefined) => {
+  if(element) {
+    const app = new WeatherApplication();
+    const template = await renderTemplate(`modules/${moduleJson.id}/templates/weather-dialog.hbs`, app.getData());
+
+    element.innerHTML = template;
+  }
+}
+
