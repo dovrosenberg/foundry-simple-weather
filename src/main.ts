@@ -76,8 +76,7 @@ Hooks.on('updateSetting', async (setting: Setting) => {
 });
 
 // add the button to re-open the app
-Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
-  debugger;
+Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
   if (isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)) {
     // find the journal notes 
     const noteControls = controls.find((c) => {
@@ -85,8 +84,8 @@ Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
     });
 
     // add our own button
-    if (noteControls && Object.prototype.hasOwnProperty.call(noteControls, "tools")) {
-      noteControls.tools.push({
+    if (noteControls && noteControls.tools) {
+      noteControls.tools.push({ 
           name: "simple-weather",
           title: "sweath.labels.openButton",
           icon: "fas swr-icon",

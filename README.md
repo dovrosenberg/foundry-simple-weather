@@ -33,6 +33,9 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
 
 ![Main UI](https://i.imgur.com/8tmHSFu.png)
 
+### Hide/diplay dialog
+You can set a keybinding (see below) to toggle the window on/off.  You can also hide the whole thing using the 'x' on the weather box.  Once hidden, if you don't have a keybinding set, you can also re-open it via the Simple Weather button under the journal notes scene control menu.
+
 ### Biomes/Climate/Humidity 
 
 Selecting a biome will automatically pick the climate and humidity to match - providing an easy way to pick standard Earth biomes.  But you can also
