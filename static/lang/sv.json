@@ -11,6 +11,8 @@
       "publicChatHelp": "Ska alla se väderchatten (om den är på) eller bara GM (om den är avstängd)?",
       "useFX": "Visa specialeffekter?",
       "useFXHelp": "Välj modulen som används för att visa specialeffekter. När den är aktiverad kan effekterna även stängas av manuellt vid behov.",
+      "attachToCalendar": "Attach to Simple Calendar?",
+      "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
       "options": {
         "useFX.choices.off": "Inget",
         "useFX.choices.core": "FoundryVTT-scenens väderinställning",
@@ -464,7 +466,12 @@
     "labels": {
       "openButton": "Open Simple Weather"
     },
-    
+
+    "settings": {
+      "attachToCalendar": "Attach to Simple Calendar?",
+      "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
+    },
+
     "keybindings": {
       "sweath.keybindings.toggle": "Display/hide window",
       "sweath.keybindings.toggleHelp": "Hide and then redisplay the entire window",

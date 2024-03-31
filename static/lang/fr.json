@@ -11,6 +11,8 @@
       "publicChatHelp": "Tout le monde doit-il voir le chat météo (s'il est activé) ou seulement le GM (s'il est désactivé) ?",
       "useFX": "Afficher les effets spéciaux ?",
       "useFXHelp": "Sélectionnez le module à utiliser pour afficher les effets spéciaux.  Lorsqu'ils sont activés, les effets peuvent également être désactivés manuellement en cas de besoin.",
+      "attachToCalendar": "Attach to Simple Calendar?",
+      "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
       "options": {
         "useFX.choices.off": "Désactivé",
         "useFX.choices.core": "FoundryVTT paramètres de la scène et de la météo",
@@ -460,6 +462,11 @@
     }
   },
   "missing": {
+    "settings": {
+      "attachToCalendar": "Attach to Simple Calendar?",
+      "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
+    },
+
     "labels": {
       "openButton": "Open Simple Weather"
     } 

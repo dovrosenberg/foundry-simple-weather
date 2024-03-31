@@ -7,7 +7,7 @@ import { getGame, isClientGM } from '@/utils/game';
 import { log } from './utils/log';
 import { allowSeasonSync, Climate, Humidity, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
 import { initializeLocalizedText as initializeLocalizedWeatherText } from '@/weather/weatherMap';
-import { updateWeatherApplication, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
+import { updateWeatherDisplay, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
 import { updateWeatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
 import { KeyBindings } from '@/settings/KeyBindings';
 import moduleJson from '@module';
@@ -30,7 +30,7 @@ Hooks.once('init', async () => {
   // initialize settings first, so other things can use them
   updateModuleSettings(new ModuleSettings());
   updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
-  updateWeatherApplication(new WeatherApplication());
+  updateWeatherDisplay(new WeatherApplication());
 
   // register keybindings
   KeyBindings.register();
@@ -77,6 +77,7 @@ Hooks.on('updateSetting', async (setting: Setting) => {
 
 // add the button to re-open the app
 Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
+  debugger;
   if (isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)) {
     // find the journal notes 
     const noteControls = controls.find((c) => {
