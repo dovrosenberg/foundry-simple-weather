@@ -69,12 +69,16 @@ When players go inside, you can easily toggle the fx on/off temporarily using th
 ### Keybindings
 There are keybinding options under "Configure Controls" in the main Foundry Game Settings section.  You can toggle the whole window on/off, regenerate weather, pause automatic changes to the weather, and toggle weather effects on/off.  Note that these keybindings work even when the window is hidden.  So you can in theory run the whole weather system while the window is hidden (autogenerating weather by calendar, manually generating new weather, turning effects on/off).
 
-## Known Issue
+## Known Issues
+### Missing box (in non-attached mode)
 Some people occasionally have issues where the box will disappear and won't come back.  We haven't been able to consistently reproduce it, and I suspect it's a conflict with another module somehow.  If this happens to you, though, for now the workaround is to open your browser console (usually f12) and run this command to reset the window position: 
 
 `game.settings.set('simple-weather', 'windowPosition', { bottom: 100, left: 100})`
 
 Then refresh (F5).  That should make the window reappear.  If that doesn't work (or if anyone can find a way to reproduce this consistently) please create an issue report.  
+
+### Missing box (in attached mode)
+Sometimes when you have another Simple Calendar side tab open and you try to switch to the weather tab, it will close the other tab but not show the weather.  The workaround is just to hit the weather button again.
 
 ## Problems?
 

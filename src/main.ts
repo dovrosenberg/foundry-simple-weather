@@ -77,6 +77,10 @@ Hooks.on('updateSetting', async (setting: Setting) => {
 
 // add the button to re-open the app
 Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
+  // if in attach mode, don't need it
+  if (weatherApplication.attachedMode)
+    return;
+
   if (isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)) {
     // find the journal notes 
     const noteControls = controls.find((c) => {

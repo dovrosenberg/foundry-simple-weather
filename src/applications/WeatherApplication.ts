@@ -71,6 +71,8 @@ class WeatherApplication extends Application {
     this._attachedMode = true;
   }
 
+  public get attachedMode() { return this._attachedMode; }
+
   // window options; called by parent class
   static get defaultOptions() {
     const options = super.defaultOptions;
@@ -184,6 +186,21 @@ class WeatherApplication extends Application {
 
       // buttons
       html.find('#swr-submit-weather').on('click', this.onSubmitWeatherClick);
+
+      // watch for sc calendar to open a different panel
+      if (this._attachedMode && !this._attachmodeHidden) {
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (mutation.attributeName === 'class' && $(mutation.target).hasClass('fsc-c') && $(mutation.target).hasClass('fsc-mf')) {
+                // Class 'fsc-c' has been added to the div, so turn off ours
+                this._attachmodeHidden = true;
+                $('#swr-fsc-container').remove();
+            }
+          });
+        });
+        var target = $('#fsc-ng .window-content .fsc-pf .fsc-qf')[0];
+        observer.observe(target, { attributes: true, childList: true, subtree: true });
+      }
     }
 
     // handle window drag
@@ -681,8 +698,12 @@ _______________________________________
     $('#swr-fsc-container').remove();
 
     if (this._attachedMode && !this._attachmodeHidden) {
+      // turn off any existing calendar panels
+      $('#fsc-ng .window-content .fsc-qf .fsc-mf.fsc-b').addClass('fsc-c').removeClass('fsc-b');
+
       // attach to the calendar
       $('#fsc-ng .window-content .fsc-qf .fsc-mf.fsc-c').last().append(html);
+
       html.hide().fadeIn(200);
     } else if (!this._attachedMode) {
       $('body').append(html);
