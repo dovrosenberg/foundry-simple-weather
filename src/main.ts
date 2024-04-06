@@ -154,8 +154,10 @@ Hooks.once(SimpleCalendar.Hooks.Init, async () => {
   // if so, register the sidepanel
 
   // Adding a button that should show a side panel - only in attach mode
-  if (moduleSettings.get(SettingKeys.attachToCalendar))
-    SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", true, populateSidePanel);
+  if (moduleSettings.get(SettingKeys.attachToCalendar)) {
+    SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", false, populateSidePanel);
+    weatherApplication.attachToCalendar();
+  }
 });
 
 // this function displays just the weather panel inside of the element passed in
@@ -165,8 +167,6 @@ const populateSidePanel = async (_event: Event | null, element: HTMLElement | nu
   // if we're not in the attach mode, something is bad
   if (!moduleSettings.get(SettingKeys.attachToCalendar)) throw new Error('Simple Weather: populateSidePanel called but not in attach mode');
 
-  if(element) {
-    await weatherApplication.attachToElement(element);
-  }
+  weatherApplication.toggleAttachModeHidden();
 }
 

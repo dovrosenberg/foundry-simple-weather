@@ -23,11 +23,11 @@ function updateWeatherApplication(weatherApp: WeatherApplication): void {
 }
 
 class WeatherApplication extends Application {
-  private _attachedElement: HTMLElement;  // when attached to calendar, this is the parent element
   private _currentWeather: WeatherData;
   private _displayOptions: DisplayOptions;
   private _calendarPresent = false;   // is simple calendar present?
   private _manualPause = false;
+  private _attachedMode = false;
 
   private _currentClimate: Climate;
   private _currentHumidity: Humidity;
@@ -38,6 +38,7 @@ class WeatherApplication extends Application {
   private _windowDragHandler = new WindowDrag();
   private _windowPosition: WindowPosition;
   private _currentlyHidden = false;  // for toggling... we DO NOT save this state
+  private _attachmodeHidden = true;   // like _currentlyHidden but have to track separately because that's for managing ready state not popup state
 
   constructor() {
     super();
@@ -64,6 +65,10 @@ class WeatherApplication extends Application {
     this.checkSeasonSync();
 
     super.render(force);
+  }
+
+  public attachToCalendar() {
+    this._attachedMode = true;
   }
 
   // window options; called by parent class
@@ -96,17 +101,18 @@ class WeatherApplication extends Application {
       manualSelections: manualSelections,
 
       displayOptions: this._displayOptions,
-      hideCalendar: this._attachedElement || !this._calendarPresent || !this._displayOptions.dateBox,
-      hideCalendarToggle: this._attachedElement || !this._calendarPresent,
-      hideWeather: !this._attachedElement && this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
+      hideCalendar: this._attachedMode || !this._calendarPresent || !this._displayOptions.dateBox,
+      hideCalendarToggle: this._attachedMode || !this._calendarPresent,
+      hideWeather: !this._attachedMode && this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
       hideFXToggle: !weatherEffects.useFX,
       manualPause: this._manualPause,
       fxActive: weatherEffects.fxActive,
       useCelsius: moduleSettings.get(SettingKeys.useCelsius),
-      attachedMode: this._attachedElement ? true : false,
-      windowPosition: this._attachedElement ? { bottom: 0, left: 0 } : this._windowPosition,
-      containerPosition: this._attachedElement ? 'relative' : 'fixed',
-      hideDialog: this._attachedElement ? false : this._currentlyHidden || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
+      attachedMode: this._attachedMode,
+      showAttached: this._attachedMode && !this._attachmodeHidden,
+      windowPosition: this._attachedMode ? { bottom: 0, left: 0 } : this._windowPosition,
+      containerPosition: this._attachedMode ? 'relative' : 'fixed',
+      hideDialog: this._attachmodeHidden || this._currentlyHidden || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
     };
     //log(false, data);
 
@@ -126,6 +132,11 @@ class WeatherApplication extends Application {
 
   public toggleWindow(): void {
     this._currentlyHidden = !this._currentlyHidden;
+    this.render();
+  }
+
+  public toggleAttachModeHidden(): void {
+    this._attachmodeHidden = !this._attachmodeHidden;
     this.render();
   }
 
@@ -418,11 +429,6 @@ _______________________________________
     this.render();
   }
 
-  public async attachToElement(element: HTMLElement): Promise<void> {
-    this._attachedElement = element;
-    this.render(true);
-  }
-
   // activate the given weather; save to settings, output to chat, display FX
   private activateWeather(weatherData: WeatherData): void {
     if (isClientGM()) {
@@ -671,13 +677,17 @@ _______________________________________
 
   // override this function to handle the element case
   override _injectHTML(html: JQuery<HTMLElement>) {
-    if (this._attachedElement)
-      $(this._attachedElement).append(html);
-    else
-      $("body").append(html);
-    
-    this._element = html;
-    html.hide().fadeIn(200);
+    // remove any old one
+    $('#swr-fsc-container').remove();
+
+    if (this._attachedMode && !this._attachmodeHidden) {
+      // attach to the calendar
+      $('#fsc-ng .window-content .fsc-qf .fsc-mf.fsc-c').last().append(html);
+      html.hide().fadeIn(200);
+    } else if (!this._attachedMode) {
+      $('body').append(html);
+      html.hide().fadeIn(200);
+    }    
   }
 }
 
