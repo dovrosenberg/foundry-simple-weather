@@ -7,7 +7,7 @@ import { getGame, isClientGM } from '@/utils/game';
 import { log } from './utils/log';
 import { allowSeasonSync, Climate, Humidity, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
 import { initializeLocalizedText as initializeLocalizedWeatherText } from '@/weather/weatherMap';
-import { updateWeatherDisplay, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
+import { updateWeatherApplication, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
 import { updateWeatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
 import { KeyBindings } from '@/settings/KeyBindings';
 import moduleJson from '@module';
@@ -30,7 +30,7 @@ Hooks.once('init', async () => {
   // initialize settings first, so other things can use them
   updateModuleSettings(new ModuleSettings());
   updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
-  updateWeatherDisplay(new WeatherApplication());
+  updateWeatherApplication(new WeatherApplication());
 
   // register keybindings
   KeyBindings.register();
@@ -65,7 +65,7 @@ Hooks.once('i18nInit', async () => {
   initializeLocalizedWeatherText();
 
   // rerender weather
-  if (weatherApplication)
+  if (weatherApplication && weatherApplication instanceof Application)
     weatherApplication.render();
 });
 
@@ -90,7 +90,10 @@ Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
           title: "sweath.labels.openButton",
           icon: "fas swr-icon",
           button: true,
-          onClick: () => { weatherApplication.showWindow(); }
+          onClick: () => {   
+            if (weatherApplication && weatherApplication instanceof Application)
+              weatherApplication.showWindow(); 
+          }
       });
     }
 }
@@ -150,21 +153,20 @@ Hooks.once(SimpleCalendar.Hooks.Init, async () => {
 
   // if so, register the sidepanel
 
-  // Adding a button that should show a side panel
-  // Clicking the button will show a side panel that will have the title "My Custom Button"
-  SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", true, populateSidePanel);
-
+  // Adding a button that should show a side panel - only in attach mode
+  if (moduleSettings.get(SettingKeys.attachToCalendar))
+    SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", true, populateSidePanel);
 });
 
 // this function displays just the weather panel inside of the element passed in
 // used when we're attaching as a side panel to simple weather
 // this is called just one time - not when it opens/closes
 const populateSidePanel = async (_event: Event | null, element: HTMLElement | null | undefined) => {
-  if(element) {
-    const app = new WeatherApplication();
-    const template = await renderTemplate(`modules/${moduleJson.id}/templates/weather-dialog.hbs`, app.getData());
+  // if we're not in the attach mode, something is bad
+  if (!moduleSettings.get(SettingKeys.attachToCalendar)) throw new Error('Simple Weather: populateSidePanel called but not in attach mode');
 
-    element.innerHTML = template;
+  if(element) {
+    await weatherApplication.attachToElement(element);
   }
 }
 

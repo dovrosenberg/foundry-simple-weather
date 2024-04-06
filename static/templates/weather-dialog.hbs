@@ -1,4 +1,4 @@
-<div id="swr-container" {{#if hideDialog}}style="display:none"{{/if}} style="bottom:{{windowPosition.bottom}}px; left:{{windowPosition.left}}px;">
+<div id="swr-container" {{#if hideDialog}}style="display:none"{{/if}} style="bottom:{{windowPosition.bottom}}px; left:{{windowPosition.left}}px; position: {{containerPosition}};">
 	<div id="swr-wrapper">
 		<div id="swr-calendar-box" {{#if hideCalendar}}style="display:none"{{/if}}>
 
@@ -38,13 +38,15 @@
 		<div id="swr-weather-box" class="{{#unless isGM}}swr-player-box{{/unless}}" {{#if hideWeather}}style="display:none"{{/if}}>
 			<div id="swr-weather-container">
 				<header>
-					<div class="swr-top-bar">
-						<div id="swr-calendar-move-handle" style="flex:1 1 80%">&nbsp;</div>
+					{{#unless attachedMode }}
+						<div class="swr-top-bar">
+							<div id="swr-calendar-move-handle" style="flex:1 1 80%">&nbsp;</div>
 
-						<a style="margin: 0 4px 0 4px;">
-	            <i id="swr-close-button" class="fas fa-times"></i>
-        		</a>
-					</div>
+							<a style="margin: 0 4px 0 4px;">
+								<i id="swr-close-button" class="fas fa-times"></i>
+							</a>
+						</div>
+					{{/unless}}
 
 					{{#if isGM}}
 						<div id="swr-manual-bar" class="swr-optional-bar {{#if displayOptions.manualBar}}swr-display-bar{{/if}}">
