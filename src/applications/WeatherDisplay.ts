@@ -1,16 +1,3 @@
-// this contains most of the logic for WeatherApplication, but has been pulled out so that it
-//    can be used to support simple calendar attachment mode
-
-import { log } from '@/utils/log';
-import { WeatherData } from '@/weather/WeatherData';
-import { seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings } from '@/weather/climateData';
-import { manualSelections, weatherDescriptions } from '@/weather/weatherMap';
-import { SettingKeys } from '@/settings/ModuleSettings';
-import { isClientGM } from '@/utils/game';
-import { generate, outputWeather, createManual, createSpecificWeather } from '@/weather/weatherGenerator';
-import { moduleSettings } from '@/settings/ModuleSettings';
-import { weatherEffects } from '@/weather/WeatherEffects';
-import { DisplayOptions } from '@/types/DisplayOptions';
 
 class WeatherDisplay {
   private _applicationRender: (force?: boolean) => void;  // if we're displayed in an application, this lets us call render
@@ -147,7 +134,7 @@ _______________________________________
     // save
     moduleSettings.set(SettingKeys.displayOptions, this._displayOptions);
 
-    this._applicationRender();
+    this.render();
   }
 
   // called by the parent class to attach event handlers after window is rendered
@@ -213,7 +200,7 @@ _______________________________________
       this._currentWeather.date = currentDate;
     }
 
-    this._applicationRender();
+    this.render();
   }
 
   // called from outside, to load the last weather from the settings
@@ -232,7 +219,7 @@ _______________________________________
       this.generateWeather(null);
     }
 
-    this._applicationRender();
+    this.render();
   }
 
   // generate weather based on drop-down settings, store locally and update db
@@ -263,7 +250,7 @@ _______________________________________
     if (result) {
       this._currentWeather = result;
       this.activateWeather(this._currentWeather);
-      this._applicationRender();
+      this.render();
     }
   }
 
@@ -277,7 +264,7 @@ _______________________________________
     if (result) {
       this._currentWeather = result;
       this.activateWeather(this._currentWeather);
-      this._applicationRender();
+      this.render();
     }
   }
 
@@ -285,7 +272,26 @@ _______________________________________
   public activateCalendar(): void {
     this._calendarPresent = true;
 
-    this._applicationRender();
+    this.render();
+  }
+
+  public render(force?: boolean): void {
+    // if we have an application to render, do that
+    if (this._applicationRender) {
+      this._applicationRender(force);
+    } else if (!moduleSettings.get(SettingKeys.attachToCalendar)) {
+      // render 
+      // const template = await renderTemplate(`modules/${moduleJson.id}/templates/weather-dialog.hbs`, this.getData());
+
+      // this._element.innerHTML = template;
+    } else {
+      throw new Error('Attempting to rneder WeatherDisplay with no applicationRender and not attached')
+    }
+  }
+
+  public async attachToElement(element: HTMLElement): Promise<void> {
+    this._element = element;
+    this.render(true);
   }
 
   // activate the given weather; save to settings, output to chat, display FX
@@ -358,7 +364,7 @@ _______________________________________
     if (isClientGM()) {
       this.generateWeather(this._currentWeather?.date || null);
       moduleSettings.set(SettingKeys.lastWeatherData, this._currentWeather);        
-      this._applicationRender();
+      this.render();
     }
   }
 
@@ -377,7 +383,7 @@ _______________________________________
     moduleSettings.set(SettingKeys.season, this._currentSeason);
 
     // render to update the icon
-    this._applicationRender();
+    this.render();
   };
 
   private onClimateSelectChange = (event): void => {
@@ -452,7 +458,7 @@ _______________________________________
         })
       }
 
-      this._applicationRender();
+      this.render();
     }
   }
 
