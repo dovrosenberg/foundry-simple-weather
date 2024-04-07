@@ -266,7 +266,8 @@
 } 
 
 // hide the background of the simple calendar side panel
-.simple-calendar.window-app .fsc-mf:has(> #swr-container) { 
+// NOTE!!! This needs to be replaced with new replacement class = SC_CLASS_FOR_TAB_WRAPPER
+.simple-calendar.window-app .fsc-nf:has(> #swr-container) { 
   background-color: transparent !important;
   border: none !important;
   border-image: none !important;

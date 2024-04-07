@@ -1,6 +1,12 @@
 # Change Log
 
+## v1.9.3 - More bug fixes for display issues with Simple Calendar attachment
+#### Support for Simple Calendar v2.4.13
+![](https://img.shields.io/badge/release%20date-April%2007%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.9.3/module.zip)
+
 ## v1.9.2 - More bug fixes for display issues with Simple Calendar attachment
+#### Support for Simple Calendar v2.4.3
 ![](https://img.shields.io/badge/release%20date-April%2007%2C%202024-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.9.2/module.zip)
 

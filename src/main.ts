@@ -15,10 +15,12 @@ import moduleJson from '@module';
 // track which modules we have
 let simpleCalendarInstalled = false;
 
+const SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER = 'fsc-pj';  // no dot in the front
+
 // how do we decide what mode we're in and whether its visible or not?
 // 1. look to the attachment setting - this controls whether we're in attached mode or not; 
 //      if it's turned on but simple calendar can't be found, you're out of luck...
-//     a. we assume it's not compact mode until we see otherwise (by presence of div..fsc-oj)
+//     a. we assume it's not compact mode until we see otherwise (by presence of div.SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER)
 // 2. if we're not in attached mode, we:
 //     a.  load the settings from last time to determine the location and visibility
 //     b.  add the button to the journal notes to turn it on
@@ -166,9 +168,9 @@ Hooks.once(SimpleCalendar.Hooks.Init, async () => {
     // we also need to watch for when the calendar is rendered because in compact mode we
     //    have to inject the button 
     Hooks.on('renderMainApp', (_application: Application, html: JQuery<HTMLElement>) => {
-      // if fsc-oj div exists then it's in compact mode
+      // if SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER div exists then it's in compact mode
       // in compact mode, there's no api to add a button, so we monkeypatch one in
-      const compactMode = html.find('.fsc-oj').length>0;
+      const compactMode = html.find(`.${SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER}`).length>0;
       if (compactMode) {
         weatherApplication.setCompactMode(true);
 
@@ -183,7 +185,9 @@ Hooks.once(SimpleCalendar.Hooks.Init, async () => {
           `;
 
           // add the button   
-          html.find('.fsc-oj').append(newButton);
+          // note: how to find the new class when new SC release comes out?
+          //   it's the div that wraps the small buttons in the top left in compact mode
+          html.find(`.${SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER}`).append(newButton);
 
           html.find('#swr-fsc-compact-open').on('click',() => {
             weatherApplication.toggleAttachModeHidden();

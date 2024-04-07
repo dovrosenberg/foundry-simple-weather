@@ -22,6 +22,13 @@ function updateWeatherApplication(weatherApp: WeatherApplication): void {
   weatherApplication = weatherApp;
 }
 
+// classes for Simple Calendar injection
+// no  dot or # in front
+const SC_CLASS_FOR_TAB_EXTENDED = 'fsc-c';    // open the search panel and find the siblings that are the panels and see what the different code is on search
+const SC_CLASS_FOR_TAB_CLOSED = 'fsc-d';    // look at the other siblings or close search and see what changes
+const SC_CLASS_FOR_TAB_WRAPPER = 'fsc-nf';   // the siblings that are tabs all have it
+const SC_ID_FOR_WINDOW_WRAPPER = 'fsc-og';  // it's the top-level one with classes app, window-app, simple-calendar
+
 class WeatherApplication extends Application {
   private _currentWeather: WeatherData;
   private _displayOptions: DisplayOptions;
@@ -118,6 +125,7 @@ class WeatherApplication extends Application {
       useCelsius: moduleSettings.get(SettingKeys.useCelsius),
       attachedMode: this._attachedMode,
       showAttached: this._attachedMode && !this._attachmodeHidden,
+      SCContainerClasses: !this._attachedMode ? '' : `${SC_CLASS_FOR_TAB_WRAPPER} sc-right ${SC_CLASS_FOR_TAB_EXTENDED}`,
       windowPosition: this._attachedMode ? { bottom: 0, left: 0 } : this._windowPosition,
       containerPosition: this._attachedMode ? 'relative' : 'fixed',
       hideDialog: (this._attachedMode && this._attachmodeHidden) || this._currentlyHidden || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
@@ -199,12 +207,12 @@ class WeatherApplication extends Application {
       html.find('#swr-submit-weather').on('click', this.onSubmitWeatherClick);
 
       // watch for sc calendar to open a different panel
-      if (this._attachedMode && !this._compactMode) {
+      if (this._attachedMode) {
         const observer = new MutationObserver((mutations) => {
           mutations.forEach((mutation) => {
-            if (mutation.attributeName === 'class' && $(mutation.target).hasClass('fsc-c') && 
-                $(mutation.target).hasClass('fsc-mf') && ((mutation.target as HTMLElement).id!='swr-fsc-container')) {
-                // Class 'fsc-c' has been added to another panel (opening it), so turn off ours
+            if (mutation.attributeName === 'class' && $(mutation.target).hasClass(SC_CLASS_FOR_TAB_EXTENDED) && 
+                $(mutation.target).hasClass(SC_CLASS_FOR_TAB_WRAPPER) && ((mutation.target as HTMLElement).id!='swr-fsc-container')) {
+                // Class SC_CLASS_FOR_TAB_EXTENDED has been added to another panel (opening it), so turn off ours
                 this._attachmodeHidden = true;
                 $('#swr-fsc-container').remove();
             }
@@ -212,7 +220,7 @@ class WeatherApplication extends Application {
         });
 
         // attach the observer to the right element
-        const element: JQuery<HTMLElement> | HTMLElement = $('#fsc-ng .window-content .fsc-pf .fsc-qf');
+        const element: JQuery<HTMLElement> | HTMLElement = $(`#${SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SC_CLASS_FOR_TAB_WRAPPER}`).last().parent();
         if (element && element.length>0) {
           const target = element.get(0);
           observer.observe(target as Node, { attributes: true, childList: true, subtree: true });
@@ -715,12 +723,14 @@ _______________________________________
 
       if (!this._attachmodeHidden) {
         // turn off any existing calendar panels
-        $('#fsc-ng .window-content .fsc-qf .fsc-mf.fsc-b').addClass('fsc-c').removeClass('fsc-b');
+        const existingPanels = $(`#${SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SC_CLASS_FOR_TAB_WRAPPER}.${SC_CLASS_FOR_TAB_EXTENDED}`);
+        existingPanels.addClass(SC_CLASS_FOR_TAB_CLOSED).removeClass(SC_CLASS_FOR_TAB_EXTENDED);
 
         // if it's there we'll replace, otherwise we'll append
         if ($('#swr-fsc-container').length === 0) {
           // attach to the calendar
-          $('#fsc-ng .window-content .fsc-qf .fsc-mf.fsc-c').last().parent().append(html);
+          const siblingPanels = $(`#${SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SC_CLASS_FOR_TAB_WRAPPER}.${SC_CLASS_FOR_TAB_CLOSED}`);
+          siblingPanels.last().parent().append(html);
         } else {
           $('#swr-fsc-container').replaceWith(html);
         }
