@@ -11,6 +11,8 @@
       "publicChatHelp": "क्या सभी लोग मौसम चैट (यदि चाहें तो) देखेंगे या केवल GM (यदि बंद है) देखेंगे?",
       "useFX": "विशेष प्रभाव दिखाएं?",
       "useFXHelp": "विशेष प्रभाव प्रदर्शन करते समय उपयोग करने के लिए मॉड्यूल का चयन करें। जब आवश्यक हो तो प्रभाव को भी मैन्युअल रूप से बंद किया जा सकता है।",
+      "attachToCalendar": "Attach to Simple Calendar?  (Experimental - see module description)",
+      "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
       "options": {
         "useFX.choices.off": "कोई नहीं",
         "useFX.choices.core": "FoundryVTT सीन मौसम सेटिंग",
@@ -476,6 +478,11 @@
     },
     
     "missing translations":{
+      "settings": {
+        "attachToCalendar": "Attach to Simple Calendar?  (Experimental - see module description)",
+        "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
+      },
+  
       "keybindings": {
         "sweath.keybindings.toggle": "Display/hide window",
         "sweath.keybindings.toggleHelp": "Hide and then redisplay the entire window",

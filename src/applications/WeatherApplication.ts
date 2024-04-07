@@ -1,12 +1,13 @@
 import moduleJson from '@module';
 
 import { log } from '@/utils/log';
+
+import { WindowPosition } from '@/window/WindowPosition';
+import { WindowDrag } from '@/window/windowDrag';
 import { WeatherData } from '@/weather/WeatherData';
 import { seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings } from '@/weather/climateData';
 import { manualSelections, weatherDescriptions } from '@/weather/weatherMap';
-import { WindowPosition } from '@/window/WindowPosition';
 import { SettingKeys } from '@/settings/ModuleSettings';
-import { WindowDrag } from '@/window/windowDrag';
 import { isClientGM } from '@/utils/game';
 import { generate, outputWeather, createManual, createSpecificWeather } from '@/weather/weatherGenerator';
 import { moduleSettings } from '@/settings/ModuleSettings';
@@ -23,20 +24,22 @@ function updateWeatherApplication(weatherApp: WeatherApplication): void {
 
 class WeatherApplication extends Application {
   private _currentWeather: WeatherData;
-  private _windowID = 'swr-container';
-  private _windowDragHandler = new WindowDrag();
-  private _windowPosition: WindowPosition;
   private _displayOptions: DisplayOptions;
   private _calendarPresent = false;   // is simple calendar present?
   private _manualPause = false;
-  private _currentlyHidden = false;  // for toggling... we DO NOT save this state
+  private _attachedMode = false;
+  private _attachmodeHidden = true;   // like _currentlyHidden but have to track separately because that's for managing ready state not popup state
+  private _compactMode = false;
 
   private _currentClimate: Climate;
   private _currentHumidity: Humidity;
   private _currentBiome: string;
   private _currentSeason: Season; 
   private _currentSeasonSync: boolean;
-
+  private _windowID = 'swr-container';
+  private _windowDragHandler = new WindowDrag();
+  private _windowPosition: WindowPosition;
+  private _currentlyHidden = false;  // for toggling... we DO NOT save this state
 
   constructor() {
     super();
@@ -44,10 +47,7 @@ class WeatherApplication extends Application {
     log(false, 'WeatherApplication construction');
 
     // set the initial display
-    this._displayOptions = moduleSettings.get(SettingKeys.displayOptions) || { dateBox: true, weatherBox: false, biomeBar: true, seasonBar: true }    
-
-    // get default position or set default
-    this._windowPosition = moduleSettings.get(SettingKeys.windowPosition) || { left: 100, bottom: 300 }
+    this._displayOptions = moduleSettings.get(SettingKeys.displayOptions) || { dateBox: false, weatherBox: true, biomeBar: true, seasonBar: true }    
 
     // get whether the manual pause is on
     this._manualPause = moduleSettings.get(SettingKeys.manualPause || false);
@@ -55,24 +55,24 @@ class WeatherApplication extends Application {
     // don't show it until ready() has been called
     this._currentlyHidden = true;
 
+    // get default position or set default
+    this._windowPosition = moduleSettings.get(SettingKeys.windowPosition) || { left: 100, bottom: 300 }
+    
     this.setWeather();  
   }
 
   // draw the window
   public render(force?: boolean): void {
-    // make sure simple calendar is present if we're trying to sync
-    // this could happen if we had sync on but then uninstalled calendar and reloaded
-    if (!this._calendarPresent && this._currentSeasonSync) {
-      this._currentSeasonSync = false;
-
-      // don't update the setting because a) no need... will update if anything changes anyway, and b)
-      //    this may be called before the calendar is loaded so we don't want to overwrite it (it will
-      //    get requeried later)
-      //moduleSettings.set(SettingKeys.seasonSync, false);
-    }
+    this.checkSeasonSync();
 
     super.render(force);
   }
+
+  public attachToCalendar() {
+    this._attachedMode = true;
+  }
+
+  public get attachedMode() { return this._attachedMode; }
 
   // window options; called by parent class
   static get defaultOptions() {
@@ -104,73 +104,22 @@ class WeatherApplication extends Application {
       manualSelections: manualSelections,
 
       displayOptions: this._displayOptions,
-      hideDialog: this._currentlyHidden || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
-      hideCalendar: !this._calendarPresent || !this._displayOptions.dateBox,
-      hideCalendarToggle: !this._calendarPresent,
-      hideWeather: this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
+      hideCalendar: this._attachedMode || !this._calendarPresent || !this._displayOptions.dateBox,
+      hideCalendarToggle: this._attachedMode || !this._calendarPresent,
+      hideWeather: !this._attachedMode && this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
       hideFXToggle: !weatherEffects.useFX,
       manualPause: this._manualPause,
       fxActive: weatherEffects.fxActive,
-      windowPosition: this._windowPosition,
       useCelsius: moduleSettings.get(SettingKeys.useCelsius),
+      attachedMode: this._attachedMode,
+      showAttached: this._attachedMode && !this._attachmodeHidden,
+      windowPosition: this._attachedMode ? { bottom: 0, left: 0 } : this._windowPosition,
+      containerPosition: this._attachedMode ? 'relative' : 'fixed',
+      hideDialog: (this._attachedMode && this._attachmodeHidden) || this._currentlyHidden || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
     };
     //log(false, data);
 
     return data;
-  }
-
-  // call this when either a) foundry loaded and no simple calendar or b) after simple calendar loaded
-  // this is needed so that we can properly handle calendar box and sync
-  public ready(): void {
-    // GM-only
-    if (isClientGM()) {
-      // load the values from settings if missing
-      if (this._currentClimate == undefined)
-        this._currentClimate = moduleSettings.get(SettingKeys.climate);
-
-      if (this._currentHumidity == undefined)
-        this._currentHumidity = moduleSettings.get(SettingKeys.humidity);
-
-      if (this._currentSeason == undefined)
-        this._currentSeason = moduleSettings.get(SettingKeys.season);
-
-      if (this._currentSeasonSync == undefined)
-        this._currentSeasonSync = moduleSettings.get(SettingKeys.seasonSync);
-
-      if (this._currentBiome == undefined)
-        this._currentBiome = moduleSettings.get(SettingKeys.biome);
-    }
-
-    this._currentlyHidden = false;
-    weatherEffects.ready(this._currentWeather);
-    this.render(true);
-  };
-
-  // output a bunch of info that might be useful for debugging
-  public async debugOutput(): Promise<void> {
-    let output = `
-simple-weather DEBUG OUTPUT
-_______________________________________
-isGM: ${isClientGM()}
-displayOptions: ${JSON.stringify(this._displayOptions, null, 2)}
-dialogDisplay: ${moduleSettings.get(SettingKeys.dialogDisplay)}
-windowPosition: ${JSON.stringify(this._windowPosition, null, 2)}
-calendarPresent: ${this._calendarPresent}
-manualPause: ${this._manualPause}
-currentlyHidden: ${this._currentlyHidden}
-currentClimate: ${this._currentClimate}
-currentHumidity: ${this._currentHumidity}
-currentBiome: ${this._currentBiome}
-currentSeason: ${this._currentSeason}
-currentSeasonSync: ${this._currentSeasonSync}
-WeatherEffects.fxActive = ${moduleSettings.get(SettingKeys.fxActive)}
-WeatherEffects.useFX = ${moduleSettings.get(SettingKeys.useFX)}
-getData: ${JSON.stringify(await this.getData(), null, 2)}
-_______________________________________
-    `;
-
-
-    console.log(output);
   }
 
   // move the window
@@ -184,25 +133,18 @@ _______________________________________
     this.render();
   }
 
-  public updateDisplayOptions(options: Partial<DisplayOptions>): void {
-    this._displayOptions = {
-      ...this._displayOptions,
-      ...options
-    }
-
-    // save
-    moduleSettings.set(SettingKeys.displayOptions, this._displayOptions);
-
-    this.render();
-  }
-
-  public activateCalendar(): void {
-    this._calendarPresent = true;
-    this.render();
-  }
-
   public toggleWindow(): void {
     this._currentlyHidden = !this._currentlyHidden;
+    this.render();
+  }
+
+  public toggleAttachModeHidden(): void {
+    this._attachmodeHidden = !this._attachmodeHidden;
+    this.render();
+  }
+
+  public setCompactMode(mode: boolean): void {
+    this._compactMode = mode;
     this.render();
   }
 
@@ -215,14 +157,7 @@ _______________________________________
   // note that saved weather has been reloaded by the time this is called when we're initializing
   // this is called on every render!  One-time functionality should be put in ????? 
   public async activateListeners(html: JQuery<HTMLElement>): Promise<void> {
-    // handle window drag
-    html.find('#swr-calendar-move-handle').on('mousedown', this.onMoveHandleMouseDown);
-    html.find('#swr-weather-move-handle').on('mousedown', this.onMoveHandleMouseDown);
-
     // setup handlers and values for everyone
-    html.find('#swr-weather-box-toggle').on('click', this.onWeatherToggleClick);
-    html.find('#swr-date-box-toggle').on('click', this.onDateToggleClick);
-    html.find('#swr-close-button').on('click', this.onCloseClick);
 
     // GM-only
     if (isClientGM()) {
@@ -257,11 +192,168 @@ _______________________________________
 
       // buttons
       html.find('#swr-submit-weather').on('click', this.onSubmitWeatherClick);
+
+      // watch for sc calendar to open a different panel
+      if (this._attachedMode && !this._attachmodeHidden) {
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (mutation.attributeName === 'class' && $(mutation.target).hasClass('fsc-c') && $(mutation.target).hasClass('fsc-mf')) {
+                // Class 'fsc-c' has been added to the div, so turn off ours
+                this._attachmodeHidden = true;
+                $('#swr-fsc-container').remove();
+            }
+          });
+        });
+        var target = $('#fsc-ng .window-content .fsc-pf .fsc-qf')[0];
+        observer.observe(target, { attributes: true, childList: true, subtree: true });
+      }
     }
 
+    // handle window drag
+    html.find('#swr-calendar-move-handle').on('mousedown', this.onMoveHandleMouseDown);
+    html.find('#swr-weather-move-handle').on('mousedown', this.onMoveHandleMouseDown);
 
+    // setup handlers and values for everyone
+    html.find('#swr-weather-box-toggle').on('click', this.onWeatherToggleClick);
+    html.find('#swr-date-box-toggle').on('click', this.onDateToggleClick);
+    html.find('#swr-close-button').on('click', this.onCloseClick);
 
     super.activateListeners(html);
+  }
+
+  // event handlers - note arrow functions because otherwise 'this' doesn't work
+  private onWeatherToggleClick = (event): void => {
+    event.preventDefault();
+
+    this.updateDisplayOptions({ weatherBox: !this._displayOptions.weatherBox })
+  };
+
+  private onDateToggleClick = (event): void => {
+    event.preventDefault();
+
+    // if we're turning off, need to move the box right to adjust; reverse for turning on
+    if (this._displayOptions.dateBox) 
+      this._windowPosition.left += document.getElementById('swr-calendar-box')?.offsetWidth || 0;
+    else {
+      // little tricker to get width when hidden
+      const box = document.getElementById('swr-calendar-box');
+      if (box) {
+        box.style.visibility = 'hidden';  // use visibility to change display temporarily without flashing
+        box.style.display = 'block';
+        const width = box.offsetWidth;
+
+        this._windowPosition.left -= width || 0;
+      }
+    }
+
+    this.updateDisplayOptions({ dateBox: !this._displayOptions.dateBox })
+  };
+
+  private onCloseClick = (event): void => {
+    event.preventDefault();
+    this.toggleWindow();   // must be on if we are clicking the button, so this will close it
+  }
+
+  private setWindowPosition(position: WindowPosition): void {
+    this._windowPosition = position;
+
+    moduleSettings.set(SettingKeys.windowPosition, position);
+
+    this.render();
+  }
+
+  private onMoveHandleMouseDown = (event: MouseEvent): void => {
+    // only allow drag with left button (also prevents craziness from clicking a button while other is still down)
+    if (event.button !== 0)
+      return;
+
+    const element = document.getElementById(this._windowID);
+    if (element) {
+      this._windowDragHandler.start(element, (position: WindowPosition) => {
+        // save the new location
+        this.setWindowPosition(position);
+      });
+    }
+  };  
+
+  // turn off season sync if calendar not present
+  public checkSeasonSync(force?: boolean): void {
+    // make sure simple calendar is present if we're trying to sync
+    // this could happen if we had sync on but then uninstalled calendar and reloaded
+    if (!this._calendarPresent && this._currentSeasonSync) {
+      this._currentSeasonSync = false;
+
+      // don't update the setting because a) no need... will update if anything changes anyway, and b)
+      //    this may be called before the calendar is loaded so we don't want to overwrite it (it will
+      //    get requeried later)
+      //moduleSettings.set(SettingKeys.seasonSync, false);
+    }
+  }
+
+  // call this when either a) foundry loaded and no simple calendar or b) after simple calendar loaded
+  // this is needed so that we can properly handle calendar box and sync
+  public ready(): void {
+    // GM-only
+    if (isClientGM()) {
+      // load the values from settings if missing
+      if (this._currentClimate == undefined)
+        this._currentClimate = moduleSettings.get(SettingKeys.climate);
+
+      if (this._currentHumidity == undefined)
+        this._currentHumidity = moduleSettings.get(SettingKeys.humidity);
+
+      if (this._currentSeason == undefined)
+        this._currentSeason = moduleSettings.get(SettingKeys.season);
+
+      if (this._currentSeasonSync == undefined)
+        this._currentSeasonSync = moduleSettings.get(SettingKeys.seasonSync);
+
+      if (this._currentBiome == undefined)
+        this._currentBiome = moduleSettings.get(SettingKeys.biome);
+    }
+
+    weatherEffects.ready(this._currentWeather);
+
+    this._currentlyHidden = false;
+    this.render(true);
+  };
+
+  // output a bunch of info that might be useful for debugging
+  public async debugOutput(): Promise<void> {
+    let output = `
+simple-weather DEBUG OUTPUT
+_______________________________________
+isGM: ${isClientGM()}
+displayOptions: ${JSON.stringify(this._displayOptions, null, 2)}
+dialogDisplay: ${moduleSettings.get(SettingKeys.dialogDisplay)}
+calendarPresent: ${this._calendarPresent}
+manualPause: ${this._manualPause}
+currentClimate: ${this._currentClimate}
+currentHumidity: ${this._currentHumidity}
+currentBiome: ${this._currentBiome}
+currentSeason: ${this._currentSeason}
+currentSeasonSync: ${this._currentSeasonSync}
+WeatherEffects.fxActive = ${moduleSettings.get(SettingKeys.fxActive)}
+WeatherEffects.useFX = ${moduleSettings.get(SettingKeys.useFX)}
+getData: ${JSON.stringify(await this.getData(), null, 2)}
+_______________________________________
+    `;
+
+
+    console.log(output);
+  }
+
+
+  public updateDisplayOptions(options: Partial<DisplayOptions>): void {
+    this._displayOptions = {
+      ...this._displayOptions,
+      ...options
+    }
+
+    // save
+    moduleSettings.set(SettingKeys.displayOptions, this._displayOptions);
+
+    this.render();
   }
 
   // updates the current date/time showing in the weather dialog
@@ -353,6 +445,13 @@ _______________________________________
     }
   }
 
+  // tell us that simple calendar is present
+  public activateCalendar(): void {
+    this._calendarPresent = true;
+
+    this.render();
+  }
+
   // activate the given weather; save to settings, output to chat, display FX
   private activateWeather(weatherData: WeatherData): void {
     if (isClientGM()) {
@@ -411,39 +510,6 @@ _______________________________________
     } else {
       return this._currentSeason;
     }
-  }
-
-  // event handlers - note arrow functions because otherwise 'this' doesn't work
-  private onWeatherToggleClick = (event): void => {
-    event.preventDefault();
-
-    this.updateDisplayOptions({ weatherBox: !this._displayOptions.weatherBox })
-  };
-
-  private onDateToggleClick = (event): void => {
-    event.preventDefault();
-
-    // if we're turning off, need to move the box right to adjust; reverse for turning on
-    if (this._displayOptions.dateBox) 
-      this._windowPosition.left += document.getElementById('swr-calendar-box')?.offsetWidth || 0;
-    else {
-      // little tricker to get width when hidden
-      const box = document.getElementById('swr-calendar-box');
-      if (box) {
-        box.style.visibility = 'hidden';  // use visibility to change display temporarily without flashing
-        box.style.display = 'block';
-        const width = box.offsetWidth;
-
-        this._windowPosition.left -= width || 0;
-      }
-    }
-
-    this.updateDisplayOptions({ dateBox: !this._displayOptions.dateBox })
-  };
-
-  private onCloseClick = (event): void => {
-    event.preventDefault();
-    this.toggleWindow();   // must be on if we are clicking the button, so this will close it
   }
 
   private onWeatherRegenerateClick = (event): void => {
@@ -554,29 +620,6 @@ _______________________________________
     }
   }
 
-
-  private setWindowPosition(position: WindowPosition): void {
-    this._windowPosition = position;
-
-    moduleSettings.set(SettingKeys.windowPosition, position);
-
-    this.render();
-  }
-
-  private onMoveHandleMouseDown = (event: MouseEvent): void => {
-    // only allow drag with left button (also prevents craziness from clicking a button while other is still down)
-    if (event.button !== 0)
-      return;
-
-    const element = document.getElementById(this._windowID);
-    if (element) {
-      this._windowDragHandler.start(element, (position: WindowPosition) => {
-        // save the new location
-        this.setWindowPosition(position);
-      });
-    }
-  };  
-
   private onToggleSeasonBar = (): void => {
     this._displayOptions.seasonBar = !this._displayOptions.seasonBar;
 
@@ -653,6 +696,49 @@ _______________________________________
     }
 
     return '';
+  }
+
+  // override this function to handle the element case
+  override _injectHTML(html: JQuery<HTMLElement>) {
+    if (this._attachedMode) {
+      // remove any old ones
+      $('#swr-fsc-container').remove();
+
+      $('#swr-fsc-compact-open').remove();
+
+      // add the button for compact mode  
+      if ($('#fsc-ng .fsc-pf .fsc-oj').length) {
+        // we're in compact mode
+        $('#fsc-ng .fsc-pf .fsc-oj').append(
+          `<div id="swr-fsc-compact-open" style="margin-left: 8px; cursor: pointer; ">
+            <div data-tooltip="Simple Weather" style="color:var(--comapct-header-control-grey);">    
+              <span class="fa-solid fa-cloud-sun"></span>
+            </div>
+          </div>
+          `
+        );
+
+        $('#swr-fsc-compact-open').on('click',() => {
+          this.toggleAttachModeHidden();
+        });
+      }
+
+      if (!this._attachmodeHidden) {
+        // turn off any existing calendar panels
+        $('#fsc-ng .window-content .fsc-qf .fsc-mf.fsc-b').addClass('fsc-c').removeClass('fsc-b');
+
+        // attach to the calendar
+        $('#fsc-ng .window-content .fsc-qf .fsc-mf.fsc-c').last().parent().append(html);
+
+        html.hide().fadeIn(200);
+      }    
+    } else {
+      super._injectHTML(html);
+      // $('#swr-container').remove();
+
+      // $('body').append(html);
+      // html.hide().fadeIn(200);
+    }
   }
 }
 

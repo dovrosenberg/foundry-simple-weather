@@ -1,5 +1,9 @@
 # Change Log
 
+## v1.9.0 - Added support for displaying as a pop-out window attached to Simple Calendar
+![](https://img.shields.io/badge/release%20date-April%2007%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.9.0/module.zip)
+
 ## v1.8.2 - Fixed issue with scene control button not displaying
 ![](https://img.shields.io/badge/release%20date-March%2030%2C%202024-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.8.2/module.zip)

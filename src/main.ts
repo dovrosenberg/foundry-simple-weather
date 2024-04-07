@@ -23,7 +23,7 @@ let validSimpleCalendar = false;
 // note: for the logs to actually work, you have to activate it in the UI under the config for the developer mode module
 Hooks.once('devModeReady', async ({ registerPackageDebugFlag: registerPackageDebugFlag }: DevModeApi) => {
   registerPackageDebugFlag('simple-weather', 'boolean');
-  //CONFIG.debug.hooks = true;
+  // CONFIG.debug.hooks = true;
 });
 
 Hooks.once('init', async () => {
@@ -65,7 +65,7 @@ Hooks.once('i18nInit', async () => {
   initializeLocalizedWeatherText();
 
   // rerender weather
-  if (weatherApplication)
+  if (weatherApplication && weatherApplication instanceof Application)
     weatherApplication.render();
 });
 
@@ -77,6 +77,10 @@ Hooks.on('updateSetting', async (setting: Setting) => {
 
 // add the button to re-open the app
 Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
+  // if in attach mode, don't need it
+  if (weatherApplication.attachedMode)
+    return;
+
   if (isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)) {
     // find the journal notes 
     const noteControls = controls.find((c) => {
@@ -90,7 +94,10 @@ Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
           title: "sweath.labels.openButton",
           icon: "fas swr-icon",
           button: true,
-          onClick: () => { weatherApplication.showWindow(); }
+          onClick: () => {   
+            if (weatherApplication && weatherApplication instanceof Application)
+              weatherApplication.showWindow(); 
+          }
       });
     }
 }
@@ -144,4 +151,44 @@ function checkDependencies() {
     ui.notifications?.error('Version found: ' + scVersion);
   }
 }
+
+Hooks.once(SimpleCalendar.Hooks.Init, async () => {
+  // check the setting to see if we want to dock
+
+  // if so, register the sidepanel
+
+  // Adding a button that should show a side panel - only in attach mode
+  if (moduleSettings.get(SettingKeys.attachToCalendar)) {
+    weatherApplication.attachToCalendar();
+    SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", false, () => weatherApplication.toggleAttachModeHidden());
+
+    // we also need to watch for when the calendar is rendered because in compact mode we
+    //    have to inject the button 
+    Hooks.on('renderMainApp', (_application: Application, html: JQuery<HTMLElement>) => {
+      // if fsc-oj div exists then it's in compact mode
+      // in compact mode, there's no api to add a button, so we monkeypatch one in
+      const compactMode = html.find('.fsc-oj').length>0;
+      if (compactMode) {
+        weatherApplication.setCompactMode(true);
+
+        // remove any old ones
+        html.find('#swr-fsc-compact-open').remove();
+
+        // add the button   
+        html.find('.fsc-oj').append(
+          `<div id="swr-fsc-compact-open" style="margin-left: 8px; cursor: pointer; ">
+            <div data-tooltip="Simple Weather" style="color:var(--comapct-header-control-grey);">    
+              <span class="fa-solid fa-cloud-sun"></span>
+            </div>
+          </div>
+          `
+        );
+
+        html.find('#swr-fsc-compact-open').on('click',() => {
+          weatherApplication.toggleAttachModeHidden();
+        });
+      }    
+    });
+  }
+});
 

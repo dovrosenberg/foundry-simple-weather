@@ -198,7 +198,7 @@
 }
 
 .swr-optional-bar.swr-display-bar {
-  display: flex;
+  display: flex !important;
 }
 
 .swr-optional-bar {
@@ -264,3 +264,11 @@
 #swr-season-icon .fa.fall {
   color:#ff8e47;
 } 
+
+// hide the background of the simple calendar side panel
+.simple-calendar.window-app .fsc-mf:has(> #swr-container) { 
+  background-color: transparent !important;
+  border: none !important;
+  border-image: none !important;
+  box-shadow: none !important;
+}
