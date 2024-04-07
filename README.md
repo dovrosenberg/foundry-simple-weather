@@ -77,7 +77,10 @@ Some people occasionally have issues where the box will disappear and won't come
 
 Then refresh (F5).  That should make the window reappear.  If that doesn't work (or if anyone can find a way to reproduce this consistently) please create an issue report.  
 
-### Missing box (in attached mode)
+### Simple Calendar attachment (compact mode)
+The attachment to the calendar when the calendar is in compact mode is highly dependent on the Simple Calendar version.  It has only been fully tested with Simple Calendar v2.4.3.  You can let me know if you have trouble with a different version, but I'm not inclined to support older versions of SC.  
+
+### Missing box (when attached to non-compact Simple Calendar)
 Sometimes when you have another Simple Calendar side tab open and you try to switch to the weather tab, it will close the other tab but not show the weather.  The workaround is just to hit the weather button again.
 
 ## Problems?

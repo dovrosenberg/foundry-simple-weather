@@ -11,7 +11,7 @@
       "publicChatHelp": "Ska alla se väderchatten (om den är på) eller bara GM (om den är avstängd)?",
       "useFX": "Visa specialeffekter?",
       "useFXHelp": "Välj modulen som används för att visa specialeffekter. När den är aktiverad kan effekterna även stängas av manuellt vid behov.",
-      "attachToCalendar": "Attach to Simple Calendar?",
+      "attachToCalendar": "Attach to Simple Calendar?  (Experimental - see module description)",
       "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
       "options": {
         "useFX.choices.off": "Inget",
@@ -468,7 +468,7 @@
     },
 
     "settings": {
-      "attachToCalendar": "Attach to Simple Calendar?",
+      "attachToCalendar": "Attach to Simple Calendar?  (Experimental - see module description)",
       "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
     },
 

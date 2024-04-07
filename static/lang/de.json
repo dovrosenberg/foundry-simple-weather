@@ -11,7 +11,7 @@
       "publicChatHelp": "Soll jeder (wenn ausgewählt) oder nur der SL (wenn nicht ausgewählt) das Wetter im Chat sehen können?",
       "useFX": "Spezial-/Wettereffekte anzeigen?",
       "useFXHelp": "Wähle das Modul aus, welches die Spezial-/Wettereffekte darstellen soll. Wenn aktiviert, kann es bei Bedarf manuell ausgeschaltet werden.",
-      "attachToCalendar": "Attach to Simple Calendar?",
+      "attachToCalendar": "Attach to Simple Calendar?  (Experimental - see module description)",
       "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
       "options": {
         "useFX.choices.off": "Aus",
@@ -463,7 +463,7 @@
   },
   "missing": {
     "settings": {
-      "attachToCalendar": "Attach to Simple Calendar?",
+      "attachToCalendar": "Attach to Simple Calendar?  (Experimental - see module description)",
       "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
     },
 
