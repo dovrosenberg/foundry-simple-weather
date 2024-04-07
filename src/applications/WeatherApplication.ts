@@ -730,10 +730,6 @@ _______________________________________
       }  
     } else {
       super._injectHTML(html);
-      // $('#swr-container').remove();
-
-      // $('body').append(html);
-      // html.hide().fadeIn(200);
     }
   }
 }
