@@ -22,6 +22,7 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
 - Generate weather for every new day automatically
 - Use the Simple Calendar season to adjust season automatically
 - Show the current date/time from Simple Calendar in a smaller box (good for players who don't need the full Simple Calendar display), or hide it and just show the weather
+- Display either as a standalone window or as a slide-out window attached to Simple Calendar
 
 ## Controls
 
