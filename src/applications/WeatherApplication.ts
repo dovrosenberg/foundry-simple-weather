@@ -154,7 +154,6 @@ class WeatherApplication extends Application {
   }
 
   public showWindow(): void {
-    debugger;
     this._currentlyHidden = false;
     this.render(true);
   }
@@ -203,8 +202,9 @@ class WeatherApplication extends Application {
       if (this._attachedMode && !this._compactMode) {
         const observer = new MutationObserver((mutations) => {
           mutations.forEach((mutation) => {
-            if (mutation.attributeName === 'class' && $(mutation.target).hasClass('fsc-c') && $(mutation.target).hasClass('fsc-mf')) {
-                // Class 'fsc-c' has been added to the div, so turn off ours
+            if (mutation.attributeName === 'class' && $(mutation.target).hasClass('fsc-c') && 
+                $(mutation.target).hasClass('fsc-mf') && ((mutation.target as HTMLElement).id!='swr-fsc-container')) {
+                // Class 'fsc-c' has been added to another panel (opening it), so turn off ours
                 this._attachmodeHidden = true;
                 $('#swr-fsc-container').remove();
             }
@@ -709,40 +709,25 @@ _______________________________________
     return '';
   }
 
-  // override this function to handle the element case
+  // override this function to handle the compact case
   override _injectHTML(html: JQuery<HTMLElement>) {
     if (this._attachedMode) {
-      // remove any old ones
-      $('#swr-fsc-container').remove();
-
-      $('#swr-fsc-compact-open').remove();
-
-      // add the button for compact mode  
-      if ($('#fsc-ng .fsc-pf .fsc-oj').length) {
-        // we're in compact mode
-        $('#fsc-ng .fsc-pf .fsc-oj').append(
-          `<div id="swr-fsc-compact-open" style="margin-left: 8px; cursor: pointer; ">
-            <div data-tooltip="Simple Weather" style="color:var(--comapct-header-control-grey);">    
-              <span class="fa-solid fa-cloud-sun"></span>
-            </div>
-          </div>
-          `
-        );
-
-        $('#swr-fsc-compact-open').on('click',() => {
-          this.toggleAttachModeHidden();
-        });
-      }
 
       if (!this._attachmodeHidden) {
         // turn off any existing calendar panels
         $('#fsc-ng .window-content .fsc-qf .fsc-mf.fsc-b').addClass('fsc-c').removeClass('fsc-b');
 
-        // attach to the calendar
-        $('#fsc-ng .window-content .fsc-qf .fsc-mf.fsc-c').last().parent().append(html);
-
-        html.hide().fadeIn(200);
-      }    
+        // if it's there we'll replace, otherwise we'll append
+        if ($('#swr-fsc-container').length === 0) {
+          // attach to the calendar
+          $('#fsc-ng .window-content .fsc-qf .fsc-mf.fsc-c').last().parent().append(html);
+        } else {
+          $('#swr-fsc-container').replaceWith(html);
+        }
+      } else {
+        // hide it
+        $('#swr-fsc-container').remove();
+      }  
     } else {
       super._injectHTML(html);
       // $('#swr-container').remove();

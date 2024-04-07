@@ -172,22 +172,23 @@ Hooks.once(SimpleCalendar.Hooks.Init, async () => {
       if (compactMode) {
         weatherApplication.setCompactMode(true);
 
-        // remove any old ones
-        html.find('#swr-fsc-compact-open').remove();
-
-        // add the button   
-        html.find('.fsc-oj').append(
-          `<div id="swr-fsc-compact-open" style="margin-left: 8px; cursor: pointer; ">
+        // if it's already there, no need to do anything (it doesn't change)
+        if (html.find('#swr-fsc-compact-open').length === 0) {
+          const newButton = `
+          <div id="swr-fsc-compact-open" style="margin-left: 8px; cursor: pointer; ">
             <div data-tooltip="Simple Weather" style="color:var(--comapct-header-control-grey);">    
               <span class="fa-solid fa-cloud-sun"></span>
             </div>
           </div>
-          `
-        );
+          `;
 
-        html.find('#swr-fsc-compact-open').on('click',() => {
-          weatherApplication.toggleAttachModeHidden();
-        });
+          // add the button   
+          html.find('.fsc-oj').append(newButton);
+
+          html.find('#swr-fsc-compact-open').on('click',() => {
+            weatherApplication.toggleAttachModeHidden();
+          });
+        }
       } else {
         weatherApplication.setCompactMode(false);
       }  
