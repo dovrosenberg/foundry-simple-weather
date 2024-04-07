@@ -13,11 +13,21 @@ import { KeyBindings } from '@/settings/KeyBindings';
 import moduleJson from '@module';
 
 // track which modules we have
-let validSimpleCalendar = false;
+let simpleCalendarInstalled = false;
+
+// how do we decide what mode we're in and whether its visible or not?
+// 1. look to the attachment setting - this controls whether we're in attached mode or not; 
+//      if it's turned on but simple calendar can't be found, you're out of luck...
+//     a. we assume it's not compact mode until we see otherwise (by presence of div..fsc-oj)
+// 2. if we're not in attached mode, we:
+//     a.  load the settings from last time to determine the location and visibility
+//     b.  add the button to the journal notes to turn it on
+// 3. if we are in attached mode, always starts hidden; we then wait for the calendar window
+//      to be registered and we attach the button to it
 
 /**
 * Register module in Developer Mode module (https://github.com/League-of-Foundry-Developers/foundryvtt-devMode)
-* No need to spam the console more than it already is, we hide them between a flag.
+* No need to spam the console more than it already is, we hide them with  a flag.
 */
 
 // note: for the logs to actually work, you have to activate it in the UI under the config for the developer mode module
@@ -55,7 +65,7 @@ Hooks.once('ready', async () => {
 
   // if we don't have simple calendar installed, we're ready to go 
   //    (otherwise wait for it to call the renderMainApp hook)
-  if (!validSimpleCalendar) {
+  if (!simpleCalendarInstalled) {
     weatherApplication.ready();
   }  
 });
@@ -65,7 +75,7 @@ Hooks.once('i18nInit', async () => {
   initializeLocalizedWeatherText();
 
   // rerender weather
-  if (weatherApplication && weatherApplication instanceof Application)
+  if (weatherApplication)
     weatherApplication.render();
 });
 
@@ -75,7 +85,7 @@ Hooks.on('updateSetting', async (setting: Setting) => {
     weatherApplication.setWeather();
 });
 
-// add the button to re-open the app
+// add the button to re-open the app 
 Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
   // if in attach mode, don't need it
   if (weatherApplication.attachedMode)
@@ -95,7 +105,7 @@ Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
           icon: "fas swr-icon",
           button: true,
           onClick: () => {   
-            if (weatherApplication && weatherApplication instanceof Application)
+            if (weatherApplication)
               weatherApplication.showWindow(); 
           }
       });
@@ -103,12 +113,27 @@ Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
 }
 })
 
-// called after simple calendar is fully loaded
-Hooks.once('renderMainApp', async () => {
-  log(false, 'simple-calendar-ready');
+// make sure we have a compatible version of simple-calendar installed
+function checkDependencies() {
+  const minimumVersion = '2.4.0';
 
+  const module = getGame().modules.get('foundryvtt-simple-calendar');
+
+  if (!module || !module.active) return;
+
+  const scVersion = getGame().modules.get('foundryvtt-simple-calendar')?.version;
+
+  if (scVersion && (scVersion===minimumVersion || VersionUtils.isMoreRecent(scVersion, minimumVersion))) {
+    simpleCalendarInstalled = true; 
+  } else if (scVersion) {
+    ui.notifications?.error('Simple Calendar found, but version prior to v2.4.0. Make sure the latest version of Simple Calendar is installed.');
+    ui.notifications?.error('Version found: ' + scVersion);
+  }
+}
+
+Hooks.once(SimpleCalendar.Hooks.Init, async () => {
   // it's possible this gets called but the version # is too low - just ignore in that case
-  if (validSimpleCalendar) {
+  if (simpleCalendarInstalled) {
     // set the date and time
     if (moduleSettings.get(SettingKeys.dialogDisplay) || isClientGM()) {
       // tell the application we're using the calendar
@@ -132,34 +157,10 @@ Hooks.once('renderMainApp', async () => {
   } else {
     weatherApplication.ready();
   }
-});
-
-// make sure we have a compatible version of simple-calendar installed
-function checkDependencies() {
-  const minimumVersion = '2.4.0';
-
-  const module = getGame().modules.get('foundryvtt-simple-calendar');
-
-  if (!module || !module.active) return;
-
-  const scVersion = getGame().modules.get('foundryvtt-simple-calendar')?.version;
-
-  if (scVersion && (scVersion===minimumVersion || VersionUtils.isMoreRecent(scVersion, minimumVersion))) {
-    validSimpleCalendar = true; 
-  } else if (scVersion) {
-    ui.notifications?.error('Simple Calendar found, but version prior to v2.4.0. Make sure the latest version of Simple Calendar is installed.');
-    ui.notifications?.error('Version found: ' + scVersion);
-  }
-}
-
-Hooks.once(SimpleCalendar.Hooks.Init, async () => {
+  
   // check the setting to see if we want to dock
-
-  // if so, register the sidepanel
-
-  // Adding a button that should show a side panel - only in attach mode
-  if (moduleSettings.get(SettingKeys.attachToCalendar)) {
-    weatherApplication.attachToCalendar();
+  if (weatherApplication.attachedMode) {
+    // can set this either way, but it does nothing when not in compact mode (but we only need to set it once)
     SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", false, () => weatherApplication.toggleAttachModeHidden());
 
     // we also need to watch for when the calendar is rendered because in compact mode we
@@ -187,7 +188,9 @@ Hooks.once(SimpleCalendar.Hooks.Init, async () => {
         html.find('#swr-fsc-compact-open').on('click',() => {
           weatherApplication.toggleAttachModeHidden();
         });
-      }    
+      } else {
+        weatherApplication.setCompactMode(false);
+      }  
     });
   }
 });

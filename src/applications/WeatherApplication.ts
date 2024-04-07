@@ -49,6 +49,11 @@ class WeatherApplication extends Application {
     // set the initial display
     this._displayOptions = moduleSettings.get(SettingKeys.displayOptions) || { dateBox: false, weatherBox: true, biomeBar: true, seasonBar: true }    
 
+    // get attached mode
+    this._attachedMode = moduleSettings.get(SettingKeys.attachToCalendar) || false;
+    this._attachmodeHidden = true;
+    this._compactMode = false;
+
     // get whether the manual pause is on
     this._manualPause = moduleSettings.get(SettingKeys.manualPause || false);
 
@@ -149,8 +154,9 @@ class WeatherApplication extends Application {
   }
 
   public showWindow(): void {
+    debugger;
     this._currentlyHidden = false;
-    this.render();
+    this.render(true);
   }
 
   // called by the parent class to attach event handlers after window is rendered
@@ -194,7 +200,7 @@ class WeatherApplication extends Application {
       html.find('#swr-submit-weather').on('click', this.onSubmitWeatherClick);
 
       // watch for sc calendar to open a different panel
-      if (this._attachedMode && !this._attachmodeHidden) {
+      if (this._attachedMode && !this._compactMode) {
         const observer = new MutationObserver((mutations) => {
           mutations.forEach((mutation) => {
             if (mutation.attributeName === 'class' && $(mutation.target).hasClass('fsc-c') && $(mutation.target).hasClass('fsc-mf')) {
@@ -204,8 +210,13 @@ class WeatherApplication extends Application {
             }
           });
         });
-        var target = $('#fsc-ng .window-content .fsc-pf .fsc-qf')[0];
-        observer.observe(target, { attributes: true, childList: true, subtree: true });
+
+        // attach the observer to the right element
+        const element: JQuery<HTMLElement> | HTMLElement = $('#fsc-ng .window-content .fsc-pf .fsc-qf');
+        if (element && element.length>0) {
+          const target = element.get(0);
+          observer.observe(target as Node, { attributes: true, childList: true, subtree: true });
+        }
       }
     }
 
