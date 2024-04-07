@@ -2,7 +2,7 @@
 <div id="swr-fsc-container" class="fsc-mf sc-right fsc-b">
 {{/if}}
 
-<div id="swr-container" {{#if hideDialog}}style="display:none"{{/if}} style="bottom:{{windowPosition.bottom}}px; left:{{windowPosition.left}}px; position: {{containerPosition}};">
+<div id="swr-container" {{#if hideDialog}}style="display:none"{{else}}style="bottom:{{windowPosition.bottom}}px; left:{{windowPosition.left}}px; position: {{containerPosition}};"{{/if}}>
 	<div id="swr-wrapper">
 		<div id="swr-calendar-box" {{#if hideCalendar}}style="display:none"{{/if}}>
 

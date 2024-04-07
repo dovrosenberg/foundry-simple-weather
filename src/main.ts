@@ -23,7 +23,7 @@ let validSimpleCalendar = false;
 // note: for the logs to actually work, you have to activate it in the UI under the config for the developer mode module
 Hooks.once('devModeReady', async ({ registerPackageDebugFlag: registerPackageDebugFlag }: DevModeApi) => {
   registerPackageDebugFlag('simple-weather', 'boolean');
-  //CONFIG.debug.hooks = true;
+  // CONFIG.debug.hooks = true;
 });
 
 Hooks.once('init', async () => {
@@ -159,18 +159,36 @@ Hooks.once(SimpleCalendar.Hooks.Init, async () => {
 
   // Adding a button that should show a side panel - only in attach mode
   if (moduleSettings.get(SettingKeys.attachToCalendar)) {
-    SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", false, populateSidePanel);
     weatherApplication.attachToCalendar();
+    SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", false, () => weatherApplication.toggleAttachModeHidden());
+
+    // we also need to watch for when the calendar is rendered because in compact mode we
+    //    have to inject the button 
+    Hooks.on('renderMainApp', (_application: Application, html: JQuery<HTMLElement>) => {
+      // if fsc-oj div exists then it's in compact mode
+      // in compact mode, there's no api to add a button, so we monkeypatch one in
+      const compactMode = html.find('.fsc-oj').length>0;
+      if (compactMode) {
+        weatherApplication.setCompactMode(true);
+
+        // remove any old ones
+        html.find('#swr-fsc-compact-open').remove();
+
+        // add the button   
+        html.find('.fsc-oj').append(
+          `<div id="swr-fsc-compact-open" style="margin-left: 8px; cursor: pointer; ">
+            <div data-tooltip="Simple Weather" style="color:var(--comapct-header-control-grey);">    
+              <span class="fa-solid fa-cloud-sun"></span>
+            </div>
+          </div>
+          `
+        );
+
+        html.find('#swr-fsc-compact-open').on('click',() => {
+          weatherApplication.toggleAttachModeHidden();
+        });
+      }    
+    });
   }
 });
-
-// this function displays just the weather panel inside of the element passed in
-// used when we're attaching as a side panel to simple weather
-// this is called just one time - not when it opens/closes
-const populateSidePanel = async (_event: Event | null, element: HTMLElement | null | undefined) => {
-  // if we're not in the attach mode, something is bad
-  if (!moduleSettings.get(SettingKeys.attachToCalendar)) throw new Error('Simple Weather: populateSidePanel called but not in attach mode');
-
-  weatherApplication.toggleAttachModeHidden();
-}
 

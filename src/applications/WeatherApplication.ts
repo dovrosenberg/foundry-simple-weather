@@ -28,6 +28,8 @@ class WeatherApplication extends Application {
   private _calendarPresent = false;   // is simple calendar present?
   private _manualPause = false;
   private _attachedMode = false;
+  private _attachmodeHidden = true;   // like _currentlyHidden but have to track separately because that's for managing ready state not popup state
+  private _compactMode = false;
 
   private _currentClimate: Climate;
   private _currentHumidity: Humidity;
@@ -38,7 +40,6 @@ class WeatherApplication extends Application {
   private _windowDragHandler = new WindowDrag();
   private _windowPosition: WindowPosition;
   private _currentlyHidden = false;  // for toggling... we DO NOT save this state
-  private _attachmodeHidden = true;   // like _currentlyHidden but have to track separately because that's for managing ready state not popup state
 
   constructor() {
     super();
@@ -114,7 +115,7 @@ class WeatherApplication extends Application {
       showAttached: this._attachedMode && !this._attachmodeHidden,
       windowPosition: this._attachedMode ? { bottom: 0, left: 0 } : this._windowPosition,
       containerPosition: this._attachedMode ? 'relative' : 'fixed',
-      hideDialog: this._attachmodeHidden || this._currentlyHidden || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
+      hideDialog: (this._attachedMode && this._attachmodeHidden) || this._currentlyHidden || !(isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)),  // hide dialog - don't show anything
     };
     //log(false, data);
 
@@ -139,6 +140,11 @@ class WeatherApplication extends Application {
 
   public toggleAttachModeHidden(): void {
     this._attachmodeHidden = !this._attachmodeHidden;
+    this.render();
+  }
+
+  public setCompactMode(mode: boolean): void {
+    this._compactMode = mode;
     this.render();
   }
 
@@ -694,21 +700,45 @@ _______________________________________
 
   // override this function to handle the element case
   override _injectHTML(html: JQuery<HTMLElement>) {
-    // remove any old one
-    $('#swr-fsc-container').remove();
+    if (this._attachedMode) {
+      // remove any old ones
+      $('#swr-fsc-container').remove();
 
-    if (this._attachedMode && !this._attachmodeHidden) {
-      // turn off any existing calendar panels
-      $('#fsc-ng .window-content .fsc-qf .fsc-mf.fsc-b').addClass('fsc-c').removeClass('fsc-b');
+      $('#swr-fsc-compact-open').remove();
 
-      // attach to the calendar
-      $('#fsc-ng .window-content .fsc-qf .fsc-mf.fsc-c').last().append(html);
+      // add the button for compact mode  
+      if ($('#fsc-ng .fsc-pf .fsc-oj').length) {
+        // we're in compact mode
+        $('#fsc-ng .fsc-pf .fsc-oj').append(
+          `<div id="swr-fsc-compact-open" style="margin-left: 8px; cursor: pointer; ">
+            <div data-tooltip="Simple Weather" style="color:var(--comapct-header-control-grey);">    
+              <span class="fa-solid fa-cloud-sun"></span>
+            </div>
+          </div>
+          `
+        );
 
-      html.hide().fadeIn(200);
-    } else if (!this._attachedMode) {
-      $('body').append(html);
-      html.hide().fadeIn(200);
-    }    
+        $('#swr-fsc-compact-open').on('click',() => {
+          this.toggleAttachModeHidden();
+        });
+      }
+
+      if (!this._attachmodeHidden) {
+        // turn off any existing calendar panels
+        $('#fsc-ng .window-content .fsc-qf .fsc-mf.fsc-b').addClass('fsc-c').removeClass('fsc-b');
+
+        // attach to the calendar
+        $('#fsc-ng .window-content .fsc-qf .fsc-mf.fsc-c').last().parent().append(html);
+
+        html.hide().fadeIn(200);
+      }    
+    } else {
+      super._injectHTML(html);
+      // $('#swr-container').remove();
+
+      // $('body').append(html);
+      // html.hide().fadeIn(200);
+    }
   }
 }
 
