@@ -4,7 +4,6 @@ import '@/../styles/menu-icon.scss';
 import { moduleSettings, ModuleSettings, SettingKeys, updateModuleSettings } from '@/settings/ModuleSettings';
 import { VersionUtils } from '@/utils/versionUtils';
 import { getGame, isClientGM } from '@/utils/game';
-import { log } from './utils/log';
 import { allowSeasonSync, Climate, Humidity, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
 import { initializeLocalizedText as initializeLocalizedWeatherText } from '@/weather/weatherMap';
 import { updateWeatherApplication, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
@@ -16,6 +15,8 @@ import moduleJson from '@module';
 let simpleCalendarInstalled = false;
 
 const SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER = 'fsc-pj';  // no dot in the front
+const SC_MINIMUM_VERSION = '2.4.0';
+const SC_PREFERRED_VERSION = '2.4.13';
 
 // how do we decide what mode we're in and whether its visible or not?
 // 1. look to the attachment setting - this controls whether we're in attached mode or not; 
@@ -117,18 +118,19 @@ Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
 
 // make sure we have a compatible version of simple-calendar installed
 function checkDependencies() {
-  const minimumVersion = '2.4.0';
-
   const module = getGame().modules.get('foundryvtt-simple-calendar');
 
   if (!module || !module.active) return;
 
   const scVersion = getGame().modules.get('foundryvtt-simple-calendar')?.version;
 
-  if (scVersion && (scVersion===minimumVersion || VersionUtils.isMoreRecent(scVersion, minimumVersion))) {
+  if (scVersion && (scVersion===SC_MINIMUM_VERSION || VersionUtils.isMoreRecent(scVersion, SC_MINIMUM_VERSION))) {
     simpleCalendarInstalled = true; 
+  } else if (scVersion && (scVersion!==SC_PREFERRED_VERSION)) {
+    ui.notifications?.error(`This version of Simple Weather only fully supports Simple Calendar v${SC_PREFERRED_VERSION}. "Attached mode" is unlikely to work properly.`);
+    ui.notifications?.error('Version found: ' + scVersion);
   } else if (scVersion) {
-    ui.notifications?.error('Simple Calendar found, but version prior to v2.4.0. Make sure the latest version of Simple Calendar is installed.');
+    ui.notifications?.error(`Simple Calendar found, but version prior to v${SC_MINIMUM_VERSION}. Make sure the latest version of Simple Calendar is installed.`);
     ui.notifications?.error('Version found: ' + scVersion);
   }
 }

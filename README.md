@@ -73,7 +73,7 @@ There are keybinding options under "Configure Controls" in the main Foundry Game
 ### Simple Calendar "Attached Mode"
 When using the "Attached to Simple Calendar" setting, there will be a button added to the Simple Calendar window to toggle the weather tab on/off.  In this mode, there is no option to show Simple Weather's calendar panel (because the Simple Calendar must be showing).
 
-**Note that there is tight version dependency between this module and Simple Calendar.  Check the changelog to find the version that works for your version of Simple Calendar.**
+**Note that there is tight version dependency between this module and Simple Calendar.  Check the changelog to find the version that works for your version of Simple Calendar.  If the latest version of Simple Calendar isn't yet supported, please file an issue to let me know.**
 
 ![Main UI](https://i.imgur.com/bvX7UP1.png)
 

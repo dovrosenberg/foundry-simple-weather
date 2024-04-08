@@ -1,5 +1,6 @@
 - update version in package.json
-- update changelog (including the date/version tags)
+- update changelog (including the date/version tags and the SC version)
+- update SC_PREFERRED_VERSION in main.ts
 - update readme
 - update credits, if needed
 - create release
