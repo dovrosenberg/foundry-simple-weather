@@ -16,7 +16,7 @@ let simpleCalendarInstalled = false;
 
 const SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER = 'fsc-pj';  // no dot in the front
 const SC_MINIMUM_VERSION = '2.4.0';
-const SC_PREFERRED_VERSION = '2.4.13';
+const SC_PREFERRED_VERSION = '2.4.14';
 
 // how do we decide what mode we're in and whether its visible or not?
 // 1. look to the attachment setting - this controls whether we're in attached mode or not; 
@@ -120,18 +120,30 @@ Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
 function checkDependencies() {
   const module = getGame().modules.get('foundryvtt-simple-calendar');
 
-  if (!module || !module.active) return;
+  const scVersion = module?.version;
 
-  const scVersion = getGame().modules.get('foundryvtt-simple-calendar')?.version;
+  // if not present, just display a warning if we're in attached mode
+  if (!module || !module?.active || !scVersion) {
+    if (moduleSettings.get(SettingKeys.attachToCalendar)) {
+      ui.notifications?.warn(`Simple Weather is set to "Attached Mode" in settings but Simple Calendar is not installed.  This will keep it from displaying at all.  You should turn off that setting if this isn't intended.`);
+    }
 
-  if (scVersion && (scVersion===SC_MINIMUM_VERSION || VersionUtils.isMoreRecent(scVersion, SC_MINIMUM_VERSION))) {
-    simpleCalendarInstalled = true; 
-  } else if (scVersion && (scVersion!==SC_PREFERRED_VERSION)) {
-    ui.notifications?.error(`This version of Simple Weather only fully supports Simple Calendar v${SC_PREFERRED_VERSION}. "Attached mode" is unlikely to work properly.`);
-    ui.notifications?.error('Version found: ' + scVersion);
-  } else if (scVersion) {
+    simpleCalendarInstalled = false; 
+    return;
+  }
+
+  const meetsMinimumVersion = (scVersion===SC_MINIMUM_VERSION || VersionUtils.isMoreRecent(scVersion, SC_MINIMUM_VERSION));
+
+  if (!meetsMinimumVersion) {
+    simpleCalendarInstalled = false; 
     ui.notifications?.error(`Simple Calendar found, but version prior to v${SC_MINIMUM_VERSION}. Make sure the latest version of Simple Calendar is installed.`);
     ui.notifications?.error('Version found: ' + scVersion);
+  } else if (scVersion && (scVersion!==SC_PREFERRED_VERSION)) {
+    simpleCalendarInstalled = true; 
+    ui.notifications?.error(`This version of Simple Weather only fully supports Simple Calendar v${SC_PREFERRED_VERSION}. "Attached mode" is unlikely to work properly.`);
+    ui.notifications?.error('Version found: ' + scVersion);
+  } else {
+    simpleCalendarInstalled = true; 
   }
 }
 
