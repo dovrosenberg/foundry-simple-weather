@@ -175,22 +175,22 @@ class WeatherApplication extends Application {
     // GM-only
     if (isClientGM()) {
       // set the drop-down values
-      html.find('#climate-selection').val(this._currentClimate);
-      html.find('#humidity-selection').val(this._currentHumidity);
+      html.find('#swr-climate-selection').val(this._currentClimate);
+      html.find('#swr-humidity-selection').val(this._currentHumidity);
       
       if (this._currentSeasonSync) {
-        html.find('#season-selection').val('sync');
+        html.find('#swr-season-selection').val('sync');
       } else {
-        html.find('#season-selection').val(this._currentSeason);
+        html.find('#swr-season-selection').val(this._currentSeason);
       }
 
-      html.find('#biome-selection').val(this._currentBiome);  // do this last, because setting climate/humidity clears it
+      html.find('#swr-biome-selection').val(this._currentBiome);  // do this last, because setting climate/humidity clears it
 
       html.find('#swr-weather-refresh').on('click', this.onWeatherRegenerateClick);
-      html.find('#biome-selection').on('change', this.onBiomeSelectChange);
-      html.find('#climate-selection').on('change', this.onClimateSelectChange);
-      html.find('#humidity-selection').on('change', this.onHumiditySelectChange);
-      html.find('#season-selection').on('change', this.onSeasonSelectChange);
+      html.find('#swr-biome-selection').on('change', this.onBiomeSelectChange);
+      html.find('#swr-climate-selection').on('change', this.onClimateSelectChange);
+      html.find('#swr-humidity-selection').on('change', this.onHumiditySelectChange);
+      html.find('#swr-season-selection').on('change', this.onSeasonSelectChange);
 
       html.find('#swr-manual-pause').on('change', this.onManualPauseChange);
 
@@ -570,7 +570,7 @@ _______________________________________
     moduleSettings.set(SettingKeys.climate, this._currentClimate);
 
     // set biome to blank because we adjusted manually
-    jQuery(document).find('#biome-selection').val('');
+    jQuery(document).find('#swr-biome-selection').val('');
     this._currentBiome = '';
     moduleSettings.set(SettingKeys.biome, '');
   };
@@ -582,7 +582,7 @@ _______________________________________
     moduleSettings.set(SettingKeys.humidity, this._currentHumidity);
 
     // set biome to blank because we adjusted manually
-    jQuery(document).find('#biome-selection').val('');
+    jQuery(document).find('#swr-biome-selection').val('');
     this._currentBiome = '';
     moduleSettings.set(SettingKeys.biome, '');
   };
@@ -601,14 +601,14 @@ _______________________________________
       moduleSettings.set(SettingKeys.biome, this._currentBiome);
 
       // update the other selects
-      const climate = document.getElementById('climate-selection') as HTMLSelectElement | null;
+      const climate = document.getElementById('swr-climate-selection') as HTMLSelectElement | null;
       if (climate) {
         climate.value = String(biomeMapping.climate);
         this._currentClimate = biomeMapping.climate;
         moduleSettings.set(SettingKeys.climate, biomeMapping.climate);
       }
       
-      const humidity = document.getElementById('humidity-selection') as HTMLSelectElement | null;
+      const humidity = document.getElementById('swr-humidity-selection') as HTMLSelectElement | null;
       if (humidity) {
         humidity.value = String(biomeMapping.humidity);
         this._currentHumidity = biomeMapping.humidity;
