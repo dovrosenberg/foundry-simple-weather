@@ -20,6 +20,8 @@
     "buildcopy": "npm run build && npm run copy",
     "foundry": "node ~/foundry/resources/app/main.js",
     "foundry10": "node ~/foundry10/resources/app/main.js --dataPath=/home/dov/foundry10data",
+    "foundry11": "node ~/foundry11/resources/app/main.js --dataPath=/home/dov/foundry11data",
+    "foundry12": "node ~/foundry12/resources/app/main.js --dataPath=/home/dov/foundry12data",
     "docker": "npm run docker:start",
     "docker:start": "docker run -ti -v ${npm_config_foundrydir}:/foundry -v $(pwd)/dist:/foundry/data/Data/modules/simple-weather -p ${npm_config_foundryport}:30000 foundryvtt-dev",
     "docker:build": "docker build -t foundryvtt-dev -f ./Dockerfile .",
