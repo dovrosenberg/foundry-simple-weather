@@ -187,6 +187,7 @@ class WeatherApplication extends Application {
       html.find('#swr-biome-selection').val(this._currentBiome);  // do this last, because setting climate/humidity clears it
 
       html.find('#swr-weather-refresh').on('click', this.onWeatherRegenerateClick);
+      html.find('#swr-chat-repost').on('click', this.onChatRepost);
       html.find('#swr-biome-selection').on('change', this.onBiomeSelectChange);
       html.find('#swr-climate-selection').on('change', this.onClimateSelectChange);
       html.find('#swr-humidity-selection').on('change', this.onHumiditySelectChange);
@@ -535,6 +536,15 @@ _______________________________________
     event.preventDefault();
 
     this.regenerateWeather();
+  };
+
+  // just output the current weather to the chat again
+  private onChatRepost = (event): void => {
+    event.preventDefault();
+
+    if (isClientGM()) {
+      outputWeather(this._currentWeather);
+    }
   };
 
   public regenerateWeather() {

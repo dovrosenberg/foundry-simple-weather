@@ -28,7 +28,7 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
 
 ### Gamemaster controls
 
-![Main UI](https://i.imgur.com/v1uT7Ie.png)
+![Main UI](https://i.imgur.com/cqVRWgQ.png)
 
 ### Player controls
 

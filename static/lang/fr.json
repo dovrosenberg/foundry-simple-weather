@@ -76,6 +76,7 @@
 
     "labels": {
       "openButton": "Open Simple Weather",
+      "repostChat": "Repost current weather to chat",
       "regenerateWeather": "Régénérer la météo",
       "toggleWeatherBox": "Ouvrir/fermer climat",
       "toggleDateBox": "Ouvrir/fermer calendrier",
@@ -468,7 +469,8 @@
     },
 
     "labels": {
-      "openButton": "Open Simple Weather"
+      "openButton": "Open Simple Weather",
+      "repostChat": "Repost current weather to chat"
     } 
   }
 }

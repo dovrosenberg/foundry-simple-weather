@@ -76,6 +76,7 @@
 
     "labels": {
       "openButton": "Open Simple Weather",
+      "repostChat": "Repost current weather to chat",
       "regenerateWeather": "मौसम पुनर्जन्म दें",
       "toggleWeatherBox": "मौसम खोलें/बंद करें",
       "toggleDateBox": "कैलेंडर खोलें/बंद करें",
@@ -497,6 +498,7 @@
 
     "labels": {
       "openButton": "Open Simple Weather",
+      "repostChat": "Repost current weather to chat",
       "toggleManualBar": "Open/close manual weather selection",
       "manualPause": "Pause updates?",
       "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)",

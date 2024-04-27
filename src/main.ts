@@ -16,7 +16,7 @@ let simpleCalendarInstalled = false;
 
 const SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER = 'fsc-pj';  // no dot in the front
 const SC_MINIMUM_VERSION = '2.4.0';
-const SC_PREFERRED_VERSION = '2.4.14';
+const SC_PREFERRED_VERSION = '2.4.13';
 
 // how do we decide what mode we're in and whether its visible or not?
 // 1. look to the attachment setting - this controls whether we're in attached mode or not; 

@@ -76,6 +76,7 @@
 
     "labels": {
       "openButton": "Open Simple Weather",
+      "repostChat": "Repost current weather to chat",
       "regenerateWeather": "Regenerate weather",
       "toggleWeatherBox": "Open/close weather",
       "toggleDateBox": "Open/close calendar",

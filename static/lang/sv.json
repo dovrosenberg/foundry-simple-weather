@@ -76,6 +76,7 @@
 
     "labels": {
       "openButton": "Open Simple Weather",
+      "repostChat": "Repost current weather to chat",
       "regenerateWeather": "Regenerera väder",
       "toggleWeatherBox": "Öppna/stäng väder",
       "toggleDateBox": "Öppna/stäng kalendern",
@@ -464,7 +465,8 @@
 
   "missing translations":{
     "labels": {
-      "openButton": "Open Simple Weather"
+      "openButton": "Open Simple Weather",
+      "repostChat": "Repost current weather to chat"
     },
 
     "settings": {

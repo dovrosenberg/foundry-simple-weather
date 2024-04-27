@@ -205,20 +205,24 @@
   display: none;
 }
 
-#swr-weather-refresh {
+#swr-current-weather-controls {
   position: absolute;
   right: 0;
   top: 0;
-  padding: 4px;
+  padding-top: 2px;
+}
+
+.swr-current-weather-control {
+  padding: 4px 4px 4px 0;
   margin: 2px;
   font-size: 0.85rem;
   cursor: pointer;
   width: 20px;
-}
 
-#swr-weather-refresh i {
-  position: relative;
-  top: 1px;
+  i {
+    position: relative;
+    top: 1px;
+  }
 }
 
 .swr-weather-content {
