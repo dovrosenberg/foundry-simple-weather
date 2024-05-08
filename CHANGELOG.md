@@ -1,5 +1,10 @@
 # Change Log
 
+## v1.10.1 - Bug fix - toggle FX button now properly reflecting the toggle state
+#### Support for Simple Calendar v2.4.13
+![](https://img.shields.io/badge/release%20date-May%207%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.10.1/module.zip)
+
 ## v1.10.0 - New "repost to chat" button
 #### Support for Simple Calendar v2.4.13
 ![](https://img.shields.io/badge/release%20date-April%2027%2C%202024-blue)

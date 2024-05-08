@@ -672,8 +672,10 @@ _______________________________________
   }
 
   public toggleFX() {
-    if (isClientGM())
+    if (isClientGM()) {
       weatherEffects.fxActive = !weatherEffects.fxActive;
+      this.render();
+    }
   }
 
   private onManualTempInput = (event: KeyboardEvent): void => {
