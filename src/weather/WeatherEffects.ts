@@ -87,9 +87,6 @@ class WeatherEffects {
     const effectOptions = weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell].fx;
 
     if (isClientGM()) {
-      // turn off any old ones
-      this.deactivateFX();
-
       if (!effectOptions)  // no fx specified
         return;
 
@@ -100,6 +97,9 @@ class WeatherEffects {
           break;
 
         case 'fxmaster':
+          // turn off any old ones
+          this.deactivateFX();
+
           if (effectOptions.fxMaster) {
             const effects = effectOptions.fxMaster as FXDetail[];
 

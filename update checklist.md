@@ -1,5 +1,5 @@
 - update version in package.json
-- update latest test version in module.json, if needed
+- update latest tested version in module.json, if needed
 - update changelog (including the date/version tags and the SC version)
 - update SC_PREFERRED_VERSION in main.ts
 - update readme
