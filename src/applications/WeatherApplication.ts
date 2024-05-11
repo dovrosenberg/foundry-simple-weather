@@ -503,7 +503,7 @@ _______________________________________
   // save the weather to a calendar note
   private async saveWeatherToCalendarNote(weatherData: WeatherData): Promise<void> {
     const noteTitle = 'Simple Weather - Daily Weather';
-    const flagName = 'swr.daily'
+    const flagName = 'dailyWeather';
 
     // is simple calendar present?
     if (!this._simpleCalendarInstalled || !weatherData?.date) {
@@ -513,8 +513,14 @@ _______________________________________
     // remove any previous note for the day
     const notes = SimpleCalendar.api.getNotesForDay(weatherData.date.year, weatherData.date.month, weatherData.date.day);
     for (let i=0; i<notes.length; i++) {
-      if (notes[i] && (notes[i] as StoredDocument<JournalEntry>).name===noteTitle) {
-        await SimpleCalendar.api.removeNote((notes[i] as StoredDocument<JournalEntry>).id);
+      if (notes[i]) {
+        const note = notes[i] as StoredDocument<JournalEntry>;
+        const flagData = note.getFlag(moduleJson.id, flagName) as WeatherData;
+
+        // if it has the flag, it's a prior weather entry - delete it
+        if (flagData) {
+          await SimpleCalendar.api.removeNote((notes[i] as StoredDocument<JournalEntry>).id);
+        }
       }
     }
 
@@ -524,7 +530,7 @@ _______________________________________
 
     // create the note and store the weather detail as a flag
     const newNote = await SimpleCalendar.api.addNote(noteTitle, noteContent, theDate, theDate, true);
-    await newNote?.setFlag('swr', 'dailyWeather', weatherData);
+    await newNote?.setFlag(moduleJson.id, flagName, weatherData);
   }
 
   // has the date part changed
