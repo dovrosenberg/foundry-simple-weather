@@ -29,6 +29,9 @@ const SC_CLASS_FOR_TAB_CLOSED = 'fsc-d';    // look at the other siblings or clo
 const SC_CLASS_FOR_TAB_WRAPPER = 'fsc-nf';   // the siblings that are tabs all have it
 const SC_ID_FOR_WINDOW_WRAPPER = 'fsc-og';  // it's the top-level one with classes app, window-app, simple-calendar
 
+// flag name for storing daily weather on SC notes
+const SC_NOTE_WEATHER_FLAG_NAME = 'dailyWeather';
+
 class WeatherApplication extends Application {
   private _currentWeather: WeatherData;
   private _displayOptions: DisplayOptions;
@@ -37,6 +40,7 @@ class WeatherApplication extends Application {
   private _attachedMode = false;
   private _attachmodeHidden = true;   // like _currentlyHidden but have to track separately because that's for managing ready state not popup state
   private _compactMode = false;
+  private _simpleCalendarInstalled = false;
 
   private _currentClimate: Climate;
   private _currentHumidity: Humidity;
@@ -60,6 +64,9 @@ class WeatherApplication extends Application {
     this._attachedMode = moduleSettings.get(SettingKeys.attachToCalendar) || false;
     this._attachmodeHidden = true;
     this._compactMode = false;
+
+    // assume no SC unless told otherwise
+    this._simpleCalendarInstalled = false;
 
     // get whether the manual pause is on
     this._manualPause = moduleSettings.get(SettingKeys.manualPause || false);
@@ -85,6 +92,9 @@ class WeatherApplication extends Application {
   }
 
   public get attachedMode() { return this._attachedMode; }
+
+  // tell application that SC is present (used for notes)
+  public simpleCalendarInstalled() { this._simpleCalendarInstalled = true; }
 
   // window options; called by parent class
   static get defaultOptions() {
@@ -383,12 +393,51 @@ _______________________________________
       return;
 
     if (this.hasDateChanged(currentDate)) {
-      log(false, 'DateTime has changed');
-
       if (isClientGM()) {
-        log(false, 'Generate new weather');
-        
-        this.generateWeather(currentDate);
+        if (moduleSettings.get(SettingKeys.storeInSCNotes)) {
+          // if we're using notes from SC (and have a valid note) pull that weather
+          const notes = SimpleCalendar.api.getNotesForDay(currentDate.year, currentDate.month, currentDate.day);
+          let foundWeatherNote = false;
+
+          for (let i=0; i<notes.length; i++) {
+            if (notes[i]) {
+              const note = notes[i] as StoredDocument<JournalEntry>;
+              const flagData = note.getFlag(moduleJson.id, SC_NOTE_WEATHER_FLAG_NAME) as WeatherData;
+      
+              // if it has the flag, it's a prior weather entry - use it
+              if (flagData && flagData.temperature!==undefined && flagData.hexFlowerCell!==undefined) {
+                foundWeatherNote = true;
+
+                this._currentWeather = new WeatherData(
+                  flagData.date, 
+                  flagData.season,
+                  flagData.humidity,
+                  flagData.climate,
+                  flagData.hexFlowerCell,
+                  flagData.temperature
+                );
+
+                this.activateWeather(this._currentWeather);
+
+                // should only be one, so we can skip rest of notes;
+                break;
+              } else if (flagData) {
+                log(false, 'Found a weather note for today, but it\'s corrupt:');
+                log(false, flagData);
+                return;
+              }
+            }
+          }
+
+          if (!foundWeatherNote) {
+            this.generateWeather(currentDate);
+          }      
+        } else {
+          // otherwise generate new weather
+          log(false, 'Generate new weather');
+          
+          this.generateWeather(currentDate);
+        }
       }
     } else {
       // always update because the time has likely changed even if the date didn't
@@ -483,9 +532,46 @@ _______________________________________
       // activate special effects
       weatherEffects.activateFX(weatherData);
 
+      // if we're saving to the calendar, do that
+      if (moduleSettings.get(SettingKeys.storeInSCNotes)) {
+        void this.saveWeatherToCalendarNote(weatherData);
+      }
+
       // save 
       moduleSettings.set(SettingKeys.lastWeatherData, this._currentWeather);        
     }
+  }
+
+  // save the weather to a calendar note
+  private async saveWeatherToCalendarNote(weatherData: WeatherData): Promise<void> {
+    const noteTitle = 'Simple Weather - Daily Weather';
+
+    // is simple calendar present?
+    if (!this._simpleCalendarInstalled || !weatherData?.date) {
+      return;
+    }
+
+    // remove any previous note for the day
+    const notes = SimpleCalendar.api.getNotesForDay(weatherData.date.year, weatherData.date.month, weatherData.date.day);
+    for (let i=0; i<notes.length; i++) {
+      if (notes[i]) {
+        const note = notes[i] as StoredDocument<JournalEntry>;
+        const flagData = note.getFlag(moduleJson.id, SC_NOTE_WEATHER_FLAG_NAME) as WeatherData;
+
+        // if it has the flag, it's a prior weather entry - delete it
+        if (flagData) {
+          await SimpleCalendar.api.removeNote((notes[i] as StoredDocument<JournalEntry>).id);
+        }
+      }
+    }
+
+    // add a new one
+    const noteContent = `Todays weather: ${weatherData.getTemperature(moduleSettings.get(SettingKeys.useCelsius))} -  ${weatherData.getDescription() }`;
+    const theDate = { year: weatherData.date.year, month: weatherData.date.month, day: weatherData.date.day};
+
+    // create the note and store the weather detail as a flag
+    const newNote = await SimpleCalendar.api.addNote(noteTitle, noteContent, theDate, theDate, true);
+    await newNote?.setFlag(moduleJson.id, SC_NOTE_WEATHER_FLAG_NAME, weatherData);
   }
 
   // has the date part changed

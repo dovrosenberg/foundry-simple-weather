@@ -13,6 +13,8 @@
       "useFXHelp": "Välj modulen som används för att visa specialeffekter. När den är aktiverad kan effekterna även stängas av manuellt vid behov.",
       "attachToCalendar": "Attach to Simple Calendar?  (Experimental - see module description)",
       "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
+      "storeInSCNotes": "Store weather in Simple Calendar?",
+      "storeInSCNotesHelp": "Store daily weather in Simple Calendar notes and then 'replay' the old weather if you go back to a prior date.",
       "options": {
         "useFX.choices.off": "Inget",
         "useFX.choices.core": "FoundryVTT-scenens väderinställning",
@@ -472,6 +474,8 @@
     "settings": {
       "attachToCalendar": "Attach to Simple Calendar?  (Experimental - see module description)",
       "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
+      "storeInSCNotes": "Store weather in Simple Calendar?",
+      "storeInSCNotesHelp": "Store daily weather in Simple Calendar notes and then 'replay' the old weather if you go back to a prior date.",
     },
 
     "keybindings": {

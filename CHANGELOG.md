@@ -1,5 +1,10 @@
 # Change Log
 
+## v1.11.0 - Can now store daily weather in Simple Calendar notes (to see history and use same weather if you revist a date)
+#### Support for Simple Calendar v2.4.13
+![](https://img.shields.io/badge/release%20date-May%2011%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.11.0/module.zip)
+
 ## v1.10.2 - Bug fix - consecutive, duplicate weather using Core FX no longer turns off the effect
 #### Support for Simple Calendar v2.4.13
 ![](https://img.shields.io/badge/release%20date-May%2009%2C%202024-blue)
