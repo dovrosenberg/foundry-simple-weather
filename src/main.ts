@@ -150,6 +150,8 @@ function checkDependencies() {
 Hooks.once(SimpleCalendar.Hooks.Init, async () => {
   // it's possible this gets called but the version # is too low - just ignore in that case
   if (simpleCalendarInstalled) {
+    weatherApplication.simpleCalendarInstalled();
+    
     // set the date and time
     if (moduleSettings.get(SettingKeys.dialogDisplay) || isClientGM()) {
       // tell the application we're using the calendar

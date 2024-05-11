@@ -37,6 +37,7 @@ class WeatherApplication extends Application {
   private _attachedMode = false;
   private _attachmodeHidden = true;   // like _currentlyHidden but have to track separately because that's for managing ready state not popup state
   private _compactMode = false;
+  private _simpleCalendarInstalled = false;
 
   private _currentClimate: Climate;
   private _currentHumidity: Humidity;
@@ -60,6 +61,9 @@ class WeatherApplication extends Application {
     this._attachedMode = moduleSettings.get(SettingKeys.attachToCalendar) || false;
     this._attachmodeHidden = true;
     this._compactMode = false;
+
+    // assume no SC unless told otherwise
+    this._simpleCalendarInstalled = false;
 
     // get whether the manual pause is on
     this._manualPause = moduleSettings.get(SettingKeys.manualPause || false);
@@ -85,6 +89,9 @@ class WeatherApplication extends Application {
   }
 
   public get attachedMode() { return this._attachedMode; }
+
+  // tell application that SC is present (used for notes)
+  public simpleCalendarInstalled() { this._simpleCalendarInstalled = true; }
 
   // window options; called by parent class
   static get defaultOptions() {
@@ -483,9 +490,41 @@ _______________________________________
       // activate special effects
       weatherEffects.activateFX(weatherData);
 
+      // if we're saving to the calendar, do that
+      if (moduleSettings.get(SettingKeys.storeInSCNotes)) {
+        void this.saveWeatherToCalendarNote(weatherData);
+      }
+
       // save 
       moduleSettings.set(SettingKeys.lastWeatherData, this._currentWeather);        
     }
+  }
+
+  // save the weather to a calendar note
+  private async saveWeatherToCalendarNote(weatherData: WeatherData): Promise<void> {
+    const noteTitle = 'Simple Weather - Daily Weather';
+    const flagName = 'swr.daily'
+
+    // is simple calendar present?
+    if (!this._simpleCalendarInstalled || !weatherData?.date) {
+      return;
+    }
+
+    // remove any previous note for the day
+    const notes = SimpleCalendar.api.getNotesForDay(weatherData.date.year, weatherData.date.month, weatherData.date.day);
+    for (let i=0; i<notes.length; i++) {
+      if (notes[i] && (notes[i] as StoredDocument<JournalEntry>).name===noteTitle) {
+        await SimpleCalendar.api.removeNote((notes[i] as StoredDocument<JournalEntry>).id);
+      }
+    }
+
+    // add a new one
+    const noteContent = `Todays weather: ${weatherData.getTemperature(moduleSettings.get(SettingKeys.useCelsius))} -  ${weatherData.getDescription() }`;
+    const theDate = { year: weatherData.date.year, month: weatherData.date.month, day: weatherData.date.day};
+
+    // create the note and store the weather detail as a flag
+    const newNote = await SimpleCalendar.api.addNote(noteTitle, noteContent, theDate, theDate, true);
+    await newNote?.setFlag('swr', 'dailyWeather', weatherData);
   }
 
   // has the date part changed
