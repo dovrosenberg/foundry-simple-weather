@@ -80,6 +80,15 @@ When using the "Attached to Simple Calendar" setting, there will be a button add
 Or in compact mode:
 ![Main UI](https://imgur.com/RL0Oj1y.png)
 
+## Module Options
+* **Output weather to chat** - If checked, whenever new weather is loaded/generated, it will be displayed in the chat. If not, you can only see the weather in the dialog.
+* **Make chat public** - If checked, everyone will see the weather display (from prior option) in the chat. If not, it will only be visible to the GM
+* **Can players see dialog** - If checked, the player version of the dialog (see above) will be visible to players. If not, players won't see a dialog.
+* **Display special effects** - Choose weather to use special effects (and which system).
+* **Attach to Simple Calendar** - If checked, turns on "Attached Mode" (see above).
+* **Store weather in Simple Calendar** - If checked, whenever new weather is loaded/generated, it will create a note on the current day in Simple Calendar.  This note will contain the weather for the day, for future reference.  If you ever change the calendar date to be a day that has one of these weather notes, it will reuse the weather from that date rather than generating new weather.  You can still manually set the weather or use the "regenerate" button to create new random weather (which will then update the note). The weather details are stored internally on the note, so it is safe to edit the note title and contents, if you'd like.
+* **Use Celsius** - If checked, all temperatures will display in celsius.  If not, Faherenheit.
+
 ## Known Issues
 ### Missing box (in non-attached mode)
 Some people occasionally have issues where the box will disappear and won't come back.  We haven't been able to consistently reproduce it, and I suspect it's a conflict with another module somehow.  If this happens to you, though, for now the workaround is to open your browser console (usually f12) and run this command to reset the window position: 
