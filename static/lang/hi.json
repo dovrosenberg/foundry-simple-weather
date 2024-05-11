@@ -13,6 +13,8 @@
       "useFXHelp": "विशेष प्रभाव प्रदर्शन करते समय उपयोग करने के लिए मॉड्यूल का चयन करें। जब आवश्यक हो तो प्रभाव को भी मैन्युअल रूप से बंद किया जा सकता है।",
       "attachToCalendar": "Attach to Simple Calendar?  (Experimental - see module description)",
       "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
+      "storeInSCNotes": "Store weather in Simple Calendar?",
+      "storeInSCNotesHelp": "Store daily weather in Simple Calendar notes and then 'replay' the old weather if you go back to a prior date.",
       "options": {
         "useFX.choices.off": "कोई नहीं",
         "useFX.choices.core": "FoundryVTT सीन मौसम सेटिंग",
@@ -482,7 +484,9 @@
       "settings": {
         "attachToCalendar": "Attach to Simple Calendar?  (Experimental - see module description)",
         "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
-      },
+        "storeInSCNotes": "Store weather in Simple Calendar?",
+        "storeInSCNotesHelp": "Store daily weather in Simple Calendar notes and then 'replay' the old weather if you go back to a prior date.",
+        },
   
       "keybindings": {
         "sweath.keybindings.toggle": "Display/hide window",
