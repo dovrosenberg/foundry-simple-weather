@@ -11,10 +11,10 @@
       "publicChatHelp": "Soll jeder (wenn ausgewählt) oder nur der SL (wenn nicht ausgewählt) das Wetter im Chat sehen können?",
       "useFX": "Spezial-/Wettereffekte anzeigen?",
       "useFXHelp": "Wähle das Modul aus, welches die Spezial-/Wettereffekte darstellen soll. Wenn aktiviert, kann es bei Bedarf manuell ausgeschaltet werden.",
-      "attachToCalendar": "Attach to Simple Calendar?  (Experimental - see module description)",
-      "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
-      "storeInSCNotes": "Store weather in Simple Calendar?",
-      "storeInSCNotesHelp": "Store daily weather in Simple Calendar notes and then 'replay' the old weather if you go back to a prior date.",
+      "attachToCalendar": "An Simple Calendar anheften?  (Experimental - siehe Modulbeschreibung)",
+      "attachToCalendarHelp": "Wird als Pop-up bei Simple Calendar angezeigt statt als eigenes Fenster. Benötigt (offensichtlicherweise) Simple Calendar.",
+      "storeInSCNotes": "Speichere das Wetter in Simple Calendar?",
+      "storeInSCNotesHelp": "Speichert das tägliche Wetter in Simple Calendar Notizen und kann das alte Wetter wiedergeben, wenn man zu dem vorherigen Tag zurückkehrt.",
       "options": {
         "useFX.choices.off": "Aus",
         "useFX.choices.core": "FoundryVTT-Szenenwettereinstellung",
@@ -77,8 +77,8 @@
     },
 
     "labels": {
-      "openButton": "Open Simple Weather",
-      "repostChat": "Repost current weather to chat",
+      "openButton": "Öffne Simple Weather",
+      "repostChat": "Erneute Ausgabe des Wetters im Chat",
       "regenerateWeather": "Wetter neu generieren",
       "toggleWeatherBox": "Öffne/Schließe die Wetteranzeige",
       "toggleDateBox": "Öffne/Schließe den Kalendar",
@@ -101,7 +101,7 @@
         "barren": {
           "springfall.1": "Kalte Winde, sehr trocken",
           "springfall.2": "Grauer Himmel",
-          "springfall.3": "Nebelig",
+          "springfall.3": "Neblig",
           "springfall.4": "Blauweißer Himmel",
           "springfall.5": "Warmer Regen",
           "springfall.6": "Quellwolken",
@@ -223,7 +223,7 @@
         "barren": {
           "springfall.1": "Kalte Winde, sehr trocken",
           "springfall.2": "Grauer Himmel",
-          "springfall.3": "Nebelig",
+          "springfall.3": "Neblig",
           "springfall.4": "Blauweißer Himmel",
           "springfall.5": "Warmer Regen",
           "springfall.6": "Quellwolken",
@@ -345,7 +345,7 @@
         "barren": {
           "springfall.1": "Windig, sehr trocken",
           "springfall.2": "Grauer Himmel",
-          "springfall.3": "Nebelig",
+          "springfall.3": "Neblig",
           "springfall.4": "Blauweißer Himmel",
           "springfall.5": "Warmer Regen",
           "springfall.6": "Quellwolken",
@@ -463,18 +463,5 @@
         }
       }
     }    
-  },
-  "missing": {
-    "settings": {
-      "attachToCalendar": "Attach to Simple Calendar?  (Experimental - see module description)",
-      "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
-      "storeInSCNotes": "Store weather in Simple Calendar?",
-      "storeInSCNotesHelp": "Store daily weather in Simple Calendar notes and then 'replay' the old weather if you go back to a prior date.",
-    },
-
-    "labels": {
-      "openButton": "Open Simple Weather",
-      "repostChat": "Repost current weather to chat"
-    } 
   }
 }
