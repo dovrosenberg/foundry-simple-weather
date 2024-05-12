@@ -1,5 +1,12 @@
 # Change Log
 
+## v1.11.2 - Updated Swedish
+#### Support for Simple Calendar v2.4.13
+![](https://img.shields.io/badge/release%20date-May%2012%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.11.2/module.zip)
+
+Updates to Swedish localization to fully support v1.11.  Thanks, Jonas Karlsson.
+
 ## v1.11.1 - Updated German
 #### Support for Simple Calendar v2.4.13
 ![](https://img.shields.io/badge/release%20date-May%2012%2C%202024-blue)
