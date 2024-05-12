@@ -11,10 +11,10 @@
       "publicChatHelp": "Ska alla se väderchatten (om den är på) eller bara GM (om den är avstängd)?",
       "useFX": "Visa specialeffekter?",
       "useFXHelp": "Välj modulen som används för att visa specialeffekter. När den är aktiverad kan effekterna även stängas av manuellt vid behov.",
-      "attachToCalendar": "Attach to Simple Calendar?  (Experimental - see module description)",
-      "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
-      "storeInSCNotes": "Store weather in Simple Calendar?",
-      "storeInSCNotesHelp": "Store daily weather in Simple Calendar notes and then 'replay' the old weather if you go back to a prior date.",
+      "attachToCalendar": "Bifoga till Simple Calendar? (Experimentell - se modulbeskrivning)",
+      "attachToCalendarHelp": "Visa som en popup på Simple Calendar istf ett fristående fönster. Kräver (förstås) Simple Calendar.",
+      "storeInSCNotes": "Lagra väder i Simple Calendar?",
+      "storeInSCNotesHelp": "Lagra dagligt väder i Simple Calendars anteckningar och 'spela om' det gamla vädret om du går tillbaka till ett tidigare datum.",
       "options": {
         "useFX.choices.off": "Inget",
         "useFX.choices.core": "FoundryVTT-scenens väderinställning",
@@ -23,14 +23,14 @@
     },
   
     "keybindings": {
-      "toggle": "Display/hide window",
-      "toggleHelp": "Hide and then redisplay the entire window",
-      "regenerate": "Regenerate weather",
-      "regenerateHelp": "Equivalent to hitting the 'Regenerate Weather' button",
-      "manualPause": "Pause updates",
-      "manualPauseHelp": "Pause weather updates (like checking the 'Pause updates?' checkbox)",
-      "pauseFX": "Toggle weather effects",
-      "pauseFXHelp": "Turn special effects on/off"
+        "toggle": "Visa/dölj fönster",
+        "toggleHelp": "Dölj och visa sedan hela fönstret igen",
+        "regenerate": "Regenerera väder",
+        "regenerateHelp": "Motsvarar att trycka på knappen 'Regenera väder'",
+        "manualPause": "Pausa uppdateringar",
+        "manualPauseHelp": "Pausa väderuppdateringar (som att markera kryssrutan 'Pausa uppdateringar')",
+        "pauseFX": "Växla vädereffekter",
+        "pauseFXHelp": "Slå på/av specialeffekter"
     },
 
     "options": {
@@ -77,8 +77,8 @@
     },
 
     "labels": {
-      "openButton": "Open Simple Weather",
-      "repostChat": "Repost current weather to chat",
+      "openButton": "Öppna Simple Weather",
+      "repostChat": "Skicka nuvarande väder till chatten igen",
       "regenerateWeather": "Regenerera väder",
       "toggleWeatherBox": "Öppna/stäng väder",
       "toggleDateBox": "Öppna/stäng kalendern",
@@ -462,31 +462,6 @@
           "winter.9": "Måttligt regn, blåsigt"
         }
       }
-    }
-  },
-
-  "missing translations":{
-    "labels": {
-      "openButton": "Open Simple Weather",
-      "repostChat": "Repost current weather to chat"
-    },
-
-    "settings": {
-      "attachToCalendar": "Attach to Simple Calendar?  (Experimental - see module description)",
-      "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
-      "storeInSCNotes": "Store weather in Simple Calendar?",
-      "storeInSCNotesHelp": "Store daily weather in Simple Calendar notes and then 'replay' the old weather if you go back to a prior date.",
-    },
-
-    "keybindings": {
-      "sweath.keybindings.toggle": "Display/hide window",
-      "sweath.keybindings.toggleHelp": "Hide and then redisplay the entire window",
-      "sweath.keybindings.regenerate": "Regenerate weather",
-      "sweath.keybindings.regenerateHelp": "Equivalent to hitting the 'Regenerate Weather' button",
-      "sweath.keybindings.manualPause": "Pause updates",
-      "sweath.keybindings.manualPauseHelp": "Pause weather updates (like checking the 'Pause updates?' checkbox)",
-      "sweath.keybindings.pauseFX": "Toggle weather effects",
-      "sweath.keybindings.pauseFXHelp": "Turn special effects on/off"
     }
   }
 }
