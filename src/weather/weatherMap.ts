@@ -796,6 +796,7 @@ export {
   Direction,
   getDirection,
   initializeLocalizedText,
+  descriptionOrder,
   weatherDescriptions,
   weatherTemperatures,
   weatherOptions,
