@@ -399,17 +399,17 @@ const descriptionCells = {
 
 const manualOptions = [  // build list of manual weather options; for simplicity, we steal them from ones that already exist
   { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.springfall_cool1 },   // clear sky
-  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.summer4},   // clouds
-  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.winter6},   // overcast
-  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall_warm5},,   // dark sky
+  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.summer4},   // fleecy clouds
+  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.winter6},   // gray, windy
+  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall_warm5},,   // dark storm clouds
   { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.summer7 },   // light rain
-  { climate: Climate.Cold, humidity: Humidity.Verdant, hexCell: descriptionCells.summer6 },   // moderate rain
+  { climate: Climate.Cold, humidity: Humidity.Verdant, hexCell: descriptionCells.summer6 },   // steady rain
   { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.summer7 },   // heavy rain
   { climate: Climate.Temperate, humidity: Humidity.Barren, hexCell: descriptionCells.springfall_cool2 },   // light fog
-  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall3 },   // moderate fog
+  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall3 },   // fog banks
   { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall_cool2},   // heavy fog
   { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.winter5 },   // light snow
-  { climate: Climate.Temperate, humidity: Humidity.Verdant, hexCell: descriptionCells.winter9 },   // moderate snow
+  { climate: Climate.Temperate, humidity: Humidity.Verdant, hexCell: descriptionCells.winter9 },   // moderate snow, windy
   { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.winter3},   // heavy snow
   { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall_warm6},   // hail
 ];
