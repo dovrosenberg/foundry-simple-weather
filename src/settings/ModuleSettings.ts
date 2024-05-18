@@ -5,6 +5,7 @@ import { getGame, isClientGM, localize } from '@/utils/game';
 import { WeatherData } from '@/weather/WeatherData';
 import { DisplayOptions } from '@/types/DisplayOptions';
 import { CustomMessageSettingsApplication } from '@/applications/CustomMessageSettingsApplication';
+import { Climate, Humidity } from '@/weather/climateData';
 
 export enum SettingKeys {
   // displayed in settings
@@ -29,6 +30,7 @@ export enum SettingKeys {
   climate = 'climate',   // the current climate
   humidity = 'humidity',   // the current humidity
   manualPause = 'manualPause',   // is the manual pause currently active (will prevent any auto or regen updates)
+  customChatMessages = 'customChatMessages',  // [climate][humidity][index]: message
 }
 
 type SettingType<K extends SettingKeys> =
@@ -51,6 +53,7 @@ type SettingType<K extends SettingKeys> =
     K extends SettingKeys.climate ? number :
     K extends SettingKeys.humidity ? number :
     K extends SettingKeys.manualPause ? boolean :
+    K extends SettingKeys.customChatMessages ? string[][][] :
     never;  
 
 // the solo instance
@@ -246,10 +249,21 @@ export class ModuleSettings {
     },
     {
       settingID: SettingKeys.manualPause,
-      name: 'Manual Pause',
+      name: 'Manual pause',
       type: Boolean,
       default: false
     },
+    {
+      settingID: SettingKeys.customChatMessages,
+      name: 'Custom chat messages',
+      type: Array,
+      default: new Array(Object.keys(Climate).length/2)
+      .fill('')
+      .map(() => new Array(Object.keys(Humidity).length/2)
+        .fill('')
+        .map(() => new Array(37).fill('')))
+    },
+  
   ];
   
   // these are client-specfic only used internally
