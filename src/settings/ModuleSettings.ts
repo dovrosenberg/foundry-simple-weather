@@ -4,6 +4,8 @@ import { WindowPosition } from '@/window/WindowPosition';
 import { getGame, isClientGM, localize } from '@/utils/game';
 import { WeatherData } from '@/weather/WeatherData';
 import { DisplayOptions } from '@/types/DisplayOptions';
+import { CustomMessageSettingsApplication } from '@/applications/CustomMessageSettingsApplication';
+import { Climate, Humidity } from '@/weather/climateData';
 
 export enum SettingKeys {
   // displayed in settings
@@ -28,6 +30,7 @@ export enum SettingKeys {
   climate = 'climate',   // the current climate
   humidity = 'humidity',   // the current humidity
   manualPause = 'manualPause',   // is the manual pause currently active (will prevent any auto or regen updates)
+  customChatMessages = 'customChatMessages',  // [climate][humidity][index]: message
 }
 
 type SettingType<K extends SettingKeys> =
@@ -50,6 +53,7 @@ type SettingType<K extends SettingKeys> =
     K extends SettingKeys.climate ? number :
     K extends SettingKeys.humidity ? number :
     K extends SettingKeys.manualPause ? boolean :
+    K extends SettingKeys.customChatMessages ? string[][][] :
     never;  
 
 // the solo instance
@@ -102,175 +106,194 @@ export class ModuleSettings {
     getGame().settings.registerMenu(moduleJson.id, settingKey, settingConfig);
   }
 
-    // these are global menus (shown at top)
-    private menuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: string })[] = [
-      // couldn't get this to work because it creates a new instance but I can't figure out how to attach it to the weatherInstance variable in main.js
-      // {
-      //     settingID: SettingKeys.showApplication,
-      //     name: '',
-      //     label: 'Open Simple Weather',
-      //     hint: 'Reopen the main window if closed',
-      //     icon: "fa fa-calendar",
-      //     type: WeatherApplication,
-      // },
-    ];
+  // these are global menus (shown at top)
+  private menuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: string })[] = [
+    // couldn't get this to work because it creates a new instance but I can't figure out how to attach it to the weatherInstance variable in main.js
+    // {
+    //     settingID: SettingKeys.showApplication,
+    //     name: '',
+    //     label: 'Open Simple Weather',
+    //     hint: 'Reopen the main window if closed',
+    //     icon: "fa fa-calendar",
+    //     type: WeatherApplication,
+    // },
+    {
+      settingID: 'mySettingsMenu',
+      name: 'Custom weather messages',
+      label: 'Manage custom weather messages',
+      hint: "Set system-specific messages (useful for penalties associated with extreme weather)",
+      icon: "fas fa-bars",               // A Font Awesome icon used in the submenu button
+      type: CustomMessageSettingsApplication,
+    }
+  ];
 
-    // these are local menus (shown at top)
-    private localMenuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: string })[] = [
-    ];
+  // these are local menus (shown at top)
+  private localMenuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: string })[] = [
+  ];
 
-    // these are globals shown in the options
-    // name and hint should be the id of a localization string
-    private displayParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
-      {
-        settingID: SettingKeys.outputWeatherToChat,
-        name: 'sweath.settings.outputweatherToChat',
-        hint: 'sweath.settings.outputweatherToChatHelp',
-        default: true,
-        type: Boolean,
+  // these are globals shown in the options
+  // name and hint should be the id of a localization string
+  private displayParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
+    {
+      settingID: SettingKeys.outputWeatherToChat,
+      name: 'sweath.settings.outputweatherToChat',
+      hint: 'sweath.settings.outputweatherToChatHelp',
+      default: true,
+      type: Boolean,
+    },
+    {
+      settingID: SettingKeys.publicChat,
+      name: 'sweath.settings.publicChat',
+      hint: 'sweath.settings.publicChatHelp',
+      default: true,
+      type: Boolean,
+    },
+    {
+      settingID: SettingKeys.dialogDisplay, 
+      name: 'sweath.settings.dialogDisplay',
+      hint: 'sweath.settings.dialogDisplayHelp',
+      default: true,
+      type: Boolean,
+    },
+    {
+      settingID: SettingKeys.useFX, 
+      name: 'sweath.settings.useFX',
+      hint: 'sweath.settings.useFXHelp',
+      requiresReload: true,   
+      type: String,
+      choices: {  // can't find the right typescript type, but this does work
+        'off': 'sweath.settings.options.useFX.choices.off',
+        'core': 'sweath.settings.options.useFX.choices.core',
+        'fxmaster': 'sweath.settings.options.useFX.choices.fxmaster',
       },
-      {
-        settingID: SettingKeys.publicChat,
-        name: 'sweath.settings.publicChat',
-        hint: 'sweath.settings.publicChatHelp',
-        default: true,
-        type: Boolean,
-      },
-      {
-        settingID: SettingKeys.dialogDisplay, 
-        name: 'sweath.settings.dialogDisplay',
-        hint: 'sweath.settings.dialogDisplayHelp',
-        default: true,
-        type: Boolean,
-      },
-      {
-        settingID: SettingKeys.useFX, 
-        name: 'sweath.settings.useFX',
-        hint: 'sweath.settings.useFXHelp',
-        requiresReload: true,   
-        type: String,
-        choices: {  // can't find the right typescript type, but this does work
-          'off': 'sweath.settings.options.useFX.choices.off',
-          'core': 'sweath.settings.options.useFX.choices.core',
-          'fxmaster': 'sweath.settings.options.useFX.choices.fxmaster',
-        },
-        default: 'off',
-      },
-      {
-        settingID: SettingKeys.attachToCalendar, 
-        name: 'sweath.settings.attachToCalendar',
-        hint: 'sweath.settings.attachToCalendarHelp',
-        default: false,
-        requiresReload: true,    // can't find the right typescript type, but this does work
-        type: Boolean,
-      },
-      {
-        settingID: SettingKeys.storeInSCNotes, 
-        name: 'sweath.settings.storeInSCNotes',
-        hint: 'sweath.settings.storeInSCNotesHelp',
-        default: false,
-        requiresReload: false,    // can't find the right typescript type, but this does work
-        type: Boolean,
-      },
-    ];
+      default: 'off',
+    },
+    {
+      settingID: SettingKeys.attachToCalendar, 
+      name: 'sweath.settings.attachToCalendar',
+      hint: 'sweath.settings.attachToCalendarHelp',
+      default: false,
+      requiresReload: true,    // can't find the right typescript type, but this does work
+      type: Boolean,
+    },
+    {
+      settingID: SettingKeys.storeInSCNotes, 
+      name: 'sweath.settings.storeInSCNotes',
+      hint: 'sweath.settings.storeInSCNotesHelp',
+      default: false,
+      requiresReload: false,    // can't find the right typescript type, but this does work
+      type: Boolean,
+    },
+  ];
 
-    // these are client-specific and displayed in settings
-    private localDisplayParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
-      {
-        settingID: SettingKeys.useCelsius, 
-        name: 'sweath.settings.useCelsius',
-        hint: 'sweath.settings.useCelsiusHelp',
-        default: false,
-        type: Boolean,
-      },
-    ];
+  // these are client-specific and displayed in settings
+  private localDisplayParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
+    {
+      settingID: SettingKeys.useCelsius, 
+      name: 'sweath.settings.useCelsius',
+      hint: 'sweath.settings.useCelsiusHelp',
+      default: false,
+      type: Boolean,
+    },
+  ];
 
-    // these are globals only used internally
-    private internalParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
-      {
-        settingID: SettingKeys.activeFXMParticleEffects,
-        name: 'Active FX particle effects',
-        type: Array,
-        default: []
-      },
-      {
-        settingID: SettingKeys.activeFXMFilterEffects,
-        name: 'Active FX filter effects',
-        type: Array,
-        default: []
-      },
-      {
-        settingID: SettingKeys.lastWeatherData,
-        name: 'Last weather data',
-        type: Object,
-        default: null
-      },
-      {
-        settingID: SettingKeys.season,
-        name: 'Last season',
-        type: Number,
-        default: 0
-      },
-      {
-        settingID: SettingKeys.seasonSync,
-        name: 'Season sync',
-        type: Boolean,
-        default: false
-      },
-      {
-        settingID: SettingKeys.biome,
-        name: 'Last biome',
-        type: String,
-        default: ''
-      },
-      {
-        settingID: SettingKeys.climate,
-        name: 'Last climate',
-        type: Number,
-        default: 0
-      },
-      {
-        settingID: SettingKeys.humidity,
-        name: 'Last humidity',
-        type: Number,
-        default: 0
-      },
-      {
-        settingID: SettingKeys.manualPause,
-        name: 'Manual Pause',
-        type: Boolean,
-        default: false
-      },
-    ];
-   
-    // these are client-specfic only used internally
-    private localInternalParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
-      {
-        settingID: SettingKeys.fxActive,
-        name: 'FX Active',
-        type: Object,
-        default: true,
-      },
-      {
-        settingID: SettingKeys.windowPosition,
-        name: 'Window Position',
-        type: Object,
-        default: null
-      },
-      {
-        settingID: SettingKeys.displayOptions,
-        name: 'Display Options',
-        type: Object,
-        default: {
-          dateBox: true,
-          weatherBox: false,
-          seasonBar: false,
-          biomeBar: false,
-        }
-      },
-    ];
+  // these are globals only used internally
+  private internalParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
+    {
+      settingID: SettingKeys.activeFXMParticleEffects,
+      name: 'Active FX particle effects',
+      type: Array,
+      default: []
+    },
+    {
+      settingID: SettingKeys.activeFXMFilterEffects,
+      name: 'Active FX filter effects',
+      type: Array,
+      default: []
+    },
+    {
+      settingID: SettingKeys.lastWeatherData,
+      name: 'Last weather data',
+      type: Object,
+      default: null
+    },
+    {
+      settingID: SettingKeys.season,
+      name: 'Last season',
+      type: Number,
+      default: 0
+    },
+    {
+      settingID: SettingKeys.seasonSync,
+      name: 'Season sync',
+      type: Boolean,
+      default: false
+    },
+    {
+      settingID: SettingKeys.biome,
+      name: 'Last biome',
+      type: String,
+      default: ''
+    },
+    {
+      settingID: SettingKeys.climate,
+      name: 'Last climate',
+      type: Number,
+      default: 0
+    },
+    {
+      settingID: SettingKeys.humidity,
+      name: 'Last humidity',
+      type: Number,
+      default: 0
+    },
+    {
+      settingID: SettingKeys.manualPause,
+      name: 'Manual pause',
+      type: Boolean,
+      default: false
+    },
+    {
+      settingID: SettingKeys.customChatMessages,
+      name: 'Custom chat messages',
+      type: Array,
+      default: new Array(Object.keys(Climate).length/2)
+      .fill('')
+      .map(() => new Array(Object.keys(Humidity).length/2)
+        .fill('')
+        .map(() => new Array(37).fill('')))
+    },
+  
+  ];
+  
+  // these are client-specfic only used internally
+  private localInternalParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
+    {
+      settingID: SettingKeys.fxActive,
+      name: 'FX Active',
+      type: Object,
+      default: true,
+    },
+    {
+      settingID: SettingKeys.windowPosition,
+      name: 'Window Position',
+      type: Object,
+      default: null
+    },
+    {
+      settingID: SettingKeys.displayOptions,
+      name: 'Display Options',
+      type: Object,
+      default: {
+        dateBox: true,
+        weatherBox: false,
+        seasonBar: false,
+        biomeBar: false,
+      }
+    },
+  ];
 
-    private registerSettings(): void {
+  private registerSettings(): void {
     for (let i=0; i<this.menuParams.length; i++) {
       const { settingID, ...settings} = this.menuParams[i];
       this.registerMenu(settingID, {

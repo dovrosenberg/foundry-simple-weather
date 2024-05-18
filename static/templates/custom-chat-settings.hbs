@@ -1,0 +1,15 @@
+<form>
+	<button type="submit">Submit</button>
+
+	<table>
+		{{#each weatherDescriptions}}
+			<tr>
+				<td><b>{{climate}}</b></td>			
+				<td><b>{{humidity}}</b></td>			
+				<td>{{description}}</td>			
+				<td><input name="v-{{@index}}" value="{{currentText}}"/></td>			
+			</tr>
+		{{/each}}
+	</table>
+	<button type="submit">Submit</button>
+</form>

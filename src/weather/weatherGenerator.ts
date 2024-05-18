@@ -93,7 +93,14 @@ const outputWeather = function(weatherData: WeatherData) {
   } 
 
   if (messageRecipients) {
-    const chatOut = '<b>' + weatherData.getTemperature(moduleSettings.get(SettingKeys.useCelsius)) + '</b> - ' + weatherData.getDescription();
+    // get any custom text
+    let chatOut = '<b>' + weatherData.getTemperature(moduleSettings.get(SettingKeys.useCelsius)) + '</b> - ' + weatherData.getDescription();
+
+    if (weatherData.climate!==null && weatherData.humidity!==null && weatherData.hexFlowerCell!==null) {
+      const customText = moduleSettings.get(SettingKeys.customChatMessages)[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell];
+      if (customText)
+        chatOut = chatOut + '<br>' + customText;
+    }
 
     ChatMessage.create({
       speaker: {
