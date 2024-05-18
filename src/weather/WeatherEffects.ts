@@ -76,7 +76,7 @@ class WeatherEffects {
   }
 
   // need to turn any old ones off separately first...
-  public activateFX(weatherData: WeatherData): void {
+  public async activateFX(weatherData: WeatherData): Promise<void> {
     this._lastWeatherData = weatherData;
 
     if (!this._sceneReady)
@@ -88,19 +88,19 @@ class WeatherEffects {
     const effectOptions = weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell].fx;
 
     if (isClientGM()) {
+      // turn off any old ones
+      await this.deactivateFX();
+
       if (!effectOptions)
         return;
 
       switch (this._useFX) {
         case 'core':
           if (effectOptions.core?.effect) 
-            getGame().scenes?.active?.update({ weather: effectOptions.core?.effect });
+            await getGame().scenes?.active?.update({ weather: effectOptions.core?.effect });
           break;
 
         case 'fxmaster':
-          // turn off any old ones
-          this.deactivateFX();
-
           if (effectOptions.fxMaster) {
             const effects = effectOptions.fxMaster as FXDetail[];
 
@@ -125,8 +125,8 @@ class WeatherEffects {
                 this.addFXMParticleEffect(name);
               } else if (effects[e].style === FXMStyleTypes.Filter) {
                 log(false, 'Adding fxmaster: ' + name);
-                FXMASTER.filters.addFilter(name, effects[e].type, effects[e].options);
-                this.addFXMFilterEffect(name);
+                await FXMASTER.filters.addFilter(name, effects[e].type, effects[e].options);
+                await this.addFXMFilterEffect(name);
               }
             }
           }
@@ -141,12 +141,12 @@ class WeatherEffects {
     } 
   }
 
-  public deactivateFX(): void {
+  public async deactivateFX(): Promise<void> {
     if (isClientGM()) {
       switch (this._useFX) {
         case 'core':
           if (isClientGM()) {
-            getGame().scenes?.active?.update({ weather: '' });
+            await getGame().scenes?.active?.update({ weather: '' });
           }
           break;
         
@@ -165,9 +165,9 @@ class WeatherEffects {
           for (let i=0; i<this._activeFXMFilterEffects.length; i++) {
             const effectName = this._activeFXMFilterEffects[i];
 
-            FXMASTER.filters.removeFilter(effectName);
+            await FXMASTER.filters.removeFilter(effectName);
           }
-          this.clearFXMFilterEffects();
+          await this.clearFXMFilterEffects();
 
           break;
 
@@ -178,28 +178,28 @@ class WeatherEffects {
     }
   }
 
-  private addFXMParticleEffect(name: string): void {
+  private async addFXMParticleEffect(name: string): Promise<void> {
     this._activeFXMParticleEffects.push(name);
 
-    moduleSettings.set(SettingKeys.activeFXMParticleEffects, this._activeFXMParticleEffects);
+    await moduleSettings.set(SettingKeys.activeFXMParticleEffects, this._activeFXMParticleEffects);
   }
 
-  private addFXMFilterEffect(name: string): void {
+  private async addFXMFilterEffect(name: string): Promise<void> {
     this._activeFXMFilterEffects.push(name);
 
-    moduleSettings.set(SettingKeys.activeFXMFilterEffects, this._activeFXMFilterEffects);
+    await moduleSettings.set(SettingKeys.activeFXMFilterEffects, this._activeFXMFilterEffects);
   }
 
-  private clearFXMParticleEffects(): void {
+  private async clearFXMParticleEffects(): Promise<void> {
     this._activeFXMParticleEffects = [];
 
-    moduleSettings.set(SettingKeys.activeFXMParticleEffects, this._activeFXMParticleEffects);
+    await moduleSettings.set(SettingKeys.activeFXMParticleEffects, this._activeFXMParticleEffects);
   }
 
-  private clearFXMFilterEffects(): void {
+  private async clearFXMFilterEffects(): Promise<void> {
     this._activeFXMFilterEffects = [];
 
-    moduleSettings.set(SettingKeys.activeFXMFilterEffects, this._activeFXMFilterEffects);
+    await moduleSettings.set(SettingKeys.activeFXMFilterEffects, this._activeFXMFilterEffects);
   }
 }
 

@@ -1,6 +1,13 @@
 # Change Log
 
-## v1.12.0 - Updated French
+## v1.12.1 - Bug fix - weather not always turning off
+#### Support for Simple Calendar v2.4.13
+![](https://img.shields.io/badge/release%20date-May%2015%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.11.3/module.zip)
+
+Fixed an issue where weather FX weren't always turning off when switching to a condition without them (ex. switching from rain to clear sky).
+
+## v1.12.0 - Custom chat text
 #### Support for Simple Calendar v2.4.13
 ![](https://img.shields.io/badge/release%20date-May%2015%2C%202024-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.11.3/module.zip)
