@@ -15,6 +15,8 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
 - Randomized weather for every season across 3 climates (hot, temperate, cold) and 3 humidities (barren, modest, verdant)
 - Weather progresses naturally from day to day
 - Ability to manually pick weather for special events
+- Ability to store weather history to calendar day, enabling replaying weather history
+- Ability to add custom text (ex. movement penalties during snowstorms) to each weather condition
 - Supports Farenheit and Celsius temperatures
 - Helpful keybinding options
 
@@ -81,6 +83,7 @@ Or in compact mode:
 ![Main UI](https://imgur.com/RL0Oj1y.png)
 
 ## Module Options
+* **Custom weather messages** - Allows you to manually enter additional text for each weather condition.  When that condition comes up, this additional text will be output to the chat after the weather description and temperature.  This is particularly useful if you'd like to assign system-specific conditions (for example, applying movement penalties during a snowstorm).  Note that you have to set it in every combination of climate, humidity, and weather that you wish to have a special notation (though anything you don't need to notate can be left blank).
 * **Output weather to chat** - If checked, whenever new weather is loaded/generated, it will be displayed in the chat. If not, you can only see the weather in the dialog.
 * **Make chat public** - If checked, everyone will see the weather display (from prior option) in the chat. If not, it will only be visible to the GM
 * **Can players see dialog** - If checked, the player version of the dialog (see above) will be visible to players. If not, players won't see a dialog.

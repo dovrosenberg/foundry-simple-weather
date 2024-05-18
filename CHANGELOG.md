@@ -1,5 +1,14 @@
 # Change Log
 
+## v1.12.0 - Updated French
+#### Support for Simple Calendar v2.4.13
+![](https://img.shields.io/badge/release%20date-May%2015%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.11.3/module.zip)
+
+There is now the ability to manually add any additional text you want to be displayed to chat for each weather condition (ex. system-specific penalties for movement during a blizzard).
+
+This is the first pass at this functionality.  I plan to expand it to enable you to save/load values using external files, in order to create different sets for differen systems that can easily be swapped in and out.
+
 ## v1.11.3 - Updated French
 #### Support for Simple Calendar v2.4.13
 ![](https://img.shields.io/badge/release%20date-May%2015%2C%202024-blue)
