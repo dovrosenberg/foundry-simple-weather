@@ -7,7 +7,7 @@
 
 There is now the ability to manually add any additional text you want to be displayed to chat for each weather condition (ex. system-specific penalties for movement during a blizzard).
 
-This is the first pass at this functionality.  I plan to expand it to enable you to save/load values using external files, in order to create different sets for differen systems that can easily be swapped in and out.
+This is the first pass at this functionality.  For now, these custom messages are unreliable when manually specifying weather.  I also plan to expand it to enable you to save/load values using external files, in order to create different sets for differen systems that can easily be swapped in and out.  
 
 ## v1.11.3 - Updated French
 #### Support for Simple Calendar v2.4.13

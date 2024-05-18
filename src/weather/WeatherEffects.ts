@@ -75,6 +75,7 @@ class WeatherEffects {
     return this._fxActive;
   }
 
+  // need to turn any old ones off separately first...
   public activateFX(weatherData: WeatherData): void {
     this._lastWeatherData = weatherData;
 
@@ -87,7 +88,7 @@ class WeatherEffects {
     const effectOptions = weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell].fx;
 
     if (isClientGM()) {
-      if (!effectOptions)  // no fx specified
+      if (!effectOptions)
         return;
 
       switch (this._useFX) {
