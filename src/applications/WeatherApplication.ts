@@ -26,8 +26,8 @@ function updateWeatherApplication(weatherApp: WeatherApplication): void {
 // no  dot or # in front
 const SC_CLASS_FOR_TAB_EXTENDED = 'fsc-c';    // open the search panel and find the siblings that are the panels and see what the different code is on search
 const SC_CLASS_FOR_TAB_CLOSED = 'fsc-d';    // look at the other siblings or close search and see what changes
-const SC_CLASS_FOR_TAB_WRAPPER = 'fsc-nf';   // the siblings that are tabs all have it
-const SC_ID_FOR_WINDOW_WRAPPER = 'fsc-og';  // it's the top-level one with classes app, window-app, simple-calendar
+const SC_CLASS_FOR_TAB_WRAPPER = 'fsc-of';   // the siblings that are tabs all have it - also needs to go in .scss
+const SC_ID_FOR_WINDOW_WRAPPER = 'fsc-if';  // it's the top-level one with classes app, window-app, simple-calendar
 
 // flag name for storing daily weather on SC notes
 const SC_NOTE_WEATHER_FLAG_NAME = 'dailyWeather';
