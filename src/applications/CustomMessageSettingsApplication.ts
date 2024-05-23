@@ -1,6 +1,6 @@
 import { Climate, Humidity } from '@/weather/climateData';
 import { weatherDescriptions } from '@/weather/weatherMap';
-import { moduleSettings, SettingKeys } from '@/settings/ModuleSettings';
+import { moduleSettings, ModuleSettingKeys } from '@/settings/ModuleSettings';
 import moduleJson from '@module';
 
 export class CustomMessageSettingsApplication extends FormApplication {
@@ -51,7 +51,7 @@ export class CustomMessageSettingsApplication extends FormApplication {
 
   public async getData(): Promise<any> {
     // load any current values
-    const currentText = moduleSettings.get(SettingKeys.customChatMessages);
+    const currentText = moduleSettings.get(ModuleSettingKeys.customChatMessages);
 
     for (let i=0; i<this._flattenedDescriptions.length; i++) {
       this._flattenedDescriptions[i].currentText = currentText[this._flattenedDescriptions[i].climateId][this._flattenedDescriptions[i].humidityId][this._flattenedDescriptions[i].descriptionId];
@@ -78,6 +78,6 @@ export class CustomMessageSettingsApplication extends FormApplication {
       chatMessages[this._flattenedDescriptions[i].climateId][this._flattenedDescriptions[i].humidityId][this._flattenedDescriptions[i].descriptionId] = formData['v-'+i];
     }
 
-    await moduleSettings.set(SettingKeys.customChatMessages, chatMessages);
+    await moduleSettings.set(ModuleSettingKeys.customChatMessages, chatMessages);
   }
 }

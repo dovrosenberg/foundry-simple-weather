@@ -1,7 +1,7 @@
 import '@/../styles/simple-weather.scss';
 import '@/../styles/menu-icon.scss';
 
-import { moduleSettings, ModuleSettings, SettingKeys, updateModuleSettings } from '@/settings/ModuleSettings';
+import { moduleSettings, ModuleSettings, ModuleSettingKeys, updateModuleSettings } from '@/settings/ModuleSettings';
 import { VersionUtils } from '@/utils/versionUtils';
 import { getGame, isClientGM } from '@/utils/game';
 import { allowSeasonSync, Climate, Humidity, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
@@ -88,7 +88,7 @@ Hooks.once('i18nInit', async () => {
 
 // on non-GMs, we need to update whenever the GM changes the weather
 Hooks.on('updateSetting', async (setting: Setting) => {
-  if (!isClientGM() && setting.key === 'simple-weather.' + SettingKeys.lastWeatherData) 
+  if (!isClientGM() && setting.key === 'simple-weather.' + ModuleSettingKeys.lastWeatherData) 
     weatherApplication.setWeather();
 });
 
@@ -98,7 +98,7 @@ Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
   if (weatherApplication.attachedMode)
     return;
 
-  if (isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)) {
+  if (isClientGM() || moduleSettings.get(ModuleSettingKeys.dialogDisplay)) {
     // find the journal notes 
     const noteControls = controls.find((c) => {
         return c.name === "notes";
@@ -128,7 +128,7 @@ function checkDependencies() {
 
   // if not present, just display a warning if we're in attached mode
   if (!module || !module?.active || !scVersion) {
-    if (moduleSettings.get(SettingKeys.attachToCalendar)) {
+    if (moduleSettings.get(ModuleSettingKeys.attachToCalendar)) {
       ui.notifications?.warn(`Simple Weather is set to "Attached Mode" in settings but Simple Calendar is not installed.  This will keep it from displaying at all.  You should turn off that setting if this isn't intended.`);
     }
 
@@ -157,7 +157,7 @@ Hooks.once(SimpleCalendar.Hooks.Init, async () => {
     weatherApplication.simpleCalendarInstalled();
     
     // set the date and time
-    if (moduleSettings.get(SettingKeys.dialogDisplay) || isClientGM()) {
+    if (moduleSettings.get(ModuleSettingKeys.dialogDisplay) || isClientGM()) {
       // tell the application we're using the calendar
       weatherApplication.activateCalendar();
 

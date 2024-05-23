@@ -1,4 +1,4 @@
-import { ModuleSettings, moduleSettings, SettingKeys } from '@/settings/ModuleSettings';
+import { ModuleSettings, moduleSettings, ModuleSettingKeys } from '@/settings/ModuleSettings';
 import { getGame, isClientGM } from '@/utils/game';
 import { log } from '@/utils/log';
 import { VersionUtils } from '@/utils/versionUtils';
@@ -23,8 +23,8 @@ class WeatherEffects {
   private _activeFXMFilterEffects: string[] = [];   // names of the active filter effects (so we can turn off)
 
   constructor() {
-    this._fxActive = moduleSettings.get(SettingKeys.fxActive);
-    this._useFX = moduleSettings.get(SettingKeys.useFX);
+    this._fxActive = moduleSettings.get(ModuleSettingKeys.fxActive);
+    this._useFX = moduleSettings.get(ModuleSettingKeys.useFX);
 
     // check the version
     if (this._useFX==='fxmaster') {
@@ -40,7 +40,7 @@ class WeatherEffects {
       }
     }
 
-    this._activeFXMParticleEffects = moduleSettings.get(SettingKeys.activeFXMParticleEffects);
+    this._activeFXMParticleEffects = moduleSettings.get(ModuleSettingKeys.activeFXMParticleEffects);
     this._sceneReady = false;
   }
 
@@ -181,25 +181,25 @@ class WeatherEffects {
   private async addFXMParticleEffect(name: string): Promise<void> {
     this._activeFXMParticleEffects.push(name);
 
-    await moduleSettings.set(SettingKeys.activeFXMParticleEffects, this._activeFXMParticleEffects);
+    await moduleSettings.set(ModuleSettingKeys.activeFXMParticleEffects, this._activeFXMParticleEffects);
   }
 
   private async addFXMFilterEffect(name: string): Promise<void> {
     this._activeFXMFilterEffects.push(name);
 
-    await moduleSettings.set(SettingKeys.activeFXMFilterEffects, this._activeFXMFilterEffects);
+    await moduleSettings.set(ModuleSettingKeys.activeFXMFilterEffects, this._activeFXMFilterEffects);
   }
 
   private async clearFXMParticleEffects(): Promise<void> {
     this._activeFXMParticleEffects = [];
 
-    await moduleSettings.set(SettingKeys.activeFXMParticleEffects, this._activeFXMParticleEffects);
+    await moduleSettings.set(ModuleSettingKeys.activeFXMParticleEffects, this._activeFXMParticleEffects);
   }
 
   private async clearFXMFilterEffects(): Promise<void> {
     this._activeFXMFilterEffects = [];
 
-    await moduleSettings.set(SettingKeys.activeFXMFilterEffects, this._activeFXMFilterEffects);
+    await moduleSettings.set(ModuleSettingKeys.activeFXMFilterEffects, this._activeFXMFilterEffects);
   }
 }
 
