@@ -1,7 +1,7 @@
 - update version in package.json
 - update latest tested version in module.json, if needed
 - update changelog (including the date/version tags and the SC version)
-- update SC_PREFERRED_VERSION in main.ts
+- update SC_PREFERRED_VERSION in main.ts (and all SC_* constants)
 - update readme
 - update credits, if needed
 - create release
