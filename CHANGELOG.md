@@ -1,11 +1,18 @@
 # Change Log
 
+## v1.13.1 - Updated version number to support Foundry V12 release
+#### Support for Simple Calendar v2.4.17
+![](https://img.shields.io/badge/release%20date-May%2025%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.13.1/module.zip)
+
+Supports Simple Calendar v2.4.17
+
 ## v1.13.0 - Support for new version of Simple Calendar
 #### Support for Simple Calendar v2.4.17
 ![](https://img.shields.io/badge/release%20date-May%2020%2C%202024-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.13.0/module.zip)
 
-Supports Simple Valendar v2.4.17
+Supports Simple Calendar v2.4.17
 
 ## v1.12.1 - Bug fix - weather not always turning off
 #### Support for Simple Calendar v2.4.13
