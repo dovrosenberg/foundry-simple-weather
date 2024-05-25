@@ -12,7 +12,7 @@ Supports Simple Calendar v2.4.18, doesn't report lack of support for Foundry v12
 ![](https://img.shields.io/badge/release%20date-May%2020%2C%202024-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.13.0/module.zip)
 
-Supports Simple Valendar v2.4.17
+Supports Simple Calendar v2.4.17
 
 ## v1.12.1 - Bug fix - weather not always turning off
 #### Support for Simple Calendar v2.4.13
