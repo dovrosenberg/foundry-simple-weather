@@ -1,7 +1,7 @@
 {
   "name": "simple-weather",
   "title": "Foundry VTT Simple Weather",
-  "version": "1.13.0",
+  "version": "1.13.1",
   "description": "Add dynamic weather to your FoundryVTT world (on top of Simple Calendar).  Note: not affiliated with creators of Simple Calendar.",
   "repository": {
     "type": "git",
@@ -18,7 +18,7 @@
     "tsc": "tsc --noEmit --skipLibCheck",
     "unlinkdata": "unlink ~/foundry12data/Data/modules/simple-weather",
     "buildcopy": "npm run build && npm run copy",
-    "foundry": "node ~/foundry/resources/app/main.js",
+    "foundry": "node ~/foundry12/resources/app/main.js --dataPath=/home/dov/foundry12data",
     "foundry10": "node ~/foundry10/resources/app/main.js --dataPath=/home/dov/foundry10data",
     "foundry11": "node ~/foundry11/resources/app/main.js --dataPath=/home/dov/foundry11data",
     "foundry12": "node ~/foundry12/resources/app/main.js --dataPath=/home/dov/foundry12data",
