@@ -1,7 +1,7 @@
-import { Climate, Humidity } from '@/weather/climateData';
 import { weatherDescriptions } from '@/weather/weatherMap';
 import { moduleSettings, SettingKeys } from '@/settings/ModuleSettings';
 import moduleJson from '@module';
+import { localize } from '@/utils/game';
 
 export class CustomMessageSettingsApplication extends FormApplication {
   private _flattenedDescriptions = [] as {
@@ -17,9 +17,17 @@ export class CustomMessageSettingsApplication extends FormApplication {
   constructor(object, options) {
     super(object, options);
 
-    const climates = Object.values(Climate).slice(0, Object.values(Climate).length/2);
-    const humidities = Object.values(Humidity).slice(0, Object.values(Humidity).length/2);
-
+    const climates = [
+      localize('sweath.options.climate.cold'),
+      localize('sweath.options.climate.temperate'),
+      localize('sweath.options.climate.hot'),
+    ];
+    const humidities = [
+      localize('sweath.options.humidity.barren'),
+      localize('sweath.options.humidity.modest'),
+      localize('sweath.options.humidity.verdant'),
+    ];
+  
     // flatten the weatherDescriptions into an object
     for (let c=0; c<weatherDescriptions.length; c++) {
       for (let h=0; h<weatherDescriptions[c].length; h++) {
@@ -42,7 +50,7 @@ export class CustomMessageSettingsApplication extends FormApplication {
   static get defaultOptions() {
     const options = super.defaultOptions;
     
-    options.template = `modules/${moduleJson.id}/templates/custom-chat-settings.hbs`;
+    options.template = `modules/${moduleJson.id}/templates/custom-message-settings.hbs`;
     // options.popOut = false;  // self-contained window without the extra wrapper
     // options.resizable = false;  // window is fixed size
 
@@ -58,10 +66,6 @@ export class CustomMessageSettingsApplication extends FormApplication {
     }
 
     return {
-      climates: Object.values(Climate).slice(0, Object.values(Climate).length/2),
-      climateIndexes: [0,1,2],
-      humidities: Object.values(Humidity).slice(0, Object.values(Humidity).length/2),
-      humidityIndexes: [0,1,2],
       weatherDescriptions: this._flattenedDescriptions,
     };
   }
