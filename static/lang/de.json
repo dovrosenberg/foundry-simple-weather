@@ -19,7 +19,10 @@
         "useFX.choices.off": "Aus",
         "useFX.choices.core": "FoundryVTT-Szenenwettereinstellung",
         "useFX.choices.fxmaster": "FX Master"
-      }
+      },
+      "customWeather": "Custom weather messages",
+      "customWeatherButton": "Manage custom weather messages",
+      "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)"
     },
 
     "keybindings": {
@@ -462,6 +465,14 @@
           "winter.9": "Mäßiger Regen, windig" 
         }
       }
-    }    
+    },
+
+    "missing translations": {
+      "settings": {
+        "customWeather": "Custom weather messages",
+        "customWeatherButton": "Manage custom weather messages",
+        "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)"
+      }
+    }  
   }
 }

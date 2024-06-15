@@ -19,7 +19,10 @@
         "useFX.choices.off": "Désactivé",
         "useFX.choices.core": "FoundryVTT paramètres de la scène et de la météo",
         "useFX.choices.fxmaster": "FX Master"
-      }
+      },
+      "customWeather": "Custom weather messages",
+      "customWeatherButton": "Manage custom weather messages",
+      "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)"
     },
 
     "keybindings": {
@@ -464,5 +467,12 @@
       }
     }
   },
-  "missing": {} 
+
+  "missing translations": {
+    "settings": {
+      "customWeather": "Custom weather messages",
+      "customWeatherButton": "Manage custom weather messages",
+      "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)"
+    }
+  }  
 }

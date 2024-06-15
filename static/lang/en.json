@@ -19,7 +19,10 @@
         "useFX.choices.off": "None",
         "useFX.choices.core": "FoundryVTT scene weather setting",
         "useFX.choices.fxmaster": "FX Master"
-      }
+      },
+      "customWeather": "Custom weather messages",
+      "customWeatherButton": "Manage custom weather messages",
+      "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)"
     },
 
     "keybindings": {
