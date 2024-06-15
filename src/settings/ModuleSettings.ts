@@ -119,10 +119,10 @@ export class ModuleSettings {
     // },
     {
       settingID: 'mySettingsMenu',
-      name: 'Custom weather messages',
-      label: 'Manage custom weather messages',
-      hint: "Set system-specific messages (useful for penalties associated with extreme weather)",
-      icon: "fas fa-bars",               // A Font Awesome icon used in the submenu button
+      name: 'sweath.settings.customWeather',
+      label: 'sweath.settings.customWeatherButton',
+      hint: 'sweath.settings.customWeatherHelp',
+      icon: 'fas fa-bars',               // A Font Awesome icon used in the submenu button
       type: CustomMessageSettingsApplication,
     }
   ];

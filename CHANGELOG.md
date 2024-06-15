@@ -1,5 +1,12 @@
 # Change Log
 
+## v1.13.2 - Enabled localization for custom message settings
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-June%2015%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.13.2/module.zip)
+
+Ready for pull requests to add the new localized text.
+
 ## v1.13.1 - Updated version number to support Foundry V12 release, support new version of Simple Calendar
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-May%2025%2C%202024-blue)
