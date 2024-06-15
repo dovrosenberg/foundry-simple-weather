@@ -1,5 +1,12 @@
 # Change Log
 
+## v1.13.3 - Hide configuration error messages from players
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-June%2015%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.13.3/module.zip)
+
+Error messages about package incompatibilities are now shown only to the GM.
+
 ## v1.13.2 - Enabled localization for custom message settings
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-June%2015%2C%202024-blue)
