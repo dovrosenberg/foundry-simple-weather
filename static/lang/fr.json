@@ -20,9 +20,9 @@
         "useFX.choices.core": "FoundryVTT paramètres de la scène et de la météo",
         "useFX.choices.fxmaster": "FX Master"
       },
-      "customWeather": "Custom weather messages",
-      "customWeatherButton": "Manage custom weather messages",
-      "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)"
+      "customWeather": "Messages météo personnalisés",
+      "customWeatherButton": "Gérer les messages météo personnalisés",
+      "customWeatherHelp": "Définir des messages spécifiques au système (utile pour les pénalités associées à des conditions météorologiques extrêmes)"
     },
 
     "keybindings": {
@@ -467,12 +467,6 @@
       }
     }
   },
-
-  "missing translations": {
-    "settings": {
-      "customWeather": "Custom weather messages",
-      "customWeatherButton": "Manage custom weather messages",
-      "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)"
-    }
-  }  
+  "missing": [
+  ]
 }
