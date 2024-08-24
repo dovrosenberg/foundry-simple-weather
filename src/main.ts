@@ -3,13 +3,14 @@ import '@/../styles/menu-icon.scss';
 
 import { moduleSettings, ModuleSettings, SettingKeys, updateModuleSettings } from '@/settings/ModuleSettings';
 import { VersionUtils } from '@/utils/versionUtils';
-import { getGame, isClientGM } from '@/utils/game';
+import { getGame, hasControlPermission, isClientGM } from '@/utils/game';
 import { allowSeasonSync, Climate, Humidity, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
 import { initializeLocalizedText as initializeLocalizedWeatherText } from '@/weather/weatherMap';
 import { updateWeatherApplication, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
 import { updateWeatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
 import { KeyBindings } from '@/settings/KeyBindings';
 import moduleJson from '@module';
+import { loadSocketHandler } from './utils/socket';
 
 // track which modules we have
 let simpleCalendarInstalled = false;
@@ -75,6 +76,8 @@ Hooks.once('ready', async () => {
   if (!simpleCalendarInstalled) {
     weatherApplication.ready();
   }  
+
+  loadSocketHandler();
 });
 
 Hooks.once('i18nInit', async () => {
@@ -129,7 +132,7 @@ function checkDependencies() {
   // if not present, just display a warning if we're in attached mode
   if (!module || !module?.active || !scVersion) {
     if (moduleSettings.get(SettingKeys.attachToCalendar)) {
-      if (isClientGM()) {
+      if (hasControlPermission()) {
         ui.notifications?.warn(`Simple Weather is set to "Attached Mode" in settings but Simple Calendar is not installed.  This will keep it from displaying at all.  You should turn off that setting if this isn't intended.`);
       }
     }
@@ -143,14 +146,14 @@ function checkDependencies() {
   if (!meetsMinimumVersion) {
     simpleCalendarInstalled = false; 
 
-    if (isClientGM()) {
+    if (hasControlPermission()) {
       ui.notifications?.error(`Simple Calendar found, but version prior to v${SC_MINIMUM_VERSION}. Make sure the latest version of Simple Calendar is installed.`);
       ui.notifications?.error('Version found: ' + scVersion);
     }
   } else if (scVersion && (scVersion!==SC_PREFERRED_VERSION)) {
     simpleCalendarInstalled = true; 
 
-    if (isClientGM()) {
+    if (hasControlPermission()) {
       ui.notifications?.error(`This version of Simple Weather only fully supports Simple Calendar v${SC_PREFERRED_VERSION}. "Attached mode" is unlikely to work properly.`);
       ui.notifications?.error('Version found: ' + scVersion);
     }

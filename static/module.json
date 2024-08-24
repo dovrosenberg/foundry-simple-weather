@@ -8,12 +8,16 @@
     "verified": "12.327"
   },
 
+  "socket": true,
+
   "esmodules": [
     "scripts/index.js"
   ],
+
   "styles": [
     "styles/simple-weather.css"
   ],
+
   "packs": [],
 
   "languages": [
@@ -56,7 +60,6 @@
   "url": "https://github.com/dovrosenberg/foundry-simple-weather",
   "manifest": "https://github.com/dovrosenberg/foundry-simple-weather/releases/latest/download/module.json",
   "download": "#{DOWNLOAD}#",
-  "## version": "will be added when we build",
 
   "license": "https://github.com/dovrosenberg/foundry-simple-weather/blob/master/LICENSE.md",
   "readme": "https://github.com/dovrosenberg/foundry-simple-weather/blob/master/README.md",

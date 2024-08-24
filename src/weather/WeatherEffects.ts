@@ -1,6 +1,7 @@
-import { ModuleSettings, moduleSettings, SettingKeys } from '@/settings/ModuleSettings';
+import { moduleSettings, SettingKeys } from '@/settings/ModuleSettings';
 import { getGame, isClientGM } from '@/utils/game';
 import { log } from '@/utils/log';
+import { requestGMAction, SOCKET_REQUESTS } from '@/utils/socket';
 import { VersionUtils } from '@/utils/versionUtils';
 import { WeatherData } from '@/weather/WeatherData';
 import { weatherOptions } from '@/weather/weatherMap';
@@ -99,7 +100,7 @@ class WeatherEffects {
       switch (this._useFX) {
         case 'core':
           if (effectOptions.core?.effect) 
-            await getGame().scenes?.active?.update({ weather: effectOptions.core?.effect });
+            await requestGMAction(SOCKET_REQUESTS.updateSceneWeather, effectOptions.core?.effect);
           break;
 
         case 'fxmaster':
@@ -148,7 +149,7 @@ class WeatherEffects {
       switch (this._useFX) {
         case 'core':
           if (isClientGM()) {
-            await getGame().scenes?.active?.update({ weather: '' });
+            await requestGMAction(SOCKET_REQUESTS.updateSceneWeather, '');
           }
           break;
         

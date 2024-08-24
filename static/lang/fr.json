@@ -22,7 +22,9 @@
       },
       "customWeather": "Messages météo personnalisés",
       "customWeatherButton": "Gérer les messages météo personnalisés",
-      "customWeatherHelp": "Définir des messages spécifiques au système (utile pour les pénalités associées à des conditions météorologiques extrêmes)"
+      "customWeatherHelp": "Définir des messages spécifiques au système (utile pour les pénalités associées à des conditions météorologiques extrêmes)",
+      "trustedPlayerAsGM": "Allow trusted players to act as GM?",
+      "trustedPlayerAsGMHelp": "Gives trusted players the same display and permissions as GM"
     },
 
     "keybindings": {
@@ -467,6 +469,10 @@
       }
     }
   },
-  "missing": [
-  ]
+  "missing": {
+    "settings": {
+      "trustedPlayerAsGM": "Allow trusted players to act as GM?",
+      "trustedPlayerAsGMHelp": "Gives trusted players the same display and permissions as GM"
+    }  
+  }
 }

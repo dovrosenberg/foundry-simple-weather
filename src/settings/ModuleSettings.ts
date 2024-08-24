@@ -16,6 +16,7 @@ export enum SettingKeys {
   useFX = 'useFX',  // the name of the package used for FX (or 'off' if none)
   attachToCalendar = 'attachToCalendar',  // should we attach to simple calendar instead of standalone window
   storeInSCNotes = 'storeInSCNotes',   // should we store weather in simple calendar notes 
+  trustedPlayerAsGM = 'trustedPlayerAsGM',   // should we treat trusted players as GMs
 
   // internal only
   fxActive = 'fxActive',   // are the fx currently showing
@@ -41,6 +42,7 @@ type SettingType<K extends SettingKeys> =
     K extends SettingKeys.useFX ? string :
     K extends SettingKeys.attachToCalendar ? boolean :
     K extends SettingKeys.storeInSCNotes ? boolean :
+    K extends SettingKeys.trustedPlayerAsGM ? boolean :
     K extends SettingKeys.displayOptions ? DisplayOptions :
     K extends SettingKeys.lastWeatherData ? (WeatherData | null) :  
     K extends SettingKeys.season ? number :
@@ -180,6 +182,14 @@ export class ModuleSettings {
       settingID: SettingKeys.storeInSCNotes, 
       name: 'sweath.settings.storeInSCNotes',
       hint: 'sweath.settings.storeInSCNotesHelp',
+      default: false,
+      requiresReload: false,    // can't find the right typescript type, but this does work
+      type: Boolean,
+    },
+    {
+      settingID: SettingKeys.trustedPlayerAsGM, 
+      name: 'sweath.settings.trustedPlayerAsGM',
+      hint: 'sweath.settings.trustedPlayerAsGMHelp',
       default: false,
       requiresReload: false,    // can't find the right typescript type, but this does work
       type: Boolean,

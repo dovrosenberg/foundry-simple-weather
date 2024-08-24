@@ -22,7 +22,9 @@
       },
       "customWeather": "Custom weather messages",
       "customWeatherButton": "Manage custom weather messages",
-      "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)"
+      "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)",
+      "trustedPlayerAsGM": "Allow trusted players to act as GM?",
+      "trustedPlayerAsGMHelp": "Gives trusted players the same display and permissions as GM"
     },
 
     "keybindings": {
@@ -514,5 +516,12 @@
     },
 
     "description": "all of temperate and hot"    
-  }
+  },
+
+  "missing": {
+    "settings": {
+      "trustedPlayerAsGM": "Allow trusted players to act as GM?",
+      "trustedPlayerAsGMHelp": "Gives trusted players the same display and permissions as GM"
+    }  
+}
 }

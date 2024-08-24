@@ -22,7 +22,9 @@
       },
       "customWeather": "Wetter personalisieren",
       "customWeatherButton": "Verwalte die Wetterausgabe",
-      "customWeatherHelp": "Passe die Wetterausgabe deiner Welt an (nützlich wenn extremes Wetter mit Nachteilen/Strafen in Verbindung stehen)."
+      "customWeatherHelp": "Passe die Wetterausgabe deiner Welt an (nützlich wenn extremes Wetter mit Nachteilen/Strafen in Verbindung stehen).",
+      "trustedPlayerAsGM": "Allow trusted players to act as GM?",
+      "trustedPlayerAsGMHelp": "Gives trusted players the same display and permissions as GM"
     },
 
     "keybindings": {
@@ -468,6 +470,10 @@
     },
 
     "missing translations": {
-    }  
+      "settings": {
+        "trustedPlayerAsGM": "Allow trusted players to act as GM?",
+        "trustedPlayerAsGMHelp": "Gives trusted players the same display and permissions as GM"
+      }  
+    }
   }
 }
