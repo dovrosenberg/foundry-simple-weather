@@ -1,4 +1,5 @@
 import { ModuleSettings, moduleSettings, ModuleSettingKeys } from '@/settings/ModuleSettings';
+import { SceneSettingKeys, sceneSettings } from '@/settings/SceneSettings';
 import { getGame, isClientGM } from '@/utils/game';
 import { log } from '@/utils/log';
 import { VersionUtils } from '@/utils/versionUtils';
@@ -23,7 +24,11 @@ class WeatherEffects {
   private _activeFXMFilterEffects: string[] = [];   // names of the active filter effects (so we can turn off)
 
   constructor() {
-    this._fxActive = moduleSettings.get(ModuleSettingKeys.fxActive);
+    if (moduleSettings.get(ModuleSettingKeys.FXByScene)) {
+      this._fxActive = false;
+    } else {
+      this._fxActive = moduleSettings.get(ModuleSettingKeys.fxActive);
+    }
     this._useFX = moduleSettings.get(ModuleSettingKeys.useFX);
 
     // check the version
@@ -66,6 +71,13 @@ class WeatherEffects {
 
   public set fxActive(active: boolean) {
     this._fxActive = active;
+
+    // save to the module or scene settings
+    if (moduleSettings.get(ModuleSettingKeys.FXByScene)) {
+      sceneSettings.set(SceneSettingKeys.fxActive, active);
+    } else {
+      moduleSettings.set(ModuleSettingKeys.fxActive, active);
+    }
 
     if (active)
       this.activateFX(this._lastWeatherData);

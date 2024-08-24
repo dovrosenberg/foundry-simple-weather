@@ -1,26 +1,21 @@
 import moduleJson from '@module';
 
-import { WindowPosition } from '@/window/WindowPosition';
-import { getGame, isClientGM, localize } from '@/utils/game';
-import { WeatherData } from '@/weather/WeatherData';
-import { DisplayOptions } from '@/types/DisplayOptions';
-import { CustomMessageSettingsApplication } from '@/applications/CustomMessageSettingsApplication';
-import { Climate, Humidity } from '@/weather/climateData';
+import { getGame, isClientGM } from '@/utils/game';
 
 // stores the settings in flags with the given names, so should all have 'swr' in front of them
 export enum SceneSettingKeys {
-  fxDisabled = 'swr-fxDisabled',   // are the fx turned off specifically for this scene
+  fxActive = 'swr-fxActive',   // are the fx turned on for this scene (only used if the module setting says to use scene-level)
 }
 
 type SettingType<K extends SceneSettingKeys> =
-    K extends SceneSettingKeys.fxDisabled ? boolean :
+    K extends SceneSettingKeys.fxActive ? boolean :
     never;  
 
 // the solo instance
 export let sceneSettings: SceneSettings;
 
 // set the main application; should only be called once
-export function updateModuleSettings(settings: SceneSettings): void {
+export function updateSceneSettings(settings: SceneSettings): void {
   sceneSettings = settings;
 }
 
@@ -65,8 +60,8 @@ export class SceneSettings {
 
   private params: SceneSettingConfig<any>[] = [
     {
-      settingID: SceneSettingKeys.fxDisabled,
-      default: false,
+      settingID: SceneSettingKeys.fxActive,
+      default: true,
     },
   ];
 }

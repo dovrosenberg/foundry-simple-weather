@@ -14,6 +14,7 @@ export enum ModuleSettingKeys {
   publicChat = 'publicChat',   // should everyone see the chat (true) or just the GM (false)
   useCelsius = 'useCelsius',   // should we use Celsius
   useFX = 'useFX',  // the name of the package used for FX (or 'off' if none)
+  FXByScene = 'FXByScene',  // should we use FX by scene or by module
   attachToCalendar = 'attachToCalendar',  // should we attach to simple calendar instead of standalone window
   storeInSCNotes = 'storeInSCNotes',   // should we store weather in simple calendar notes 
 
@@ -39,6 +40,7 @@ type SettingType<K extends ModuleSettingKeys> =
     K extends ModuleSettingKeys.outputWeatherToChat ? boolean :
     K extends ModuleSettingKeys.useCelsius ? boolean :
     K extends ModuleSettingKeys.useFX ? string :
+    K extends ModuleSettingKeys.FXByScene ? boolean :
     K extends ModuleSettingKeys.attachToCalendar ? boolean :
     K extends ModuleSettingKeys.storeInSCNotes ? boolean :
     K extends ModuleSettingKeys.displayOptions ? DisplayOptions :
@@ -167,6 +169,14 @@ export class ModuleSettings {
         'fxmaster': 'sweath.settings.options.useFX.choices.fxmaster',
       },
       default: 'off',
+    },
+    {
+      settingID: ModuleSettingKeys.FXByScene, 
+      name: 'sweath.settings.FXByScene',
+      hint: 'sweath.settings.FXBySceneHelp',
+      requiresReload: true,     // can't find the right typescript type, but this does work
+      type: Boolean,
+      default: false,
     },
     {
       settingID: ModuleSettingKeys.attachToCalendar, 

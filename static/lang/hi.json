@@ -11,6 +11,8 @@
       "publicChatHelp": "क्या सभी लोग मौसम चैट (यदि चाहें तो) देखेंगे या केवल GM (यदि बंद है) देखेंगे?",
       "useFX": "विशेष प्रभाव दिखाएं?",
       "useFXHelp": "विशेष प्रभाव प्रदर्शन करते समय उपयोग करने के लिए मॉड्यूल का चयन करें। जब आवश्यक हो तो प्रभाव को भी मैन्युअल रूप से बंद किया जा सकता है।",
+      "FXByScene": "Enable/disable FX by scene?",
+      "FXBySceneHelp": "Should the FX toggle button only impact the current scene or be module-wide? Useful if you want to handle indoors/outdoors scene transitions without needing to toggle manually each time.",
       "attachToCalendar": "Attach to Simple Calendar?  (Experimental - see module description)",
       "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
       "storeInSCNotes": "Store weather in Simple Calendar?",
@@ -490,7 +492,9 @@
       "storeInSCNotesHelp": "Store daily weather in Simple Calendar notes and then 'replay' the old weather if you go back to a prior date.",
       "customWeather": "Custom weather messages",
       "customWeatherButton": "Manage custom weather messages",
-      "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)"
+      "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)",
+      "FXByScene": "Enable/disable FX by scene?",
+      "FXBySceneHelp": "Should the FX toggle button only impact the current scene or be module-wide? Useful if you want to handle indoors/outdoors scene transitions without needing to toggle manually each time."
     },
 
     "keybindings": {

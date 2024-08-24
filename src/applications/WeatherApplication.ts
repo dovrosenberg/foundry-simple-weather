@@ -363,7 +363,7 @@ currentHumidity: ${this._currentHumidity}
 currentBiome: ${this._currentBiome}
 currentSeason: ${this._currentSeason}
 currentSeasonSync: ${this._currentSeasonSync}
-WeatherEffects.fxActive = ${moduleSettings.get(ModuleSettingKeys.fxActive)}
+WeatherEffects.fxActive =  ${weatherEffects.fxActive}
 WeatherEffects.useFX = ${moduleSettings.get(ModuleSettingKeys.useFX)}
 getData: ${JSON.stringify(await this.getData(), null, 2)}
 _______________________________________

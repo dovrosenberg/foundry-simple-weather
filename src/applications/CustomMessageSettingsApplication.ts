@@ -3,6 +3,10 @@ import { moduleSettings, ModuleSettingKeys } from '@/settings/ModuleSettings';
 import moduleJson from '@module';
 import { localize } from '@/utils/game';
 
+const NUM_CLIMATES = 3;
+const NUM_HUMIDITY = 3;
+const NUM_WEATHER = 37;
+
 export class CustomMessageSettingsApplication extends FormApplication {
   private _flattenedDescriptions = [] as {
     climate: string,
@@ -72,11 +76,11 @@ export class CustomMessageSettingsApplication extends FormApplication {
 
   public async _updateObject(_event, formData: Record<string, string>): Promise<void> {
     // bundle up into settings object
-    const chatMessages: string[][][] = new Array(Object.keys(Climate).length/2)
+    const chatMessages: string[][][] = new Array(NUM_CLIMATES)
       .fill('')
-      .map(() => new Array(Object.keys(Humidity).length/2)
+      .map(() => new Array(NUM_HUMIDITY)
         .fill('')
-        .map(() => new Array(37).fill('')));
+        .map(() => new Array(NUM_WEATHER).fill('')));
 
     for (let i=0; i<this._flattenedDescriptions.length; i++) {
       chatMessages[this._flattenedDescriptions[i].climateId][this._flattenedDescriptions[i].humidityId][this._flattenedDescriptions[i].descriptionId] = formData['v-'+i];

@@ -11,6 +11,8 @@
       "publicChatHelp": "Should everyone see the weather chat (if on) or just the GM (if off)?",
       "useFX": "Display special effects?",
       "useFXHelp": "Select the module to use when displaying special effects.  When activated, the effects can also be turned off manually when needed.",
+      "FXByScene": "Enable/disable FX by scene?",
+      "FXBySceneHelp": "Should the FX toggle button only impact the current scene or be module-wide? Useful if you want to handle indoors/outdoors scene transitions without needing to toggle manually each time.",
       "attachToCalendar": "Attach to Simple Calendar?  (Experimental - see module description)",
       "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
       "storeInSCNotes": "Store weather in Simple Calendar?",
