@@ -84,32 +84,22 @@ const createSpecificWeather = function(today: SimpleCalendar.DateData | null, cl
 }
 
 const outputWeather = function(weatherData: WeatherData) {
-  let messageRecipients: string[];
+  // get any custom text
+  let chatOut = '<b>' + weatherData.getTemperature(moduleSettings.get(ModuleSettingKeys.useCelsius)) + '</b> - ' + weatherData.getDescription();
 
-  if (moduleSettings.get(ModuleSettingKeys.publicChat)) {
-    messageRecipients = getGame().users?.map((user) => user.id) || [];
-  } else {
-    messageRecipients = ChatMessage.getWhisperRecipients('GM')?.map((user) => user.id) || [];
-  } 
-
-  if (messageRecipients) {
-    // get any custom text
-    let chatOut = '<b>' + weatherData.getTemperature(moduleSettings.get(ModuleSettingKeys.useCelsius)) + '</b> - ' + weatherData.getDescription();
-
-    if (weatherData.climate!==null && weatherData.humidity!==null && weatherData.hexFlowerCell!==null) {
-      const customText = moduleSettings.get(ModuleSettingKeys.customChatMessages)[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell];
-      if (customText)
-        chatOut = chatOut + '<br>' + customText;
-    }
-
-    ChatMessage.create({
-      speaker: {
-        alias: localize('sweath.chat.header'),
-      },
-      whisper: messageRecipients,
-      content: chatOut,
-    });
+  if (weatherData.climate!==null && weatherData.humidity!==null && weatherData.hexFlowerCell!==null) {
+    const customText = moduleSettings.get(ModuleSettingKeys.customChatMessages)[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell];
+    if (customText)
+      chatOut = chatOut + '<br>' + customText;
   }
+
+  ChatMessage.create({
+    speaker: {
+      alias: localize('sweath.chat.header'),
+    },
+    whisper: moduleSettings.get(ModuleSettingKeys.publicChat) ? undefined : ChatMessage.getWhisperRecipients('GM')?.map((user) => user.id) || [],
+    content: chatOut,
+  });
 };
 
 // pick one of the valid starting cells at random
