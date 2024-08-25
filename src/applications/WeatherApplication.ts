@@ -759,7 +759,7 @@ _______________________________________
 
   public toggleFX() {
     if (isClientGM()) {
-      weatherEffects.fxActive = !weatherEffects.fxActive;
+      weatherEffects.setFxActive(!weatherEffects.fxActive);
       this.render();
     }
   }

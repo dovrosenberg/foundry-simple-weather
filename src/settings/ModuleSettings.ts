@@ -237,7 +237,7 @@ export class ModuleSettings {
       settingID: ModuleSettingKeys.seasonSync,
       name: 'Season sync',
       type: Boolean,
-      default: false
+      default: true
     },
     {
       settingID: ModuleSettingKeys.biome,

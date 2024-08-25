@@ -61,7 +61,7 @@ class WeatherEffects {
     this._sceneReady = true;
 
     // disable any old weather; will turn back on when we finish loading
-    this.deactivateFX();
+    // this.deactivateFX();
 
     if (weatherData)
       this.activateFX(weatherData);
@@ -69,20 +69,20 @@ class WeatherEffects {
       this.activateFX(this._lastWeatherData);
   };
 
-  public set fxActive(active: boolean) {
+  public async setFxActive(active: boolean) {
     this._fxActive = active;
 
     // save to the module or scene settings
     if (moduleSettings.get(ModuleSettingKeys.FXByScene)) {
-      sceneSettings.set(SceneSettingKeys.fxActive, active);
+      await sceneSettings.set(SceneSettingKeys.fxActive, active);
     } else {
-      moduleSettings.set(ModuleSettingKeys.fxActive, active);
+      await moduleSettings.set(ModuleSettingKeys.fxActive, active);
     }
 
     if (active)
-      this.activateFX(this._lastWeatherData);
+      await this.activateFX(this._lastWeatherData);
     else  
-      this.deactivateFX();
+      await this.deactivateFX();
   }
 
   public get fxActive(): boolean {
@@ -93,25 +93,24 @@ class WeatherEffects {
   public async activateFX(weatherData: WeatherData): Promise<void> {
     this._lastWeatherData = weatherData;
 
-    if (!this._sceneReady)
-      return;
-
-    if (!weatherData || weatherData.climate === null || weatherData.humidity === null || weatherData.hexFlowerCell === null)
-      return;
-
-    const effectOptions = weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell].fx;
-
     if (isClientGM()) {
-      // turn off any old ones
-      await this.deactivateFX();
+      if (!this._sceneReady)
+        return;
+
+      if (!weatherData || weatherData.climate === null || weatherData.humidity === null || weatherData.hexFlowerCell === null)
+        return;
+
+      const effectOptions = weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell].fx;
 
       if (!effectOptions)
         return;
 
+      // turn off any old ones
+      await this.deactivateFX(this._useFX === 'core');
+
       switch (this._useFX) {
         case 'core':
-          if (effectOptions.core?.effect) 
-            await getGame().scenes?.active?.update({ weather: effectOptions.core?.effect });
+          await getGame().scenes?.active?.update({ weather: effectOptions.core?.effect || '' });
           break;
 
         case 'fxmaster':
@@ -155,40 +154,42 @@ class WeatherEffects {
     } 
   }
 
-  public async deactivateFX(): Promise<void> {
+  // if skipCore is true, won't turn off the core weather; this is for when we're doing a deactivate that's 
+  //    about to be followed by an activate.  Every scene update triggers a redraw so that creates an 
+  //    infinite loop
+  public async deactivateFX(skipCore: boolean = false): Promise<void> {
     if (isClientGM()) {
-      switch (this._useFX) {
-        case 'core':
-          if (isClientGM()) {
-            await getGame().scenes?.active?.update({ weather: '' });
-          }
-          break;
-        
-        case 'fxmaster':
-          // this isn't really safe because this is checking an internal setting but it's too easy to 
-          //    get out of sync with FX master, in which case attempting to turn something off may actually
-          //    add it instead
-          for (let i=0; i<this._activeFXMParticleEffects.length; i++) {
-            const effectName = this._activeFXMParticleEffects[i];
+      if (!skipCore)
+        await getGame().scenes?.active?.update({ weather: '' });
 
-            if (effectName in ((getGame().scenes?.active?.getFlag('fxmaster', 'effects') || []) as string[]))
-              Hooks.call('fxmaster.switchParticleEffect', { name: this._activeFXMParticleEffects[i] });
-          }
-          await this.clearFXMParticleEffects();
-          
-          for (let i=0; i<this._activeFXMFilterEffects.length; i++) {
-            const effectName = this._activeFXMFilterEffects[i];
+      // this isn't really safe because this is checking an internal setting but it's too easy to 
+      //    get out of sync with FX master, in which case attempting to turn something off may actually
+      //    add it instead
+      // so we just turn off everything with the swr prefix
+      // for (let i=0; i<this._activeFXMParticleEffects.length; i++) {
+      //   const effectName = this._activeFXMParticleEffects[i];
 
-            await FXMASTER.filters.removeFilter(effectName);
-          }
-          await this.clearFXMFilterEffects();
+      //   if (effectName in ((getGame().scenes?.active?.getFlag('fxmaster', 'effects') || []) as string[]))
+      //     Hooks.call('fxmaster.switchParticleEffect', { name: this._activeFXMParticleEffects[i] });
+      // }
+      // update takes an array, but the ones we want to remove are stored in an object
+      const filteredEffects = getGame().scenes?.active?.getFlag('fxmaster', 'effects') ?? {};
+      const filteredEffectsArray = [] as any[];
 
-          break;
+      for (const key in filteredEffects) {
+        if (!key.toString().startsWith('swr-'))
+          filteredEffectsArray.push(filteredEffects[key]);
+      }
+      Hooks.call('fxmaster.updateParticleEffects', filteredEffectsArray);
 
-        case 'off':
-        default:
-          // do nothing
-      }     
+      await this.clearFXMParticleEffects();
+      
+      for (let i=0; i<this._activeFXMFilterEffects.length; i++) {
+        const effectName = this._activeFXMFilterEffects[i];
+
+        await FXMASTER.filters.removeFilter(effectName);
+      }
+      await this.clearFXMFilterEffects();
     }
   }
 
