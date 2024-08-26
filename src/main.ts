@@ -101,6 +101,8 @@ Hooks.on('canvasInit', async (canvas: Canvas) => {
 
   if (moduleSettings.get(ModuleSettingKeys.FXByScene)) {
     await weatherEffects.setFxActive(sceneSettings.get(SceneSettingKeys.fxActive));
+  } else {
+    await weatherEffects.setFxActive(moduleSettings.get(ModuleSettingKeys.fxActive));
   }
 });
 

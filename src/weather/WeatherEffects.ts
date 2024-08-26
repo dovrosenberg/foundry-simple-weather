@@ -182,8 +182,11 @@ class WeatherEffects {
       // update takes an array, but the ones we want to remove are stored in an object
       const filteredEffects = sceneSettings.currentScene?.getFlag('fxmaster', 'effects') ?? {};
 
+      // sometimes deactivate gets called multiple times before fxmaster has processed all of them (since we can't await)
+      // when that happens, it ends up adding effects with just the name set; not sure we can do much there except
+      //    pull them out again later, but it's causing a warning to be thrown by fxmaster (but no other issues)
       for (let key in filteredEffects) {
-        if (key.toString().startsWith('swr-'))  // it's possible (but an error) for integer keys to appear if someone toggled something not already on
+        if (key.toString().startsWith('swr-'))  
           Hooks.call('fxmaster.switchParticleEffect', { name: key });
       }
 
