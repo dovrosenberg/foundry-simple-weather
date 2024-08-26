@@ -1,5 +1,5 @@
 import { nextCell, startingCells, getDirection, weatherTemperatures, Direction, weatherDescriptions, manualOptions } from '@/weather/weatherMap';
-import { moduleSettings, SettingKeys } from '@/settings/ModuleSettings';
+import { moduleSettings, ModuleSettingKeys } from '@/settings/ModuleSettings';
 import { getGame, localize } from '@/utils/game';
 import { Climate, Humidity, Season, seasonSelections } from './climateData';
 import { WeatherData } from './WeatherData';
@@ -84,32 +84,22 @@ const createSpecificWeather = function(today: SimpleCalendar.DateData | null, cl
 }
 
 const outputWeather = function(weatherData: WeatherData) {
-  let messageRecipients: string[];
+  // get any custom text
+  let chatOut = '<b>' + weatherData.getTemperature(moduleSettings.get(ModuleSettingKeys.useCelsius)) + '</b> - ' + weatherData.getDescription();
 
-  if (moduleSettings.get(SettingKeys.publicChat)) {
-    messageRecipients = getGame().users?.map((user) => user.id) || [];
-  } else {
-    messageRecipients = ChatMessage.getWhisperRecipients('GM')?.map((user) => user.id) || [];
-  } 
-
-  if (messageRecipients) {
-    // get any custom text
-    let chatOut = '<b>' + weatherData.getTemperature(moduleSettings.get(SettingKeys.useCelsius)) + '</b> - ' + weatherData.getDescription();
-
-    if (weatherData.climate!==null && weatherData.humidity!==null && weatherData.hexFlowerCell!==null) {
-      const customText = moduleSettings.get(SettingKeys.customChatMessages)[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell];
-      if (customText)
-        chatOut = chatOut + '<br>' + customText;
-    }
-
-    ChatMessage.create({
-      speaker: {
-        alias: localize('sweath.chat.header'),
-      },
-      whisper: messageRecipients,
-      content: chatOut,
-    });
+  if (weatherData.climate!==null && weatherData.humidity!==null && weatherData.hexFlowerCell!==null) {
+    const customText = moduleSettings.get(ModuleSettingKeys.customChatMessages)[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell];
+    if (customText)
+      chatOut = chatOut + '<br>' + customText;
   }
+
+  ChatMessage.create({
+    speaker: {
+      alias: localize('sweath.chat.header'),
+    },
+    whisper: moduleSettings.get(ModuleSettingKeys.publicChat) ? undefined : ChatMessage.getWhisperRecipients('GM')?.map((user) => user.id) || [],
+    content: chatOut,
+  });
 };
 
 // pick one of the valid starting cells at random

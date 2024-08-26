@@ -1,5 +1,14 @@
 # Change Log
 
+## v1.14.0 - Per scene weather FX
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-August%2026%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.14.0/module.zip)
+
+* Ability to have FX settings apply on a scene-by-scene basis: no more toggling manually when you change between indoor/outdoor scenes!
+* Changed chat messages to be global instead of whispers to everyone.
+
+
 ## v1.13.5 - Updated German 
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-June%2021%2C%202024-blue)

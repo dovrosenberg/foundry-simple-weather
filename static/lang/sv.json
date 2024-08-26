@@ -11,6 +11,8 @@
       "publicChatHelp": "Ska alla se väderchatten (om den är på) eller bara GM (om den är avstängd)?",
       "useFX": "Visa specialeffekter?",
       "useFXHelp": "Välj modulen som används för att visa specialeffekter. När den är aktiverad kan effekterna även stängas av manuellt vid behov.",
+      "FXByScene": "Enable/disable FX by scene?",
+      "FXBySceneHelp": "Should the FX toggle button only impact the current scene or be module-wide? Useful if you want to handle indoors/outdoors scene transitions without needing to toggle manually each time.",
       "attachToCalendar": "Bifoga till Simple Calendar? (Experimentell - se modulbeskrivning)",
       "attachToCalendarHelp": "Visa som en popup på Simple Calendar istf ett fristående fönster. Kräver (förstås) Simple Calendar.",
       "storeInSCNotes": "Lagra väder i Simple Calendar?",
@@ -472,7 +474,9 @@
     "settings": {
       "customWeather": "Custom weather messages",
       "customWeatherButton": "Manage custom weather messages",
-      "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)"
+      "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)",
+      "FXByScene": "Enable/disable FX by scene?",
+      "FXBySceneHelp": "Should the FX toggle button only impact the current scene or be module-wide? Useful if you want to handle indoors/outdoors scene transitions without needing to toggle manually each time."
     }
   }  
 }
