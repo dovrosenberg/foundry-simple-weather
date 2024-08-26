@@ -11,8 +11,8 @@
       "publicChatHelp": "Tout le monde doit-il voir le chat météo (s'il est activé) ou seulement le GM (s'il est désactivé) ?",
       "useFX": "Afficher les effets spéciaux ?",
       "useFXHelp": "Sélectionnez le module à utiliser pour afficher les effets spéciaux.  Lorsqu'ils sont activés, les effets peuvent également être désactivés manuellement en cas de besoin.",
-      "FXByScene": "Enable/disable FX by scene?",
-      "FXBySceneHelp": "Should the FX toggle button only impact the current scene or be module-wide? Useful if you want to handle indoors/outdoors scene transitions without needing to toggle manually each time.",
+      "FXByScene": "Activer/Désactiver les FX par scène ?",
+      "FXBySceneHelp": "Le bouton des FX doit-il avoir un impact uniquement sur la scène en cours ou doit-il s'appliquer à l'ensemble du module ? Utile si l'on veut gérer les transitions entre scènes intérieures et extérieures sans avoir à basculer manuellement à chaque fois.",
       "attachToCalendar": "Attacher à Simple Calendar ?  (Expérimental - voir la description du module)",
       "attachToCalendarHelp": "S'affiche dans une fenêtre contextuelle de Simple Calendar plutôt que dans une fenêtre indépendante.  Nécessite (évidemment) Simple Calendar.",
       "storeInSCNotes": "Stocker la météo dans Simple Calendar ?",
@@ -467,12 +467,6 @@
           "winter.9" : "Pluie modérée, vent"
         }
       }
-    }
-  },
-  "missing": {
-    "settings": {
-      "FXByScene": "Enable/disable FX by scene?",
-      "FXBySceneHelp": "Should the FX toggle button only impact the current scene or be module-wide? Useful if you want to handle indoors/outdoors scene transitions without needing to toggle manually each time."
     }
   }
 }
