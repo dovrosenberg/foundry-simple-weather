@@ -7,13 +7,14 @@ import { DisplayOptions } from '@/types/DisplayOptions';
 import { CustomMessageSettingsApplication } from '@/applications/CustomMessageSettingsApplication';
 import { Climate, Humidity } from '@/weather/climateData';
 
-export enum SettingKeys {
+export enum ModuleSettingKeys {
   // displayed in settings
   dialogDisplay = 'dialogDisplay',   // can non-GM clients see the dialog box
   outputWeatherToChat = 'outputWeatherChat',   // when new weather is generated, should it be put in the chat box
   publicChat = 'publicChat',   // should everyone see the chat (true) or just the GM (false)
   useCelsius = 'useCelsius',   // should we use Celsius
   useFX = 'useFX',  // the name of the package used for FX (or 'off' if none)
+  FXByScene = 'FXByScene',  // should we use FX by scene or by module
   attachToCalendar = 'attachToCalendar',  // should we attach to simple calendar instead of standalone window
   storeInSCNotes = 'storeInSCNotes',   // should we store weather in simple calendar notes 
 
@@ -33,27 +34,28 @@ export enum SettingKeys {
   customChatMessages = 'customChatMessages',  // [climate][humidity][index]: message
 }
 
-type SettingType<K extends SettingKeys> =
-    K extends SettingKeys.dialogDisplay ? boolean :
-    K extends SettingKeys.publicChat ? boolean :
-    K extends SettingKeys.outputWeatherToChat ? boolean :
-    K extends SettingKeys.useCelsius ? boolean :
-    K extends SettingKeys.useFX ? string :
-    K extends SettingKeys.attachToCalendar ? boolean :
-    K extends SettingKeys.storeInSCNotes ? boolean :
-    K extends SettingKeys.displayOptions ? DisplayOptions :
-    K extends SettingKeys.lastWeatherData ? (WeatherData | null) :  
-    K extends SettingKeys.season ? number :
-    K extends SettingKeys.seasonSync ? boolean :
-    K extends SettingKeys.fxActive ? boolean :
-    K extends SettingKeys.activeFXMParticleEffects ? string[] :
-    K extends SettingKeys.activeFXMFilterEffects ? string[] :
-    K extends SettingKeys.windowPosition ? (WindowPosition | null) :
-    K extends SettingKeys.biome ? string :
-    K extends SettingKeys.climate ? number :
-    K extends SettingKeys.humidity ? number :
-    K extends SettingKeys.manualPause ? boolean :
-    K extends SettingKeys.customChatMessages ? string[][][] :
+type SettingType<K extends ModuleSettingKeys> =
+    K extends ModuleSettingKeys.dialogDisplay ? boolean :
+    K extends ModuleSettingKeys.publicChat ? boolean :
+    K extends ModuleSettingKeys.outputWeatherToChat ? boolean :
+    K extends ModuleSettingKeys.useCelsius ? boolean :
+    K extends ModuleSettingKeys.useFX ? string :
+    K extends ModuleSettingKeys.FXByScene ? boolean :
+    K extends ModuleSettingKeys.attachToCalendar ? boolean :
+    K extends ModuleSettingKeys.storeInSCNotes ? boolean :
+    K extends ModuleSettingKeys.displayOptions ? DisplayOptions :
+    K extends ModuleSettingKeys.lastWeatherData ? (WeatherData | null) :  
+    K extends ModuleSettingKeys.season ? number :
+    K extends ModuleSettingKeys.seasonSync ? boolean :
+    K extends ModuleSettingKeys.fxActive ? boolean :
+    K extends ModuleSettingKeys.activeFXMParticleEffects ? string[] :
+    K extends ModuleSettingKeys.activeFXMFilterEffects ? string[] :
+    K extends ModuleSettingKeys.windowPosition ? (WindowPosition | null) :
+    K extends ModuleSettingKeys.biome ? string :
+    K extends ModuleSettingKeys.climate ? number :
+    K extends ModuleSettingKeys.humidity ? number :
+    K extends ModuleSettingKeys.manualPause ? boolean :
+    K extends ModuleSettingKeys.customChatMessages ? string[][][] :
     never;  
 
 // the solo instance
@@ -73,8 +75,8 @@ export class ModuleSettings {
     return Object.keys(setting).length === 0 || setting === null || setting === undefined;
   }
 
-  public get<T extends SettingKeys>(setting: T): SettingType<T> {
-    if (setting === SettingKeys.lastWeatherData) {
+  public get<T extends ModuleSettingKeys>(setting: T): SettingType<T> {
+    if (setting === ModuleSettingKeys.lastWeatherData) {
       const loaded = getGame().settings.get(moduleJson.id, setting) as SettingType<T> as WeatherData;  // not really WeatherData - need to attach functions
 
       if (loaded) 
@@ -85,7 +87,7 @@ export class ModuleSettings {
       return getGame().settings.get(moduleJson.id, setting) as SettingType<T>;
   }
 
-  public async set<T extends SettingKeys>(setting: T, value: SettingType<T>): Promise<void> {
+  public async set<T extends ModuleSettingKeys>(setting: T, value: SettingType<T>): Promise<void> {
     // confirm the user can set it
     if (!isClientGM()) {
       // if it's any of the global param lists, don't do the set
@@ -107,10 +109,10 @@ export class ModuleSettings {
   }
 
   // these are global menus (shown at top)
-  private menuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: string })[] = [
+  private menuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: ModuleSettingKeys })[] = [
     // couldn't get this to work because it creates a new instance but I can't figure out how to attach it to the weatherInstance variable in main.js
     // {
-    //     settingID: SettingKeys.showApplication,
+    //     settingID: ModuleSettingKeys.showApplication,
     //     name: '',
     //     label: 'Open Simple Weather',
     //     hint: 'Reopen the main window if closed',
@@ -128,35 +130,35 @@ export class ModuleSettings {
   ];
 
   // these are local menus (shown at top)
-  private localMenuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: string })[] = [
+  private localMenuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: ModuleSettingKeys })[] = [
   ];
 
   // these are globals shown in the options
   // name and hint should be the id of a localization string
-  private displayParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
+  private displayParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
     {
-      settingID: SettingKeys.outputWeatherToChat,
+      settingID: ModuleSettingKeys.outputWeatherToChat,
       name: 'sweath.settings.outputweatherToChat',
       hint: 'sweath.settings.outputweatherToChatHelp',
       default: true,
       type: Boolean,
     },
     {
-      settingID: SettingKeys.publicChat,
+      settingID: ModuleSettingKeys.publicChat,
       name: 'sweath.settings.publicChat',
       hint: 'sweath.settings.publicChatHelp',
       default: true,
       type: Boolean,
     },
     {
-      settingID: SettingKeys.dialogDisplay, 
+      settingID: ModuleSettingKeys.dialogDisplay, 
       name: 'sweath.settings.dialogDisplay',
       hint: 'sweath.settings.dialogDisplayHelp',
       default: true,
       type: Boolean,
     },
     {
-      settingID: SettingKeys.useFX, 
+      settingID: ModuleSettingKeys.useFX, 
       name: 'sweath.settings.useFX',
       hint: 'sweath.settings.useFXHelp',
       requiresReload: true,   
@@ -169,7 +171,15 @@ export class ModuleSettings {
       default: 'off',
     },
     {
-      settingID: SettingKeys.attachToCalendar, 
+      settingID: ModuleSettingKeys.FXByScene, 
+      name: 'sweath.settings.FXByScene',
+      hint: 'sweath.settings.FXBySceneHelp',
+      requiresReload: true,     // can't find the right typescript type, but this does work
+      type: Boolean,
+      default: false,
+    },
+    {
+      settingID: ModuleSettingKeys.attachToCalendar, 
       name: 'sweath.settings.attachToCalendar',
       hint: 'sweath.settings.attachToCalendarHelp',
       default: false,
@@ -177,7 +187,7 @@ export class ModuleSettings {
       type: Boolean,
     },
     {
-      settingID: SettingKeys.storeInSCNotes, 
+      settingID: ModuleSettingKeys.storeInSCNotes, 
       name: 'sweath.settings.storeInSCNotes',
       hint: 'sweath.settings.storeInSCNotesHelp',
       default: false,
@@ -187,9 +197,9 @@ export class ModuleSettings {
   ];
 
   // these are client-specific and displayed in settings
-  private localDisplayParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
+  private localDisplayParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
     {
-      settingID: SettingKeys.useCelsius, 
+      settingID: ModuleSettingKeys.useCelsius, 
       name: 'sweath.settings.useCelsius',
       hint: 'sweath.settings.useCelsiusHelp',
       default: false,
@@ -198,63 +208,63 @@ export class ModuleSettings {
   ];
 
   // these are globals only used internally
-  private internalParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
+  private internalParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
     {
-      settingID: SettingKeys.activeFXMParticleEffects,
+      settingID: ModuleSettingKeys.activeFXMParticleEffects,
       name: 'Active FX particle effects',
       type: Array,
       default: []
     },
     {
-      settingID: SettingKeys.activeFXMFilterEffects,
+      settingID: ModuleSettingKeys.activeFXMFilterEffects,
       name: 'Active FX filter effects',
       type: Array,
       default: []
     },
     {
-      settingID: SettingKeys.lastWeatherData,
+      settingID: ModuleSettingKeys.lastWeatherData,
       name: 'Last weather data',
       type: Object,
       default: null
     },
     {
-      settingID: SettingKeys.season,
+      settingID: ModuleSettingKeys.season,
       name: 'Last season',
       type: Number,
       default: 0
     },
     {
-      settingID: SettingKeys.seasonSync,
+      settingID: ModuleSettingKeys.seasonSync,
       name: 'Season sync',
       type: Boolean,
-      default: false
+      default: true
     },
     {
-      settingID: SettingKeys.biome,
+      settingID: ModuleSettingKeys.biome,
       name: 'Last biome',
       type: String,
       default: ''
     },
     {
-      settingID: SettingKeys.climate,
+      settingID: ModuleSettingKeys.climate,
       name: 'Last climate',
       type: Number,
       default: 0
     },
     {
-      settingID: SettingKeys.humidity,
+      settingID: ModuleSettingKeys.humidity,
       name: 'Last humidity',
       type: Number,
       default: 0
     },
     {
-      settingID: SettingKeys.manualPause,
+      settingID: ModuleSettingKeys.manualPause,
       name: 'Manual pause',
       type: Boolean,
       default: false
     },
     {
-      settingID: SettingKeys.customChatMessages,
+      settingID: ModuleSettingKeys.customChatMessages,
       name: 'Custom chat messages',
       type: Array,
       default: new Array(Object.keys(Climate).length/2)
@@ -267,21 +277,21 @@ export class ModuleSettings {
   ];
   
   // these are client-specfic only used internally
-  private localInternalParams: (ClientSettings.PartialSettingConfig & { settingID: string })[] = [
+  private localInternalParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
     {
-      settingID: SettingKeys.fxActive,
+      settingID: ModuleSettingKeys.fxActive,
       name: 'FX Active',
       type: Object,
       default: true,
     },
     {
-      settingID: SettingKeys.windowPosition,
+      settingID: ModuleSettingKeys.windowPosition,
       name: 'Window Position',
       type: Object,
       default: null
     },
     {
-      settingID: SettingKeys.displayOptions,
+      settingID: ModuleSettingKeys.displayOptions,
       name: 'Display Options',
       type: Object,
       default: {

@@ -11,7 +11,9 @@
       "publicChatHelp": "Soll jeder (wenn ausgewählt) oder nur der SL (wenn nicht ausgewählt) das Wetter im Chat sehen können?",
       "useFX": "Spezial-/Wettereffekte anzeigen?",
       "useFXHelp": "Wähle das Modul aus, welches die Spezial-/Wettereffekte darstellen soll. Wenn aktiviert, kann es bei Bedarf manuell ausgeschaltet werden.",
-      "attachToCalendar": "An Simple Calendar anheften?  (Experimental - siehe Modulbeschreibung)",
+      "FXByScene": "Enable/disable FX by scene?",
+      "FXBySceneHelp": "Should the FX toggle button only impact the current scene or be module-wide? Useful if you want to handle indoors/outdoors scene transitions without needing to toggle manually each time.",
+      "attachToCalendar": "An Simple Calendar anheften?",
       "attachToCalendarHelp": "Wird als Pop-up bei Simple Calendar angezeigt statt als eigenes Fenster. Benötigt (offensichtlicherweise) Simple Calendar.",
       "storeInSCNotes": "Speichere das Wetter in Simple Calendar?",
       "storeInSCNotesHelp": "Speichert das tägliche Wetter in Simple Calendar Notizen und kann das alte Wetter wiedergeben, wenn man zu dem vorherigen Tag zurückkehrt.",
@@ -468,6 +470,10 @@
     },
 
     "missing translations": {
+      "settings": {
+        "FXByScene": "Enable/disable FX by scene?",
+        "FXBySceneHelp": "Should the FX toggle button only impact the current scene or be module-wide? Useful if you want to handle indoors/outdoors scene transitions without needing to toggle manually each time."
+      }
     }  
   }
 }

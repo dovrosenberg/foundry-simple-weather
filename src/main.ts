@@ -1,15 +1,16 @@
 import '@/../styles/simple-weather.scss';
 import '@/../styles/menu-icon.scss';
 
-import { moduleSettings, ModuleSettings, SettingKeys, updateModuleSettings } from '@/settings/ModuleSettings';
+import { moduleSettings, ModuleSettings, ModuleSettingKeys, updateModuleSettings } from '@/settings/ModuleSettings';
 import { VersionUtils } from '@/utils/versionUtils';
 import { getGame, isClientGM } from '@/utils/game';
 import { allowSeasonSync, Climate, Humidity, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
 import { initializeLocalizedText as initializeLocalizedWeatherText } from '@/weather/weatherMap';
 import { updateWeatherApplication, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
-import { updateWeatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
+import { updateWeatherEffects, weatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
 import { KeyBindings } from '@/settings/KeyBindings';
 import moduleJson from '@module';
+import { SceneSettingKeys, sceneSettings, SceneSettings, updateSceneSettings } from './settings/SceneSettings';
 
 // track which modules we have
 let simpleCalendarInstalled = false;
@@ -40,12 +41,13 @@ const SC_PREFERRED_VERSION = '2.4.18';
 // note: for the logs to actually work, you have to activate it in the UI under the config for the developer mode module
 Hooks.once('devModeReady', async ({ registerPackageDebugFlag: registerPackageDebugFlag }: DevModeApi) => {
   registerPackageDebugFlag('simple-weather', 'boolean');
-  // CONFIG.debug.hooks = true;
+  CONFIG.debug.hooks = true;
 });
 
 Hooks.once('init', async () => {
   // initialize settings first, so other things can use them
   updateModuleSettings(new ModuleSettings());
+  updateSceneSettings(new SceneSettings());
   updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
   updateWeatherApplication(new WeatherApplication());
 
@@ -88,17 +90,30 @@ Hooks.once('i18nInit', async () => {
 
 // on non-GMs, we need to update whenever the GM changes the weather
 Hooks.on('updateSetting', async (setting: Setting) => {
-  if (!isClientGM() && setting.key === 'simple-weather.' + SettingKeys.lastWeatherData) 
+  if (!isClientGM() && setting.key === 'simple-weather.' + ModuleSettingKeys.lastWeatherData) 
     weatherApplication.setWeather();
 });
 
-// add the button to re-open the app 
-Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
-  // if in attach mode, don't need it
+// handle scene changes
+Hooks.on('canvasInit', async (canvas: Canvas) => {
+  // update the weather effects for the scene setting if needed
+  sceneSettings.currentScene = canvas.scene;
+
+  if (moduleSettings.get(ModuleSettingKeys.FXByScene)) {
+    await weatherEffects.setFxActive(sceneSettings.get(SceneSettingKeys.fxActive));
+  } else {
+    await weatherEffects.setFxActive(moduleSettings.get(ModuleSettingKeys.fxActive));
+  }
+});
+
+// handle scene changes
+Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
+  // if in attach mode, don't need to add the button
   if (weatherApplication.attachedMode)
     return;
 
-  if (isClientGM() || moduleSettings.get(SettingKeys.dialogDisplay)) {
+  // otherwise, add the button to re-open the app 
+  if (isClientGM() || moduleSettings.get(ModuleSettingKeys.dialogDisplay)) {
     // find the journal notes 
     const noteControls = controls.find((c) => {
         return c.name === "notes";
@@ -117,7 +132,7 @@ Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
           }
       });
     }
-}
+  }
 })
 
 // make sure we have a compatible version of simple-calendar installed
@@ -128,7 +143,7 @@ function checkDependencies() {
 
   // if not present, just display a warning if we're in attached mode
   if (!module || !module?.active || !scVersion) {
-    if (moduleSettings.get(SettingKeys.attachToCalendar)) {
+    if (moduleSettings.get(ModuleSettingKeys.attachToCalendar)) {
       if (isClientGM()) {
         ui.notifications?.warn(`Simple Weather is set to "Attached Mode" in settings but Simple Calendar is not installed.  This will keep it from displaying at all.  You should turn off that setting if this isn't intended.`);
       }
@@ -165,7 +180,7 @@ Hooks.once(SimpleCalendar.Hooks.Init, async () => {
     weatherApplication.simpleCalendarInstalled();
     
     // set the date and time
-    if (moduleSettings.get(SettingKeys.dialogDisplay) || isClientGM()) {
+    if (moduleSettings.get(ModuleSettingKeys.dialogDisplay) || isClientGM()) {
       // tell the application we're using the calendar
       weatherApplication.activateCalendar();
 
