@@ -94,20 +94,6 @@ Hooks.on('updateSetting', async (setting: Setting) => {
     weatherApplication.setWeather();
 });
 
-// make sure weather is appropriately on/off for the scene
-let activatingFX = false;  // setting the FX can force a reload of the scene, so this is how we prevent an infinite loop
-Hooks.on('initializeWeatherEffects', async (weatherEffect: WeatherEffects, weatherEffectsConfig: Record<string, any>) => {
-  // if (activatingFX)
-  //   return;
-
-  // // update the weather effects for the scene setting if needed
-  // if (moduleSettings.get(ModuleSettingKeys.FXByScene)) {
-  //   activatingFX = true;
-  //   await weatherEffects.setFxActive(sceneSettings.get(SceneSettingKeys.fxActive));
-  //   activatingFX = false;
-  // }
-})
-
 // handle scene changes
 Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
   // update the weather effects for the scene setting if needed

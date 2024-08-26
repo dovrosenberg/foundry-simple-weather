@@ -60,9 +60,6 @@ class WeatherEffects {
   public ready(weatherData: WeatherData | null): void {
     this._sceneReady = true;
 
-    // disable any old weather; will turn back on when we finish loading
-    // this.deactivateFX();
-
     if (weatherData)
       this.activateFX(weatherData);
     else if (this._lastWeatherData)
@@ -70,6 +67,9 @@ class WeatherEffects {
   };
 
   public async setFxActive(active: boolean) {
+    if (!this._sceneReady || this._fxActive===active)
+      return;
+
     this._fxActive = active;
 
     // save to the module or scene settings
@@ -100,13 +100,13 @@ class WeatherEffects {
       if (!weatherData || weatherData.climate === null || weatherData.humidity === null || weatherData.hexFlowerCell === null)
         return;
 
+      // turn off any old ones
+      await this.deactivateFX(this._useFX === 'core');
+
       const effectOptions = weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell].fx;
 
       if (!effectOptions)
         return;
-
-      // turn off any old ones
-      await this.deactivateFX(this._useFX === 'core');
 
       switch (this._useFX) {
         case 'core':
@@ -174,13 +174,11 @@ class WeatherEffects {
       // }
       // update takes an array, but the ones we want to remove are stored in an object
       const filteredEffects = getGame().scenes?.active?.getFlag('fxmaster', 'effects') ?? {};
-      const filteredEffectsArray = [] as any[];
 
-      for (const key in filteredEffects) {
-        if (!key.toString().startsWith('swr-'))
-          filteredEffectsArray.push(filteredEffects[key]);
+      for (let key in filteredEffects) {
+        if (key.toString().startsWith('swr-'))  // it's possible (but an error) for integer keys to appear if someone toggled something not already on
+          Hooks.call('fxmaster.switchParticleEffect', { name: key });
       }
-      Hooks.call('fxmaster.updateParticleEffects', filteredEffectsArray);
 
       await this.clearFXMParticleEffects();
       
