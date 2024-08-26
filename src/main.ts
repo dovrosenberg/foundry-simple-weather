@@ -95,12 +95,17 @@ Hooks.on('updateSetting', async (setting: Setting) => {
 });
 
 // handle scene changes
-Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
+Hooks.on('canvasInit', async (canvas: Canvas) => {
   // update the weather effects for the scene setting if needed
+  sceneSettings.currentScene = canvas.scene;
+
   if (moduleSettings.get(ModuleSettingKeys.FXByScene)) {
     await weatherEffects.setFxActive(sceneSettings.get(SceneSettingKeys.fxActive));
   }
+});
 
+// handle scene changes
+Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
   // if in attach mode, don't need to add the button
   if (weatherApplication.attachedMode)
     return;

@@ -26,7 +26,14 @@ type SceneSettingConfig<T extends SceneSettingKeys> = {
 }
 
 export class SceneSettings {
+  private _currentScene: Scene | null;
+  
   constructor() {
+  }
+
+  public get currentScene(): Scene | null { return this._currentScene; }
+  public set currentScene(scene: Scene | null) {
+    this._currentScene = scene || getGame().scenes?.active || null;
   }
 
   public isSettingValueEmpty(setting: any): boolean {
@@ -34,7 +41,7 @@ export class SceneSettings {
   }
 
   public get<T extends SceneSettingKeys>(setting: T): SettingType<T> {
-    let value = getGame().scenes?.active?.getFlag(moduleJson.id, setting) as SettingType<T>;
+    let value = this._currentScene?.getFlag(moduleJson.id, setting) as SettingType<T>;
 
     // if undefined, return the default (and initialize on the scene)
     if (value===undefined) {
@@ -51,11 +58,11 @@ export class SceneSettings {
       return;
     }
 
-    if (!getGame().scenes?.active) {
+    if (!this._currentScene) {
       throw new Error('Tried to save scene setting but no active scene');
     }
 
-    await getGame().scenes?.active?.setFlag(moduleJson.id, setting, value);
+    await this._currentScene?.setFlag(moduleJson.id, setting, value);
   }
 
   private params: SceneSettingConfig<any>[] = [

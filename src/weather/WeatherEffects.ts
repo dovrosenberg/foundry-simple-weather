@@ -1,4 +1,5 @@
-import { ModuleSettings, moduleSettings, ModuleSettingKeys } from '@/settings/ModuleSettings';
+import { weatherApplication } from '@/applications/WeatherApplication';
+import { moduleSettings, ModuleSettingKeys } from '@/settings/ModuleSettings';
 import { SceneSettingKeys, sceneSettings } from '@/settings/SceneSettings';
 import { getGame, isClientGM } from '@/utils/game';
 import { log } from '@/utils/log';
@@ -83,6 +84,9 @@ class WeatherEffects {
       await this.activateFX(this._lastWeatherData);
     else  
       await this.deactivateFX();
+
+    // need to rerender the application to update the toggle button
+    weatherApplication.render();
   }
 
   public get fxActive(): boolean {
@@ -103,6 +107,9 @@ class WeatherEffects {
       // turn off any old ones
       await this.deactivateFX(this._useFX === 'core');
 
+      if (!this._fxActive)
+        return;
+  
       const effectOptions = weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell].fx;
 
       if (!effectOptions)
@@ -110,7 +117,7 @@ class WeatherEffects {
 
       switch (this._useFX) {
         case 'core':
-          await getGame().scenes?.active?.update({ weather: effectOptions.core?.effect || '' });
+          await sceneSettings.currentScene?.update({ weather: effectOptions.core?.effect || '' });
           break;
 
         case 'fxmaster':
@@ -160,7 +167,7 @@ class WeatherEffects {
   public async deactivateFX(skipCore: boolean = false): Promise<void> {
     if (isClientGM()) {
       if (!skipCore)
-        await getGame().scenes?.active?.update({ weather: '' });
+        await sceneSettings.currentScene?.update({ weather: '' });
 
       // this isn't really safe because this is checking an internal setting but it's too easy to 
       //    get out of sync with FX master, in which case attempting to turn something off may actually
@@ -169,11 +176,11 @@ class WeatherEffects {
       // for (let i=0; i<this._activeFXMParticleEffects.length; i++) {
       //   const effectName = this._activeFXMParticleEffects[i];
 
-      //   if (effectName in ((getGame().scenes?.active?.getFlag('fxmaster', 'effects') || []) as string[]))
+      //   if (effectName in ((sceneSettings.currentScene?.getFlag('fxmaster', 'effects') || []) as string[]))
       //     Hooks.call('fxmaster.switchParticleEffect', { name: this._activeFXMParticleEffects[i] });
       // }
       // update takes an array, but the ones we want to remove are stored in an object
-      const filteredEffects = getGame().scenes?.active?.getFlag('fxmaster', 'effects') ?? {};
+      const filteredEffects = sceneSettings.currentScene?.getFlag('fxmaster', 'effects') ?? {};
 
       for (let key in filteredEffects) {
         if (key.toString().startsWith('swr-'))  // it's possible (but an error) for integer keys to appear if someone toggled something not already on
