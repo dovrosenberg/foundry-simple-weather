@@ -7,3 +7,4 @@
 - create release
 - update description in foundry
 - add version in foundry
+- update the language issue if needed
