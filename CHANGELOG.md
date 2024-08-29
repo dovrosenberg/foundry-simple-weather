@@ -1,5 +1,14 @@
 # Change Log
 
+## v1.15.0 - Workaround for FXMaster issue causing long delays in updating visual effects
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-August%2029%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.15.0/module.zip)
+
+Workaround to FXMaster issue (https://github.com/ghost-fvtt/fxmaster/issues/761) that was causing long delays in effects 
+being turned on/off.  They should now update immediately when changing scenes, applying new weather, or toggling FX on/off.  
+Thanks for your patience - I know this issue has been painful to deal with.
+
 ## v1.14.1 - Updated Gerland and French
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-August%2026%2C%202024-blue)

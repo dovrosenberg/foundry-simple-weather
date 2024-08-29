@@ -98,6 +98,7 @@ Hooks.on('canvasInit', async (canvas: Canvas) => {
   // update the weather effects for the scene setting if needed
   SceneSettings.currentScene = canvas.scene;
 
+  weatherEffects.firstRefresh = true;
   if (ModuleSettings.get(ModuleSettingKeys.FXByScene)) {
     await weatherEffects.setFxActive(SceneSettings.get(SceneSettingKeys.fxActive));
   } else {

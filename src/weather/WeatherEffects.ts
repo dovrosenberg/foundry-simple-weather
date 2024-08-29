@@ -18,7 +18,7 @@ function updateWeatherEffects(effects: WeatherEffects): void {
 
 class WeatherEffects {
   private _sceneReady: boolean;  // we don't want to try to activate effects before the scene is ready
-  private _firstRefresh: boolean;  // is this the first refresh of fxActive after scene becomes ready?
+  public firstRefresh: boolean;  // is this the first refresh of fxActive after scene becomes ready?
   private _useFX: string;
   private _fxActive: boolean;
   private _lastWeatherData: WeatherData;   // we save it so we can toggle back on 
@@ -51,7 +51,7 @@ class WeatherEffects {
 
     this._activeFXMParticleEffects = ModuleSettings.get(ModuleSettingKeys.activeFXMParticleEffects);
     this._sceneReady = false;
-    this._firstRefresh = true;
+    this.firstRefresh = true;
   }
 
   // are we using any special effects?
@@ -70,10 +70,10 @@ class WeatherEffects {
   };
 
   public async setFxActive(active: boolean) {
-    if (!this._firstRefresh && (!this._sceneReady || this._fxActive===active))
+    if (!this.firstRefresh && (!this._sceneReady || this._fxActive===active))
       return;
 
-    this._firstRefresh = false;
+    this.firstRefresh = false;
     this._fxActive = active;
 
     // save to the module or scene settings
