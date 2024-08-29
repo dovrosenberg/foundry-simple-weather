@@ -1,6 +1,6 @@
 import { nextCell, startingCells, getDirection, weatherTemperatures, Direction, weatherDescriptions, manualOptions } from '@/weather/weatherMap';
-import { moduleSettings, ModuleSettingKeys } from '@/settings/ModuleSettings';
-import { getGame, localize } from '@/utils/game';
+import { ModuleSettings, ModuleSettingKeys } from '@/settings/ModuleSettings';
+import { localize } from '@/utils/game';
 import { Climate, Humidity, Season, seasonSelections } from './climateData';
 import { WeatherData } from './WeatherData';
 import { log } from '@/utils/log';
@@ -85,10 +85,10 @@ const createSpecificWeather = function(today: SimpleCalendar.DateData | null, cl
 
 const outputWeather = function(weatherData: WeatherData) {
   // get any custom text
-  let chatOut = '<b>' + weatherData.getTemperature(moduleSettings.get(ModuleSettingKeys.useCelsius)) + '</b> - ' + weatherData.getDescription();
+  let chatOut = '<b>' + weatherData.getTemperature(ModuleSettings.get(ModuleSettingKeys.useCelsius)) + '</b> - ' + weatherData.getDescription();
 
   if (weatherData.climate!==null && weatherData.humidity!==null && weatherData.hexFlowerCell!==null) {
-    const customText = moduleSettings.get(ModuleSettingKeys.customChatMessages)[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell];
+    const customText = ModuleSettings.get(ModuleSettingKeys.customChatMessages)[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell];
     if (customText)
       chatOut = chatOut + '<br>' + customText;
   }
@@ -97,7 +97,7 @@ const outputWeather = function(weatherData: WeatherData) {
     speaker: {
       alias: localize('sweath.chat.header'),
     },
-    whisper: moduleSettings.get(ModuleSettingKeys.publicChat) ? undefined : ChatMessage.getWhisperRecipients('GM')?.map((user) => user.id) || [],
+    whisper: ModuleSettings.get(ModuleSettingKeys.publicChat) ? undefined : ChatMessage.getWhisperRecipients('GM')?.map((user) => user.id) || [],
     content: chatOut,
   });
 };

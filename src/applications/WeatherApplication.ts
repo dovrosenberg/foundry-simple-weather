@@ -10,7 +10,7 @@ import { manualSelections, weatherDescriptions } from '@/weather/weatherMap';
 import { ModuleSettingKeys } from '@/settings/ModuleSettings';
 import { isClientGM } from '@/utils/game';
 import { generate, outputWeather, createManual, createSpecificWeather } from '@/weather/weatherGenerator';
-import { moduleSettings } from '@/settings/ModuleSettings';
+import { ModuleSettings } from '@/settings/ModuleSettings';
 import { weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
 
@@ -58,10 +58,10 @@ class WeatherApplication extends Application {
     log(false, 'WeatherApplication construction');
 
     // set the initial display
-    this._displayOptions = moduleSettings.get(ModuleSettingKeys.displayOptions) || { dateBox: false, weatherBox: true, biomeBar: true, seasonBar: true }    
+    this._displayOptions = ModuleSettings.get(ModuleSettingKeys.displayOptions) || { dateBox: false, weatherBox: true, biomeBar: true, seasonBar: true }    
 
     // get attached mode
-    this._attachedMode = moduleSettings.get(ModuleSettingKeys.attachToCalendar) || false;
+    this._attachedMode = ModuleSettings.get(ModuleSettingKeys.attachToCalendar) || false;
     this._attachmodeHidden = true;
     this._compactMode = false;
 
@@ -69,13 +69,13 @@ class WeatherApplication extends Application {
     this._simpleCalendarInstalled = false;
 
     // get whether the manual pause is on
-    this._manualPause = moduleSettings.get(ModuleSettingKeys.manualPause || false);
+    this._manualPause = ModuleSettings.get(ModuleSettingKeys.manualPause || false);
 
     // don't show it until ready() has been called
     this._currentlyHidden = true;
 
     // get default position or set default
-    this._windowPosition = moduleSettings.get(ModuleSettingKeys.windowPosition) || { left: 100, bottom: 300 }
+    this._windowPosition = ModuleSettings.get(ModuleSettingKeys.windowPosition) || { left: 100, bottom: 300 }
     
     this.setWeather();  
   }
@@ -116,7 +116,7 @@ class WeatherApplication extends Application {
       formattedDate: this._currentWeather?.date ? this._currentWeather.date.day + '/' + this._currentWeather.date.month + '/' + this._currentWeather.date.year : '',
       formattedTime: this._currentWeather?.date?.display ? this._currentWeather.date.display.time : '',
       weekday: this._currentWeather?.date ? this._currentWeather.date.weekdays[this._currentWeather.date.dayOfTheWeek] : '',
-      currentTemperature: this._currentWeather ? this._currentWeather.getTemperature(moduleSettings.get(ModuleSettingKeys.useCelsius)) : '',
+      currentTemperature: this._currentWeather ? this._currentWeather.getTemperature(ModuleSettings.get(ModuleSettingKeys.useCelsius)) : '',
       currentDescription: this._currentWeather ? this._currentWeather.getDescription() : '',
       currentSeasonClass: this.currentSeasonClass(),
       biomeSelections: biomeSelections,
@@ -132,13 +132,13 @@ class WeatherApplication extends Application {
       hideFXToggle: !weatherEffects.useFX,
       manualPause: this._manualPause,
       fxActive: weatherEffects.fxActive,
-      useCelsius: moduleSettings.get(ModuleSettingKeys.useCelsius),
+      useCelsius: ModuleSettings.get(ModuleSettingKeys.useCelsius),
       attachedMode: this._attachedMode,
       showAttached: this._attachedMode && !this._attachmodeHidden,
       SCContainerClasses: !this._attachedMode ? '' : `${SC_CLASS_FOR_TAB_WRAPPER} sc-right ${SC_CLASS_FOR_TAB_EXTENDED}`,
       windowPosition: this._attachedMode ? { bottom: 0, left: 0 } : this._windowPosition,
       containerPosition: this._attachedMode ? 'relative' : 'fixed',
-      hideDialog: (this._attachedMode && this._attachmodeHidden) || this._currentlyHidden || !(isClientGM() || moduleSettings.get(ModuleSettingKeys.dialogDisplay)),  // hide dialog - don't show anything
+      hideDialog: (this._attachedMode && this._attachmodeHidden) || this._currentlyHidden || !(isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)),  // hide dialog - don't show anything
     };
     //log(false, data);
 
@@ -151,7 +151,7 @@ class WeatherApplication extends Application {
     this._windowPosition = newPosition;
 
     // save
-    moduleSettings.set(ModuleSettingKeys.windowPosition, this._windowPosition);
+    ModuleSettings.set(ModuleSettingKeys.windowPosition, this._windowPosition);
 
     this.render();
   }
@@ -287,7 +287,7 @@ class WeatherApplication extends Application {
   private setWindowPosition(position: WindowPosition): void {
     this._windowPosition = position;
 
-    moduleSettings.set(ModuleSettingKeys.windowPosition, position);
+    ModuleSettings.set(ModuleSettingKeys.windowPosition, position);
 
     this.render();
   }
@@ -316,7 +316,7 @@ class WeatherApplication extends Application {
       // don't update the setting because a) no need... will update if anything changes anyway, and b)
       //    this may be called before the calendar is loaded so we don't want to overwrite it (it will
       //    get requeried later)
-      //moduleSettings.set(ModuleSettingKeys.seasonSync, false);
+      //ModuleSettings.set(ModuleSettingKeys.seasonSync, false);
     }
   }
 
@@ -327,19 +327,19 @@ class WeatherApplication extends Application {
     if (isClientGM()) {
       // load the values from settings if missing
       if (this._currentClimate == undefined)
-        this._currentClimate = moduleSettings.get(ModuleSettingKeys.climate);
+        this._currentClimate = ModuleSettings.get(ModuleSettingKeys.climate);
 
       if (this._currentHumidity == undefined)
-        this._currentHumidity = moduleSettings.get(ModuleSettingKeys.humidity);
+        this._currentHumidity = ModuleSettings.get(ModuleSettingKeys.humidity);
 
       if (this._currentSeason == undefined)
-        this._currentSeason = moduleSettings.get(ModuleSettingKeys.season);
+        this._currentSeason = ModuleSettings.get(ModuleSettingKeys.season);
 
       if (this._currentSeasonSync == undefined)
-        this._currentSeasonSync = moduleSettings.get(ModuleSettingKeys.seasonSync);
+        this._currentSeasonSync = ModuleSettings.get(ModuleSettingKeys.seasonSync);
 
       if (this._currentBiome == undefined)
-        this._currentBiome = moduleSettings.get(ModuleSettingKeys.biome);
+        this._currentBiome = ModuleSettings.get(ModuleSettingKeys.biome);
     }
 
     weatherEffects.ready(this._currentWeather);
@@ -355,7 +355,7 @@ simple-weather DEBUG OUTPUT
 _______________________________________
 isGM: ${isClientGM()}
 displayOptions: ${JSON.stringify(this._displayOptions, null, 2)}
-dialogDisplay: ${moduleSettings.get(ModuleSettingKeys.dialogDisplay)}
+dialogDisplay: ${ModuleSettings.get(ModuleSettingKeys.dialogDisplay)}
 calendarPresent: ${this._calendarPresent}
 manualPause: ${this._manualPause}
 currentClimate: ${this._currentClimate}
@@ -364,7 +364,7 @@ currentBiome: ${this._currentBiome}
 currentSeason: ${this._currentSeason}
 currentSeasonSync: ${this._currentSeasonSync}
 WeatherEffects.fxActive:  ${weatherEffects.fxActive}
-WeatherEffects.useFX: ${moduleSettings.get(ModuleSettingKeys.useFX)}
+WeatherEffects.useFX: ${ModuleSettings.get(ModuleSettingKeys.useFX)}
 getData: ${JSON.stringify(await this.getData(), null, 2)}
 _______________________________________
     `;
@@ -381,7 +381,7 @@ _______________________________________
     }
 
     // save
-    moduleSettings.set(ModuleSettingKeys.displayOptions, this._displayOptions);
+    ModuleSettings.set(ModuleSettingKeys.displayOptions, this._displayOptions);
 
     this.render();
   }
@@ -394,7 +394,7 @@ _______________________________________
 
     if (this.hasDateChanged(currentDate)) {
       if (isClientGM()) {
-        if (moduleSettings.get(ModuleSettingKeys.storeInSCNotes)) {
+        if (ModuleSettings.get(ModuleSettingKeys.storeInSCNotes)) {
           // if we're using notes from SC (and have a valid note) pull that weather
           const notes = SimpleCalendar.api.getNotesForDay(currentDate.year, currentDate.month, currentDate.day);
           let foundWeatherNote = false;
@@ -452,7 +452,7 @@ _______________________________________
   // called from outside, to load the last weather from the settings
   // also called by player clients when GM updates the settings
   public setWeather(): void {
-    const weatherData = moduleSettings.get(ModuleSettingKeys.lastWeatherData);
+    const weatherData = ModuleSettings.get(ModuleSettingKeys.lastWeatherData);
 
     if (weatherData) {
       log(false, 'Using saved weather data');
@@ -525,7 +525,7 @@ _______________________________________
   private activateWeather(weatherData: WeatherData): void {
     if (isClientGM()) {
       // Output to chat if enabled
-      if (moduleSettings.get(ModuleSettingKeys.outputWeatherToChat)) {
+      if (ModuleSettings.get(ModuleSettingKeys.outputWeatherToChat)) {
         outputWeather(weatherData);
       }
 
@@ -533,12 +533,12 @@ _______________________________________
       weatherEffects.activateFX(weatherData);
 
       // if we're saving to the calendar, do that
-      if (moduleSettings.get(ModuleSettingKeys.storeInSCNotes)) {
+      if (ModuleSettings.get(ModuleSettingKeys.storeInSCNotes)) {
         void this.saveWeatherToCalendarNote(weatherData);
       }
 
       // save 
-      moduleSettings.set(ModuleSettingKeys.lastWeatherData, this._currentWeather);        
+      ModuleSettings.set(ModuleSettingKeys.lastWeatherData, this._currentWeather);        
     }
   }
 
@@ -566,7 +566,7 @@ _______________________________________
     }
 
     // add a new one
-    const noteContent = `Todays weather: ${weatherData.getTemperature(moduleSettings.get(ModuleSettingKeys.useCelsius))} -  ${weatherData.getDescription() }`;
+    const noteContent = `Todays weather: ${weatherData.getTemperature(ModuleSettings.get(ModuleSettingKeys.useCelsius))} -  ${weatherData.getDescription() }`;
     const theDate = { year: weatherData.date.year, month: weatherData.date.month, day: weatherData.date.day};
 
     // create the note and store the weather detail as a flag
@@ -636,7 +636,7 @@ _______________________________________
   public regenerateWeather() {
     if (isClientGM()) {
       this.generateWeather(this._currentWeather?.date || null);
-      moduleSettings.set(ModuleSettingKeys.lastWeatherData, this._currentWeather);        
+      ModuleSettings.set(ModuleSettingKeys.lastWeatherData, this._currentWeather);        
       this.render();
     }
   }
@@ -652,8 +652,8 @@ _______________________________________
       this._currentSeason = Number(target.value);
     }
 
-    moduleSettings.set(ModuleSettingKeys.seasonSync, this._currentSeasonSync);
-    moduleSettings.set(ModuleSettingKeys.season, this._currentSeason);
+    ModuleSettings.set(ModuleSettingKeys.seasonSync, this._currentSeasonSync);
+    ModuleSettings.set(ModuleSettingKeys.season, this._currentSeason);
 
     // render to update the icon
     this.render();
@@ -663,24 +663,24 @@ _______________________________________
     // save the value - we don't regenerate because we might be changing other settings, too, and don't want to trigger a bunch of chat messages
     const target = event.originalEvent?.target as HTMLSelectElement;
     this._currentClimate = Number(target.value)
-    moduleSettings.set(ModuleSettingKeys.climate, this._currentClimate);
+    ModuleSettings.set(ModuleSettingKeys.climate, this._currentClimate);
 
     // set biome to blank because we adjusted manually
     jQuery(document).find('#swr-biome-selection').val('');
     this._currentBiome = '';
-    moduleSettings.set(ModuleSettingKeys.biome, '');
+    ModuleSettings.set(ModuleSettingKeys.biome, '');
   };
 
   private onHumiditySelectChange = (event): void => {
     // save the value - we don't regenerate because we might be changing other settings, too, and don't want to trigger a bunch of chat messages
     const target = event.originalEvent?.target as HTMLSelectElement;
     this._currentHumidity = Number(target.value);
-    moduleSettings.set(ModuleSettingKeys.humidity, this._currentHumidity);
+    ModuleSettings.set(ModuleSettingKeys.humidity, this._currentHumidity);
 
     // set biome to blank because we adjusted manually
     jQuery(document).find('#swr-biome-selection').val('');
     this._currentBiome = '';
-    moduleSettings.set(ModuleSettingKeys.biome, '');
+    ModuleSettings.set(ModuleSettingKeys.biome, '');
   };
 
   private onBiomeSelectChange = (event): void => {
@@ -694,21 +694,21 @@ _______________________________________
     if (biomeMapping) {
       // save the value - we don't regenerate because we might be changing other settings, too, and don't want to trigger a bunch of chat messages
       this._currentBiome = target.value
-      moduleSettings.set(ModuleSettingKeys.biome, this._currentBiome);
+      ModuleSettings.set(ModuleSettingKeys.biome, this._currentBiome);
 
       // update the other selects
       const climate = document.getElementById('swr-climate-selection') as HTMLSelectElement | null;
       if (climate) {
         climate.value = String(biomeMapping.climate);
         this._currentClimate = biomeMapping.climate;
-        moduleSettings.set(ModuleSettingKeys.climate, biomeMapping.climate);
+        ModuleSettings.set(ModuleSettingKeys.climate, biomeMapping.climate);
       }
       
       const humidity = document.getElementById('swr-humidity-selection') as HTMLSelectElement | null;
       if (humidity) {
         humidity.value = String(biomeMapping.humidity);
         this._currentHumidity = biomeMapping.humidity;
-        moduleSettings.set(ModuleSettingKeys.humidity, biomeMapping.humidity);
+        ModuleSettings.set(ModuleSettingKeys.humidity, biomeMapping.humidity);
       }
     }
   };
@@ -720,7 +720,7 @@ _______________________________________
   public manualPauseToggle() {
     if (isClientGM()) {
       this._manualPause = !this._manualPause;
-      moduleSettings.set(ModuleSettingKeys.manualPause, this._manualPause);
+      ModuleSettings.set(ModuleSettingKeys.manualPause, this._manualPause);
 
       // if we're turning it on, hide the weather bars
       if (this._manualPause) {
@@ -790,7 +790,7 @@ _______________________________________
       return;
     }
 
-    if (moduleSettings.get(ModuleSettingKeys.useCelsius))
+    if (ModuleSettings.get(ModuleSettingKeys.useCelsius))
       temp = Math.round((temp*9/5)+32);
 
     this.setManualWeather(this._currentWeather?.date || null, temp, Number(select.value));
