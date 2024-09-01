@@ -8,7 +8,7 @@ import { WeatherData } from '@/weather/WeatherData';
 import { seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings } from '@/weather/climateData';
 import { manualSelections, weatherDescriptions } from '@/weather/weatherMap';
 import { ModuleSettingKeys } from '@/settings/ModuleSettings';
-import { isClientGM } from '@/utils/game';
+import { getGame, isClientGM } from '@/utils/game';
 import { generate, outputWeather, createManual, createSpecificWeather } from '@/weather/weatherGenerator';
 import { ModuleSettings } from '@/settings/ModuleSettings';
 import { weatherEffects } from '@/weather/WeatherEffects';
@@ -363,6 +363,8 @@ currentHumidity: ${this._currentHumidity}
 currentBiome: ${this._currentBiome}
 currentSeason: ${this._currentSeason}
 currentSeasonSync: ${this._currentSeasonSync}
+SC version: ${getGame().modules.get('foundryvtt-simple-calendar')?.version},
+FXMaster version: ${getGame().modules.get('fxmaster')?.version},
 ModuleSettings.dialogDisplay: ${ModuleSettings.get(ModuleSettingKeys.dialogDisplay)}
 ModuleSettings.outputWeatherToChat: ${ModuleSettings.get(ModuleSettingKeys.outputWeatherToChat)}
 ModuleSettings.publicChat: ${ModuleSettings.get(ModuleSettingKeys.publicChat)}
