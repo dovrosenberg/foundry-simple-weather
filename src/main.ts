@@ -205,8 +205,10 @@ Hooks.once(SimpleCalendar.Hooks.Init, async () => {
   
   // check the setting to see if we want to dock
   if (weatherApplication.attachedMode) {
-    // can set this either way, but it does nothing when not in compact mode (but we only need to set it once)
-    SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", false, () => weatherApplication.toggleAttachModeHidden());
+    if (isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)) {
+      // can set this either way, but it does nothing when not in compact mode (but we only need to set it once)
+      SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", false, () => weatherApplication.toggleAttachModeHidden());
+    }
 
     // we also need to watch for when the calendar is rendered because in compact mode we
     //    have to inject the button 
