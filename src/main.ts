@@ -98,12 +98,14 @@ Hooks.on('canvasInit', async (canvas: Canvas) => {
   // update the weather effects for the scene setting if needed
   SceneSettings.currentScene = canvas.scene;
 
-  weatherEffects.firstRefresh = true;
-  if (ModuleSettings.get(ModuleSettingKeys.FXByScene)) {
-    await weatherEffects.setFxActive(SceneSettings.get(SceneSettingKeys.fxActive));
-  } else {
-    await weatherEffects.setFxActive(ModuleSettings.get(ModuleSettingKeys.fxActive));
-  }
+  // v1.15.1 testing to see if we can avoid doing this
+  // Ideally, we don't need this any more because it's preventing users from setting the weather on their own.
+  // weatherEffects.firstRefresh = true;
+  // if (ModuleSettings.get(ModuleSettingKeys.FXByScene)) {
+  //   await weatherEffects.setFxActive(SceneSettings.get(SceneSettingKeys.fxActive));
+  // } else {
+  //   await weatherEffects.setFxActive(ModuleSettings.get(ModuleSettingKeys.fxActive));
+  // }
 });
 
 // handle scene changes

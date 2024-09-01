@@ -1,5 +1,12 @@
 # Change Log
 
+## v1.15.1 - Re-enable ability to set weather via scene settings
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-September%201%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.15.1/module.zip)
+
+Fix to let you use the Ambiance tabe in scene settings to set weather.  Note that this will (obviously) get the weather out of sync with Simple Weather, which will confuse it.  Generally, hitting the "Toggle FX" button (that looks like the raining cloud) twice (i.e. on/off or off/on, depending on its current state) should let Simple Weather take back over.
+
 ## v1.15.0 - Workaround for FXMaster issue causing long delays in updating visual effects
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-August%2029%2C%202024-blue)

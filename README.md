@@ -91,6 +91,9 @@ Or in compact mode:
 * **Use Celsius** - If checked, all temperatures will display in celsius.  If not, Faherenheit.
 
 ## Known Issues
+### Messy interactions with manually setting the scene settings weather
+If you manually set the weather via the Ambiance tab in the scene settings, you may get some unpredictable interactions.  Unfortunately, there's not a great way for Simple Weather to know that the weather was manually picked.  Generally speaking, if you toggle the Simple Weather FX toggle (twice - to get it back where it was) that should get the weather back under Simple Weather's control.  The alternative was to prevent you from manually setting the weather altogether (which is what 1.15.0 was doing).  If the toggle twice method isn't working for you, please create an issue.
+
 ### Missing box (in non-attached mode)
 Some people occasionally have issues where the box will disappear and won't come back.  We haven't been able to consistently reproduce it, and I suspect it's a conflict with another module somehow.  If this happens to you, though, for now the workaround is to open your browser console (usually f12) and run this command to reset the window position: 
 
@@ -99,7 +102,8 @@ Some people occasionally have issues where the box will disappear and won't come
 Then refresh (F5).  That should make the window reappear.  If that doesn't work (or if anyone can find a way to reproduce this consistently) please create an issue report.  
 
 ### Simple Calendar attachment (compact mode)
-The attachment to the calendar when the calendar is in compact mode is highly dependent on the Simple Calendar version.  It has only been fully tested with Simple Calendar v2.4.3.  You can let me know if you have trouble with a different version, but I'm not inclined to support older versions of SC.  
+The attachment to the calendar when the calendar is in compact mode is highly dependent on the Simple Calendar version.  Check the ([change log](https://github.com/dovrosenberg/foundry-simple-weather/blob/master/CHANGELOG.md)) and make sure that the version of Simple Calendar you are using matches what's listed for your version of Simple Weather.
+
 
 ### Missing box (when attached to non-compact Simple Calendar)
 Sometimes when you have another Simple Calendar side tab open and you try to switch to the weather tab, it will close the other tab but not show the weather.  The workaround is just to hit the weather button again.

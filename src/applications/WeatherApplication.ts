@@ -363,8 +363,14 @@ currentHumidity: ${this._currentHumidity}
 currentBiome: ${this._currentBiome}
 currentSeason: ${this._currentSeason}
 currentSeasonSync: ${this._currentSeasonSync}
-WeatherEffects.fxActive:  ${weatherEffects.fxActive}
-WeatherEffects.useFX: ${ModuleSettings.get(ModuleSettingKeys.useFX)}
+ModuleSettings.dialogDisplay: ${ModuleSettings.get(ModuleSettingKeys.dialogDisplay)}
+ModuleSettings.outputWeatherToChat: ${ModuleSettings.get(ModuleSettingKeys.outputWeatherToChat)}
+ModuleSettings.publicChat: ${ModuleSettings.get(ModuleSettingKeys.publicChat)}
+ModuleSettings.useFX: ${ModuleSettings.get(ModuleSettingKeys.useFX)}
+ModuleSettings.FXByScene: ${ModuleSettings.get(ModuleSettingKeys.FXByScene)}
+ModuleSettings.attachToCalendar: ${ModuleSettings.get(ModuleSettingKeys.attachToCalendar)}
+ModuleSettings.storeInSCNotes: ${ModuleSettings.get(ModuleSettingKeys.storeInSCNotes)}
+ModuleSettings.fxActive: ${ModuleSettings.get(ModuleSettingKeys.fxActive)}
 getData: ${JSON.stringify(await this.getData(), null, 2)}
 _______________________________________
     `;
