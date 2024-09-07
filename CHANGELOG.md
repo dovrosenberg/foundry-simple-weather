@@ -1,5 +1,12 @@
 # Change Log
 
+## v1.15.2 - Bug fix for Simple Calendar compact mode
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-September%209%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.15.2/module.zip)
+
+Fixed bug where you couldn't set weather manually when attached to a compact Simple Calendar window.
+
 ## v1.15.1 - Re-enable ability to set weather via scene settings
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-September%201%2C%202024-blue)

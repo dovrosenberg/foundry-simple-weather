@@ -212,6 +212,9 @@ class WeatherApplication extends Application {
       html.find('#swr-fx-toggle').on('mousedown', this.onToggleFX);
 
       // validation
+      // we need to abort keyup/keydown  because simple calendar in compact mode re-renders on every keydown, which then loses our input and eventhandler
+      html.find('#swr-manual-temperature').on('keydown', (e: KeyboardEvent) => { e.stopPropagation(); });
+      html.find('#swr-manual-temperature').on('keyup', (e: KeyboardEvent) => { e.stopPropagation(); });
       html.find('#swr-manual-temperature').on('input', this.onManualTempInput);
 
       // buttons
@@ -354,7 +357,7 @@ class WeatherApplication extends Application {
 simple-weather DEBUG OUTPUT
 _______________________________________
 isGM: ${isClientGM()}
-displayOptions: ${JSON.stringify(this._displayOptions, null, 2)}
+// displayOptions: ${JSON.stringify(this._displayOptions, null, 2)}
 dialogDisplay: ${ModuleSettings.get(ModuleSettingKeys.dialogDisplay)}
 calendarPresent: ${this._calendarPresent}
 manualPause: ${this._manualPause}
@@ -363,6 +366,7 @@ currentHumidity: ${this._currentHumidity}
 currentBiome: ${this._currentBiome}
 currentSeason: ${this._currentSeason}
 currentSeasonSync: ${this._currentSeasonSync}
+SW version: ${getGame().modules.get('simple-weather')?.version},
 SC version: ${getGame().modules.get('foundryvtt-simple-calendar')?.version},
 FXMaster version: ${getGame().modules.get('fxmaster')?.version},
 ModuleSettings.dialogDisplay: ${ModuleSettings.get(ModuleSettingKeys.dialogDisplay)}
@@ -773,6 +777,7 @@ _______________________________________
   }
 
   private onManualTempInput = (event: KeyboardEvent): void => {
+    event.stopPropagation()
     const btn = document.getElementById('swr-submit-weather') as HTMLButtonElement;
 
     btn.disabled = !this.isTempValid();
