@@ -96,7 +96,8 @@
       "manualPause": "Pausa uppdateringar?",
       "manualPauseHint": "Aktivera för att förhindra automatiskt väder (användbart när du vill ställa in det manuellt)",
       "manualWeatherTemperature": "Temperatur att ställa in (kommer att variera något från detta)",
-      "manualWeatherSubmit": "Ställ in valt väder och temperatur"
+      "manualWeatherSubmit": "Ställ in valt väder och temperatur",
+      "forecast": "Forecast"
     },
 
     "chat": {
@@ -481,6 +482,9 @@
       "FXBySceneHelp": "Should the FX toggle button only impact the current scene or be module-wide? Useful if you want to handle indoors/outdoors scene transitions without needing to toggle manually each time.",
       "useForecasts": "Use forecasts?",
       "useForecastsHelp": "Show GM the next several days of upcoming weather. Requires Simple Calendar."
+    },    
+    "labels": {
+      "forecast": "Forecast"
     }
   }  
 }

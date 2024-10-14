@@ -165,9 +165,11 @@
 					</div>
 					<div class="swr-weather-forecast">
 						{{#if showForecast }}
-							Forecast: 
+							{{localize 'sweath.labels.forecast'}}: &nbsp;
 							{{#each forecasts}}
-								<i class="fas {{icon}}"></i>
+								<div data-tooltip="{{description}}" style="display:inline-block">      
+									<i class="fas {{icon}}"></i>
+            		</div>
 							{{/each}}
 						{{/if}}
 					</div>

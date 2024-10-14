@@ -96,7 +96,8 @@
       "manualPause": "Pause des mises à jour ?",
       "manualPauseHint": "Activer pour empêcher la météo automatique (utile lorsque vous voulez la régler manuellement)",
       "manualWeatherTemperature": "Régler la Température (variera légèrement par rapport à celle-ci)",
-      "manualWeatherSubmit": "Activer la météo et la température sélectionnées"
+      "manualWeatherSubmit": "Activer la météo et la température sélectionnées",
+      "forecast": "Forecast"
     },
 
     "chat": {
@@ -124,7 +125,7 @@
           "springfall.1" : "Vents froids, très sec",
           "springfall.2" : "Ciel gris",
           "springfall.3" : "brumeux",
-          "springfall.4" : "Ciel bleu blanc",
+          "springfall.4" : "Ciel bleu-blanc",
           "springfall.5" : "Pluie chaude",
           "springfall.6" : "Cumulonimbus",
           "springfall.7" : "Orage sec",
@@ -204,7 +205,7 @@
           "springfall.1" : "Vents froids, très sec",
           "springfall.2" : "Ciel gris",
           "springfall.3" : "Brouillard roulant",
-          "springfall.4" : "Ciel bleu blanc",
+          "springfall.4" : "Ciel bleu-blanc",
           "springfall.5" : "Pluie chaude",
           "springfall.6" : "Pluie chaude",
           "springfall.7" : "Orage avec pluie crachante",
@@ -246,7 +247,7 @@
           "springfall.1" : "Vents froids, très sec",
           "springfall.2" : "Ciel gris",
           "springfall.3" : "brumeux",
-          "springfall.4" : "Ciel bleu blanc",
+          "springfall.4" : "Ciel bleu-blanc",
           "springfall.5" : "Pluie chaude",
           "springfall.6" : "Cumulonimbus",
           "springfall.7" : "Orage sec",
@@ -286,7 +287,7 @@
           "springfall.1" : "Vents froids, très sec",
           "springfall.2" : "Ciel gris",
           "springfall.3" : "Bancs de brouillard",
-          "springfall.4" : "Ciel bleu blanc",
+          "springfall.4" : "Ciel bleu-blanc",
           "springfall.5" : "Pluie chaude",
           "springfall.6" : "Cumulonimbus",
           "springfall.7" : "Orage sec",
@@ -326,7 +327,7 @@
           "springfall.1" : "Vents froids, très sec",
           "springfall.2" : "Ciel gris",
           "springfall.3" : "Brouillard roulant",
-          "springfall.4" : "Ciel bleu blanc",
+          "springfall.4" : "Ciel bleu-blanc",
           "springfall.5" : "Pluie chaude",
           "springfall.6" : "Pluie chaude",
           "springfall.7" : "Orage avec pluie crachante",
@@ -368,7 +369,7 @@
           "springfall.1" : "Venteux, très sec",
           "springfall.2" : "Ciel gris",
           "springfall.3" : "Brumeux",
-          "springfall.4" : "Ciel bleu blanc",
+          "springfall.4" : "Ciel bleu-blanc",
           "springfall.5" : "Pluie chaude",
           "springfall.6" : "Cumulonimbus",
           "springfall.7" : "Orage sec",
@@ -408,7 +409,7 @@
           "springfall.1" : "venteux, très sec",
           "springfall.2" : "Ciel gris",
           "springfall.3" : "Bancs de brouillard",
-          "springfall.4" : "Ciel bleu blanc",
+          "springfall.4" : "Ciel bleu-blanc",
           "springfall.5" : "Pluie chaude",
           "springfall.6" : "Cumulonimbus",
           "springfall.7" : "Orage sec",
@@ -448,7 +449,7 @@
           "springfall.1" : "sec",
           "springfall.2" : "Ciel gris",
           "springfall.3" : "Brouillard roulant",
-          "springfall.4" : "Ciel bleu blanc",
+          "springfall.4" : "Ciel bleu-blanc",
           "springfall.5" : "Pluie chaude",
           "springfall.6" : "Pluie chaude",
           "springfall.7" : "Orage avec pluie crachante",
@@ -476,6 +477,9 @@
     "settings": {
       "useForecasts": "Use forecasts?",
       "useForecastsHelp": "Show GM the next several days of upcoming weather. Requires Simple Calendar."
+    },
+    "labels": {
+      "forecast": "Forecast"
     }
   }  
 }

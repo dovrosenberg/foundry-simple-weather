@@ -9,7 +9,7 @@ import { generateWeather } from './weatherGeneration';
 
 // returns the updated forecast object (and saves it to settings)
 const generateForecast = async function(todayTimestamp: number, todayWeather: WeatherData): Promise<Record<string, Forecast>> {
-  const numDays = 5;  // TODO: replace with a setting
+  const numDays = 7;
   const currentForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
   let yesterdayWeather = todayWeather;
 

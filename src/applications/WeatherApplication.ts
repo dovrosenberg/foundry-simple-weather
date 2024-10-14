@@ -866,7 +866,7 @@ _______________________________________
 
   // load the next few days of forecasts to display
   public getForecasts(): Forecast[] {
-    const numForecasts = 5;  // TODO - make this configurable
+    const numForecasts = 7;
 
     if (!isClientGM() || !this._currentWeather?.date || !ModuleSettings.get(ModuleSettingKeys.useForecasts))
       return [];
@@ -882,7 +882,7 @@ _______________________________________
     for (let day=1; day<=numForecasts; day++) {
       let forecastTimeStamp;
 
-      forecastTimeStamp = SimpleCalendar.api.timestampPlusInterval(currentTimestamp, { day: day+1});
+      forecastTimeStamp = SimpleCalendar.api.timestampPlusInterval(currentTimestamp, { day: day});
   
       // load the forecast
       const forecast = allForecasts[forecastTimeStamp.toString()];
@@ -890,7 +890,7 @@ _______________________________________
       if (!forecast)
         return forecasts;
 
-      forecasts.push(new Forecast(forecast));
+      forecasts.push(new Forecast(forecast.climate, forecast.humidity, forecast.hexFlowerCell));
     }
 
     return forecasts;

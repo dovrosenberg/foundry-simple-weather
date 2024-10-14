@@ -96,7 +96,8 @@
       "manualPause": "Wetteraktualisierung pausieren?",
       "manualPauseHint": " Auswählen, wenn die automatische Wetterauswahl verhindert werden soll (nützlich, wenn es manuell eingestellt wird)",
       "manualWeatherTemperature": "Trage Temperatur ein (kann leicht abweichen)",
-      "manualWeatherSubmit": "Bestätige Wetter und Temperatur"
+      "manualWeatherSubmit": "Bestätige Wetter und Temperatur",
+      "forecast": "Forecast"
     },
 
     "chat": {
@@ -475,6 +476,9 @@
       "settings": {
         "useForecasts": "Use forecasts?",
         "useForecastsHelp": "Show GM the next several days of upcoming weather. Requires Simple Calendar."
+      },
+      "labels": {
+        "forecast": "Forecast"
       }
     }  
   }

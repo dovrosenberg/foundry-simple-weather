@@ -1,6 +1,6 @@
 import { ModuleSettingKeys, ModuleSettings } from '@/settings/ModuleSettings';
 import { Climate, Humidity } from './climateData';
-import { weatherSunniness, weatherTemperatures } from './weatherMap';
+import { weatherDescriptions, weatherSunniness, weatherTemperatures } from './weatherMap';
 
 // the types of "sunniness"
 export enum Sunniness {
@@ -24,15 +24,19 @@ export class Forecast {
   public climate: Climate;      // the climate selection
   public hexFlowerCell: number;      // number of the cell in the hex flower
 
-  constructor(forecast: Forecast) {
-    this.climate = forecast.climate;
-    this.humidity = forecast.humidity;
-    this.hexFlowerCell = forecast.hexFlowerCell;
+  constructor(climate: Climate, humidity: Humidity, hexFlowerCell: number) {
+    this.climate = climate;
+    this.humidity = humidity;
+    this.hexFlowerCell = hexFlowerCell;
   }
 
   // getters
   get sunniness(): Sunniness {
     return weatherSunniness[this.climate][this.humidity][this.hexFlowerCell];
+  }
+
+  get description(): string {
+    return `${weatherDescriptions[this.climate][this.humidity][this.hexFlowerCell]} (${this.temperature})`;
   }
 
   get temperature(): string {
