@@ -2,6 +2,7 @@ import { localize } from '@/utils/game';
 import { log } from '@/utils/log';
 import { Climate, Humidity, Season } from './climateData';
 import { availableEffects, EffectDetails, joinEffects } from '@/weather/effectsMap';
+import { Sunniness } from './Forecast';
 
 // drop down selections for manually setting weather
 let manualSelections: { text:string, value: string}[];
@@ -295,6 +296,12 @@ const weatherTemperatures: number[][][] = new Array(Object.keys(Climate).length/
     .fill(0)
     .map(() => new Array(37).fill(0)));
 
+const weatherSunniness: Sunniness[][][] = new Array(Object.keys(Climate).length/2)
+  .fill(0)
+  .map(() => new Array(Object.keys(Humidity).length/2)
+    .fill(0)
+    .map(() => new Array(37).fill(0)));
+
 type WeatherOptions = {
   fx: EffectDetails
 }
@@ -511,6 +518,98 @@ weatherTemperatures[Climate.Hot][Humidity.Verdant] = [
   80, 80, 81, 83, 82, 83,
   78, 70, 76, 81, 73,
   75, 73, 77, 79,
+];
+
+// sunniness
+
+weatherSunniness[Climate.Cold][Humidity.Barren] = [
+  Sunniness.Clear, Sunniness.Cloudy, Sunniness.Clear, Sunniness.PartlyCloudy, 
+  Sunniness.PartlyCloudy, Sunniness.MostlyCloudy, Sunniness.Precipitation, Sunniness.Clear, Sunniness.Precipitation,    
+  Sunniness.Clear, Sunniness.Clear, Sunniness.PartlyCloudy, Sunniness.Clear, Sunniness.Cloudy, Sunniness.Precipitation, 
+  Sunniness.Clear, Sunniness.Cloudy, Sunniness.Precipitation, Sunniness.Clear, Sunniness.Precipitation, Sunniness.MostlyCloudy, Sunniness.Cloudy,  
+  Sunniness.Clear, Sunniness.MostlyCloudy, Sunniness.Clear, Sunniness.Cloudy, Sunniness.Clear, Sunniness.Clear, 
+  Sunniness.Clear, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Precipitation,
+  Sunniness.Cloudy, Sunniness.Cloudy, Sunniness.MostlyCloudy, Sunniness.Precipitation,
+];
+
+weatherSunniness[Climate.Cold][Humidity.Modest] = [
+  Sunniness.Clear, Sunniness.Cloudy, Sunniness.Clear, Sunniness.PartlyCloudy, 
+  Sunniness.PartlyCloudy, Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Clear, Sunniness.Precipitation,    
+  Sunniness.Clear, Sunniness.Clear, Sunniness.PartlyCloudy, Sunniness.Clear, Sunniness.Cloudy, Sunniness.Precipitation, 
+  Sunniness.Clear, Sunniness.Cloudy, Sunniness.Precipitation, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Cloudy, Sunniness.Cloudy,  
+  Sunniness.Cloudy, Sunniness.Cloudy, Sunniness.Clear, Sunniness.Cloudy, Sunniness.Clear, Sunniness.Clear, 
+  Sunniness.Clear, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Precipitation,
+  Sunniness.Cloudy, Sunniness.Precipitation, Sunniness.PartlyCloudy, Sunniness.Precipitation,
+];
+
+weatherSunniness[Climate.Cold][Humidity.Verdant] = [
+  Sunniness.Clear, Sunniness.Cloudy, Sunniness.Precipitation, Sunniness.PartlyCloudy, 
+  Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Clear, Sunniness.Precipitation,    
+  Sunniness.Clear, Sunniness.Precipitation, Sunniness.PartlyCloudy, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Precipitation,  
+  Sunniness.Clear, Sunniness.Cloudy, Sunniness.Cloudy, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Precipitation,  
+  Sunniness.Cloudy, Sunniness.Cloudy, Sunniness.Clear, Sunniness.Cloudy, Sunniness.Clear, Sunniness.Clear, 
+  Sunniness.Clear, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Precipitation,
+  Sunniness.Cloudy, Sunniness.Precipitation, Sunniness.PartlyCloudy, Sunniness.Precipitation,
+];
+
+weatherSunniness[Climate.Temperate][Humidity.Barren] = [
+  Sunniness.Clear, Sunniness.Cloudy, Sunniness.Clear, Sunniness.PartlyCloudy, 
+  Sunniness.PartlyCloudy, Sunniness.MostlyCloudy, Sunniness.Precipitation, Sunniness.Clear, Sunniness.PartlyCloudy,    
+  Sunniness.Clear, Sunniness.Clear, Sunniness.PartlyCloudy, Sunniness.Clear, Sunniness.Cloudy, Sunniness.Precipitation, 
+  Sunniness.Clear, Sunniness.Cloudy, Sunniness.Precipitation, Sunniness.Clear, Sunniness.Precipitation, Sunniness.MostlyCloudy, Sunniness.Cloudy,  
+  Sunniness.Clear, Sunniness.MostlyCloudy, Sunniness.Clear, Sunniness.Cloudy, Sunniness.Clear, Sunniness.Clear, 
+  Sunniness.Clear, Sunniness.Precipitation, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Precipitation,
+  Sunniness.Cloudy, Sunniness.Cloudy, Sunniness.MostlyCloudy, Sunniness.Precipitation,
+];
+
+weatherSunniness[Climate.Temperate][Humidity.Modest] = [
+  Sunniness.Clear, Sunniness.Cloudy, Sunniness.Clear, Sunniness.PartlyCloudy, 
+  Sunniness.PartlyCloudy, Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Clear, Sunniness.Precipitation,    
+  Sunniness.Clear, Sunniness.Clear, Sunniness.PartlyCloudy, Sunniness.Clear, Sunniness.Cloudy, Sunniness.Precipitation, 
+  Sunniness.Clear, Sunniness.Cloudy, Sunniness.Cloudy, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Cloudy, Sunniness.Precipitation,  
+  Sunniness.Cloudy, Sunniness.Cloudy, Sunniness.Clear, Sunniness.Cloudy, Sunniness.Clear, Sunniness.PartlyCloudy, 
+  Sunniness.Clear, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Precipitation,
+  Sunniness.Cloudy, Sunniness.Precipitation, Sunniness.MostlyCloudy, Sunniness.Precipitation,
+];
+
+weatherSunniness[Climate.Temperate][Humidity.Verdant] = [
+  Sunniness.Clear, Sunniness.Cloudy, Sunniness.Precipitation, Sunniness.PartlyCloudy, 
+  Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Clear, Sunniness.Precipitation,    
+  Sunniness.Clear, Sunniness.Precipitation, Sunniness.PartlyCloudy, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Precipitation,  
+  Sunniness.Clear, Sunniness.Cloudy, Sunniness.Cloudy, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Precipitation,  
+  Sunniness.Cloudy, Sunniness.Cloudy, Sunniness.Clear, Sunniness.Cloudy, Sunniness.Clear, Sunniness.Clear, 
+  Sunniness.Clear, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Precipitation,
+  Sunniness.Cloudy, Sunniness.Precipitation, Sunniness.PartlyCloudy, Sunniness.Precipitation,
+];
+
+weatherSunniness[Climate.Hot][Humidity.Barren] = [
+  Sunniness.Clear, Sunniness.Cloudy, Sunniness.Clear, Sunniness.PartlyCloudy, 
+  Sunniness.PartlyCloudy, Sunniness.MostlyCloudy, Sunniness.Precipitation, Sunniness.Clear, Sunniness.PartlyCloudy,    
+  Sunniness.Clear, Sunniness.Clear, Sunniness.PartlyCloudy, Sunniness.Clear, Sunniness.Cloudy, Sunniness.Precipitation, 
+  Sunniness.Clear, Sunniness.Cloudy, Sunniness.Precipitation, Sunniness.Clear, Sunniness.Precipitation, Sunniness.MostlyCloudy, Sunniness.Cloudy,  
+  Sunniness.Clear, Sunniness.MostlyCloudy, Sunniness.Clear, Sunniness.Cloudy, Sunniness.Clear, Sunniness.Clear, 
+  Sunniness.Clear, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Precipitation,
+  Sunniness.Cloudy, Sunniness.Cloudy, Sunniness.MostlyCloudy, Sunniness.Precipitation,
+];
+
+weatherSunniness[Climate.Hot][Humidity.Modest] = [
+  Sunniness.Clear, Sunniness.PartlyCloudy, Sunniness.Clear, Sunniness.PartlyCloudy, 
+  Sunniness.PartlyCloudy, Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Clear, Sunniness.PartlyCloudy,    
+  Sunniness.Clear, Sunniness.Clear, Sunniness.PartlyCloudy, Sunniness.Clear, Sunniness.Cloudy, Sunniness.Precipitation, 
+  Sunniness.Clear, Sunniness.Cloudy, Sunniness.Cloudy, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Cloudy, Sunniness.Cloudy,  
+  Sunniness.Cloudy, Sunniness.Cloudy, Sunniness.Clear, Sunniness.Cloudy, Sunniness.Clear, Sunniness.PartlyCloudy, 
+  Sunniness.Clear, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Precipitation,
+  Sunniness.Cloudy, Sunniness.Precipitation, Sunniness.MostlyCloudy, Sunniness.Precipitation,
+];
+
+weatherSunniness[Climate.Hot][Humidity.Verdant] = [
+  Sunniness.Clear, Sunniness.Cloudy, Sunniness.Precipitation, Sunniness.PartlyCloudy, 
+  Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Clear, Sunniness.Precipitation,    
+  Sunniness.Clear, Sunniness.Precipitation, Sunniness.PartlyCloudy, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Precipitation,  
+  Sunniness.Clear, Sunniness.Cloudy, Sunniness.Cloudy, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Precipitation,  
+  Sunniness.Cloudy, Sunniness.Cloudy, Sunniness.Clear, Sunniness.Cloudy, Sunniness.Clear, Sunniness.PartlyCloudy, 
+  Sunniness.Clear, Sunniness.Clear, Sunniness.Precipitation, Sunniness.Precipitation, Sunniness.Precipitation,
+  Sunniness.Cloudy, Sunniness.Precipitation, Sunniness.PartlyCloudy, Sunniness.Precipitation,
 ];
 
 //0-8 - summer
@@ -799,6 +898,7 @@ export {
   descriptionOrder,
   weatherDescriptions,
   weatherTemperatures,
+  weatherSunniness,
   weatherOptions,
   startingCells,
   nextCell,
