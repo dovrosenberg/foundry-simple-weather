@@ -13,7 +13,7 @@ import moduleJson from '@module';
 import { SceneSettings, } from './settings/SceneSettings';
 
 // track which modules we have
-let simpleCalendarInstalled = false;
+export let simpleCalendarInstalled = false;
 
 // look for #swr-fsc-compact-open; what is the class on the parent div that wraps it?
 const SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER = 'fsc-pj';  // no dot in the front

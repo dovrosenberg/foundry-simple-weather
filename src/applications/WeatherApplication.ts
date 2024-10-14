@@ -9,10 +9,11 @@ import { seasonSelections, biomeSelections, Climate, climateSelections, Humidity
 import { manualSelections, weatherDescriptions } from '@/weather/weatherMap';
 import { ModuleSettingKeys } from '@/settings/ModuleSettings';
 import { getGame, isClientGM } from '@/utils/game';
-import { generate, outputWeather, createManual, createSpecificWeather } from '@/weather/weatherGenerator';
+import { generateWeather, outputWeather, createManual, createSpecificWeather } from '@/weather/weatherGeneration';
 import { ModuleSettings } from '@/settings/ModuleSettings';
 import { weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
+import { generateForecast } from '@/weather/forecastGeneration';
 
 // the solo instance
 let weatherApplication: WeatherApplication;
@@ -486,7 +487,7 @@ _______________________________________
     if (!this._manualPause) {
       const season = this.getSeason();
 
-      this._currentWeather = generate(
+      this._currentWeather = generateWeather(
         this._currentClimate ?? Climate.Temperate, 
         this._currentHumidity ?? Humidity.Modest, 
         season ?? Season.Spring, 

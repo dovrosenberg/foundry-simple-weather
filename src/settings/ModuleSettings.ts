@@ -6,6 +6,7 @@ import { WeatherData } from '@/weather/WeatherData';
 import { DisplayOptions } from '@/types/DisplayOptions';
 import { CustomMessageSettingsApplication } from '@/applications/CustomMessageSettingsApplication';
 import { Climate, Humidity } from '@/weather/climateData';
+import { Forecast } from '@/weather/Forecast';
 
 export enum ModuleSettingKeys {
   // displayed in settings
@@ -32,6 +33,7 @@ export enum ModuleSettingKeys {
   humidity = 'humidity',   // the current humidity
   manualPause = 'manualPause',   // is the manual pause currently active (will prevent any auto or regen updates)
   customChatMessages = 'customChatMessages',  // [climate][humidity][index]: message
+  forecasts = 'forecasts',   // a map from the date Y-M-D to a forecast object for that day 
 }
 
 type SettingType<K extends ModuleSettingKeys> =
@@ -56,6 +58,7 @@ type SettingType<K extends ModuleSettingKeys> =
     K extends ModuleSettingKeys.humidity ? number :
     K extends ModuleSettingKeys.manualPause ? boolean :
     K extends ModuleSettingKeys.customChatMessages ? string[][][] :
+    K extends ModuleSettingKeys.forecasts ? Record<string, Forecast> :
     never;  
 
 export class ModuleSettings {
@@ -267,7 +270,13 @@ export class ModuleSettings {
         .fill('')
         .map(() => new Array(37).fill('')))
     },
-  
+    {
+      settingID: ModuleSettingKeys.forecasts,
+      name: 'Forecasts',
+      type: Object,
+      default: {}
+    },
+
   ];
   
   // these are client-specfic only used internally

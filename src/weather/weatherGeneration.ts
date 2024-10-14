@@ -8,7 +8,7 @@ import { log } from '@/utils/log';
 // note: we don't actually care if the date on yesterday is the day before today; yesterday is used to determine if we should be picking a random
 //    starting spot or moving from the prior one
 // today is used to set the date on the returned object
-const generate = function(climate: Climate, humidity: Humidity, season: Season, today: SimpleCalendar.DateData | null, yesterday: WeatherData | null): WeatherData {
+const generateWeather = function(climate: Climate, humidity: Humidity, season: Season, today: SimpleCalendar.DateData | null, yesterday: WeatherData | null): WeatherData {
   const weatherData = new WeatherData(today, season, humidity, climate, null, null);
 
   // do the generation
@@ -110,7 +110,7 @@ const getDefaultStart = function(season: Season) {
 };
 
 export {
-  generate,
+  generateWeather,
   outputWeather,
   createManual,
   createSpecificWeather
