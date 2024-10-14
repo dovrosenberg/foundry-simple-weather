@@ -18,6 +18,7 @@ export enum ModuleSettingKeys {
   FXByScene = 'FXByScene',  // should we use FX by scene or by module
   attachToCalendar = 'attachToCalendar',  // should we attach to simple calendar instead of standalone window
   storeInSCNotes = 'storeInSCNotes',   // should we store weather in simple calendar notes 
+  useForecasts = 'useForecasts',   // should we generate and display forecasts?
 
   // internal only
   fxActive = 'fxActive',   // are the fx currently showing
@@ -33,7 +34,7 @@ export enum ModuleSettingKeys {
   humidity = 'humidity',   // the current humidity
   manualPause = 'manualPause',   // is the manual pause currently active (will prevent any auto or regen updates)
   customChatMessages = 'customChatMessages',  // [climate][humidity][index]: message
-  forecasts = 'forecasts',   // a map from the date Y-M-D to a forecast object for that day 
+  forecasts = 'forecasts',   // a map from the timestamp for a day to a Forecast object for that day
 }
 
 type SettingType<K extends ModuleSettingKeys> =
@@ -45,6 +46,7 @@ type SettingType<K extends ModuleSettingKeys> =
     K extends ModuleSettingKeys.FXByScene ? boolean :
     K extends ModuleSettingKeys.attachToCalendar ? boolean :
     K extends ModuleSettingKeys.storeInSCNotes ? boolean :
+    K extends ModuleSettingKeys.useForecasts ? boolean :
     K extends ModuleSettingKeys.displayOptions ? DisplayOptions :
     K extends ModuleSettingKeys.lastWeatherData ? (WeatherData | null) :  
     K extends ModuleSettingKeys.season ? number :
@@ -160,7 +162,7 @@ export class ModuleSettings {
       hint: 'sweath.settings.useFXHelp',
       requiresReload: true,   
       type: String,
-      choices: {  // can't find the right typescript type, but this does work
+      choices: {  
         'off': 'sweath.settings.options.useFX.choices.off',
         'core': 'sweath.settings.options.useFX.choices.core',
         'fxmaster': 'sweath.settings.options.useFX.choices.fxmaster',
@@ -171,7 +173,7 @@ export class ModuleSettings {
       settingID: ModuleSettingKeys.FXByScene, 
       name: 'sweath.settings.FXByScene',
       hint: 'sweath.settings.FXBySceneHelp',
-      requiresReload: true,     // can't find the right typescript type, but this does work
+      requiresReload: true,     
       type: Boolean,
       default: false,
     },
@@ -180,7 +182,7 @@ export class ModuleSettings {
       name: 'sweath.settings.attachToCalendar',
       hint: 'sweath.settings.attachToCalendarHelp',
       default: false,
-      requiresReload: true,    // can't find the right typescript type, but this does work
+      requiresReload: true,    
       type: Boolean,
     },
     {
@@ -188,7 +190,15 @@ export class ModuleSettings {
       name: 'sweath.settings.storeInSCNotes',
       hint: 'sweath.settings.storeInSCNotesHelp',
       default: false,
-      requiresReload: false,    // can't find the right typescript type, but this does work
+      requiresReload: false,    
+      type: Boolean,
+    },
+    {
+      settingID: ModuleSettingKeys.useForecasts, 
+      name: 'sweath.settings.useForecasts',
+      hint: 'sweath.settings.useForecastsHelp',
+      default: false,
+      requiresReload: true,    
       type: Boolean,
     },
   ];

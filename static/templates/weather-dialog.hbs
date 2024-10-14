@@ -163,6 +163,14 @@
 					<div class="swr-weather-description">
 						<p id="swr-current-description">{{ currentTemperature }} - {{ currentDescription }}</p>
 					</div>
+					<div class="swr-weather-forecast">
+						{{#if showForecast }}
+							Forecast: 
+							{{#each forecasts}}
+								<i class="fas {{icon}}"></i>
+							{{/each}}
+						{{/if}}
+					</div>
 				</div>
 			</div>
 		</div>

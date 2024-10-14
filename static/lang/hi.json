@@ -24,7 +24,9 @@
       },
       "customWeather": "Custom weather messages",
       "customWeatherButton": "Manage custom weather messages",
-      "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)"
+      "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)",
+      "useForecasts": "Use forecasts?",
+      "useForecastsHelp": "Show GM the next several days of upcoming weather. Requires Simple Calendar."
     },
 
     "keybindings": {
@@ -494,7 +496,9 @@
       "customWeatherButton": "Manage custom weather messages",
       "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)",
       "FXByScene": "Enable/disable FX by scene?",
-      "FXBySceneHelp": "Should the FX toggle button only impact the current scene or be module-wide? Useful if you want to handle indoors/outdoors scene transitions without needing to toggle manually each time."
+      "FXBySceneHelp": "Should the FX toggle button only impact the current scene or be module-wide? Useful if you want to handle indoors/outdoors scene transitions without needing to toggle manually each time.",
+      "useForecasts": "Use forecasts?",
+      "useForecastsHelp": "Show GM the next several days of upcoming weather. Requires Simple Calendar."
     },
 
     "keybindings": {

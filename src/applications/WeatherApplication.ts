@@ -13,7 +13,7 @@ import { generateWeather, outputWeather, createManual, createSpecificWeather } f
 import { ModuleSettings } from '@/settings/ModuleSettings';
 import { weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
-import { generateForecast } from '@/weather/forecastGeneration';
+import { Forecast } from '@/weather/Forecast';
 
 // the solo instance
 let weatherApplication: WeatherApplication;
@@ -42,6 +42,7 @@ class WeatherApplication extends Application {
   private _attachmodeHidden = true;   // like _currentlyHidden but have to track separately because that's for managing ready state not popup state
   private _compactMode = false;
   private _simpleCalendarInstalled = false;
+  private _forecasts: Forecast[];
 
   private _currentClimate: Climate;
   private _currentHumidity: Humidity;
@@ -77,6 +78,11 @@ class WeatherApplication extends Application {
 
     // get default position or set default
     this._windowPosition = ModuleSettings.get(ModuleSettingKeys.windowPosition) || { left: 100, bottom: 300 }
+
+    // get forecasts
+    if (ModuleSettings.get(ModuleSettingKeys.useForecasts)) {
+      this._forecasts = this.getForecasts();
+    }
     
     this.setWeather();  
   }
@@ -140,8 +146,11 @@ class WeatherApplication extends Application {
       windowPosition: this._attachedMode ? { bottom: 0, left: 0 } : this._windowPosition,
       containerPosition: this._attachedMode ? 'relative' : 'fixed',
       hideDialog: (this._attachedMode && this._attachmodeHidden) || this._currentlyHidden || !(isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)),  // hide dialog - don't show anything
+
+      showForecast: isClientGM() && ModuleSettings.get(ModuleSettingKeys.useForecasts),
+      forecasts: this.getForecasts(),
     };
-    //log(false, data);
+    log(true, data);
 
     return data;
   }
@@ -853,6 +862,38 @@ _______________________________________
     } else {
       super._injectHTML(html);
     }
+  }
+
+  // load the next few days of forecasts to display
+  public getForecasts(): Forecast[] {
+    const numForecasts = 5;  // TODO - make this configurable
+
+    if (!isClientGM() || !this._currentWeather?.date || !ModuleSettings.get(ModuleSettingKeys.useForecasts))
+      return [];
+    
+    const forecasts = [] as Forecast[];
+
+    let currentTimestamp = SimpleCalendar.api.dateToTimestamp(this._currentWeather.date);
+
+    const allForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
+    if (!allForecasts || Object.keys(allForecasts).length===0) 
+      return [];
+
+    for (let day=1; day<=numForecasts; day++) {
+      let forecastTimeStamp;
+
+      forecastTimeStamp = SimpleCalendar.api.timestampPlusInterval(currentTimestamp, { day: day+1});
+  
+      // load the forecast
+      const forecast = allForecasts[forecastTimeStamp.toString()];
+
+      if (!forecast)
+        return forecasts;
+
+      forecasts.push(new Forecast(forecast));
+    }
+
+    return forecasts;
   }
 }
 

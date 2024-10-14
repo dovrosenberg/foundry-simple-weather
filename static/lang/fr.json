@@ -24,7 +24,9 @@
       },
       "customWeather": "Messages météo personnalisés",
       "customWeatherButton": "Gérer les messages météo personnalisés",
-      "customWeatherHelp": "Définir des messages spécifiques au système (utile pour les pénalités associées à des conditions météorologiques extrêmes)"
+      "customWeatherHelp": "Définir des messages spécifiques au système (utile pour les pénalités associées à des conditions météorologiques extrêmes)",
+      "useForecasts": "Use forecasts?",
+      "useForecastsHelp": "Show GM the next several days of upcoming weather. Requires Simple Calendar."
     },
 
     "keybindings": {
@@ -468,5 +470,12 @@
         }
       }
     }
-  }
+  },
+
+  "missing translations": {
+    "settings": {
+      "useForecasts": "Use forecasts?",
+      "useForecastsHelp": "Show GM the next several days of upcoming weather. Requires Simple Calendar."
+    }
+  }  
 }

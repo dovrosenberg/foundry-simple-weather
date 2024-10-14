@@ -24,7 +24,9 @@
       },
       "customWeather": "Wetter personalisieren",
       "customWeatherButton": "Verwalte die Wetterausgabe",
-      "customWeatherHelp": "Passe die Wetterausgabe deiner Welt an (nützlich wenn extremes Wetter mit Nachteilen/Strafen in Verbindung stehen)."
+      "customWeatherHelp": "Passe die Wetterausgabe deiner Welt an (nützlich wenn extremes Wetter mit Nachteilen/Strafen in Verbindung stehen).",
+      "useForecasts": "Use forecasts?",
+      "useForecastsHelp": "Show GM the next several days of upcoming weather. Requires Simple Calendar."
     },
 
     "keybindings": {
@@ -471,6 +473,8 @@
 
     "missing translations": {
       "settings": {
+        "useForecasts": "Use forecasts?",
+        "useForecastsHelp": "Show GM the next several days of upcoming weather. Requires Simple Calendar."
       }
     }  
   }

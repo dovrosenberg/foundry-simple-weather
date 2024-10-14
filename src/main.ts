@@ -174,6 +174,10 @@ function checkDependencies() {
   } else {
     simpleCalendarInstalled = true; 
   }
+
+  if (isClientGM() && !simpleCalendarInstalled && ModuleSettings.get(ModuleSettingKeys.useForecasts)) {
+    ui.notifications?.error('Simple Weather requires Simple Calendar to generate forecasts. Please install and enable Simple Calendar or disable forecasts in the settings.');
+  }
 }
 
 Hooks.once(SimpleCalendar.Hooks.Init, async () => {

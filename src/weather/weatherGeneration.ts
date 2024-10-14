@@ -4,11 +4,14 @@ import { localize } from '@/utils/game';
 import { Climate, Humidity, Season, seasonSelections } from './climateData';
 import { WeatherData } from './WeatherData';
 import { log } from '@/utils/log';
+import { generateForecast } from './forecastGeneration';
 
 // note: we don't actually care if the date on yesterday is the day before today; yesterday is used to determine if we should be picking a random
 //    starting spot or moving from the prior one
 // today is used to set the date on the returned object
-const generateWeather = function(climate: Climate, humidity: Humidity, season: Season, today: SimpleCalendar.DateData | null, yesterday: WeatherData | null): WeatherData {
+
+// forForecast indicates
+const generateWeather = function(climate: Climate, humidity: Humidity, season: Season, today: SimpleCalendar.DateData | null, yesterday: WeatherData | null, forForecast = false): WeatherData {
   const weatherData = new WeatherData(today, season, humidity, climate, null, null);
 
   // do the generation
@@ -39,6 +42,10 @@ const generateWeather = function(climate: Climate, humidity: Humidity, season: S
       }
     }
 
+    // generate an updated forecast
+    if (!forForecast && ModuleSettings.get(ModuleSettingKeys.useForecasts) && today!==null)
+      generateForecast(SimpleCalendar.api.dateToTimestamp(today), weatherData);
+ 
     log(false, 'New cell: ' + weatherData.hexFlowerCell + ' (' + weatherDescriptions[climate][humidity][weatherData.hexFlowerCell] + ')')
   }
 
