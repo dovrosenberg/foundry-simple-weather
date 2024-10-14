@@ -10,7 +10,7 @@ import { updateWeatherApplication, weatherApplication, WeatherApplication } from
 import { updateWeatherEffects, weatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
 import { KeyBindings } from '@/settings/KeyBindings';
 import moduleJson from '@module';
-import { SceneSettingKeys, SceneSettings, } from './settings/SceneSettings';
+import { SceneSettings, } from './settings/SceneSettings';
 
 // track which modules we have
 let simpleCalendarInstalled = false;
