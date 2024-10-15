@@ -20,38 +20,54 @@ const generateWeather = function(climate: Climate, humidity: Humidity, season: S
   log(false, 'Climate: ' + Object.values(Climate)[climate]);
   log(false, 'Humidity: ' + Object.values(Humidity)[humidity]);
 
-  // random start if no valid prior day or the prior day" was manually set
-  if (!yesterday || yesterday.season !== season || !yesterday.hexFlowerCell || yesterday.isManual) {
-    // no yesterday data (or starting a new season), so just pick a random starting point based on the season
-    weatherData.hexFlowerCell = getDefaultStart(season);
+  // if the date has a forecast, use that
+  const allForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
+  if (today && ModuleSettings.get(ModuleSettingKeys.useForecasts) && allForecasts && 
+      allForecasts[SimpleCalendar.api.dateToTimestamp(today)]) {
+    const forecast = allForecasts[SimpleCalendar.api.dateToTimestamp(today)];
+
+    // make sure the climate/humidity hasn't changed
+    if (climate===forecast.climate && humidity===forecast.humidity) {
+      weatherData.hexFlowerCell = forecast.hexFlowerCell;
+
+      // we need to generate one more day on the end
+      generateForecast(SimpleCalendar.api.dateToTimestamp(today), weatherData, true);
+    }
   } else {
-    log(false, 'Current cell: ' + yesterday.hexFlowerCell + ' (' + weatherDescriptions[climate][humidity][yesterday.hexFlowerCell] + ')')
-
-    // generate based on yesterday
-    const direction = getDirection(season);
-    log(false, 'Direction: ' + Direction[direction]);
-
-    if (direction===Direction.stay) {
-      weatherData.hexFlowerCell = yesterday.hexFlowerCell;
+    // random start if no valid prior day or the prior day" was manually set
+    if (!yesterday || yesterday.season !== season || !yesterday.hexFlowerCell || yesterday.isManual) {
+      // no yesterday data (or starting a new season), so just pick a random starting point based on the season
+      weatherData.hexFlowerCell = getDefaultStart(season);
     } else {
-      weatherData.hexFlowerCell = nextCell[season][yesterday.hexFlowerCell][direction];
+      log(false, 'Current cell: ' + yesterday.hexFlowerCell + ' (' + weatherDescriptions[climate][humidity][yesterday.hexFlowerCell] + ')')
 
-      // a -1 should never happen; if it does, something got screwy, so go to a default starting position
-      if (weatherData.hexFlowerCell === -1) {
-        weatherData.hexFlowerCell = weatherData.hexFlowerCell = getDefaultStart(season);
+      // generate based on yesterday
+      const direction = getDirection(season);
+      log(false, 'Direction: ' + Direction[direction]);
+
+      if (direction===Direction.stay) {
+        weatherData.hexFlowerCell = yesterday.hexFlowerCell;
+      } else {
+        weatherData.hexFlowerCell = nextCell[season][yesterday.hexFlowerCell][direction];
+
+        // a -1 should never happen; if it does, something got screwy, so go to a default starting position
+        if (weatherData.hexFlowerCell === -1) {
+          weatherData.hexFlowerCell = weatherData.hexFlowerCell = getDefaultStart(season);
+        }
       }
     }
 
     // generate an updated forecast
-    if (!forForecast && ModuleSettings.get(ModuleSettingKeys.useForecasts) && today!==null)
+    if (!forForecast && ModuleSettings.get(ModuleSettingKeys.useForecasts) && today!==null) {
       generateForecast(SimpleCalendar.api.dateToTimestamp(today), weatherData);
- 
+    }
+
     log(false, 'New cell: ' + weatherData.hexFlowerCell + ' (' + weatherDescriptions[climate][humidity][weatherData.hexFlowerCell] + ')')
   }
 
   // randomize the temperature (+/- # degrees)
   // margin of error is 4% of temperature, but always at least 2 degrees
-  weatherData.temperature = weatherTemperatures[climate][humidity][weatherData.hexFlowerCell];
+  weatherData.temperature = weatherTemperatures[climate][humidity][weatherData.hexFlowerCell as number];
 
   const plusMinus = Math.max(2, Math.ceil(.04*weatherData.temperature));
   weatherData.temperature += Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);

@@ -20,11 +20,13 @@ export enum Sunniness {
 
 // describes a weather forecast
 export class Forecast {
+  public timestamp: number;      // the timestamp of the forecast
   public humidity: Humidity;    // the humidity selection
   public climate: Climate;      // the climate selection
   public hexFlowerCell: number;      // number of the cell in the hex flower
 
-  constructor(climate: Climate, humidity: Humidity, hexFlowerCell: number) {
+  constructor(timestamp: number, climate: Climate, humidity: Humidity, hexFlowerCell: number) {
+    this.timestamp = timestamp;
     this.climate = climate;
     this.humidity = humidity;
     this.hexFlowerCell = hexFlowerCell;
@@ -36,7 +38,9 @@ export class Forecast {
   }
 
   get description(): string {
-    return `${weatherDescriptions[this.climate][this.humidity][this.hexFlowerCell]} (${this.temperature})`;
+    const dayOfWeek = SimpleCalendar.api.timestampToDate(this.timestamp)?.display.weekday;
+
+    return `${dayOfWeek} - ${weatherDescriptions[this.climate][this.humidity][this.hexFlowerCell]} (${this.temperature})`;
   }
 
   get temperature(): string {
@@ -84,7 +88,7 @@ export class Forecast {
       case Sunniness.Tornado:
         return 'fa-tornado';
 
-      case Sunniness.Wildfire:
+      case Sunniness.WildFire:
         return 'fa-fire';
 
       default:

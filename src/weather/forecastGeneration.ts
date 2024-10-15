@@ -8,9 +8,14 @@ import { WeatherData } from './WeatherData';
 import { generateWeather } from './weatherGeneration';
 
 // returns the updated forecast object (and saves it to settings)
-const generateForecast = async function(todayTimestamp: number, todayWeather: WeatherData): Promise<Record<string, Forecast>> {
+// extendOnly is used to fill in needed days but not overwrite ones already generated
+const generateForecast = async function(todayTimestamp: number, todayWeather: WeatherData, extendOnly = false): Promise<Record<string, Forecast>> {
   const numDays = 7;
   const currentForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
+
+  if (todayWeather.climate===null || todayWeather.humidity===null || todayWeather.season===null)
+    return currentForecasts;
+
   let yesterdayWeather = todayWeather;
 
   for (let day=1; day<=numDays; day++) {
@@ -18,19 +23,30 @@ const generateForecast = async function(todayTimestamp: number, todayWeather: We
 
     forecastTimeStamp = SimpleCalendar.api.timestampPlusInterval(todayTimestamp, { day: day});
 
-    if (todayWeather.climate===null || todayWeather.humidity===null || todayWeather.season===null)
-      return currentForecasts;
+    // if there's already one, and we're just extending, use it as is
+    if (currentForecasts[forecastTimeStamp] && extendOnly) {
+      const todayWeather = currentForecasts[forecastTimeStamp];
+      const todayDate = SimpleCalendar.api.timestampToDate(forecastTimeStamp);
+      yesterdayWeather = new WeatherData(
+        todayDate,
+        todayDate?.currentSeason?.numericRepresentation || null,
+        todayWeather.humidity, 
+        todayWeather.climate,
+        todayWeather.hexFlowerCell,
+        null  
+      );
+    } else {
+      // create a new forecast
+      const newWeather = generateWeather(todayWeather.climate, todayWeather.humidity, todayWeather.season, SimpleCalendar.api.timestampToDate(forecastTimeStamp), yesterdayWeather, true);
 
-    // create a new forecast
-    const newWeather = generateWeather(todayWeather.climate, todayWeather.humidity, todayWeather.season, SimpleCalendar.api.timestampToDate(forecastTimeStamp), yesterdayWeather, true);
+      if (newWeather.climate!=null && newWeather.humidity!=null && newWeather.hexFlowerCell!=null) {
+        const forecast = new Forecast(forecastTimeStamp, newWeather.climate, newWeather.humidity, newWeather.hexFlowerCell);
+        currentForecasts[forecastTimeStamp] = forecast;
+      }
 
-    if (newWeather.climate!=null && newWeather.humidity!=null && newWeather.hexFlowerCell!=null) {
-      const forecast = new Forecast(newWeather.climate, newWeather.humidity, newWeather.hexFlowerCell);
-      currentForecasts[forecastTimeStamp.toString()] = forecast;
+      // save the weather to use for the next day's generation
+      yesterdayWeather = newWeather;
     }
-
-    // save the weather to use for the next day's generation
-    yesterdayWeather = newWeather;
   }
 
   await ModuleSettings.set(ModuleSettingKeys.forecasts, currentForecasts);

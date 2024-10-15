@@ -890,7 +890,7 @@ _______________________________________
       if (!forecast)
         return forecasts;
 
-      forecasts.push(new Forecast(forecast.climate, forecast.humidity, forecast.hexFlowerCell));
+      forecasts.push(new Forecast(forecast.timestamp, forecast.climate, forecast.humidity, forecast.hexFlowerCell));
     }
 
     return forecasts;
