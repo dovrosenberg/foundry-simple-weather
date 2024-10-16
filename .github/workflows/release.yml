@@ -36,6 +36,7 @@ jobs:
         run: |
           VERSION=$(jq -r '.version' package.json)
           echo "version=$VERSION" >> $GITHUB_ENV
+          echo "$GITHUB_ENV"
 
       - name: Update module.json version
         id: update_module_version
