@@ -54,7 +54,7 @@ export default defineConfig({
         }
       }
     }),
-    updateModuleManifestPlugin(),
+    // updateModuleManifestPlugin(),
   ],
   build: {
     sourcemap: true,
