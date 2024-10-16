@@ -36,7 +36,7 @@ jobs:
         id: update_module_version
         uses: cschleiden/replace-tokens@v1
         with:
-          files: './dist/module.json'
+          files: './module.json'
         env:
           DOWNLOAD: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.zip
           VERSION: ${{ env.version }}
@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: module
-          path: dist/module.json 
+          path: ./module.json 
 
   # Create a release with the module.json and the module.zip file
   release:
