@@ -44,7 +44,7 @@ jobs:
         with:
           files: './static/module.json'
         env:
-          VERSION: ${{env.version}}
+          VERSION: ${{ env.version }}
 
       # install dependencies and build
       - run: npm ci
