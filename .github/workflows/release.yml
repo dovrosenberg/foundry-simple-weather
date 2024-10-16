@@ -14,23 +14,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # update the DOWNLOAD LINK IN MODULE.JSON
-      - name: Download Link
-        id: download_link_version
-        uses: cschleiden/replace-tokens@v1
-        with:
-          files: './static/module.json'
-        env:
-          DOWNLOAD: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.zip
-
       # Set up Node.js
       - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
 
-
-      # read the version from package.json and store in module.json
+      # update version and download link in module.json
       - name: Read version from package.json
         id: read_version
         run: |
@@ -38,12 +28,13 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_ENV
           echo "$GITHUB_ENV"
 
-      - name: Update module.json version
+      - name: Update module.json version and download link
         id: update_module_version
         uses: cschleiden/replace-tokens@v1
         with:
           files: './static/module.json'
         env:
+          DOWNLOAD: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.zip
           VERSION: ${{ env.version }}
 
       # install dependencies and build
