@@ -54,7 +54,6 @@ export default defineConfig({
         }
       }
     }),
-    updateModuleManifestPlugin(),
   ],
   build: {
     sourcemap: true,
@@ -78,50 +77,3 @@ export default defineConfig({
     },
   }
 });
-
-
-// a plugin to save the manifest, setting the version # from the npm package.json
-function updateModuleManifestPlugin(): Plugin {
-  return {
-    name: 'update-module-manifest',
-    async writeBundle(): Promise<void> {
-      // get github info
-      const githubProject = process.env.GH_PROJECT;
-      const githubTag = process.env.GH_TAG;
-
-      // get the version number
-      const moduleVersion = npmPackage.version;
-
-      // read the static file
-      const manifestContents: string = await fsPromises.readFile(
-        'static/module.json',
-        'utf-8'
-      );
-
-      // convert to JSON
-      const manifestJson = JSON.parse(manifestContents) as Record<string,unknown>;
-
-      // set the version #
-      if (moduleVersion) {
-        delete manifestJson['## comment:version'];
-        manifestJson.version = moduleVersion;
-      }
-
-      // set the release info
-      if (githubProject) {
-        const baseUrl = `https://github.com/${githubProject}/releases`;
-        manifestJson.manifest = `${baseUrl}/latest/download/module.json`;
-
-        if (githubTag) {
-          manifestJson.download = `${baseUrl}/download/${githubTag}/module.zip`;
-        }
-      }
-
-      // write the updated file
-      await fsPromises.writeFile(
-        'dist/module.json',
-        JSON.stringify(manifestJson, null, 4)
-      );
-    },
-  };
-}
