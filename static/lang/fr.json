@@ -25,8 +25,8 @@
       "customWeather": "Messages météo personnalisés",
       "customWeatherButton": "Gérer les messages météo personnalisés",
       "customWeatherHelp": "Définir des messages spécifiques au système (utile pour les pénalités associées à des conditions météorologiques extrêmes)",
-      "useForecasts": "Use forecasts?",
-      "useForecastsHelp": "Show GM the next several days of upcoming weather. Requires Simple Calendar."
+      "useForecasts": "Utiliser les prévisions ?",
+      "useForecastsHelp": "Montrer au MJ les prévisions météorologiques pour les prochains jours. Nécessite Simple Calendar"
     },
 
     "keybindings": {
@@ -97,7 +97,7 @@
       "manualPauseHint": "Activer pour empêcher la météo automatique (utile lorsque vous voulez la régler manuellement)",
       "manualWeatherTemperature": "Régler la Température (variera légèrement par rapport à celle-ci)",
       "manualWeatherSubmit": "Activer la météo et la température sélectionnées",
-      "forecast": "Forecast"
+      "forecast": "Prévisions"
     },
 
     "chat": {
@@ -471,15 +471,5 @@
         }
       }
     }
-  },
-
-  "missing translations": {
-    "settings": {
-      "useForecasts": "Use forecasts?",
-      "useForecastsHelp": "Show GM the next several days of upcoming weather. Requires Simple Calendar."
-    },
-    "labels": {
-      "forecast": "Forecast"
-    }
-  }  
+  }
 }
