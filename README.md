@@ -14,6 +14,7 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
   - Choose whether players can see the dialog (with a limited UI)
 - Randomized weather for every season across 3 climates (hot, temperate, cold) and 3 humidities (barren, modest, verdant)
 - Weather progresses naturally from day to day
+- GM can see a forecast of the upcoming days
 - Ability to manually pick weather for special events
 - Ability to store weather history to calendar day, enabling replaying weather history
 - Ability to add custom text (ex. movement penalties during snowstorms) to each weather condition
@@ -34,7 +35,7 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
 
 ### Player controls
 
-![Main UI](https://i.imgur.com/8tmHSFu.png)
+![Player UI](https://i.imgur.com/8tmHSFu.png)
 
 ### Hide/diplay dialog
 You can set a keybinding (see below) to toggle the window on/off.  You can also hide the whole thing using the 'x' on the weather box.  Once hidden, if you don't have a keybinding set, you can also re-open it via the Simple Weather button under the journal notes scene control menu.
@@ -67,6 +68,18 @@ When players go inside, you can easily toggle the fx on/off temporarily using th
 
 ***Note: I've mixed up the weather effects a bit - in particular whether or not clouds show up when it's raining.  In all cases, I'd love to hear if there are setups you'd like to change how they work.  I suspect different types of gameplay will have issues with different FX.  Simply open an issue.  At the very least, I need the text description of the weather at issue.  Preferably, the biome, climate and/or humidity as well.  Whatever you have. A description of the type of scene would be helpful, too (battle map, theater of the mind image, etc.) ***
 
+### Forecasts
+If you activate forecasts in the module settings, the GM's window will display the next 7 days of weather.  You'll see basic weather symbols for each day, and can mouseover one to see the detailed description.  Temperatures are still estimates (accurate to within 5% degrees or so), but the descriptions will match exactly what gets generated for that day.
+
+![Forecast](https://i.imgur.com/4fhrTja.png)
+
+The full forecast is regenerated if you use the regenerate button.  Setting the weather manually doesn't currently change the forecast (because it's easy to set weather that doesn't make sense for the current season or biome, so I'm not quite sure how a forecast should work).
+
+I'm looking at adding an optional player view for the forecast that would be probabilistic in nature (i.e. not always right).  
+
+Comments on any of this are welcome [here](https://github.com/dovrosenberg/foundry-simple-weather/issues/39): 
+ 
+
 ### Keybindings
 There are keybinding options under "Configure Controls" in the main Foundry Game Settings section.  You can toggle the whole window on/off, regenerate weather, pause automatic changes to the weather, and toggle weather effects on/off.  Note that these keybindings work even when the window is hidden.  So you can in theory run the whole weather system while the window is hidden (autogenerating weather by calendar, manually generating new weather, turning effects on/off).
 
@@ -75,10 +88,10 @@ When using the "Attached to Simple Calendar" setting, there will be a button add
 
 **Note that there is tight version dependency between this module and Simple Calendar.  Check the changelog to find the version that works for your version of Simple Calendar.  If the latest version of Simple Calendar isn't yet supported, please file an issue to let me know.**
 
-![Main UI](https://i.imgur.com/bvX7UP1.png)
+![Attached mode](https://i.imgur.com/bvX7UP1.png)
 
 Or in compact mode:
-![Main UI](https://imgur.com/RL0Oj1y.png)
+![Compact attached mode](https://imgur.com/RL0Oj1y.png)
 
 ## Module Options
 * **Custom weather messages** - Allows you to manually enter additional text for each weather condition.  When that condition comes up, this additional text will be output to the chat after the weather description and temperature.  This is particularly useful if you'd like to assign system-specific conditions (for example, applying movement penalties during a snowstorm).  Note that you have to set it in every combination of climate, humidity, and weather that you wish to have a special notation (though anything you don't need to notate can be left blank).  For now, these are unreliable when manually selecting weather - NOT RECOMMENDED to combine the two features.
