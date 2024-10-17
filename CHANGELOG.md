@@ -1,8 +1,15 @@
 # Change Log
 
+## v1.16.1 - French language update
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-October%2017%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.16.1/module.zip)
+
+Updates to French localization to fully support v1.16.0.  Thanks, Zakarik.
+
 ## v1.16.0 - Basic forecasting
 #### Support for Simple Calendar v2.4.18
-![](https://img.shields.io/badge/release%20date-October%169%2C%202024-blue)
+![](https://img.shields.io/badge/release%20date-October%2017%2C%202024-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.16.0/module.zip)
 
 Introduced a basic forecasting capability - GMs can now see the next several days of upcoming weather. See readme for more details. 
