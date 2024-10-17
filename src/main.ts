@@ -13,7 +13,7 @@ import moduleJson from '@module';
 import { SceneSettings, } from './settings/SceneSettings';
 
 // track which modules we have
-let simpleCalendarInstalled = false;
+export let simpleCalendarInstalled = false;
 
 // look for #swr-fsc-compact-open; what is the class on the parent div that wraps it?
 const SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER = 'fsc-pj';  // no dot in the front
@@ -97,15 +97,6 @@ Hooks.on('updateSetting', async (setting: Setting) => {
 Hooks.on('canvasInit', async (canvas: Canvas) => {
   // update the weather effects for the scene setting if needed
   SceneSettings.currentScene = canvas.scene;
-
-  // v1.15.1 testing to see if we can avoid doing this
-  // Ideally, we don't need this any more because it's preventing users from setting the weather on their own.
-  // weatherEffects.firstRefresh = true;
-  // if (ModuleSettings.get(ModuleSettingKeys.FXByScene)) {
-  //   await weatherEffects.setFxActive(SceneSettings.get(SceneSettingKeys.fxActive));
-  // } else {
-  //   await weatherEffects.setFxActive(ModuleSettings.get(ModuleSettingKeys.fxActive));
-  // }
 });
 
 // handle scene changes
@@ -173,6 +164,10 @@ function checkDependencies() {
     }
   } else {
     simpleCalendarInstalled = true; 
+  }
+
+  if (isClientGM() && !simpleCalendarInstalled && ModuleSettings.get(ModuleSettingKeys.useForecasts)) {
+    ui.notifications?.error('Simple Weather requires Simple Calendar to generate forecasts. Please install and enable Simple Calendar or disable forecasts in the settings.');
   }
 }
 

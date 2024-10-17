@@ -36,7 +36,7 @@
     "css-loader": "^6.4.0",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
-    "foundryvtt-simple-calendar": "^2.4.0",
+    "foundryvtt-simple-calendar": "^2.4.18",
     "marked": "^3.0.7",
     "mini-css-extract-plugin": "^2.4.2",
     "node-sass": "^9.0.0",
