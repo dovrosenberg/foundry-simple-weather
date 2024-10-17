@@ -14,6 +14,7 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
   - Choose whether players can see the dialog (with a limited UI)
 - Randomized weather for every season across 3 climates (hot, temperate, cold) and 3 humidities (barren, modest, verdant)
 - Weather progresses naturally from day to day
+- GM can see a forecast of the upcoming days
 - Ability to manually pick weather for special events
 - Ability to store weather history to calendar day, enabling replaying weather history
 - Ability to add custom text (ex. movement penalties during snowstorms) to each weather condition
@@ -34,7 +35,7 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
 
 ### Player controls
 
-![Main UI](https://i.imgur.com/8tmHSFu.png)
+![Player UI](https://i.imgur.com/8tmHSFu.png)
 
 ### Hide/diplay dialog
 You can set a keybinding (see below) to toggle the window on/off.  You can also hide the whole thing using the 'x' on the weather box.  Once hidden, if you don't have a keybinding set, you can also re-open it via the Simple Weather button under the journal notes scene control menu.
@@ -59,15 +60,25 @@ Sometimes you might want to specify the exact weather that you need, rather than
 Unchecking "Pause updates" won't immediately trigger a regeneration of weather, but if you want one without advancing the date, just then hit the "regenerate" button.
 
 ### Weather Effects 
-The GM can activate weather effects in the module settings.  This includes support for the scene weather in the Foundry core, as well as FX Master.  Weather is not scene specific.
+The GM can activate weather effects in the module settings.  This includes support for the scene weather in the Foundry core, as well as FX Master.  
 
 Once activated in settings, the scene weather will automatically be changed whenever the weather warrants it.  There is currently only support for inclement weather (rain, hail, snow, fog).  Let me know if there's any desire to do something to show sunny days, as I wasn't sure what made the most sense.
 
-When players go inside, you can easily toggle the fx on/off temporarily using the toggle button on the toolbar.
+When players go inside, you can easily toggle the fx on/off temporarily using the toggle button on the toolbar.  There is also a module setting to make weather FX turned on/off by scene instead of globally, so you can just set them to not display on indoor scenes and they'll automatically come back when you switch back to an outdoor scene.
 
-***Note: When using FXMaster, effects can take up to 20 seconds to fully transition when changing (or enabling/disabling with the toolbar).  In particular, clouds and fog take a long time to get going and stop.  This is a result of the way FX Master's API works.  Feel free to chime in on [this](https://github.com/ghost-fvtt/fxmaster/issues/635) issue to encourage them to add support for just turning things off immediately (though I'm not sure if it's still maintained).  Sometimes the new weather never shows up at all (again, clouds and fog) -- this might be a bug or it might be a bug in FX Master.  In all of these cases, refreshing the browser will immediately show the correct weather (each player needs to refresh, unfortunately).*** 
+***Note: I've mixed up the weather effects a bit - in particular whether or not clouds show up when it's raining.  In all cases, I'd love to hear if there are setups you'd like to change how they work.  I suspect different types of gameplay will have issues with different FX.  Simply open an issue.  At the very least, I need the text description of the weather at issue.  Preferably, the biome, climate and/or humidity as well.  Whatever you have. A description of the type of scene would be helpful, too (battle map, theater of the mind image, etc.) ***
 
-***Note 2: I've mixed up the weather effects a bit - in particular whether or not clouds show up when it's raining.  In all cases, I'd love to hear if there are setups you'd like to change how they work.  I suspect different types of gameplay will have issues with different FX.  Simply open an issue.  At the very least, I need the text description of the weather at issue.  Preferably, the biome, climate and/or humidity as well.  Whatever you have. A description of the type of scene would be helpful, too (battle map, theater of the mind image, etc.) ***
+### Forecasts
+If you activate forecasts in the module settings, the GM's window will display the next 7 days of weather.  You'll see basic weather symbols for each day, and can mouseover one to see the detailed description.  Temperatures are still estimates (accurate to within 5% degrees or so), but the descriptions will match exactly what gets generated for that day.
+
+![Forecast](https://i.imgur.com/4fhrTja.png)
+
+The full forecast is regenerated if you use the regenerate button.  Setting the weather manually doesn't currently change the forecast (because it's easy to set weather that doesn't make sense for the current season or biome, so I'm not quite sure how a forecast should work).
+
+I'm looking at adding an optional player view for the forecast that would be probabilistic in nature (i.e. not always right).  
+
+Comments on any of this are welcome [here](https://github.com/dovrosenberg/foundry-simple-weather/issues/39): 
+ 
 
 ### Keybindings
 There are keybinding options under "Configure Controls" in the main Foundry Game Settings section.  You can toggle the whole window on/off, regenerate weather, pause automatic changes to the weather, and toggle weather effects on/off.  Note that these keybindings work even when the window is hidden.  So you can in theory run the whole weather system while the window is hidden (autogenerating weather by calendar, manually generating new weather, turning effects on/off).
@@ -77,10 +88,10 @@ When using the "Attached to Simple Calendar" setting, there will be a button add
 
 **Note that there is tight version dependency between this module and Simple Calendar.  Check the changelog to find the version that works for your version of Simple Calendar.  If the latest version of Simple Calendar isn't yet supported, please file an issue to let me know.**
 
-![Main UI](https://i.imgur.com/bvX7UP1.png)
+![Attached mode](https://i.imgur.com/bvX7UP1.png)
 
 Or in compact mode:
-![Main UI](https://imgur.com/RL0Oj1y.png)
+![Compact attached mode](https://imgur.com/RL0Oj1y.png)
 
 ## Module Options
 * **Custom weather messages** - Allows you to manually enter additional text for each weather condition.  When that condition comes up, this additional text will be output to the chat after the weather description and temperature.  This is particularly useful if you'd like to assign system-specific conditions (for example, applying movement penalties during a snowstorm).  Note that you have to set it in every combination of climate, humidity, and weather that you wish to have a special notation (though anything you don't need to notate can be left blank).  For now, these are unreliable when manually selecting weather - NOT RECOMMENDED to combine the two features.
@@ -93,6 +104,9 @@ Or in compact mode:
 * **Use Celsius** - If checked, all temperatures will display in celsius.  If not, Faherenheit.
 
 ## Known Issues
+### Messy interactions with manually setting the scene settings weather
+If you manually set the weather via the Ambiance tab in the scene settings, you may get some unpredictable interactions.  Unfortunately, there's not a great way for Simple Weather to know that the weather was manually picked.  Generally speaking, if you toggle the Simple Weather FX toggle (twice - to get it back where it was) that should get the weather back under Simple Weather's control.  The alternative was to prevent you from manually setting the weather altogether (which is what 1.15.0 was doing).  If the toggle twice method isn't working for you, please create an issue.
+
 ### Missing box (in non-attached mode)
 Some people occasionally have issues where the box will disappear and won't come back.  We haven't been able to consistently reproduce it, and I suspect it's a conflict with another module somehow.  If this happens to you, though, for now the workaround is to open your browser console (usually f12) and run this command to reset the window position: 
 
@@ -101,7 +115,8 @@ Some people occasionally have issues where the box will disappear and won't come
 Then refresh (F5).  That should make the window reappear.  If that doesn't work (or if anyone can find a way to reproduce this consistently) please create an issue report.  
 
 ### Simple Calendar attachment (compact mode)
-The attachment to the calendar when the calendar is in compact mode is highly dependent on the Simple Calendar version.  It has only been fully tested with Simple Calendar v2.4.3.  You can let me know if you have trouble with a different version, but I'm not inclined to support older versions of SC.  
+The attachment to the calendar when the calendar is in compact mode is highly dependent on the Simple Calendar version.  Check the ([change log](https://github.com/dovrosenberg/foundry-simple-weather/blob/master/CHANGELOG.md)) and make sure that the version of Simple Calendar you are using matches what's listed for your version of Simple Weather.
+
 
 ### Missing box (when attached to non-compact Simple Calendar)
 Sometimes when you have another Simple Calendar side tab open and you try to switch to the weather tab, it will close the other tab but not show the weather.  The workaround is just to hit the weather button again.

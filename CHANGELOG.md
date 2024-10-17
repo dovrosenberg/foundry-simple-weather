@@ -1,5 +1,44 @@
 # Change Log
 
+## v1.16.0 - Basic forecasting
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-October%169%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.16.0/module.zip)
+
+Introduced a basic forecasting capability - GMs can now see the next several days of upcoming weather. See readme for more details. 
+
+Also removed manifest warning in console.
+
+## v1.15.2 - Bug fix for Simple Calendar compact mode
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-September%209%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.15.2/module.zip)
+
+Fixed bug where you couldn't set weather manually when attached to a compact Simple Calendar window.
+
+## v1.15.1 - Re-enable ability to set weather via scene settings
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-September%201%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.15.1/module.zip)
+
+Fix to let you use the Ambiance tabe in scene settings to set weather.  Note that this will (obviously) get the weather out of sync with Simple Weather, which will confuse it.  Generally, hitting the "Toggle FX" button (that looks like the raining cloud) twice (i.e. on/off or off/on, depending on its current state) should let Simple Weather take back over.
+
+## v1.15.0 - Workaround for FXMaster issue causing long delays in updating visual effects
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-August%2029%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.15.0/module.zip)
+
+Workaround to FXMaster issue (https://github.com/ghost-fvtt/fxmaster/issues/761) that was causing long delays in effects 
+being turned on/off.  They should now update immediately when changing scenes, applying new weather, or toggling FX on/off.  
+Thanks for your patience - I know this issue has been painful to deal with.
+
+## v1.14.1 - Updated Gerland and French
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-August%2026%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.14.1/module.zip)
+
+Updates to French and German localization to fully support v1.14.0.  Thanks, Zakarik and SesuUisu.
+
 ## v1.14.0 - Per scene weather FX
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-August%2026%2C%202024-blue)
@@ -9,7 +48,7 @@
 * Changed chat messages to be global instead of whispers to everyone.
 
 
-## v1.13.5 - Updated German 
+## v1.13.5 - Updated French 
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-June%2021%2C%202024-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.13.5/module.zip)

@@ -1,7 +1,7 @@
 import '@/../styles/simple-weather.scss';
 import '@/../styles/menu-icon.scss';
 
-import { moduleSettings, ModuleSettings, ModuleSettingKeys, updateModuleSettings } from '@/settings/ModuleSettings';
+import { ModuleSettings, ModuleSettingKeys, } from '@/settings/ModuleSettings';
 import { VersionUtils } from '@/utils/versionUtils';
 import { getGame, isClientGM } from '@/utils/game';
 import { allowSeasonSync, Climate, Humidity, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
@@ -10,10 +10,10 @@ import { updateWeatherApplication, weatherApplication, WeatherApplication } from
 import { updateWeatherEffects, weatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
 import { KeyBindings } from '@/settings/KeyBindings';
 import moduleJson from '@module';
-import { SceneSettingKeys, sceneSettings, SceneSettings, updateSceneSettings } from './settings/SceneSettings';
+import { SceneSettings, } from './settings/SceneSettings';
 
 // track which modules we have
-let simpleCalendarInstalled = false;
+export let simpleCalendarInstalled = false;
 
 // look for #swr-fsc-compact-open; what is the class on the parent div that wraps it?
 const SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER = 'fsc-pj';  // no dot in the front
@@ -46,8 +46,7 @@ Hooks.once('devModeReady', async ({ registerPackageDebugFlag: registerPackageDeb
 
 Hooks.once('init', async () => {
   // initialize settings first, so other things can use them
-  updateModuleSettings(new ModuleSettings());
-  updateSceneSettings(new SceneSettings());
+  ModuleSettings.registerSettings();
   updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
   updateWeatherApplication(new WeatherApplication());
 
@@ -97,13 +96,7 @@ Hooks.on('updateSetting', async (setting: Setting) => {
 // handle scene changes
 Hooks.on('canvasInit', async (canvas: Canvas) => {
   // update the weather effects for the scene setting if needed
-  sceneSettings.currentScene = canvas.scene;
-
-  if (moduleSettings.get(ModuleSettingKeys.FXByScene)) {
-    await weatherEffects.setFxActive(sceneSettings.get(SceneSettingKeys.fxActive));
-  } else {
-    await weatherEffects.setFxActive(moduleSettings.get(ModuleSettingKeys.fxActive));
-  }
+  SceneSettings.currentScene = canvas.scene;
 });
 
 // handle scene changes
@@ -113,7 +106,7 @@ Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
     return;
 
   // otherwise, add the button to re-open the app 
-  if (isClientGM() || moduleSettings.get(ModuleSettingKeys.dialogDisplay)) {
+  if (isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)) {
     // find the journal notes 
     const noteControls = controls.find((c) => {
         return c.name === "notes";
@@ -143,7 +136,7 @@ function checkDependencies() {
 
   // if not present, just display a warning if we're in attached mode
   if (!module || !module?.active || !scVersion) {
-    if (moduleSettings.get(ModuleSettingKeys.attachToCalendar)) {
+    if (ModuleSettings.get(ModuleSettingKeys.attachToCalendar)) {
       if (isClientGM()) {
         ui.notifications?.warn(`Simple Weather is set to "Attached Mode" in settings but Simple Calendar is not installed.  This will keep it from displaying at all.  You should turn off that setting if this isn't intended.`);
       }
@@ -172,6 +165,10 @@ function checkDependencies() {
   } else {
     simpleCalendarInstalled = true; 
   }
+
+  if (isClientGM() && !simpleCalendarInstalled && ModuleSettings.get(ModuleSettingKeys.useForecasts)) {
+    ui.notifications?.error('Simple Weather requires Simple Calendar to generate forecasts. Please install and enable Simple Calendar or disable forecasts in the settings.');
+  }
 }
 
 Hooks.once(SimpleCalendar.Hooks.Init, async () => {
@@ -180,7 +177,7 @@ Hooks.once(SimpleCalendar.Hooks.Init, async () => {
     weatherApplication.simpleCalendarInstalled();
     
     // set the date and time
-    if (moduleSettings.get(ModuleSettingKeys.dialogDisplay) || isClientGM()) {
+    if (ModuleSettings.get(ModuleSettingKeys.dialogDisplay) || isClientGM()) {
       // tell the application we're using the calendar
       weatherApplication.activateCalendar();
 
@@ -205,8 +202,10 @@ Hooks.once(SimpleCalendar.Hooks.Init, async () => {
   
   // check the setting to see if we want to dock
   if (weatherApplication.attachedMode) {
-    // can set this either way, but it does nothing when not in compact mode (but we only need to set it once)
-    SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", false, () => weatherApplication.toggleAttachModeHidden());
+    if (isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)) {
+      // can set this either way, but it does nothing when not in compact mode (but we only need to set it once)
+      SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", false, () => weatherApplication.toggleAttachModeHidden());
+    }
 
     // we also need to watch for when the calendar is rendered because in compact mode we
     //    have to inject the button 

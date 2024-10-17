@@ -163,6 +163,16 @@
 					<div class="swr-weather-description">
 						<p id="swr-current-description">{{ currentTemperature }} - {{ currentDescription }}</p>
 					</div>
+					<div class="swr-weather-forecast">
+						{{#if showForecast }}
+							{{localize 'sweath.labels.forecast'}}: &nbsp;
+							{{#each forecasts}}
+								<div data-tooltip="{{description}}" style="display:inline-block">      
+									<i class="fas {{icon}}"></i>
+            		</div>
+							{{/each}}
+						{{/if}}
+					</div>
 				</div>
 			</div>
 		</div>

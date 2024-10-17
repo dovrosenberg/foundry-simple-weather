@@ -6,6 +6,7 @@ import { WeatherData } from '@/weather/WeatherData';
 import { DisplayOptions } from '@/types/DisplayOptions';
 import { CustomMessageSettingsApplication } from '@/applications/CustomMessageSettingsApplication';
 import { Climate, Humidity } from '@/weather/climateData';
+import { Forecast } from '@/weather/Forecast';
 
 export enum ModuleSettingKeys {
   // displayed in settings
@@ -17,6 +18,7 @@ export enum ModuleSettingKeys {
   FXByScene = 'FXByScene',  // should we use FX by scene or by module
   attachToCalendar = 'attachToCalendar',  // should we attach to simple calendar instead of standalone window
   storeInSCNotes = 'storeInSCNotes',   // should we store weather in simple calendar notes 
+  useForecasts = 'useForecasts',   // should we generate and display forecasts?
 
   // internal only
   fxActive = 'fxActive',   // are the fx currently showing
@@ -32,6 +34,7 @@ export enum ModuleSettingKeys {
   humidity = 'humidity',   // the current humidity
   manualPause = 'manualPause',   // is the manual pause currently active (will prevent any auto or regen updates)
   customChatMessages = 'customChatMessages',  // [climate][humidity][index]: message
+  forecasts = 'forecasts',   // a map from the timestamp for a day to a Forecast object for that day
 }
 
 type SettingType<K extends ModuleSettingKeys> =
@@ -43,6 +46,7 @@ type SettingType<K extends ModuleSettingKeys> =
     K extends ModuleSettingKeys.FXByScene ? boolean :
     K extends ModuleSettingKeys.attachToCalendar ? boolean :
     K extends ModuleSettingKeys.storeInSCNotes ? boolean :
+    K extends ModuleSettingKeys.useForecasts ? boolean :
     K extends ModuleSettingKeys.displayOptions ? DisplayOptions :
     K extends ModuleSettingKeys.lastWeatherData ? (WeatherData | null) :  
     K extends ModuleSettingKeys.season ? number :
@@ -56,26 +60,15 @@ type SettingType<K extends ModuleSettingKeys> =
     K extends ModuleSettingKeys.humidity ? number :
     K extends ModuleSettingKeys.manualPause ? boolean :
     K extends ModuleSettingKeys.customChatMessages ? string[][][] :
+    K extends ModuleSettingKeys.forecasts ? Record<string, Forecast> :
     never;  
 
-// the solo instance
-export let moduleSettings: ModuleSettings;
-
-// set the main application; should only be called once
-export function updateModuleSettings(settings: ModuleSettings): void {
-  moduleSettings = settings;
-}
-
 export class ModuleSettings {
-  constructor() {
-    this.registerSettings();
-  }
-
-  public isSettingValueEmpty(setting: any): boolean {
+  public static isSettingValueEmpty(setting: any): boolean {
     return Object.keys(setting).length === 0 || setting === null || setting === undefined;
   }
 
-  public get<T extends ModuleSettingKeys>(setting: T): SettingType<T> {
+  public static get<T extends ModuleSettingKeys>(setting: T): SettingType<T> {
     if (setting === ModuleSettingKeys.lastWeatherData) {
       const loaded = getGame().settings.get(moduleJson.id, setting) as SettingType<T> as WeatherData;  // not really WeatherData - need to attach functions
 
@@ -83,33 +76,39 @@ export class ModuleSettings {
         return new WeatherData(loaded.date, loaded.season, loaded.humidity, loaded.climate, loaded.hexFlowerCell, loaded.temperature) as SettingType<T>;
       else 
         return null as SettingType<T>;
-    } else
-      return getGame().settings.get(moduleJson.id, setting) as SettingType<T>;
+    } else {
+      // for some reason booleans are sometimes coming back as Boolean
+      if (getGame().settings.get(moduleJson.id, setting) instanceof Boolean) {
+        return (getGame().settings.get(moduleJson.id, setting) as Boolean).valueOf() as SettingType<T>;
+      } else {
+        return getGame().settings.get(moduleJson.id, setting) as SettingType<T>;
+      }
+    }
   }
 
-  public async set<T extends ModuleSettingKeys>(setting: T, value: SettingType<T>): Promise<void> {
+  public static async set<T extends ModuleSettingKeys>(setting: T, value: SettingType<T>): Promise<void> {
     // confirm the user can set it
     if (!isClientGM()) {
       // if it's any of the global param lists, don't do the set
-      if (this.menuParams.find(({settingID}): boolean => (settingID === setting)) || 
-        this.displayParams.find(({settingID}): boolean => (settingID === setting)) || 
-        this.internalParams.find(({settingID}): boolean => (settingID === setting)))
+      if (ModuleSettings.menuParams.find(({settingID}): boolean => (settingID === setting)) || 
+        ModuleSettings.displayParams.find(({settingID}): boolean => (settingID === setting)) || 
+        ModuleSettings.internalParams.find(({settingID}): boolean => (settingID === setting)))
       return;
     }
 
     await getGame().settings.set(moduleJson.id, setting, value);
   }
 
-  private register(settingKey: string, settingConfig: ClientSettings.PartialSettingConfig) {
+  private static register(settingKey: string, settingConfig: ClientSettings.PartialSettingConfig) {
     getGame().settings.register(moduleJson.id, settingKey, settingConfig);
   }
 
-  private registerMenu(settingKey: string, settingConfig: ClientSettings.PartialSettingSubmenuConfig) {
+  private static registerMenu(settingKey: string, settingConfig: ClientSettings.PartialSettingSubmenuConfig) {
     getGame().settings.registerMenu(moduleJson.id, settingKey, settingConfig);
   }
 
   // these are global menus (shown at top)
-  private menuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: ModuleSettingKeys })[] = [
+  private static menuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: ModuleSettingKeys })[] = [
     // couldn't get this to work because it creates a new instance but I can't figure out how to attach it to the weatherInstance variable in main.js
     // {
     //     settingID: ModuleSettingKeys.showApplication,
@@ -130,12 +129,12 @@ export class ModuleSettings {
   ];
 
   // these are local menus (shown at top)
-  private localMenuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: ModuleSettingKeys })[] = [
+  private static localMenuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: ModuleSettingKeys })[] = [
   ];
 
   // these are globals shown in the options
   // name and hint should be the id of a localization string
-  private displayParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
+  private static displayParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
     {
       settingID: ModuleSettingKeys.outputWeatherToChat,
       name: 'sweath.settings.outputweatherToChat',
@@ -163,7 +162,7 @@ export class ModuleSettings {
       hint: 'sweath.settings.useFXHelp',
       requiresReload: true,   
       type: String,
-      choices: {  // can't find the right typescript type, but this does work
+      choices: {  
         'off': 'sweath.settings.options.useFX.choices.off',
         'core': 'sweath.settings.options.useFX.choices.core',
         'fxmaster': 'sweath.settings.options.useFX.choices.fxmaster',
@@ -174,7 +173,7 @@ export class ModuleSettings {
       settingID: ModuleSettingKeys.FXByScene, 
       name: 'sweath.settings.FXByScene',
       hint: 'sweath.settings.FXBySceneHelp',
-      requiresReload: true,     // can't find the right typescript type, but this does work
+      requiresReload: true,     
       type: Boolean,
       default: false,
     },
@@ -183,7 +182,7 @@ export class ModuleSettings {
       name: 'sweath.settings.attachToCalendar',
       hint: 'sweath.settings.attachToCalendarHelp',
       default: false,
-      requiresReload: true,    // can't find the right typescript type, but this does work
+      requiresReload: true,    
       type: Boolean,
     },
     {
@@ -191,13 +190,21 @@ export class ModuleSettings {
       name: 'sweath.settings.storeInSCNotes',
       hint: 'sweath.settings.storeInSCNotesHelp',
       default: false,
-      requiresReload: false,    // can't find the right typescript type, but this does work
+      requiresReload: false,    
+      type: Boolean,
+    },
+    {
+      settingID: ModuleSettingKeys.useForecasts, 
+      name: 'sweath.settings.useForecasts',
+      hint: 'sweath.settings.useForecastsHelp',
+      default: false,
+      requiresReload: true,    
       type: Boolean,
     },
   ];
 
   // these are client-specific and displayed in settings
-  private localDisplayParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
+  private static localDisplayParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
     {
       settingID: ModuleSettingKeys.useCelsius, 
       name: 'sweath.settings.useCelsius',
@@ -208,7 +215,7 @@ export class ModuleSettings {
   ];
 
   // these are globals only used internally
-  private internalParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
+  private static internalParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
     {
       settingID: ModuleSettingKeys.activeFXMParticleEffects,
       name: 'Active FX particle effects',
@@ -273,11 +280,17 @@ export class ModuleSettings {
         .fill('')
         .map(() => new Array(37).fill('')))
     },
-  
+    {
+      settingID: ModuleSettingKeys.forecasts,
+      name: 'Forecasts',
+      type: Object,
+      default: {}
+    },
+
   ];
   
   // these are client-specfic only used internally
-  private localInternalParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
+  private static localInternalParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
     {
       settingID: ModuleSettingKeys.fxActive,
       name: 'FX Active',
@@ -303,10 +316,10 @@ export class ModuleSettings {
     },
   ];
 
-  private registerSettings(): void {
-    for (let i=0; i<this.menuParams.length; i++) {
-      const { settingID, ...settings} = this.menuParams[i];
-      this.registerMenu(settingID, {
+  public static registerSettings(): void {
+    for (let i=0; i<ModuleSettings.menuParams.length; i++) {
+      const { settingID, ...settings} = ModuleSettings.menuParams[i];
+      ModuleSettings.registerMenu(settingID, {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
         hint: settings.hint ? localize(settings.hint) : '',
@@ -314,9 +327,9 @@ export class ModuleSettings {
       });
     }
 
-    for (let i=0; i<this.localMenuParams.length; i++) {
-      const { settingID, ...settings} = this.localMenuParams[i];
-      this.registerMenu(settingID, {
+    for (let i=0; i<ModuleSettings.localMenuParams.length; i++) {
+      const { settingID, ...settings} = ModuleSettings.localMenuParams[i];
+      ModuleSettings.registerMenu(settingID, {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
         hint: settings.hint ? localize(settings.hint) : '',
@@ -324,9 +337,9 @@ export class ModuleSettings {
       });
     }
 
-    for (let i=0; i<this.displayParams.length; i++) {
-      const { settingID, ...settings} = this.displayParams[i];
-      this.register(settingID, {
+    for (let i=0; i<ModuleSettings.displayParams.length; i++) {
+      const { settingID, ...settings} = ModuleSettings.displayParams[i];
+      ModuleSettings.register(settingID, {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
         hint: settings.hint ? localize(settings.hint) : '',
@@ -335,9 +348,9 @@ export class ModuleSettings {
       });
     }
 
-    for (let i=0; i<this.localDisplayParams.length; i++) {
-      const { settingID, ...settings} = this.localDisplayParams[i];
-      this.register(settingID, {
+    for (let i=0; i<ModuleSettings.localDisplayParams.length; i++) {
+      const { settingID, ...settings} = ModuleSettings.localDisplayParams[i];
+      ModuleSettings.register(settingID, {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
         hint: settings.hint ? localize(settings.hint) : '',
@@ -346,18 +359,18 @@ export class ModuleSettings {
       });
     }
 
-    for (let i=0; i<this.internalParams.length; i++) {
-      const { settingID, ...settings} = this.internalParams[i];
-      this.register(settingID, {
+    for (let i=0; i<ModuleSettings.internalParams.length; i++) {
+      const { settingID, ...settings} = ModuleSettings.internalParams[i];
+      ModuleSettings.register(settingID, {
         ...settings,
         scope: 'world',
         config: false,
       });
     }
 
-    for (let i=0; i<this.localInternalParams.length; i++) {
-      const { settingID, ...settings} = this.localInternalParams[i];
-      this.register(settingID, {
+    for (let i=0; i<ModuleSettings.localInternalParams.length; i++) {
+      const { settingID, ...settings} = ModuleSettings.localInternalParams[i];
+      ModuleSettings.register(settingID, {
         ...settings,
         scope: 'client',
         config: false,
