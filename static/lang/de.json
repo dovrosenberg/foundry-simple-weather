@@ -25,8 +25,8 @@
       "customWeather": "Wetter personalisieren",
       "customWeatherButton": "Verwalte die Wetterausgabe",
       "customWeatherHelp": "Passe die Wetterausgabe deiner Welt an (nützlich wenn extremes Wetter mit Nachteilen/Strafen in Verbindung stehen).",
-      "useForecasts": "Use forecasts?",
-      "useForecastsHelp": "Show GM the next several days of upcoming weather. Requires Simple Calendar."
+      "useForecasts": "Verwendung der Wettervorhersage?",
+      "useForecastsHelp": "Zeigt dem SL das Wetter der kommenden Tage. Benötigt Simple Calendar."
     },
 
     "keybindings": {
@@ -97,7 +97,7 @@
       "manualPauseHint": " Auswählen, wenn die automatische Wetterauswahl verhindert werden soll (nützlich, wenn es manuell eingestellt wird)",
       "manualWeatherTemperature": "Trage Temperatur ein (kann leicht abweichen)",
       "manualWeatherSubmit": "Bestätige Wetter und Temperatur",
-      "forecast": "Forecast"
+      "forecast": "Wettervorhersage"
     },
 
     "chat": {
@@ -473,13 +473,6 @@
     },
 
     "missing translations": {
-      "settings": {
-        "useForecasts": "Use forecasts?",
-        "useForecastsHelp": "Show GM the next several days of upcoming weather. Requires Simple Calendar."
-      },
-      "labels": {
-        "forecast": "Forecast"
-      }
     }  
   }
 }
