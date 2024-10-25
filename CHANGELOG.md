@@ -1,5 +1,12 @@
 # Change Log
 
+## v1.16.2 - German language update
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-October%2025%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.16.2/module.zip)
+
+Updates to German localization to fully support v1.16.0.  Thanks, SesuUisu.
+
 ## v1.16.1 - French language update
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-October%2017%2C%202024-blue)
