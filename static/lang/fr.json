@@ -7,6 +7,8 @@
       "useCelsiusHelp": "Utiliser le Celsius pour l'affichage de la température.",
       "outputweatherToChat": "Envoyer la météo vers le chat ?",
       "outputweatherToChatHelp": "La météo nouvellement générée doit-elle être affichée dans le chat ?",
+      "outputDateToChat": "Afficher la date dans le chat ?",
+      "outputDateToChatHelp": "La date du calendrier doit-elle être incluse dans le chat ? Cela est ignoré si la météo n'est pas affichée dans le chat. Nécessite Simple Calendar.",
       "publicChat": "Rendre le chat public ?",
       "publicChatHelp": "Tout le monde doit-il voir le chat météo (s'il est activé) ou seulement le GM (s'il est désactivé) ?",
       "useFX": "Afficher les effets spéciaux ?",
@@ -475,10 +477,6 @@
   },
 
   "missing translations": {
-    "settings": {
-      "outputDateToChat": "Output date to chat?",
-      "outputDateToChatHelp": "Should the calendar date be included in the chat output? This is ignored if weather isn't being output to chat.  Requires Simple Calendar."
-    }
   }
   
 }
