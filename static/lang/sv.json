@@ -101,7 +101,8 @@
     },
 
     "chat": {
-      "header": "Dagens väder:"
+      "header": "Dagens väder:",
+      "dateHeader": "Vädret för"
     },
 
     "description": {
@@ -478,6 +479,8 @@
       "customWeather": "Custom weather messages",
       "customWeatherButton": "Manage custom weather messages",
       "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)",
+      "outputDateToChat": "Output date to chat?",
+      "outputDateToChatHelp": "Should the calendar date be included in the chat output? This is ignored if weather isn't being output to chat.  Requires Simple Calendar.",
       "FXByScene": "Enable/disable FX by scene?",
       "FXBySceneHelp": "Should the FX toggle button only impact the current scene or be module-wide? Useful if you want to handle indoors/outdoors scene transitions without needing to toggle manually each time.",
       "useForecasts": "Use forecasts?",

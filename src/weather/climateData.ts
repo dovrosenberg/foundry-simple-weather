@@ -22,7 +22,7 @@ export enum Climate {
 
 // these are used to create the drop downs; the first value in each
 //    subarray is the value, the second the description
-type SelectOption = { value: string, text: string};
+export type SelectOption = { value: string, text: string};
 
 let biomeSelections: SelectOption[];
 let climateSelections: SelectOption[];

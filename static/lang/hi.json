@@ -101,7 +101,8 @@
     },
 
     "chat": {
-      "header": "आज का मौसम:"
+      "header": "आज का मौसम",
+      "dateHeader": "के लिए मौसम"
     },
 
     "description": {
@@ -493,6 +494,8 @@
       "attachToCalendarHelp": "Show as a popup on Simple Calendar rather than a standalone window.  Requires (obviously) Simple Calendar.",
       "storeInSCNotes": "Store weather in Simple Calendar?",
       "storeInSCNotesHelp": "Store daily weather in Simple Calendar notes and then 'replay' the old weather if you go back to a prior date.",
+      "outputDateToChat": "Output date to chat?",
+      "outputDateToChatHelp": "Should the calendar date be included in the chat output? This is ignored if weather isn't being output to chat.  Requires Simple Calendar.",
       "customWeather": "Custom weather messages",
       "customWeatherButton": "Manage custom weather messages",
       "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)",

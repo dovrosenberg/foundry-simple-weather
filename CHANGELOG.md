@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.17.0 - Ability to show date in the chat log
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-October%2026%2C%202024-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.17.0/module.zip)
+
+New module setting to show the date in the chat log output to make it easier to see which weather is for which
+date when skipping around (or just looking back through the log, generally).  Note that this feature requires simple calendar.
+
 ## v1.16.2 - German language update
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-October%2025%2C%202024-blue)

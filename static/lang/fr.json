@@ -101,7 +101,8 @@
     },
 
     "chat": {
-      "header": "Météo du jour:"
+      "header": "Météo du jour",
+      "dateHeader": "Météo pour"
     },
 
     "description": {
@@ -471,5 +472,13 @@
         }
       }
     }
+  },
+
+  "missing translations": {
+    "settings": {
+      "outputDateToChat": "Output date to chat?",
+      "outputDateToChatHelp": "Should the calendar date be included in the chat output? This is ignored if weather isn't being output to chat.  Requires Simple Calendar."
+    }
   }
+  
 }

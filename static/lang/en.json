@@ -7,6 +7,8 @@
       "useCelsiusHelp": "Use Celsius for temperature display.",
       "outputweatherToChat": "Output weather to chat?",
       "outputweatherToChatHelp": "Should newly generated weather be shown in chat?",
+      "outputDateToChat": "Output date to chat?",
+      "outputDateToChatHelp": "Should the calendar date be included in the chat output? This is ignored if weather isn't being output to chat.  Requires Simple Calendar.",
       "publicChat": "Make chat public?",
       "publicChatHelp": "Should everyone see the weather chat (if on) or just the GM (if off)?",
       "useFX": "Display special effects?",
@@ -101,7 +103,8 @@
     },
 
     "chat": {
-      "header": "Today's Weather:"
+      "header": "Today's Weather",
+      "dateHeader": "Weather for"
     },
 
     "description": {
@@ -472,6 +475,6 @@
       }
     }
   },
-  "missing": [
-  ]
+  "missing translations": {
+  }
 }

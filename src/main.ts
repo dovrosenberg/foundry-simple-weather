@@ -7,7 +7,7 @@ import { getGame, isClientGM } from '@/utils/game';
 import { allowSeasonSync, Climate, Humidity, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
 import { initializeLocalizedText as initializeLocalizedWeatherText } from '@/weather/weatherMap';
 import { updateWeatherApplication, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
-import { updateWeatherEffects, weatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
+import { updateWeatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
 import { KeyBindings } from '@/settings/KeyBindings';
 import moduleJson from '@module';
 import { SceneSettings, } from './settings/SceneSettings';
@@ -129,19 +129,27 @@ Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
 })
 
 // make sure we have a compatible version of simple-calendar installed
-function checkDependencies() {
+function checkDependencies(): void {
   const module = getGame().modules.get('foundryvtt-simple-calendar');
 
   const scVersion = module?.version;
 
-  // if not present, just display a warning if we're in attached mode
+  // if not present, just display warnings/errors for incompatible options
   if (!module || !module?.active || !scVersion) {
-    if (ModuleSettings.get(ModuleSettingKeys.attachToCalendar)) {
-      if (isClientGM()) {
+    if (isClientGM()) {
+      if (ModuleSettings.get(ModuleSettingKeys.attachToCalendar)) {
         ui.notifications?.warn(`Simple Weather is set to "Attached Mode" in settings but Simple Calendar is not installed.  This will keep it from displaying at all.  You should turn off that setting if this isn't intended.`);
       }
-    }
+  
+      if (ModuleSettings.get(ModuleSettingKeys.useForecasts)) {
+        ui.notifications?.error('Simple Weather requires Simple Calendar to generate forecasts. Please install and enable Simple Calendar or disable forecasts in the settings.');
+      }
 
+      if (ModuleSettings.get(ModuleSettingKeys.outputDateToChat)) {
+        ui.notifications?.error('Simple Weather cannot output dates to chat without Simple Calendar. Please install and enable Simple Calendar or disable "output date to chat" in the settings.');
+      }
+    }
+  
     simpleCalendarInstalled = false; 
     return;
   }
@@ -165,13 +173,9 @@ function checkDependencies() {
   } else {
     simpleCalendarInstalled = true; 
   }
-
-  if (isClientGM() && !simpleCalendarInstalled && ModuleSettings.get(ModuleSettingKeys.useForecasts)) {
-    ui.notifications?.error('Simple Weather requires Simple Calendar to generate forecasts. Please install and enable Simple Calendar or disable forecasts in the settings.');
-  }
 }
 
-Hooks.once(SimpleCalendar.Hooks.Init, async () => {
+Hooks.once(SimpleCalendar.Hooks.Init, async (): Promise<void> => {
   // it's possible this gets called but the version # is too low - just ignore in that case
   if (simpleCalendarInstalled) {
     weatherApplication.simpleCalendarInstalled();
@@ -214,7 +218,7 @@ Hooks.once(SimpleCalendar.Hooks.Init, async () => {
       // in compact mode, there's no api to add a button, so we monkeypatch one in
       const compactMode = html.find(`.${SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER}`).length>0;
       if (compactMode) {
-        weatherApplication.setCompactMode(true);
+        weatherApplication.render();
 
         // if it's already there, no need to do anything (it doesn't change)
         if (html.find('#swr-fsc-compact-open').length === 0) {
@@ -236,7 +240,7 @@ Hooks.once(SimpleCalendar.Hooks.Init, async () => {
           });
         }
       } else {
-        weatherApplication.setCompactMode(false);
+        weatherApplication.render();
       }  
     });
   }
