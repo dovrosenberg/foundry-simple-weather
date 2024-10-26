@@ -5,11 +5,11 @@ import { log } from '@/utils/log';
 import { WindowPosition } from '@/window/WindowPosition';
 import { WindowDrag } from '@/window/windowDrag';
 import { WeatherData } from '@/weather/WeatherData';
-import { seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings } from '@/weather/climateData';
+import { SelectOption, seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings } from '@/weather/climateData';
 import { manualSelections, weatherDescriptions } from '@/weather/weatherMap';
 import { ModuleSettingKeys } from '@/settings/ModuleSettings';
 import { getGame, isClientGM } from '@/utils/game';
-import { generateWeather, outputWeather, createManual, createSpecificWeather } from '@/weather/weatherGeneration';
+import { generateWeather, outputWeatherToChat, createManual, createSpecificWeather } from '@/weather/weatherGeneration';
 import { ModuleSettings } from '@/settings/ModuleSettings';
 import { weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
@@ -22,6 +22,39 @@ let weatherApplication: WeatherApplication;
 function updateWeatherApplication(weatherApp: WeatherApplication): void {
   weatherApplication = weatherApp;
 }
+
+type WeatherApplicationData = {
+  isGM: boolean,
+  displayDate: string,
+  formattedDate: string,
+  formattedTime: string,
+  weekday: string,
+  currentTemperature: string,
+  currentDescription: string,
+  currentSeasonClass: string,
+  biomeSelections: SelectOption[],
+  seasonSelections: SelectOption[],
+  humiditySelections: SelectOption[],
+  climateSelections: SelectOption[],
+  manualSelections: SelectOption[],
+  displayOptions: DisplayOptions,
+  hideCalendar: boolean,
+  hideCalendarToggle: boolean,
+  hideWeather: boolean,
+  hideFXToggle: boolean,
+  manualPause: boolean,
+  fxActive: boolean,
+  useCelsius: boolean,
+  attachedMode: boolean,
+  showAttached: boolean,
+  SCContainerClasses: string,
+  windowPosition: WindowPosition,
+  containerPosition: string,
+  hideDialog: boolean,
+  showForecast: boolean,
+  forecasts: Forecast[],
+}
+
 
 // classes for Simple Calendar injection
 // no  dot or # in front
@@ -40,9 +73,7 @@ class WeatherApplication extends Application {
   private _manualPause = false;
   private _attachedMode = false;
   private _attachmodeHidden = true;   // like _currentlyHidden but have to track separately because that's for managing ready state not popup state
-  private _compactMode = false;
   private _simpleCalendarInstalled = false;
-  private _forecasts: Forecast[];
 
   private _currentClimate: Climate;
   private _currentHumidity: Humidity;
@@ -65,7 +96,6 @@ class WeatherApplication extends Application {
     // get attached mode
     this._attachedMode = ModuleSettings.get(ModuleSettingKeys.attachToCalendar) || false;
     this._attachmodeHidden = true;
-    this._compactMode = false;
 
     // assume no SC unless told otherwise
     this._simpleCalendarInstalled = false;
@@ -79,11 +109,6 @@ class WeatherApplication extends Application {
     // get default position or set default
     this._windowPosition = ModuleSettings.get(ModuleSettingKeys.windowPosition) || { left: 100, bottom: 300 }
 
-    // get forecasts
-    if (ModuleSettings.get(ModuleSettingKeys.useForecasts)) {
-      this._forecasts = this.getForecasts();
-    }
-    
     this.setWeather();  
   }
 
@@ -114,8 +139,12 @@ class WeatherApplication extends Application {
     return options;
   }
 
-  // this provides fields that will be available in the template; called by parent class
-  public async getData(): Promise<any> {
+  /**
+   * This function provides the data that the template can use.
+   * 
+   * @returns A promise that resolves to the data the template can use.
+   */
+  public async getData(): Promise<WeatherApplicationData> {
     const data = {
       ...(await super.getData()),
       isGM: isClientGM(),
@@ -155,8 +184,11 @@ class WeatherApplication extends Application {
     return data;
   }
 
-  // move the window
-  // we can't use foundry's setPosition() because it doesn't work for fixed size, non popout windows
+  /**
+   * Updates the position of the weather application window and saves the new position.  Triggers a re-render of the window.
+   * We can't use Foundry's setPosition() because it doesn't work for fixed size, non popout windows
+   * @param newPosition - The new position of the window.
+   */
   public updateWindowPosition(newPosition: WindowPosition) {
     this._windowPosition = newPosition;
 
@@ -166,30 +198,45 @@ class WeatherApplication extends Application {
     this.render();
   }
 
+  /**
+   * Toggle the visibility of the weather application window.
+   */
   public toggleWindow(): void {
     this._currentlyHidden = !this._currentlyHidden;
     this.render();
   }
 
+  /**
+   * Toggle the visibility of the weather application when it's in attached mode.
+   */
   public toggleAttachModeHidden(): void {
     this._attachmodeHidden = !this._attachmodeHidden;
     this.render();
   }
 
-  public setCompactMode(mode: boolean): void {
-    this._compactMode = mode;
-    this.render();
-  }
-
+  /**
+   * Show the weather application window. Make it visible and render it.
+   */
   public showWindow(): void {
     this._currentlyHidden = false;
     this.render(true);
   }
 
-  // called by the parent class to attach event handlers after window is rendered
-  // note that saved weather has been reloaded by the time this is called when we're initializing
-  // this is called on every render!  One-time functionality should be put in ????? 
-  public async activateListeners(html: JQuery<HTMLElement>): Promise<void> {
+  
+  /**
+   * Attaches event listeners to the HTML elements in the weather application window.
+   * This function is called after the window is rendered, and it sets up handlers 
+   * for various user interactions such as dropdown changes, button clicks, and 
+   * manual input. It also observes changes in the Simple Calendar's attached mode 
+   * to manage the visibility of the weather panel. 
+   * 
+   * Note that saved weather has been reloaded by the time this is called when we're initializing.
+   *  
+   * This is called on every render!  One-time functionality should be put in ????? 
+   * 
+   * @param html - The jQuery-wrapped HTML container for the weather application.
+   */
+  public activateListeners(html: JQuery<HTMLElement>): void {
     // setup handlers and values for everyone
 
     // GM-only
@@ -223,9 +270,9 @@ class WeatherApplication extends Application {
 
       // validation
       // we need to abort keyup/keydown  because simple calendar in compact mode re-renders on every keydown, which then loses our input and eventhandler
-      html.find('#swr-manual-temperature').on('keydown', (e: KeyboardEvent) => { e.stopPropagation(); });
-      html.find('#swr-manual-temperature').on('keyup', (e: KeyboardEvent) => { e.stopPropagation(); });
-      html.find('#swr-manual-temperature').on('input', this.onManualTempInput);
+      html.find('#swr-manual-temperature').on('keydown', (e: JQuery.KeyDownEvent) => { e.stopPropagation(); });
+      html.find('#swr-manual-temperature').on('keyup', (e: JQuery.KeyUpEvent) => { e.stopPropagation(); });
+      html.find('#swr-manual-temperature').on('input', (e: JQuery.Event) => { this.onManualTempInput(e) });
 
       // buttons
       html.find('#swr-submit-weather').on('click', this.onSubmitWeatherClick);
@@ -265,12 +312,14 @@ class WeatherApplication extends Application {
   }
 
   // event handlers - note arrow functions because otherwise 'this' doesn't work
+
   private onWeatherToggleClick = (event): void => {
     event.preventDefault();
 
     this.updateDisplayOptions({ weatherBox: !this._displayOptions.weatherBox })
   };
 
+  
   private onDateToggleClick = (event): void => {
     event.preventDefault();
 
@@ -292,11 +341,17 @@ class WeatherApplication extends Application {
     this.updateDisplayOptions({ dateBox: !this._displayOptions.dateBox })
   };
 
+  
   private onCloseClick = (event): void => {
     event.preventDefault();
     this.toggleWindow();   // must be on if we are clicking the button, so this will close it
   }
 
+  /**
+   * Update the position of the window and store it in settings.
+   * 
+   * @param position - The new position of the window
+   */
   private setWindowPosition(position: WindowPosition): void {
     this._windowPosition = position;
 
@@ -305,7 +360,7 @@ class WeatherApplication extends Application {
     this.render();
   }
 
-  private onMoveHandleMouseDown = (event: MouseEvent): void => {
+  private onMoveHandleMouseDown = (event: JQuery.MouseDownEvent): void => {
     // only allow drag with left button (also prevents craziness from clicking a button while other is still down)
     if (event.button !== 0)
       return;
@@ -319,7 +374,11 @@ class WeatherApplication extends Application {
     }
   };  
 
-  // turn off season sync if calendar not present
+  /**
+   * Called when the season selection changes to see if we should sync the season with Simple Calendar.
+   * If we were previously syncing and Simple Calendar is no longer present, will turn off sync.
+   * @param force - if true, will recalculate the season sync even if it's already been set
+   */
   public checkSeasonSync(force?: boolean): void {
     // make sure simple calendar is present if we're trying to sync
     // this could happen if we had sync on but then uninstalled calendar and reloaded
@@ -333,8 +392,15 @@ class WeatherApplication extends Application {
     }
   }
 
-  // call this when either a) foundry loaded and no simple calendar or b) after simple calendar loaded
-  // this is needed so that we can properly handle calendar box and sync
+  // 
+  
+  /**
+   * If GM, loads the module setting values if they don't exist.
+   * Also calls ready on the weather effects so that it can activate any FX.
+   * 
+   * Called after module is loaded with no simple calendar or after simple calendar is loaded. This is 
+   * needed so that we can properly handle calendar box and sync.
+   */
   public ready(): void {
     // GM-only
     if (isClientGM()) {
@@ -361,7 +427,10 @@ class WeatherApplication extends Application {
     this.render(true);
   };
 
-  // output a bunch of info that might be useful for debugging
+  /**
+   * Outputs to the console a bunch of information that might be useful for debugging. 
+   * @returns {Promise<void>}
+   */
   public async debugOutput(): Promise<void> {
     let output = `
 simple-weather DEBUG OUTPUT
@@ -396,6 +465,13 @@ _______________________________________
   }
 
 
+  /**
+   * Updates the display options of the weather application by merging the provided
+   * partial options with the existing display options. The updated display options
+   * are then saved to the module settings and the application is re-rendered.
+   *
+   * @param options - Partial display options to be merged with the current options.
+   */
   public updateDisplayOptions(options: Partial<DisplayOptions>): void {
     this._displayOptions = {
       ...this._displayOptions,
@@ -408,8 +484,11 @@ _______________________________________
     this.render();
   }
 
-  // updates the current date/time showing in the weather dialog
-  // generates new weather if the date has changed
+  /**
+   * Updates the current date/time showing in the weather dialog.  Generates new weather if the date has changed.
+   * 
+   * @param currentDate the SimpleCalendar.DateData object that contains the current date
+   */
   public updateDateTime(currentDate: SimpleCalendar.DateData | null): void {
     if (!currentDate)
       return;
@@ -471,8 +550,15 @@ _______________________________________
     this.render();
   }
 
-  // called from outside, to load the last weather from the settings
-  // also called by player clients when GM updates the settings
+  
+  /**
+   * Sets the current weather. If the GM has saved weather data, this will load it.
+   * If not, and the client is a GM, it will generate new weather. If not a GM, it
+   * will not generate new weather.
+   * 
+   * Called from outside, to load the last weather from the settings.  Also called by player 
+   * clients when GM updates the settings.
+  */
   public setWeather(): void {
     const weatherData = ModuleSettings.get(ModuleSettingKeys.lastWeatherData);
 
@@ -490,10 +576,17 @@ _______________________________________
     this.render();
   }
 
-  // generate weather based on drop-down settings, store locally and update db
+  /**
+   * Generates new weather based on the current settings and either the given date or today's date.
+   * If the module is paused, it does nothing except update the date.  Otherwise, it generates
+   * new weather based on the current settings and then activates that weather.
+   * @param currentDate the date for which to generate weather, or null to use today's date
+   */
   private generateWeather(currentDate: SimpleCalendar.DateData | null): void {
     // if we're paused, do nothing (except update the date)
-    if (!this._manualPause) {
+    if (this._manualPause) {
+      this._currentWeather.date = currentDate;
+    } else {
       const season = this.getSeason();
 
       this._currentWeather = generateWeather(
@@ -505,12 +598,16 @@ _______________________________________
       );
 
       this.activateWeather(this._currentWeather);
-    } else {
-      this._currentWeather.date = currentDate;
     }
   }
 
-  // temperature is avg temperature to use; weatherIndex is the index into the set of manual options
+  /**
+   * Generates weather for a specific manual weather option, temperature, and date.
+   * 
+   * @param currentDate The current date to use, or null if none.
+   * @param temperature The temperature to use.
+   * @param weatherIndex The index into the set of manual options.
+   */
   private setManualWeather(currentDate: SimpleCalendar.DateData | null, temperature: number, weatherIndex: number): void {
     const season = this.getSeason();
 
@@ -522,7 +619,19 @@ _______________________________________
     }
   }
 
-  // temperature is avg temperature to use; weatherIndex is the index into the set of manual options
+  /**
+   * Generates weather for a specific climate, humidity, and hex flower cell.
+   * 
+   * @param climate The climate to use.
+   * @param humidity The humidity to use.
+   * @param hexFlowerCell The hex flower cell to use.
+   * 
+   * @remarks
+   * This function is used by the weather generation options in the configuration window
+   * to generate weather for a specific climate, humidity, and hex flower cell.
+   * 
+   * @internal
+   */
   public setSpecificWeather(climate: Climate, humidity: Humidity, hexFlowerCell: number): void {
     const season = this.getSeason();
 
@@ -536,19 +645,26 @@ _______________________________________
     }
   }
 
-  // tell us that simple calendar is present
+  
+/**
+ * Marks the calendar as present and triggers a re-render of the application.
+ */
   public activateCalendar(): void {
     this._calendarPresent = true;
 
     this.render();
   }
 
-  // activate the given weather; save to settings, output to chat, display FX
+  
+  /**
+   * Activates the given weather data; saves to settings, output to chat, display FX, and save to calendar notes if enabled.
+   * @param weatherData the WeatherData to activate
+   */
   private activateWeather(weatherData: WeatherData): void {
     if (isClientGM()) {
       // Output to chat if enabled
       if (ModuleSettings.get(ModuleSettingKeys.outputWeatherToChat)) {
-        outputWeather(weatherData);
+        outputWeatherToChat(weatherData);
       }
 
       // activate special effects
@@ -651,7 +767,7 @@ _______________________________________
     event.preventDefault();
 
     if (isClientGM()) {
-      outputWeather(this._currentWeather);
+      outputWeatherToChat(this._currentWeather);
     }
   };
 
@@ -786,7 +902,7 @@ _______________________________________
     }
   }
 
-  private onManualTempInput = (event: KeyboardEvent): void => {
+  private onManualTempInput = (event: JQuery.Event): void => {
     event.stopPropagation()
     const btn = document.getElementById('swr-submit-weather') as HTMLButtonElement;
 

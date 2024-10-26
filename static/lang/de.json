@@ -7,6 +7,8 @@
       "useCelsiusHelp": "Verwende die Celsius-Skala, um Temperaturen darzustellen.",
       "outputweatherToChat": "Zeige das Wetter im Chat?",
       "outputweatherToChatHelp": "Soll neu-generiertes Wetter im Chat angezeigt werden?",
+      "outputDateToChat": "Datum im Chat ausgeben?",
+      "outputDateToChatHelp": "Soll das Kalenderdatum in der Chatausgabe enthalten sein? Dies wird ignoriert, wenn das Wetter nicht im Chat ausgegeben wird. Erfordert Simple Calendar.",
       "publicChat": "Soll die Chatausgabe öffentlich sein?",
       "publicChatHelp": "Soll jeder (wenn ausgewählt) oder nur der SL (wenn nicht ausgewählt) das Wetter im Chat sehen können?",
       "useFX": "Spezial-/Wettereffekte anzeigen?",
@@ -101,7 +103,8 @@
     },
 
     "chat": {
-      "header": "Heutiges Wetter:"
+      "header": "Heutiges wetter",
+      "dateHeader": "Wetter für"
     },
 
     "description": {
@@ -473,6 +476,6 @@
     },
 
     "missing translations": {
-    }  
+    }
   }
 }

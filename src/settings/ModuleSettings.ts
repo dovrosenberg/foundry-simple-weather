@@ -12,6 +12,7 @@ export enum ModuleSettingKeys {
   // displayed in settings
   dialogDisplay = 'dialogDisplay',   // can non-GM clients see the dialog box
   outputWeatherToChat = 'outputWeatherChat',   // when new weather is generated, should it be put in the chat box
+  outputDateToChat = 'outputDateToChat',   // should we include the date in chat posts?
   publicChat = 'publicChat',   // should everyone see the chat (true) or just the GM (false)
   useCelsius = 'useCelsius',   // should we use Celsius
   useFX = 'useFX',  // the name of the package used for FX (or 'off' if none)
@@ -41,6 +42,7 @@ type SettingType<K extends ModuleSettingKeys> =
     K extends ModuleSettingKeys.dialogDisplay ? boolean :
     K extends ModuleSettingKeys.publicChat ? boolean :
     K extends ModuleSettingKeys.outputWeatherToChat ? boolean :
+    K extends ModuleSettingKeys.outputDateToChat ? boolean :
     K extends ModuleSettingKeys.useCelsius ? boolean :
     K extends ModuleSettingKeys.useFX ? string :
     K extends ModuleSettingKeys.FXByScene ? boolean :
@@ -140,6 +142,13 @@ export class ModuleSettings {
       name: 'sweath.settings.outputweatherToChat',
       hint: 'sweath.settings.outputweatherToChatHelp',
       default: true,
+      type: Boolean,
+    },
+    {
+      settingID: ModuleSettingKeys.outputDateToChat,
+      name: 'sweath.settings.outputDateToChat',
+      hint: 'sweath.settings.outputDateToChatHelp',
+      default: false,
       type: Boolean,
     },
     {

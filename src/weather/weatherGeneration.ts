@@ -1,10 +1,11 @@
 import { nextCell, startingCells, getDirection, weatherTemperatures, Direction, weatherDescriptions, manualOptions } from '@/weather/weatherMap';
 import { ModuleSettings, ModuleSettingKeys } from '@/settings/ModuleSettings';
 import { localize } from '@/utils/game';
-import { Climate, Humidity, Season, seasonSelections } from './climateData';
+import { Climate, Humidity, Season, } from './climateData';
 import { WeatherData } from './WeatherData';
 import { log } from '@/utils/log';
 import { generateForecast } from './forecastGeneration';
+import { simpleCalendarInstalled } from '@/main';
 
 // note: we don't actually care if the date on yesterday is the day before today; yesterday is used to determine if we should be picking a random
 //    starting spot or moving from the prior one
@@ -106,7 +107,13 @@ const createSpecificWeather = function(today: SimpleCalendar.DateData | null, cl
   return weatherData;
 }
 
-const outputWeather = function(weatherData: WeatherData) {
+/**
+ * Outputs the current weather to the chat window. If the weather is manual, it
+ * appends any custom chat message associated with the manual weather to the
+ * end of the message.
+ * @param weatherData the weather to output
+ */
+const outputWeatherToChat = function(weatherData: WeatherData) {
   // get any custom text
   let chatOut = '<b>' + weatherData.getTemperature(ModuleSettings.get(ModuleSettingKeys.useCelsius)) + '</b> - ' + weatherData.getDescription();
 
@@ -116,9 +123,16 @@ const outputWeather = function(weatherData: WeatherData) {
       chatOut = chatOut + '<br>' + customText;
   }
 
+  let dateOutput = '';
+  if (ModuleSettings.get(ModuleSettingKeys.outputDateToChat)) {
+    dateOutput = `${localize('sweath.chat.dateHeader')} ${weatherData.date?.display.date}:`;
+  } else  {
+    dateOutput = `${localize('sweath.chat.header')}:`;
+  }
+
   ChatMessage.create({
     speaker: {
-      alias: localize('sweath.chat.header'),
+      alias: dateOutput,
     },
     whisper: ModuleSettings.get(ModuleSettingKeys.publicChat) ? undefined : ChatMessage.getWhisperRecipients('GM')?.map((user) => user.id) || [],
     content: chatOut,
@@ -134,7 +148,7 @@ const getDefaultStart = function(season: Season) {
 
 export {
   generateWeather,
-  outputWeather,
+  outputWeatherToChat,
   createManual,
   createSpecificWeather
 };
