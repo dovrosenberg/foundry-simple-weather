@@ -1,5 +1,12 @@
 # Change Log
 
+## v1.17.2 - Bug fix
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-January%2030%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.17.2/module.zip)
+
+Fixed module crashing on load introduced in 1.17.1
+
 ## v1.17.1 - Now supporting Polish (Polski)!
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-January%2027%2C%202025-blue)

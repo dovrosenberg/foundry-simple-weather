@@ -141,21 +141,20 @@ class WeatherEffects {
                 }
 
                 log(false, 'Adding fxmaster: ' + name);
-                // we do this on our own because async issue with fxmaster hook is prevent scene from updating
-                /*
-                  Hooks.call('fxmaster.switchParticleEffect', {
-                    name,
-                    type: effects[e].type,
-                    options: options,
-                  });
-                */
-                const newEffects = SceneSettings.currentScene?.getFlag('fxmaster', 'effects') ?? {};
-                newEffects[name] = {
-                  type: effects[e].type,
-                  options: options,
-                };
 
-                await canvas?.scene?.setFlag('fxmaster', 'effects', newEffects);
+                // Hooks.call('fxmaster.switchParticleEffect', {
+                //   name,
+                //   type: effects[e].type,
+                //   options: options,
+                // });
+
+                // const newEffects = SceneSettings.currentScene?.getFlag('fxmaster', 'effects') ?? {};
+                // newEffects[name] = {
+                //   type: effects[e].type,
+                //   options: options,
+                // };
+
+                // await canvas?.scene?.setFlag('fxmaster', 'effects', newEffects);
 
                 this.addFXMParticleEffect(name);
               } else if (effects[e].style === FXMStyleTypes.Filter) {

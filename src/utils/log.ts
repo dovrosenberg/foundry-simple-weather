@@ -1,5 +1,5 @@
 import { getGame } from '@/utils/game';
-import { id as ModuleId } from '@module';
+import { id as moduleId } from '@module';
 
 const messagePrefix = `${moduleId} | `;
 
