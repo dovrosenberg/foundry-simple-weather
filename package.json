@@ -28,7 +28,7 @@
     "version": "node ./scripts/increment-version.js"
   },
   "devDependencies": {
-    "@league-of-foundry-developers/foundry-vtt-types": "9.280.0",
+    "@league-of-foundry-developers/foundry-vtt-types": "12.331.3-beta",
     "@originjs/vite-plugin-commonjs": "^1.0.1",
     "@types/marked": "^3.0.1",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
