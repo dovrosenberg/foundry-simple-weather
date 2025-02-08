@@ -1,5 +1,14 @@
 # Change Log
 
+## v1.17.3 - Big bug fixes related to weather fx
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-February%208%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.17.3/module.zip)
+
+I guess no one's been using FXMaster effects? Because they weren't working at all for a few releaes now.  But in any
+case they're fixed.  You should now see FXMaster effects.  Plus when you are using scene-specific weather fx, they 
+now save their state by scene vs. always starting off.
+
 ## v1.17.2 - Bug fix
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-January%2030%2C%202025-blue)

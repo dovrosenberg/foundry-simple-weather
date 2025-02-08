@@ -891,13 +891,20 @@ _______________________________________
     this.updateDisplayOptions(this._displayOptions);
   }
 
-  private onToggleFX = (): void => {
-    this.toggleFX();
+  private onToggleFX = async (): Promise<void> => {
+    await this.toggleFX();
   }
 
-  public toggleFX() {
+  public async toggleFX() {
     if (isClientGM()) {
-      weatherEffects.setFxActive(!weatherEffects.fxActive);
+      await weatherEffects.setFxActive(!weatherEffects.fxActive);
+      this.render();
+    }
+  }
+
+  public async setFXActive(value: boolean) {
+    if (isClientGM()) {
+      await weatherEffects.setFxActive(value);
       this.render();
     }
   }

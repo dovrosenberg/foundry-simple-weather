@@ -10,7 +10,7 @@ import { updateWeatherApplication, weatherApplication, WeatherApplication } from
 import { updateWeatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
 import { KeyBindings } from '@/settings/KeyBindings';
 import moduleJson from '@module';
-import { SceneSettings, } from './settings/SceneSettings';
+import { SceneSettingKeys, SceneSettings, } from './settings/SceneSettings';
 
 // track which modules we have
 export let simpleCalendarInstalled = false;
@@ -97,6 +97,8 @@ Hooks.on('updateSetting', async (setting: Setting) => {
 Hooks.on('canvasInit', async (canvas: Canvas) => {
   // update the weather effects for the scene setting if needed
   SceneSettings.currentScene = canvas.scene;
+
+  await weatherApplication.setFXActive(SceneSettings.get(SceneSettingKeys.fxActive));
 });
 
 // handle scene changes

@@ -142,19 +142,11 @@ class WeatherEffects {
 
                 log(false, 'Adding fxmaster: ' + name);
 
-                // Hooks.call('fxmaster.switchParticleEffect', {
-                //   name,
-                //   type: effects[e].type,
-                //   options: options,
-                // });
-
-                // const newEffects = SceneSettings.currentScene?.getFlag('fxmaster', 'effects') ?? {};
-                // newEffects[name] = {
-                //   type: effects[e].type,
-                //   options: options,
-                // };
-
-                // await canvas?.scene?.setFlag('fxmaster', 'effects', newEffects);
+                Hooks.call('fxmaster.switchParticleEffect', {
+                  name,
+                  type: effects[e].type,
+                  options: options,
+                });
 
                 this.addFXMParticleEffect(name);
               } else if (effects[e].style === FXMStyleTypes.Filter) {
@@ -162,9 +154,6 @@ class WeatherEffects {
                 await FXMASTER.filters.addFilter(name, effects[e].type, effects[e].options);
                 await this.addFXMFilterEffect(name);
               }
-
-              // force everything to draw immediately
-              // getGame().canvas.fxmaster?.drawParticleEffects({ soft: false });
             }
           }
 
@@ -193,28 +182,15 @@ class WeatherEffects {
         // update takes an array, but the ones we want to remove are stored in an object
         const filteredEffects = SceneSettings.currentScene?.getFlag('fxmaster', 'effects') ?? {};
 
-        // this is how we should do it - but there's an async issue with fxmaster that's causing the scene to take forever to update (because
-        //   the flag isn't being updated until after the initial scene update) - until that's fixed, we are manually doing what the fxmaster hook should do
-        /*
-          // sometimes deactivate gets called multiple times before fxmaster has processed all of them (since we can't await)
-          // when that happens, it ends up adding effects with just the name set; not sure we can do much there except
-          //    pull them out again later, but it's causing a warning to be thrown by fxmaster (but no other issues)
-          for (let key in filteredEffects) {
-            if (key.toString().startsWith('swr-')) { 
-              Hooks.call('fxmaster.switchParticleEffect', { name: key });
-            }
-          }
-        */
-
-        let newEffects = {};
+        // sometimes deactivate gets called multiple times before fxmaster has processed all of them (since we can't await the hook)
+        // when that happens, it ends up adding effects with just the name set; not sure we can do much there except
+        //    pull them out again later, but it's causing a warning to be thrown by fxmaster (but no other issues)
+        // it may not actually be an issue any more now that fxmaster fixed the async issue in 4.1.0
         for (let key in filteredEffects) {
-          if (!key.toString().startsWith('swr-')) 
-            newEffects[key] = filteredEffects[key];
-          else 
-            newEffects[`-=${key.toString()}`] = null;
+          if (key.toString().startsWith('swr-')) { 
+            Hooks.call('fxmaster.switchParticleEffect', { name: key });
+          }
         }
-
-        await canvas?.scene?.setFlag('fxmaster', 'effects', newEffects);
       }
       
       await this.clearFXMParticleEffects();
