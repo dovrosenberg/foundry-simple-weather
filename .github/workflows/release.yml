@@ -43,12 +43,12 @@ jobs:
 
       # save the output folder for release job
       - name: Archive dist folder
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: module-download
           path: dist/
       - name: Archive module json
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: module
           path: ./static/module.json 
@@ -59,13 +59,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download module download file
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: module-download
           path: module-download
       
       - name: Download module.json
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: module
       
