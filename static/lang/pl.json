@@ -28,7 +28,9 @@
       "customWeatherButton": "Zarządzanie niestandardowymi komunikatami pogodowymi",
       "customWeatherHelp": "Ustawianie komunikatów specyficznych dla systemu (przydatne w przypadku kar związanych z ekstremalnymi warunkami pogodowymi).",
       "useForecasts": "Używać prognoz?",
-      "useForecastsHelp": "Pokaż MG najbliższe kilka dni nadchodzącej pogody. Wymaga Simple Calendar."
+      "useForecastsHelp": "Pokaż MG najbliższe kilka dni nadchodzącej pogody. Wymaga Simple Calendar.",
+      "playSound": "Play sound effects?",
+      "playSoundHelp": "Play sound effects when showing weather effects."
     },
 
     "keybindings": {
@@ -476,5 +478,9 @@
     }
   },
   "missing translations": {
-  }
+    "settings": {
+      "playSound": "Play sound effects?",
+      "playSoundHelp": "Play sound effects when showing weather effects."
+    }
+ }
 }

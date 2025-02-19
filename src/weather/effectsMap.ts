@@ -59,9 +59,24 @@ export type FXDetail =
   { style: FXMStyleTypes.Filter, type: FXMFilterTypes.Lightning, options: { frequency: number; spark_duration: number; brightness: number }, }
 
     
+export enum Sounds {
+  None = 0,
+  Rain,
+  HeavyRain,
+  Thunder, 
+  Hail,
+  Snow,
+  Blizzard,
+  Wind,
+  HeavyWind,
+  Tornado,
+  WildFire,
+}
+
 export type EffectDetails = {
   core: CoreDetails | null,
   fxMaster: FXDetail[] | null,
+  sound: Sounds
 }
 
 // weather options
@@ -83,6 +98,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.None
   },
 
   ModerateClouds: {
@@ -102,6 +118,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.None,
   },
 
   HeavyClouds: {
@@ -121,6 +138,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.None,
   },
 
   StormClouds: {
@@ -140,6 +158,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.None,
   },
 
   Overcast: {
@@ -158,6 +177,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.None,
   },
 
   // drifting around, not linear
@@ -177,6 +197,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.Wind,
   },
 
   // snow in each direction
@@ -236,6 +257,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.Snow,
   },
 
   LightWind: {
@@ -255,6 +277,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.Wind,
   },
 
   ModerateWind: {
@@ -274,6 +297,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.Wind,
   },
 
   HeavyWind: {
@@ -293,6 +317,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.HeavyWind,
   },
 
   BlusterRain: { 
@@ -353,6 +378,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.Rain,
   },
   LightRain: { 
     core: {
@@ -373,6 +399,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.Rain,
   },
   ModerateRain: { 
     core: {
@@ -392,7 +419,8 @@ export const availableEffects: Record<string, EffectDetails> = {
           tint: { value: '#ffffff', apply: false },
         },
       },
-    ]
+    ],
+    sound: Sounds.Rain,
   },
   HeavyRain: {
     core: {
@@ -412,7 +440,8 @@ export const availableEffects: Record<string, EffectDetails> = {
           tint: { value: '#ffffff', apply: false },
         },
       },
-    ]
+    ],
+    sound: Sounds.HeavyRain,
   },
   LightFog: { 
     core: {
@@ -431,7 +460,8 @@ export const availableEffects: Record<string, EffectDetails> = {
           tint: { value: '#ffffff', apply: false },
         },
       },
-    ]
+    ],
+    sound: Sounds.Rain,
   },
   ModerateFog: { 
     core: {
@@ -450,7 +480,8 @@ export const availableEffects: Record<string, EffectDetails> = {
           tint: { value: '#ffffff', apply: false },
         },
       },
-    ]
+    ],
+    sound: Sounds.Rain,
   },
   HeavyFog: { 
     core: {
@@ -469,7 +500,8 @@ export const availableEffects: Record<string, EffectDetails> = {
           tint: { value: '#ffffff', apply: false },
         },
       },
-    ]
+    ],
+    sound: Sounds.Rain,
   },
   RollingFog: { 
     core: {
@@ -488,7 +520,8 @@ export const availableEffects: Record<string, EffectDetails> = {
           tint: { value: '#ffffff', apply: false },
         },
       },
-    ]
+    ],    
+    sound: Sounds.Rain,
   },
   Lightning: {
     core: null,
@@ -503,6 +536,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.Thunder,
   },
 
   Wildfire: {
@@ -531,6 +565,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.WildFire,
   },
 
   LightSnow: { 
@@ -552,6 +587,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.Snow,
   },
   ModerateSnow: { 
     core: {
@@ -572,6 +608,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.Snow,
   },
   HeavySnow: { 
     core: {
@@ -606,6 +643,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.Blizzard,
   },
   WhiteoutSnow: { 
     core: {
@@ -652,6 +690,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.Blizzard,
   },
   Hail: { 
     core: {
@@ -670,6 +709,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         tint: { value: '#ffffff', apply: false },
       },
     }],
+    sound: Sounds.Hail,
   },
   Sleet: { 
     core: {
@@ -703,7 +743,8 @@ export const availableEffects: Record<string, EffectDetails> = {
           tint: { value: '#ffffff', apply: false },
         },
       },
-    ]
+    ],
+    sound: Sounds.Hail,
   },
   // like a colored blizzard, with smaller particles
   DustStorm: { 
@@ -750,6 +791,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
+    sound: Sounds.HeavyWind,
   },
 }
 

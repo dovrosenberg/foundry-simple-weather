@@ -27,6 +27,8 @@
       "customWeatherHelp": "Ange systemspecifika meddelanden (användbart för påföljder vid extremt väder)",    
       "useForecasts": "Använd väderprognoser?",
       "useForecastsHelp": "Visa spelledaren de kommande dagarnas väder. Kräver Simple Calendar.",
+      "playSound": "Play sound effects?",
+      "playSoundHelp": "Play sound effects when showing weather effects."
     }    
   },
   
@@ -475,5 +477,9 @@
   },
 
   "missing translations": {
+    "settings": {
+      "playSound": "Play sound effects?",
+      "playSoundHelp": "Play sound effects when showing weather effects."
+    }
   }  
 }

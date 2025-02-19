@@ -36,6 +36,7 @@ export enum ModuleSettingKeys {
   manualPause = 'manualPause',   // is the manual pause currently active (will prevent any auto or regen updates)
   customChatMessages = 'customChatMessages',  // [climate][humidity][index]: message
   forecasts = 'forecasts',   // a map from the timestamp for a day to a Forecast object for that day
+  playSound = 'playSound',   // should we play sounds when showing effects?
 }
 
 type SettingType<K extends ModuleSettingKeys> =
@@ -63,6 +64,7 @@ type SettingType<K extends ModuleSettingKeys> =
     K extends ModuleSettingKeys.manualPause ? boolean :
     K extends ModuleSettingKeys.customChatMessages ? string[][][] :
     K extends ModuleSettingKeys.forecasts ? Record<string, Forecast> :
+    K extends ModuleSettingKeys.playSound ? boolean :
     never;  
 
 export class ModuleSettings {
@@ -208,6 +210,13 @@ export class ModuleSettings {
       hint: 'sweath.settings.useForecastsHelp',
       default: false,
       requiresReload: true,    
+      type: Boolean,
+    },
+    {
+      settingID: ModuleSettingKeys.playSound,
+      name: 'sweath.settings.playSound',
+      hint: 'sweath.settings.playSoundHelp',
+      default: true,
       type: Boolean,
     },
   ];

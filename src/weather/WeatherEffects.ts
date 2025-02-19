@@ -116,8 +116,9 @@ class WeatherEffects {
   
       const effectOptions = weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell].fx;
 
-      if (!effectOptions)
+      if (!effectOptions || this._useFX === 'off')
         return;
+
 
       switch (this._useFX) {
         case 'core':
@@ -159,11 +160,11 @@ class WeatherEffects {
 
           break;
 
-        
-        case 'off':
         default:
           break;
       }
+
+      await playSound(fx.sounds);
     } 
   }
 

@@ -28,7 +28,9 @@
       "customWeatherButton": "Manage custom weather messages",
       "customWeatherHelp": "Set system-specific messages (useful for penalties associated with extreme weather)",
       "useForecasts": "Use forecasts?",
-      "useForecastsHelp": "Show GM the next several days of upcoming weather. Requires Simple Calendar."
+      "useForecastsHelp": "Show GM the next several days of upcoming weather. Requires Simple Calendar.",
+      "playSound": "Play sound effects?",
+      "playSoundHelp": "Play sound effects when showing weather effects."
     },
 
     "keybindings": {
