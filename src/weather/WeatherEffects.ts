@@ -6,7 +6,8 @@ import { log } from '@/utils/log';
 import { VersionUtils } from '@/utils/versionUtils';
 import { WeatherData } from '@/weather/WeatherData';
 import { weatherOptions } from '@/weather/weatherMap';
-import { FXDetail, FXMStyleTypes } from './effectsMap';
+import { FXDetailType, FXMStyleTypes, FXMParticleOptions } from './effectsMap';
+import { playSound, Sounds } from '@/utils/playlist';
 
 // the solo instance
 let weatherEffects: WeatherEffects;
@@ -127,14 +128,14 @@ class WeatherEffects {
 
         case 'fxmaster':
           if (effectOptions.fxMaster) {
-            const effects = effectOptions.fxMaster as FXDetail[];
+            const effects = effectOptions.fxMaster as FXDetailType[];
 
             for (let e=0; e<effects.length; e++) {
               const name = `swr-${effects[e].type}-${foundry.utils.randomID()}`;
 
               if (effects[e].style === FXMStyleTypes.Particle) {
                 // adjust options
-                const options = structuredClone(effects[e].options);
+                const options = structuredClone(effects[e].options) as FXMParticleOptions;
                 
                 // override direction
                 if (options.direction) {
@@ -164,8 +165,14 @@ class WeatherEffects {
           break;
       }
 
-      await playSound(fx.sounds);
-    } 
+      
+      if (ModuleSettings.get(ModuleSettingKeys.playSound)) {
+        if (effectOptions.sound===Sounds.None) {
+        } else {
+          await playSound(effectOptions.sound);
+        }
+      } 
+    }
   }
 
   // if skipCore is true, won't turn off the core weather; this is for when we're doing a deactivate that's 

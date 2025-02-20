@@ -1,3 +1,5 @@
+import { Sounds } from '@/utils/playlist';
+
 export type CoreDetails = {
   effect: string;
 }
@@ -40,42 +42,40 @@ export type RandomRange = {
   end: number;
 }
 
-export type FXDetail = 
-  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Snowstorm; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
-  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Bubbles; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
-  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Clouds; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number, alpha: number; tint: FXMColor }, } |
-  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Embers; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
-  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.RainSimple; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
-  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Stars; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
-  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Crows; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
-  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Bats; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
-  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Spiders; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
-  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Fog; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
-  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.RainTop; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
-  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Leaves; options: { scale: number; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
-  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Rain; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
-  { style: FXMStyleTypes.Particle, type: FXMParticleTypes.Snow; options: { scale: number; direction: RandomRange; speed: number; lifetime: number; density: number; alpha: number; tint: FXMColor }, } |
-  { style: FXMStyleTypes.Filter, type: FXMFilterTypes.Bloom, options: { blur: number; bloomScale: number; threshold: number }, } |
-  { style: FXMStyleTypes.Filter, type: FXMFilterTypes.Lightning, options: { frequency: number; spark_duration: number; brightness: number }, }
-
-    
-export enum Sounds {
-  None = 0,
-  Rain,
-  HeavyRain,
-  Thunder, 
-  Hail,
-  Snow,
-  Blizzard,
-  Wind,
-  HeavyWind,
-  Tornado,
-  WildFire,
+interface FXMParticleOptions {
+  scale: number; 
+  direction?: RandomRange | undefined; 
+  speed: number; 
+  lifetime: number; 
+  density: number; 
+  alpha: number; 
+  tint: FXMColor 
+}
+interface FXMFilterOptions {
+  blur?: number | undefined; 
+  bloomScale?: number | undefined; 
+  threshold?: number | undefined;
+  frequency?: number | undefined; 
+  spark_duration?: number | undefined; 
+  brightness?: number | undefined;
 }
 
+export type FXDetailType =
+| {
+  style: FXMStyleTypes.Filter;
+  type: FXMFilterTypes;
+  options: FXMFilterOptions;
+}
+| {
+  style: FXMStyleTypes.Particle;
+  type: FXMParticleTypes;
+  options: FXMParticleOptions;
+}  
+
+    
 export type EffectDetails = {
   core: CoreDetails | null,
-  fxMaster: FXDetail[] | null,
+  fxMaster: FXDetailType[] | null,
   sound: Sounds
 }
 

@@ -217,6 +217,7 @@ export class ModuleSettings {
       name: 'sweath.settings.playSound',
       hint: 'sweath.settings.playSoundHelp',
       default: true,
+      requiresReload: true,
       type: Boolean,
     },
   ];

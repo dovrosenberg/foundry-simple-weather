@@ -10,7 +10,8 @@ import { updateWeatherApplication, weatherApplication, WeatherApplication } from
 import { updateWeatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
 import { KeyBindings } from '@/settings/KeyBindings';
 import moduleJson from '@module';
-import { SceneSettingKeys, SceneSettings, } from './settings/SceneSettings';
+import { SceneSettingKeys, SceneSettings, } from '@/settings/SceneSettings';
+import { initSounds } from '@/utils/playlist';
 
 // track which modules we have
 export let simpleCalendarInstalled = false;
@@ -47,6 +48,9 @@ Hooks.once('devModeReady', async ({ registerPackageDebugFlag: registerPackageDeb
 Hooks.once('init', async () => {
   // initialize settings first, so other things can use them
   ModuleSettings.registerSettings();
+
+  await initSounds();
+
   updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
   updateWeatherApplication(new WeatherApplication());
 

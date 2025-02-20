@@ -42,5 +42,10 @@ You can't easily tell, because this is a rebuild, rather than a fork, but this m
 
 Please buy them both coffee (https://ko-fi.com/vigorator  or https://ko-fi.com/thebird956) or join their Patreons (https://www.patreon.com/vigorator or ???)!
 
-
+### Sound files
+Royalty-free sound files from pixabay.com:
+* [Light rain](https://pixabay.com/sound-effects/calming-rain-257596/)
+* [Heavy rain](https://pixabay.com/sound-effects/rain-sounds-210646/) - bad loop
+* [Thunder](https://pixabay.com/sound-effects/rain-and-thunder-sfx-12820/)
+* [Dry storm](https://pixabay.com/sound-effects/peals-of-thunder-191992/)
 
