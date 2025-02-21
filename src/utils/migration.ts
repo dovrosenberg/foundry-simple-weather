@@ -7,7 +7,7 @@ export const migrateData = async(): Promise<void> => {
   // we just look at the prior version to see what upgrades need to apply
   const priorVersion = ModuleSettings.get(ModuleSettingKeys.previousVersion);
 
-  // this captures everything before 1.18
+  // this captures everything before 1.17.4
   if (priorVersion === '') {
     let updatedForecasts = {} as Record<string, Forecast>;
 
@@ -25,6 +25,6 @@ export const migrateData = async(): Promise<void> => {
 
     await ModuleSettings.set(ModuleSettingKeys.forecasts, updatedForecasts);
   }
-  
+
   await ModuleSettings.set(ModuleSettingKeys.previousVersion, version);
 }
