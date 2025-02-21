@@ -36,6 +36,7 @@ export enum ModuleSettingKeys {
   manualPause = 'manualPause',   // is the manual pause currently active (will prevent any auto or regen updates)
   customChatMessages = 'customChatMessages',  // [climate][humidity][index]: message
   forecasts = 'forecasts',   // a map from the timestamp for a day to a Forecast object for that day
+  previousVersion = 'previousVersion',   // the previous version of the module - checked in init() to determine if any data migration is needed
 }
 
 type SettingType<K extends ModuleSettingKeys> =
@@ -63,6 +64,7 @@ type SettingType<K extends ModuleSettingKeys> =
     K extends ModuleSettingKeys.manualPause ? boolean :
     K extends ModuleSettingKeys.customChatMessages ? string[][][] :
     K extends ModuleSettingKeys.forecasts ? Record<string, Forecast> :
+    K extends ModuleSettingKeys.previousVersion ? string :
     never;  
 
 export class ModuleSettings {
@@ -294,6 +296,12 @@ export class ModuleSettings {
       name: 'Forecasts',
       type: Object,
       default: {}
+    },
+    {
+      settingID: ModuleSettingKeys.previousVersion, 
+      name: 'Previous version',
+      type: String,
+      default: '',
     },
 
   ];

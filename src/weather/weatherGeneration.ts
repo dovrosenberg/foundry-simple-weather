@@ -6,6 +6,7 @@ import { WeatherData } from './WeatherData';
 import { log } from '@/utils/log';
 import { generateForecast } from './forecastGeneration';
 import { simpleCalendarInstalled } from '@/main';
+import { cleanDate } from '@/utils/calendar';
 
 // note: we don't actually care if the date on yesterday is the day before today; yesterday is used to determine if we should be picking a random
 //    starting spot or moving from the prior one
@@ -24,15 +25,15 @@ const generateWeather = function(climate: Climate, humidity: Humidity, season: S
   // if the date has a forecast, use that
   const allForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
   if (today && ModuleSettings.get(ModuleSettingKeys.useForecasts) && allForecasts && 
-      allForecasts[SimpleCalendar.api.dateToTimestamp(today)]) {
-    const forecast = allForecasts[SimpleCalendar.api.dateToTimestamp(today)];
+      allForecasts[cleanDate(today)]) {
+    const forecast = allForecasts[cleanDate(today)];
 
     // make sure the climate/humidity hasn't changed
     if (climate===forecast.climate && humidity===forecast.humidity) {
       weatherData.hexFlowerCell = forecast.hexFlowerCell;
 
       // we need to generate one more day on the end
-      generateForecast(SimpleCalendar.api.dateToTimestamp(today), weatherData, true);
+      generateForecast(cleanDate(today), weatherData, true);
     }
   } else {
     // random start if no valid prior day or the prior day" was manually set
@@ -60,7 +61,7 @@ const generateWeather = function(climate: Climate, humidity: Humidity, season: S
 
     // generate an updated forecast
     if (!forForecast && ModuleSettings.get(ModuleSettingKeys.useForecasts) && today!==null) {
-      generateForecast(SimpleCalendar.api.dateToTimestamp(today), weatherData);
+      generateForecast(cleanDate(today), weatherData);
     }
 
     log(false, 'New cell: ' + weatherData.hexFlowerCell + ' (' + weatherDescriptions[climate][humidity][weatherData.hexFlowerCell] + ')')

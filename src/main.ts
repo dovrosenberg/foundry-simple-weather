@@ -10,7 +10,8 @@ import { updateWeatherApplication, weatherApplication, WeatherApplication } from
 import { updateWeatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
 import { KeyBindings } from '@/settings/KeyBindings';
 import moduleJson from '@module';
-import { SceneSettingKeys, SceneSettings, } from './settings/SceneSettings';
+import { SceneSettingKeys, SceneSettings, } from '@/settings/SceneSettings';
+import { migrateData } from '@/utils/migration';
 
 // track which modules we have
 export let simpleCalendarInstalled = false;
@@ -70,6 +71,9 @@ Hooks.once('init', async () => {
 
 Hooks.once('ready', async () => {
   checkDependencies();
+
+  // do any data migration - not in init because isClietnGM() won't be set
+  await migrateData();
 
   // if we don't have simple calendar installed, we're ready to go 
   //    (otherwise wait for it to call the renderMainApp hook)

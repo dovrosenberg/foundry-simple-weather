@@ -1,5 +1,12 @@
 # Change Log
 
+## v1.17.4 - Fixed issue with advancing calendar by partial days
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-February%2021%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.17.4/module.zip)
+
+Advancing the calendar time within the same day no longer breaks the forecast.
+
 ## v1.17.3 - Big bug fixes related to weather fx
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-February%208%2C%202025-blue)
