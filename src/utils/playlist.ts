@@ -90,12 +90,21 @@ async function addSound(soundType: Sounds, fileName: string) {
     } else {
       // find the global setting
       const globalVolume = game.settings?.get("core", "globalAmbientVolume");
-      volume = (globalVolume!==undefined && globalVolume!==null) ? globalVolume : 0.5;
+      volume = (globalVolume!==undefined && globalVolume!==null) ? globalVolume*100 : 50;
     }
+
+    // map to the other volume so the setting matches what is set
+    volume = Math.pow(volume/100, 1/0.62);
 
     await playlist.createEmbeddedDocuments(
       'PlaylistSound',
-      [{ name: Sounds[soundType], path: fileName, repeat: true, volume: volume }],
+      [{ 
+        name: Sounds[soundType], 
+        path: fileName, 
+        repeat: true, 
+        volume: volume,
+        channel: 'environment',   //CONST.AUDIO_CHANNELS.environment,
+      }],
       {},
     );
   } else {
