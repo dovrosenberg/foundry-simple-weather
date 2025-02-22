@@ -29,10 +29,10 @@
       "customWeatherHelp": "Ustawianie komunikatów specyficznych dla systemu (przydatne w przypadku kar związanych z ekstremalnymi warunkami pogodowymi).",
       "useForecasts": "Używać prognoz?",
       "useForecastsHelp": "Pokaż MG najbliższe kilka dni nadchodzącej pogody. Wymaga Simple Calendar.",
-      "playSound": "Play sound effects?",
-      "playSoundHelp": "Play sound effects when showing weather effects.",
-      "soundVolume": "Volume",
-      "soundVolumeHelp": "The volume level to use"
+      "playSound": "Odtwarzać efekty dźwiękowe?",
+      "playSoundHelp": "Odtwarzaj efekty dźwiękowe podczas wyświetlania efektów pogodowych.",
+      "soundVolume": "Głośność",
+      "soundVolumeHelp": "Poziom głośności do użycia"
     },
 
     "keybindings": {
@@ -478,13 +478,5 @@
         }
       }
     }
-  },
-  "missing translations": {
-    "settings": {
-      "playSound": "Play sound effects?",
-      "playSoundHelp": "Play sound effects when showing weather effects.",
-      "soundVolume": "Volume",
-      "soundVolumeHelp": "The volume level to use"
-   }
- }
+  }
 }

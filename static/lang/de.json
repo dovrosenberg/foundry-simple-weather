@@ -29,10 +29,10 @@
       "customWeatherHelp": "Passe die Wetterausgabe deiner Welt an (nützlich wenn extremes Wetter mit Nachteilen/Strafen in Verbindung stehen).",
       "useForecasts": "Verwendung der Wettervorhersage?",
       "useForecastsHelp": "Zeigt dem SL das Wetter der kommenden Tage. Benötigt Simple Calendar.",
-      "playSound": "Play sound effects?",
-      "playSoundHelp": "Play sound effects when showing weather effects.",
-      "soundVolume": "Volume",
-      "soundVolumeHelp": "The volume level to use"
+      "playSound": "Soundeffekte abspielen?",
+      "playSoundHelp": "Soundeffekte abspielen, wenn Wettereffekte angezeigt werden.",
+      "soundVolume": "Lautstärke",
+      "soundVolumeHelp": "Die zu verwendende Lautstärke"
     },
 
     "keybindings": {
@@ -477,15 +477,6 @@
           "winter.9": "Mäßiger Regen, windig" 
         }
       }
-    },
-
-    "missing translations": {
-      "settings": {
-        "playSound": "Play sound effects?",
-        "playSoundHelp": "Play sound effects when showing weather effects.",
-        "soundVolume": "Volume",
-        "soundVolumeHelp": "The volume level to use"
-        }
     }
   }
 }

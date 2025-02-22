@@ -1,3 +1,4 @@
+- update translations (ChatGPT)
 - update version in package.json
 - update latest tested version in module.json, if needed
 - update changelog (including the date/version tags and the SC version)

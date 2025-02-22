@@ -1,5 +1,12 @@
 # Change Log
 
+## v1.18.1 - Updated language translations for 1.18
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-February%2022%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.18.1/module.zip)
+
+Updated all translations.
+
 ## v1.18.0 - Sound effects!
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-February%2022%2C%202025-blue)

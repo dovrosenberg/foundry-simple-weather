@@ -29,10 +29,10 @@
       "customWeatherHelp": "Définir des messages spécifiques au système (utile pour les pénalités associées à des conditions météorologiques extrêmes)",
       "useForecasts": "Utiliser les prévisions ?",
       "useForecastsHelp": "Montrer au MJ les prévisions météorologiques pour les prochains jours. Nécessite Simple Calendar",
-      "playSound": "Play sound effects?",
-      "playSoundHelp": "Play sound effects when showing weather effects.",
+      "playSound": "Jouer des effets sonores ?",
+      "playSoundHelp": "Jouer des effets sonores lors de l'affichage des effets météorologiques.",
       "soundVolume": "Volume",
-      "soundVolumeHelp": "The volume level to use"
+      "soundVolumeHelp": "Le niveau de volume à utiliser"
     },
 
     "keybindings": {
@@ -478,14 +478,5 @@
         }
       }
     }
-  },
-
-  "missing translations": {
-    "settings": {
-      "playSound": "Play sound effects?",
-      "playSoundHelp": "Play sound effects when showing weather effects.",
-      "soundVolume": "Volume",
-      "soundVolumeHelp": "The volume level to use"
-   }
- }
+  }
 }

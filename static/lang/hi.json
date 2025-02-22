@@ -29,10 +29,10 @@
       "customWeatherHelp": "सिस्टम-विशिष्ट संदेश सेट करें (चरम मौसम से संबंधित दंड के लिए उपयोगी)",
       "useForecasts": "पूर्वानुमान का उपयोग करें?",
       "useForecastsHelp": "GM को अगले कुछ दिनों के आने वाले मौसम दिखाएं। सिंपल कैलेंडर की आवश्यकता है।",
-      "playSound": "Play sound effects?",
-      "playSoundHelp": "Play sound effects when showing weather effects.",
-      "soundVolume": "Volume",
-      "soundVolumeHelp": "The volume level to use"
+      "playSound": "ध्वनि प्रभाव बजाएं?",
+      "playSoundHelp": "मौसम प्रभाव दिखाते समय ध्वनि प्रभाव बजाएं।",
+      "soundVolume": "आवाज़ का स्तर",
+      "soundVolumeHelp": "उपयोग करने के लिए ध्वनि का स्तर।"    
     },
 
     "keybindings": {
@@ -477,15 +477,6 @@
           "winter.9": "मध्यम बारिश, तेज़ हवाएं"        
         }
       }
-    }
-  },
-
-  "missing translations": {
-    "settings": {
-      "playSound": "Play sound effects?",
-      "playSoundHelp": "Play sound effects when showing weather effects.",
-      "soundVolume": "Volume",
-      "soundVolumeHelp": "The volume level to use"
     }
   }
 }
