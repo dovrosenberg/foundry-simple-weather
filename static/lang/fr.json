@@ -31,8 +31,6 @@
       "useForecastsHelp": "Montrer au MJ les prévisions météorologiques pour les prochains jours. Nécessite Simple Calendar",
       "playSound": "Play sound effects?",
       "playSoundHelp": "Play sound effects when showing weather effects.",
-      "normalizeVolume": "Set specific volume?",
-      "normalizeVolumeHelp": "Set a volume level to use across all effects.  If off, will use the level set for 'environmental sounds'.",
       "soundVolume": "Volume",
       "soundVolumeHelp": "The volume level to use"
     },
@@ -486,8 +484,6 @@
     "settings": {
       "playSound": "Play sound effects?",
       "playSoundHelp": "Play sound effects when showing weather effects.",
-      "normalizeVolume": "Set specific volume?",
-      "normalizeVolumeHelp": "Set a volume level to use across all effects.  If off, will use the level set for 'environmental sounds'.",
       "soundVolume": "Volume",
       "soundVolumeHelp": "The volume level to use"
    }

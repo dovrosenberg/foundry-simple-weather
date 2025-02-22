@@ -84,14 +84,14 @@ async function addSound(soundType: Sounds, fileName: string) {
     return;
 
   if (playlist) {
-    let volume: number;
-    if (ModuleSettings.get(ModuleSettingKeys.normalizeVolume)) {
-      volume = ModuleSettings.get(ModuleSettingKeys.soundVolume);
-    } else {
-      // find the global setting
-      const globalVolume = game.settings?.get("core", "globalAmbientVolume");
-      volume = (globalVolume!==undefined && globalVolume!==null) ? globalVolume*100 : 50;
-    }
+    let volume = ModuleSettings.get(ModuleSettingKeys.soundVolume);
+    // if (ModuleSettings.get(ModuleSettingKeys.normalizeVolume)) {
+    //   volume = ModuleSettings.get(ModuleSettingKeys.soundVolume);
+    // } else {
+    //   // find the global setting
+    //   const globalVolume = game.settings?.get("core", "globalAmbientVolume");
+    //   volume = (globalVolume!==undefined && globalVolume!==null) ? globalVolume*100 : 50;
+    // }
 
     // map to the other volume so the setting matches what is set
     volume = Math.pow(volume/100, 1/0.62);
