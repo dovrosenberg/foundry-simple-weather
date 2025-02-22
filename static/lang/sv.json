@@ -5,8 +5,8 @@
       "dialogDisplayHelp": "När markerad kan icke-GM-klienter se dialogen (men endast tid, temperatur och väderbeskrivning). De kommer inte att kunna se dropdowns eller generera väder.",
       "useCelsius": "Använd Celsius",
       "useCelsiusHelp": "Använd Celsius för temperaturvisning.",
-      "outputweatherToChat": "Visa väder i chatten?",
-      "outputweatherToChatHelp": "Ska nyligen genererat väder visas i chatten?",
+      "outputWeatherToChat": "Visa väder i chatten?",
+      "outputWeatherToChatHelp": "Ska nyligen genererat väder visas i chatten?",
       "publicChat": "Gör chatten offentlig?",
       "publicChatHelp": "Ska alla se väderchatten (om den är på) eller bara GM (om den är avstängd)?",
       "useFX": "Visa specialeffekter?",
@@ -28,7 +28,11 @@
       "useForecasts": "Använd väderprognoser?",
       "useForecastsHelp": "Visa spelledaren de kommande dagarnas väder. Kräver Simple Calendar.",
       "playSound": "Play sound effects?",
-      "playSoundHelp": "Play sound effects when showing weather effects."
+      "playSoundHelp": "Play sound effects when showing weather effects.",
+      "normalizeVolume": "Set specific volume?",
+      "normalizeVolumeHelp": "Set a volume level to use across all effects.  If off, will use the level set for 'environmental sounds'.",
+      "soundVolume": "Volume",
+      "soundVolumeHelp": "The volume level to use"
     }    
   },
   
@@ -479,7 +483,11 @@
   "missing translations": {
     "settings": {
       "playSound": "Play sound effects?",
-      "playSoundHelp": "Play sound effects when showing weather effects."
+      "playSoundHelp": "Play sound effects when showing weather effects.",
+      "normalizeVolume": "Set specific volume?",
+      "normalizeVolumeHelp": "Set a volume level to use across all effects.  If off, will use the level set for 'environmental sounds'.",
+      "soundVolume": "Volume",
+      "soundVolumeHelp": "The volume level to use"
     }
   }  
 }

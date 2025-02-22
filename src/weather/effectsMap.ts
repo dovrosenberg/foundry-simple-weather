@@ -42,7 +42,7 @@ export type RandomRange = {
   end: number;
 }
 
-interface FXMParticleOptions {
+export interface FXMParticleOptions {
   scale: number; 
   direction?: RandomRange | undefined; 
   speed: number; 
@@ -51,7 +51,7 @@ interface FXMParticleOptions {
   alpha: number; 
   tint: FXMColor 
 }
-interface FXMFilterOptions {
+export interface FXMFilterOptions {
   blur?: number | undefined; 
   bloomScale?: number | undefined; 
   threshold?: number | undefined;

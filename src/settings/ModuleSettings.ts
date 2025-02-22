@@ -231,7 +231,7 @@ export class ModuleSettings {
       name: 'sweath.settings.normalizeVolume',
       hint: 'sweath.settings.normalizeVolumeHelp',
       default: true,
-      requiresReload: false,
+      requiresReload: true,
       type: Boolean,
     },
     {
@@ -239,7 +239,7 @@ export class ModuleSettings {
       name: 'sweath.settings.soundVolume',
       hint: 'sweath.settings.soundVolumeHelp',
       default: 0.5,
-      requiresReload: false,
+      requiresReload: true,
       type: new foundry.data.fields.NumberField({ nullable: false, min: 0, max: 100, step: 1, initial: 50}),
     },
   ];

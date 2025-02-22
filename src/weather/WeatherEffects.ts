@@ -7,7 +7,7 @@ import { VersionUtils } from '@/utils/versionUtils';
 import { WeatherData } from '@/weather/WeatherData';
 import { weatherOptions } from '@/weather/weatherMap';
 import { FXDetailType, FXMStyleTypes, FXMParticleOptions } from './effectsMap';
-import { playSound, Sounds } from '@/utils/playlist';
+import { playSound, Sounds, stopSounds } from '@/utils/playlist';
 
 // the solo instance
 let weatherEffects: WeatherEffects;
@@ -112,14 +112,17 @@ class WeatherEffects {
       // turn off any old ones
       await this.deactivateFX(this._useFX === 'core');
 
-      if (!this._fxActive)
+      if (!this._fxActive) {
+        await stopSounds();
         return;
+      }
   
       const effectOptions = weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell].fx;
 
-      if (!effectOptions || this._useFX === 'off')
+      if (!effectOptions || this._useFX === 'off') {
+        await stopSounds();
         return;
-
+      }
 
       switch (this._useFX) {
         case 'core':
@@ -165,12 +168,8 @@ class WeatherEffects {
           break;
       }
 
-      
       if (ModuleSettings.get(ModuleSettingKeys.playSound)) {
-        if (effectOptions.sound===Sounds.None) {
-        } else {
-          await playSound(effectOptions.sound);
-        }
+        await playSound(effectOptions.sound || Sounds.None);
       } 
     }
   }

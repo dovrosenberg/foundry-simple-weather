@@ -5,8 +5,8 @@
       "dialogDisplayHelp": "When checked, non-GM clients will be able to see the dialog (but only the time, temperature, and weather description).  They will not be able to see dropdowns or generate weather.",
       "useCelsius": "Use Celsius",
       "useCelsiusHelp": "Use Celsius for temperature display.",
-      "outputweatherToChat": "Output weather to chat?",
-      "outputweatherToChatHelp": "Should newly generated weather be shown in chat?",
+      "outputWeatherToChat": "Output weather to chat?",
+      "outputWeatherToChatHelp": "Should newly generated weather be shown in chat?",
       "outputDateToChat": "Output date to chat?",
       "outputDateToChatHelp": "Should the calendar date be included in the chat output? This is ignored if weather isn't being output to chat.  Requires Simple Calendar.",
       "publicChat": "Make chat public?",
@@ -30,7 +30,11 @@
       "useForecasts": "Use forecasts?",
       "useForecastsHelp": "Show GM the next several days of upcoming weather. Requires Simple Calendar.",
       "playSound": "Play sound effects?",
-      "playSoundHelp": "Play sound effects when showing weather effects."
+      "playSoundHelp": "Play sound effects when showing weather effects.",
+      "normalizeVolume": "Set specific volume?",
+      "normalizeVolumeHelp": "Set a volume level to use across all effects.  If off, will use the level set for 'environmental sounds'.",
+      "soundVolume": "Volume",
+      "soundVolumeHelp": "The volume level to use"
     },
 
     "keybindings": {

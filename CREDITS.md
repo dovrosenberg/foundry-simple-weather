@@ -42,10 +42,19 @@ You can't easily tell, because this is a rebuild, rather than a fork, but this m
 
 Please buy them both coffee (https://ko-fi.com/vigorator  or https://ko-fi.com/thebird956) or join their Patreons (https://www.patreon.com/vigorator or ???)!
 
-### Sound files
+### Sound 
+Thanks to SaltyJ for cleaning up the sound files for volume, looping, etc.  That was a huge help!
+
 Royalty-free sound files from pixabay.com:
 * [Light rain](https://pixabay.com/sound-effects/calming-rain-257596/)
-* [Heavy rain](https://pixabay.com/sound-effects/rain-sounds-210646/) - bad loop
-* [Thunder](https://pixabay.com/sound-effects/rain-and-thunder-sfx-12820/)
-* [Dry storm](https://pixabay.com/sound-effects/peals-of-thunder-191992/)
+* [Heavy rain](https://pixabay.com/sound-effects/rain-sounds-210646/) 
+* [Rain and Thunder](https://pixabay.com/sound-effects/rain-and-thunder-sfx-12820/)
+* [Dry thunderstorm](https://pixabay.com/sound-effects/peals-of-thunder-191992/)
+* [Hail](https://pixabay.com/sound-effects/hail-74904/)
+* [Snow](https://pixabay.com/sound-effects/snow-on-umbrella-61498/)
+* [Blizzard](https://pixabay.com/sound-effects/wind-artic-cold-6195/)
+* [Wind](https://pixabay.com/sound-effects/wind-sound-301491/)
+* [HeavyWind](https://pixabay.com/sound-effects/wind-128967/)
+* [Tornado](https://pixabay.com/sound-effects/tornado-sound-better-quality-68141/)
+* [WildFire](https://pixabay.com/sound-effects/digital-wildfire-64073/)
 

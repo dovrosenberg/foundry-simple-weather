@@ -5,8 +5,8 @@
       "dialogDisplayHelp": "Si cette case est cochée, les clients non MJ pourront voir la fenêtre (mais seulement l'heure, la température et la description du temps).  Ils ne pourront pas voir les menus déroulants ni générer la météo.",
       "useCelsius": "Utiliser le Celsius",
       "useCelsiusHelp": "Utiliser le Celsius pour l'affichage de la température.",
-      "outputweatherToChat": "Envoyer la météo vers le chat ?",
-      "outputweatherToChatHelp": "La météo nouvellement générée doit-elle être affichée dans le chat ?",
+      "outputWeatherToChat": "Envoyer la météo vers le chat ?",
+      "outputWeatherToChatHelp": "La météo nouvellement générée doit-elle être affichée dans le chat ?",
       "outputDateToChat": "Afficher la date dans le chat ?",
       "outputDateToChatHelp": "La date du calendrier doit-elle être incluse dans le chat ? Cela est ignoré si la météo n'est pas affichée dans le chat. Nécessite Simple Calendar.",
       "publicChat": "Rendre le chat public ?",
@@ -30,7 +30,11 @@
       "useForecasts": "Utiliser les prévisions ?",
       "useForecastsHelp": "Montrer au MJ les prévisions météorologiques pour les prochains jours. Nécessite Simple Calendar",
       "playSound": "Play sound effects?",
-      "playSoundHelp": "Play sound effects when showing weather effects."
+      "playSoundHelp": "Play sound effects when showing weather effects.",
+      "normalizeVolume": "Set specific volume?",
+      "normalizeVolumeHelp": "Set a volume level to use across all effects.  If off, will use the level set for 'environmental sounds'.",
+      "soundVolume": "Volume",
+      "soundVolumeHelp": "The volume level to use"
     },
 
     "keybindings": {
@@ -481,7 +485,11 @@
   "missing translations": {
     "settings": {
       "playSound": "Play sound effects?",
-      "playSoundHelp": "Play sound effects when showing weather effects."
-    }
+      "playSoundHelp": "Play sound effects when showing weather effects.",
+      "normalizeVolume": "Set specific volume?",
+      "normalizeVolumeHelp": "Set a volume level to use across all effects.  If off, will use the level set for 'environmental sounds'.",
+      "soundVolume": "Volume",
+      "soundVolumeHelp": "The volume level to use"
+   }
  }
 }

@@ -36,6 +36,7 @@ export default defineConfig({
     // copy the static module file
     copy({
       targets: [
+        { src: 'static/sounds', dest: 'dist' },
         { src: 'static/lang', dest: 'dist' },
         { src: 'static/templates', dest: 'dist' }
       ],
