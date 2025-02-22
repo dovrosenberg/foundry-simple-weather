@@ -1,5 +1,12 @@
 # Change Log
 
+## v1.18.0 - Sound effects!
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-February%2022%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.18.0/module.zip)
+
+You can now activate sound FX when using visual FX.  For now, only built in sounds, but will look at making it more customizable in the future.
+
 ## v1.17.4 - Fixed issue with advancing calendar by partial days
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-February%2021%2C%202025-blue)

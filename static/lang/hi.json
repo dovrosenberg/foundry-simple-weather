@@ -5,8 +5,8 @@
       "dialogDisplayHelp": "जब चेक किया जाता है, गैर-GM ग्राहक संवाद देख सकेंगे (लेकिन केवल समय, तापमान, और मौसम विवरण). वे ड्रॉपडाउन नहीं देख सकेंगे और मौसम उत्पन्न नहीं कर सकेंगे।",
       "useCelsius": "सेल्सियस का उपयोग करें",
       "useCelsiusHelp": "तापमान प्रदर्शन के लिए सेल्सियस का उपयोग करें।",
-      "outputweatherToChat": "मौसम को चैट में निकालें?",
-      "outputweatherToChatHelp": "क्या नवा उत्पन्न किया गया मौसम चैट में दिखाया जाना चाहिए?",
+      "outputWeatherToChat": "मौसम को चैट में निकालें?",
+      "outputWeatherToChatHelp": "क्या नवा उत्पन्न किया गया मौसम चैट में दिखाया जाना चाहिए?",
       "outputDateToChat": "चैट में तिथि प्रदर्शित करें?",
       "outputDateToChatHelp": "क्या चैट में कैलेंडर तिथि को शामिल किया जाना चाहिए? अगर मौसम चैट में नहीं दिखाया जा रहा है तो इसे नजरअंदाज किया जाएगा। सिंपल कैलेंडर की आवश्यकता है।",
       "publicChat": "चैट को सार्वजनिक बनाएं?",
@@ -28,7 +28,11 @@
       "customWeatherButton": "अनुकूलित मौसम संदेश प्रबंधित करें",
       "customWeatherHelp": "सिस्टम-विशिष्ट संदेश सेट करें (चरम मौसम से संबंधित दंड के लिए उपयोगी)",
       "useForecasts": "पूर्वानुमान का उपयोग करें?",
-      "useForecastsHelp": "GM को अगले कुछ दिनों के आने वाले मौसम दिखाएं। सिंपल कैलेंडर की आवश्यकता है।"
+      "useForecastsHelp": "GM को अगले कुछ दिनों के आने वाले मौसम दिखाएं। सिंपल कैलेंडर की आवश्यकता है।",
+      "playSound": "Play sound effects?",
+      "playSoundHelp": "Play sound effects when showing weather effects.",
+      "soundVolume": "Volume",
+      "soundVolumeHelp": "The volume level to use"
     },
 
     "keybindings": {
@@ -477,5 +481,11 @@
   },
 
   "missing translations": {
+    "settings": {
+      "playSound": "Play sound effects?",
+      "playSoundHelp": "Play sound effects when showing weather effects.",
+      "soundVolume": "Volume",
+      "soundVolumeHelp": "The volume level to use"
+    }
   }
 }

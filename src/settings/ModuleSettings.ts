@@ -36,6 +36,9 @@ export enum ModuleSettingKeys {
   manualPause = 'manualPause',   // is the manual pause currently active (will prevent any auto or regen updates)
   customChatMessages = 'customChatMessages',  // [climate][humidity][index]: message
   forecasts = 'forecasts',   // a map from the timestamp for a day to a Forecast object for that day
+  playSound = 'playSound',   // should we play sounds when showing effects?
+  // normalizeVolume = 'normalizeVolume',   // should we normalize the volume level across all clips?
+  soundVolume = 'soundVolume',   // volume level for sounds
   previousVersion = 'previousVersion',   // the previous version of the module - checked in init() to determine if any data migration is needed
 }
 
@@ -64,6 +67,9 @@ type SettingType<K extends ModuleSettingKeys> =
     K extends ModuleSettingKeys.manualPause ? boolean :
     K extends ModuleSettingKeys.customChatMessages ? string[][][] :
     K extends ModuleSettingKeys.forecasts ? Record<string, Forecast> :
+    K extends ModuleSettingKeys.playSound ? boolean :
+    // K extends ModuleSettingKeys.normalizeVolume ? boolean :
+    K extends ModuleSettingKeys.soundVolume ? number :
     K extends ModuleSettingKeys.previousVersion ? string :
     never;  
 
@@ -141,8 +147,8 @@ export class ModuleSettings {
   private static displayParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
     {
       settingID: ModuleSettingKeys.outputWeatherToChat,
-      name: 'sweath.settings.outputweatherToChat',
-      hint: 'sweath.settings.outputweatherToChatHelp',
+      name: 'sweath.settings.outputWeatherToChat',
+      hint: 'sweath.settings.outputWeatherToChatHelp',
       default: true,
       type: Boolean,
     },
@@ -211,6 +217,30 @@ export class ModuleSettings {
       default: false,
       requiresReload: true,    
       type: Boolean,
+    },
+    {
+      settingID: ModuleSettingKeys.playSound,
+      name: 'sweath.settings.playSound',
+      hint: 'sweath.settings.playSoundHelp',
+      default: true,
+      requiresReload: true,
+      type: Boolean,
+    },
+    // {
+    //   settingID: ModuleSettingKeys.normalizeVolume,
+    //   name: 'sweath.settings.normalizeVolume',
+    //   hint: 'sweath.settings.normalizeVolumeHelp',
+    //   default: true,
+    //   requiresReload: true,
+    //   type: Boolean,
+    // },
+    {
+      settingID: ModuleSettingKeys.soundVolume,
+      name: 'sweath.settings.soundVolume',
+      hint: 'sweath.settings.soundVolumeHelp',
+      default: 0.5,
+      requiresReload: true,
+      type: new foundry.data.fields.NumberField({ nullable: false, min: 0, max: 100, step: 1, initial: 50}),
     },
   ];
 
@@ -306,7 +336,7 @@ export class ModuleSettings {
 
   ];
   
-  // these are client-specfic only used internally
+  // these are client-specific only used internally
   private static localInternalParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
     {
       settingID: ModuleSettingKeys.fxActive,

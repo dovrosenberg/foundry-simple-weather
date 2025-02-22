@@ -15,6 +15,7 @@ import { weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
 import { Forecast } from '@/weather/Forecast';
 import { cleanDate } from '@/utils/calendar';
+import { initSounds } from '@/utils/playlist';
 
 // the solo instance
 let weatherApplication: WeatherApplication;

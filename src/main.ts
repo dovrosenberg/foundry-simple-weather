@@ -11,6 +11,7 @@ import { updateWeatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
 import { KeyBindings } from '@/settings/KeyBindings';
 import moduleJson from '@module';
 import { SceneSettingKeys, SceneSettings, } from '@/settings/SceneSettings';
+import { initSounds } from '@/utils/playlist';
 import { migrateData } from '@/utils/migration';
 
 // track which modules we have
@@ -48,6 +49,7 @@ Hooks.once('devModeReady', async ({ registerPackageDebugFlag: registerPackageDeb
 Hooks.once('init', async () => {
   // initialize settings first, so other things can use them
   ModuleSettings.registerSettings();
+
   updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
   updateWeatherApplication(new WeatherApplication());
 
@@ -72,14 +74,17 @@ Hooks.once('init', async () => {
 Hooks.once('ready', async () => {
   checkDependencies();
 
-  // do any data migration - not in init because isClietnGM() won't be set
+  // do any data migration - not in init because isClientGM() won't be set
   await migrateData();
 
   // if we don't have simple calendar installed, we're ready to go 
   //    (otherwise wait for it to call the renderMainApp hook)
   if (!simpleCalendarInstalled) {
-    weatherApplication.ready();
-  }  
+      // create the sound playlist
+      await initSounds();
+
+      weatherApplication.ready();
+  }
 });
 
 Hooks.once('i18nInit', async () => {
@@ -197,7 +202,10 @@ Hooks.once(SimpleCalendar.Hooks.Init, async (): Promise<void> => {
     // modify the drop-downs
     allowSeasonSync();
 
-    // check the setting to see if we should be in sync mode (because if we did initial render before getting here, 
+    // create the sound playlist
+    await initSounds();
+
+      // check the setting to see if we should be in sync mode (because if we did initial render before getting here, 
     //    it will have cleared it)
     weatherApplication.ready();
 
@@ -206,8 +214,6 @@ Hooks.once(SimpleCalendar.Hooks.Init, async (): Promise<void> => {
     Hooks.on('updateWorldTime', (timestamp) => {
       weatherApplication.updateDateTime(SimpleCalendar.api.timestampToDate(timestamp));
     });
-  } else {
-    weatherApplication.ready();
   }
   
   // check the setting to see if we want to dock
@@ -221,7 +227,7 @@ Hooks.once(SimpleCalendar.Hooks.Init, async (): Promise<void> => {
     //    have to inject the button 
     Hooks.on('renderMainApp', (_application: Application, html: JQuery<HTMLElement>) => {
       // if SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER div exists then it's in compact mode
-      // in compact mode, there's no api to add a button, so we monkeypatch one in
+      // in compact mode, there's no api to add a button, so we monkey patch one in
       const compactMode = html.find(`.${SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER}`).length>0;
       if (compactMode) {
         weatherApplication.render();
@@ -230,7 +236,7 @@ Hooks.once(SimpleCalendar.Hooks.Init, async (): Promise<void> => {
         if (html.find('#swr-fsc-compact-open').length === 0) {
           const newButton = `
           <div id="swr-fsc-compact-open" style="margin-left: 8px; cursor: pointer; ">
-            <div data-tooltip="Simple Weather" style="color:var(--comapct-header-control-grey);">    
+            <div data-tooltip="Simple Weather" style="color:var(--compact-header-control-grey);">    
               <span class="fa-solid fa-cloud-sun"></span>
             </div>
           </div>

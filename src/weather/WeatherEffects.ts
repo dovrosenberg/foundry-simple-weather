@@ -6,7 +6,8 @@ import { log } from '@/utils/log';
 import { VersionUtils } from '@/utils/versionUtils';
 import { WeatherData } from '@/weather/WeatherData';
 import { weatherOptions } from '@/weather/weatherMap';
-import { FXDetail, FXMStyleTypes } from './effectsMap';
+import { FXDetailType, FXMStyleTypes, FXMParticleOptions } from './effectsMap';
+import { playSound, Sounds, stopSounds } from '@/utils/playlist';
 
 // the solo instance
 let weatherEffects: WeatherEffects;
@@ -111,13 +112,17 @@ class WeatherEffects {
       // turn off any old ones
       await this.deactivateFX(this._useFX === 'core');
 
-      if (!this._fxActive)
+      if (!this._fxActive) {
+        await stopSounds();
         return;
+      }
   
       const effectOptions = weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell].fx;
 
-      if (!effectOptions)
+      if (!effectOptions || this._useFX === 'off') {
+        await stopSounds();
         return;
+      }
 
       switch (this._useFX) {
         case 'core':
@@ -126,14 +131,14 @@ class WeatherEffects {
 
         case 'fxmaster':
           if (effectOptions.fxMaster) {
-            const effects = effectOptions.fxMaster as FXDetail[];
+            const effects = effectOptions.fxMaster as FXDetailType[];
 
             for (let e=0; e<effects.length; e++) {
               const name = `swr-${effects[e].type}-${foundry.utils.randomID()}`;
 
               if (effects[e].style === FXMStyleTypes.Particle) {
                 // adjust options
-                const options = structuredClone(effects[e].options);
+                const options = structuredClone(effects[e].options) as FXMParticleOptions;
                 
                 // override direction
                 if (options.direction) {
@@ -159,12 +164,14 @@ class WeatherEffects {
 
           break;
 
-        
-        case 'off':
         default:
           break;
       }
-    } 
+
+      if (ModuleSettings.get(ModuleSettingKeys.playSound)) {
+        await playSound(effectOptions.sound || Sounds.None);
+      } 
+    }
   }
 
   // if skipCore is true, won't turn off the core weather; this is for when we're doing a deactivate that's 
