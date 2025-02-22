@@ -14,6 +14,7 @@ import { ModuleSettings } from '@/settings/ModuleSettings';
 import { weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
 import { Forecast } from '@/weather/Forecast';
+import { cleanDate } from '@/utils/calendar';
 
 // the solo instance
 let weatherApplication: WeatherApplication;
@@ -179,7 +180,7 @@ class WeatherApplication extends Application {
       showForecast: isClientGM() && ModuleSettings.get(ModuleSettingKeys.useForecasts),
       forecasts: this.getForecasts(),
     };
-    log(true, data);
+    // log(false, data);
 
     return data;
   }
@@ -996,7 +997,7 @@ _______________________________________
     
     const forecasts = [] as Forecast[];
 
-    let currentTimestamp = SimpleCalendar.api.dateToTimestamp(this._currentWeather.date);
+    let currentTimestamp = cleanDate(this._currentWeather.date);
 
     const allForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
     if (!allForecasts || Object.keys(allForecasts).length===0) 

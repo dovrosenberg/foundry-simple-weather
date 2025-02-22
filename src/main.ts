@@ -12,6 +12,7 @@ import { KeyBindings } from '@/settings/KeyBindings';
 import moduleJson from '@module';
 import { SceneSettingKeys, SceneSettings, } from '@/settings/SceneSettings';
 import { initSounds } from '@/utils/playlist';
+import { migrateData } from '@/utils/migration';
 
 // track which modules we have
 export let simpleCalendarInstalled = false;
@@ -74,6 +75,9 @@ Hooks.once('init', async () => {
 
 Hooks.once('ready', async () => {
   checkDependencies();
+
+  // do any data migration - not in init because isClientGM() won't be set
+  await migrateData();
 
   // if we don't have simple calendar installed, we're ready to go 
   //    (otherwise wait for it to call the renderMainApp hook)
@@ -230,7 +234,7 @@ Hooks.once(SimpleCalendar.Hooks.Init, async (): Promise<void> => {
         if (html.find('#swr-fsc-compact-open').length === 0) {
           const newButton = `
           <div id="swr-fsc-compact-open" style="margin-left: 8px; cursor: pointer; ">
-            <div data-tooltip="Simple Weather" style="color:var(--comapct-header-control-grey);">    
+            <div data-tooltip="Simple Weather" style="color:var(--compact-header-control-grey);">    
               <span class="fa-solid fa-cloud-sun"></span>
             </div>
           </div>
