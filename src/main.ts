@@ -111,7 +111,7 @@ Hooks.on('canvasInit', async (canvas: Canvas) => {
 });
 
 // handle scene changes
-Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
+Hooks.on('getSceneControlButtons', async (controls: Record<string, SceneControl>) => {
   // if in attach mode, don't need to add the button
   if (weatherApplication.attachedMode)
     return;
@@ -119,22 +119,20 @@ Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
   // otherwise, add the button to re-open the app 
   if (isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)) {
     // find the journal notes 
-    const noteControls = controls.find((c) => {
-        return c.name === "notes";
-    });
+    const noteControls = controls['notes'];
 
     // add our own button
     if (noteControls && noteControls.tools) {
-      noteControls.tools.push({ 
-          name: "simple-weather",
-          title: "sweath.labels.openButton",
-          icon: "fas swr-icon",
-          button: true,
-          onClick: () => {   
-            if (weatherApplication)
-              weatherApplication.showWindow(); 
-          }
-      });
+      noteControls.tools['simple-weather'] = {
+        name: 'simple-weather',
+        title: 'swr.labels.openButton',
+        icon: 'fas swr-icon',
+        button: true,
+        onChange: () => {   
+          if (weatherApplication)
+            weatherApplication.showWindow(); 
+        }
+      };
     }
   }
 })

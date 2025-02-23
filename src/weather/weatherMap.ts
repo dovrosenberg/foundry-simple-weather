@@ -38,7 +38,7 @@ function initializeLocalizedText(): void {
       const humidity = humidityArray[h];
 
       for (let i=0; i<37; i++) {
-        weatherDescriptions[climate][humidity][i] = localize(`sweath.description.${localizeClimates[climate]}.${localizeHumidities[humidity]}.${descriptionOrder[i]}`);
+        weatherDescriptions[climate][humidity][i] = localize(`swr.description.${localizeClimates[climate]}.${localizeHumidities[humidity]}.${descriptionOrder[i]}`);
       }
     }
   }

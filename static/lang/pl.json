@@ -1,5 +1,5 @@
 {
-  "sweath": {
+  "swr": {
     "settings": {
       "dialogDisplay": "Czy gracze widzą okna dialogowe?",
       "dialogDisplayHelp": "Po zaznaczeniu tej opcji klienci niebędący MG będą mogli zobaczyć okno dialogowe (ale tylko godzinę, temperaturę i opis pogody). Nie będą mogli zobaczyć rozwijanych menu ani wygenerować pogody.",

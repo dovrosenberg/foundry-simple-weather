@@ -121,6 +121,9 @@ The attachment to the calendar when the calendar is in compact mode is highly de
 ### Missing box (when attached to non-compact Simple Calendar)
 Sometimes when you have another Simple Calendar side tab open and you try to switch to the weather tab, it will close the other tab but not show the weather.  The workaround is just to hit the weather button again.
 
+### Playlist volumes a little off
+The volume on the sounds seems to be off by 1-2 points vs. where the slider in the settings is set.  It's generally not noticeable in the volume, and you can always adjust the slider further, but it's definitely strange.
+
 ## Frequently asked questions
 
 - **Why doesn't the weather update when I change the date in Simple Calendar**? The weather updates are tied to the main Foundry calendar (so they can be triggered by any module that modifies the date).  Make sure that the Simple Calendar calendar you are using is updating the game world time (under "General Setings" for the calendar).

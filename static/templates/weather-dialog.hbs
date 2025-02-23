@@ -13,7 +13,7 @@
 
 					<div>
 						<button id="swr-weather-box-toggle" class="swr-toggle-btn {{#unless hideWeather}}on{{/unless}}">
-							<i class="fas fa-cloud-sun" title="{{localize 'sweath.labels.toggleWeatherBox'}}"></i>
+							<i class="fas fa-cloud-sun" title="{{localize 'swr.labels.toggleWeatherBox'}}"></i>
 						</button>
 					</div>
 				</div>
@@ -55,24 +55,24 @@
 					{{#if isGM}}
 						<div id="swr-manual-bar" class="swr-optional-bar {{#if displayOptions.manualBar}}swr-display-bar{{/if}}">
 							<div class="select-wrapper" style="flex:1">
-								<input id="swr-manual-pause" type="checkbox" title="{{localize 'sweath.labels.manualPauseHint'}}" {{#if manualPause}}checked{{/if}} />
-								<label for="swr-manual-pause">{{localize 'sweath.labels.manualPause'}}</label>
+								<input id="swr-manual-pause" type="checkbox" title="{{localize 'swr.labels.manualPauseHint'}}" {{#if manualPause}}checked{{/if}} />
+								<label for="swr-manual-pause">{{localize 'swr.labels.manualPause'}}</label>
 							</div>
 
 							<div class="row-break"></div>
 
 							<div class="select-wrapper" style="flex: 0 0 50%">
-								<select id="swr-manual-weather-selection" title="{{localize 'sweath.options.manualWeather.select'}}">
+								<select id="swr-manual-weather-selection" title="{{localize 'swr.options.manualWeather.select'}}">
 									{{#each manualSelections}}
 										<option title="{{text}}" value="{{value}}">{{text}}</option>
 									{{/each}}
 								</select>
 							</div>
 							<div class="select-wrapper" style="flex: 1 1 10%">
-								<input id="swr-manual-temperature" title="{{localize 'sweath.labels.manualWeatherTemperature'}}" maxlength="4" style="width: 45px;">
+								<input id="swr-manual-temperature" title="{{localize 'swr.labels.manualWeatherTemperature'}}" maxlength="4" style="width: 45px;">
 								°{{#if useCelsius }}C{{else}}F{{/if}}
 							</div>
-							<button id='swr-submit-weather' style="flex: 0 0 25px;" title="{{localize 'sweath.labels.manualWeatherSubmit'}}" disabled="disabled">
+							<button id='swr-submit-weather' style="flex: 0 0 25px;" title="{{localize 'swr.labels.manualWeatherSubmit'}}" disabled="disabled">
 								<i class="fas fa-redo"></i>
 							</button>
 							<div class="select-wrapper" style="flex: 1 0 10%"></div> 
@@ -88,7 +88,7 @@
 							</div>
 
 							<div class="select-wrapper" style="flex:1">
-								<select id="swr-season-selection" title="{{localize 'sweath.options.season.select'}}">
+								<select id="swr-season-selection" title="{{localize 'swr.options.season.select'}}">
 									{{#each seasonSelections}}
 										<option title="{{text}}" value="{{value}}">{{text}}</option>
 									{{/each}}
@@ -99,7 +99,7 @@
 
 						<div id="swr-biome-bar" class="swr-optional-bar {{#if displayOptions.biomeBar}}swr-display-bar{{/if}}">
 							<div class="select-wrapper" style="flex:0 0 50%">
-								<select id="swr-biome-selection" title="{{localize 'sweath.options.biome.select'}}">
+								<select id="swr-biome-selection" title="{{localize 'swr.options.biome.select'}}">
 									{{#each biomeSelections}}
 										<option title="{{text}}" value="{{value}}">{{text}}</option>
 									{{/each}}
@@ -108,14 +108,14 @@
 							<div class="row-break"></div>
 
 							<div class="select-wrapper" style="flex:0 0 50%">
-								<select id="swr-climate-selection" title="{{localize 'sweath.options.climate.select'}}">
+								<select id="swr-climate-selection" title="{{localize 'swr.options.climate.select'}}">
 									{{#each climateSelections}}
 										<option title="{{text}}" value="{{value}}">{{text}}</option>
 									{{/each}}
 								</select>
 							</div>
 							<div class="select-wrapper" style="flex: 0 0 50%">
-								<select id="swr-humidity-selection" title="{{localize 'sweath.options.humidity.select'}}">
+								<select id="swr-humidity-selection" title="{{localize 'swr.options.humidity.select'}}">
 									{{#each humiditySelections}}
 										<option title="{{text}}" value="{{value}}">{{text}}</option>
 									{{/each}}
@@ -127,21 +127,21 @@
 
 					<div id="swr-tool-bar">
 						<button id="swr-date-box-toggle" class="swr-toggle-btn {{#unless hideCalendar}}on{{/unless}}" style="{{#if hideCalendarToggle}}display:none;{{/if}}">
-							<i class="fas fa-calendar" title="{{localize 'sweath.labels.toggleDateBox'}}"></i>
+							<i class="fas fa-calendar" title="{{localize 'swr.labels.toggleDateBox'}}"></i>
 						</button> 
 
 						{{#if isGM }}
 							<button id="swr-season-bar-toggle" class="swr-toggle-btn {{#if displayOptions.seasonBar}}on{{/if}}">
-								<i class="fas {{ currentSeasonClass }}" title="{{localize 'sweath.labels.toggleSeasonBar'}}"></i>
+								<i class="fas {{ currentSeasonClass }}" title="{{localize 'swr.labels.toggleSeasonBar'}}"></i>
 							</button>
 							<button id="swr-biome-bar-toggle" class="swr-toggle-btn {{#if displayOptions.biomeBar}}on{{/if}}">
-								<i class="fas fa-thermometer-half" title="{{localize 'sweath.labels.toggleBiomeBar'}}"></i>
+								<i class="fas fa-thermometer-half" title="{{localize 'swr.labels.toggleBiomeBar'}}"></i>
 							</button>
 							<button id="swr-manual-bar-toggle" class="swr-toggle-btn {{#if displayOptions.manualBar }}on{{/if}}">
-								<i class="fas fa-hand-point-down" title="{{localize 'sweath.labels.toggleManualBar'}}"></i>
+								<i class="fas fa-hand-point-down" title="{{localize 'swr.labels.toggleManualBar'}}"></i>
 							</button>
 							<button id="swr-fx-toggle" class="swr-toggle-btn {{#if fxActive }}on{{/if}}" style="{{#if hideFXToggle}}display:none; {{/if}}">
-								<i class="fas fa-cloud-showers-heavy" title="{{localize 'sweath.labels.toggleFX'}}"></i>
+								<i class="fas fa-cloud-showers-heavy" title="{{localize 'swr.labels.toggleFX'}}"></i>
 							</button>
 						{{/if}}
 					</div>
@@ -151,10 +151,10 @@
 				<div class="swr-weather-content">
 					{{#if isGM}}
 						<div id="swr-current-weather-controls">
-							<span id="swr-chat-repost" class="swr-current-weather-control" title="{{localize 'sweath.labels.repostChat'}}">
+							<span id="swr-chat-repost" class="swr-current-weather-control" title="{{localize 'swr.labels.repostChat'}}">
 								<i class="fas fa-comments"></i>
 							</span>
-							<span id="swr-weather-refresh" class="swr-current-weather-control" title="{{localize 'sweath.labels.regenerateWeather'}}" style="{{#if manualPause}}display:none;{{/if}}">
+							<span id="swr-weather-refresh" class="swr-current-weather-control" title="{{localize 'swr.labels.regenerateWeather'}}" style="{{#if manualPause}}display:none;{{/if}}">
 								<i class="fas fa-redo"></i>
 							</span>
 						</div>
@@ -165,7 +165,7 @@
 					</div>
 					<div class="swr-weather-forecast">
 						{{#if showForecast }}
-							{{localize 'sweath.labels.forecast'}}: &nbsp;
+							{{localize 'swr.labels.forecast'}}: &nbsp;
 							{{#each forecasts}}
 								<div data-tooltip="{{description}}" style="display:inline-block">      
 									<i class="fas {{icon}}"></i>

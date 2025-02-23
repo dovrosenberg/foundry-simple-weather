@@ -1,5 +1,16 @@
 # Change Log
 
+## v2.0.0 - Support for Foundry v13
+#### Support for Simple Calendar __________
+
+**NOTE!!! NEED TO MAKE SURE SIMPLE CALENDAR GETS UPDATED**
+**DO I NEED TO SOMEHOW MARK 1.18.1 AS HAVING A MAX VERSION  RETROACTIVELY?**
+
+![](https://img.shields.io/badge/release%20date-February%2022%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v2.0.0/module.zip)
+
+Foundry v13 had breaking changes that impacted Simple Weather.  This version works in v13, prior ones do not.
+
 ## v1.18.1 - Updated language translations for 1.18
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-February%2022%2C%202025-blue)

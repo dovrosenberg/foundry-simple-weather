@@ -34,41 +34,41 @@ export function initializeLocalizedText(): void {
   log(false, 'Loading localized climate text');
 
   biomeSelections = [
-    { value: '', text: localize('sweath.options.biome.useClimateHumidity') },
-    { value: 'tundra', text: localize('sweath.options.biome.tundra') },
-    { value: 'alpine', text: localize('sweath.options.biome.alpine') },
-    { value: 'taiga', text: localize('sweath.options.biome.taiga') },
-    { value: 'chapparel', text: localize('sweath.options.biome.chapparel') },
-    { value: 'grassland', text: localize('sweath.options.biome.grassland') },
-    { value: 'forest', text: localize('sweath.options.biome.forest') },
-    { value: 'desert', text: localize('sweath.options.biome.desert') },
-    { value: 'savannah', text: localize('sweath.options.biome.savannah') },
-    { value: 'rainforest', text: localize('sweath.options.biome.rainforest') },
+    { value: '', text: localize('swr.options.biome.useClimateHumidity') },
+    { value: 'tundra', text: localize('swr.options.biome.tundra') },
+    { value: 'alpine', text: localize('swr.options.biome.alpine') },
+    { value: 'taiga', text: localize('swr.options.biome.taiga') },
+    { value: 'chapparel', text: localize('swr.options.biome.chapparel') },
+    { value: 'grassland', text: localize('swr.options.biome.grassland') },
+    { value: 'forest', text: localize('swr.options.biome.forest') },
+    { value: 'desert', text: localize('swr.options.biome.desert') },
+    { value: 'savannah', text: localize('swr.options.biome.savannah') },
+    { value: 'rainforest', text: localize('swr.options.biome.rainforest') },
   ];
 
   climateSelections= [
-    { value: String(Climate.Cold), text: localize('sweath.options.climate.cold') },
-    { value: String(Climate.Temperate), text: localize('sweath.options.climate.temperate') },
-    { value: String(Climate.Hot), text: localize('sweath.options.climate.hot') },
+    { value: String(Climate.Cold), text: localize('swr.options.climate.cold') },
+    { value: String(Climate.Temperate), text: localize('swr.options.climate.temperate') },
+    { value: String(Climate.Hot), text: localize('swr.options.climate.hot') },
   ];
 
   humiditySelections = [
-    { value: String(Humidity.Barren), text: localize('sweath.options.humidity.barren') },
-    { value: String(Humidity.Modest), text: localize('sweath.options.humidity.modest') },
-    { value: String(Humidity.Verdant), text: localize('sweath.options.humidity.verdant') },
+    { value: String(Humidity.Barren), text: localize('swr.options.humidity.barren') },
+    { value: String(Humidity.Modest), text: localize('swr.options.humidity.modest') },
+    { value: String(Humidity.Verdant), text: localize('swr.options.humidity.verdant') },
   ];
 
   seasonSelections = [
-    { value: String(Season.Spring), text: localize('sweath.options.season.spring') },
-    { value: String(Season.Summer), text: localize('sweath.options.season.summer') },
-    { value: String(Season.Fall), text: localize('sweath.options.season.fall') },
-    { value: String(Season.Winter), text: localize('sweath.options.season.winter') },
+    { value: String(Season.Spring), text: localize('swr.options.season.spring') },
+    { value: String(Season.Summer), text: localize('swr.options.season.summer') },
+    { value: String(Season.Fall), text: localize('swr.options.season.fall') },
+    { value: String(Season.Winter), text: localize('swr.options.season.winter') },
   ];
 }
 
 // if we have a simple calendar, than activate the "sync" option in the drop down
 const allowSeasonSync = function() {
-  seasonSelections.splice(0,0, { value: 'sync', text: localize('sweath.options.season.sync')});
+  seasonSelections.splice(0,0, { value: 'sync', text: localize('swr.options.season.sync')});
 };
 
 // these map the biomes to their climate/humidity

@@ -126,9 +126,9 @@ const outputWeatherToChat = function(weatherData: WeatherData) {
 
   let dateOutput = '';
   if (ModuleSettings.get(ModuleSettingKeys.outputDateToChat)) {
-    dateOutput = `${localize('sweath.chat.dateHeader')} ${weatherData.date?.display.date}:`;
+    dateOutput = `${localize('swr.chat.dateHeader')} ${weatherData.date?.display.date}:`;
   } else  {
-    dateOutput = `${localize('sweath.chat.header')}:`;
+    dateOutput = `${localize('swr.chat.header')}:`;
   }
 
   ChatMessage.create({

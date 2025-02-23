@@ -1,5 +1,5 @@
 {
-  "sweath": {
+  "swr": {
     "settings": {
       "dialogDisplay": "Kan spelare se dialogen?",
       "dialogDisplayHelp": "När markerad kan icke-GM-klienter se dialogen (men endast tid, temperatur och väderbeskrivning). De kommer inte att kunna se dropdowns eller generera väder.",
