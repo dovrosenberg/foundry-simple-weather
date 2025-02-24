@@ -140,7 +140,7 @@ Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
 })
 
 // add the setting to the scene config application
-Hooks.on('renderSceneConfig', async (app: SceneConfig, html: HTMLElement) => {
+Hooks.on('renderSceneConfig', async (app: SceneConfig, element: JQuery) => {
   if (!isClientGM())
     return;
 
@@ -170,13 +170,8 @@ Hooks.on('renderSceneConfig', async (app: SceneConfig, html: HTMLElement) => {
     </div>
   </fieldset>`;
   
-  const matchElementById = /<[^>]*id[\\s]?=[\\s]?['\"](SceneConfig-Scene-.*-weather)['\"]/gi;
-  const weatherEffectBox = matchElementById.exec(html.outerHTML);
-  if (!weatherEffectBox)
-    throw new Error('Format of SceneConfig sheet invalid');
-
-  const boxId = weatherEffectBox[1];
-  const formGroup = html.querySelector('#' + boxId )?.closest('.form-group');
+  const html = element[0];
+  const formGroup = html.querySelector('select[name="weather"]')?.closest('.form-group');
 
   if (!formGroup)
     throw new Error('Format of SceneConfig sheet invalid');
