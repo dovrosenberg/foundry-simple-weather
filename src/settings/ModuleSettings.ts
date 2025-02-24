@@ -37,7 +37,6 @@ export enum ModuleSettingKeys {
   customChatMessages = 'customChatMessages',  // [climate][humidity][index]: message
   forecasts = 'forecasts',   // a map from the timestamp for a day to a Forecast object for that day
   playSound = 'playSound',   // should we play sounds when showing effects?
-  // normalizeVolume = 'normalizeVolume',   // should we normalize the volume level across all clips?
   soundVolume = 'soundVolume',   // volume level for sounds
   previousVersion = 'previousVersion',   // the previous version of the module - checked in init() to determine if any data migration is needed
 }
@@ -68,7 +67,6 @@ type SettingType<K extends ModuleSettingKeys> =
     K extends ModuleSettingKeys.customChatMessages ? string[][][] :
     K extends ModuleSettingKeys.forecasts ? Record<string, Forecast> :
     K extends ModuleSettingKeys.playSound ? boolean :
-    // K extends ModuleSettingKeys.normalizeVolume ? boolean :
     K extends ModuleSettingKeys.soundVolume ? number :
     K extends ModuleSettingKeys.previousVersion ? string :
     never;  
@@ -226,14 +224,6 @@ export class ModuleSettings {
       requiresReload: true,
       type: Boolean,
     },
-    // {
-    //   settingID: ModuleSettingKeys.normalizeVolume,
-    //   name: 'swr.settings.normalizeVolume',
-    //   hint: 'swr.settings.normalizeVolumeHelp',
-    //   default: true,
-    //   requiresReload: true,
-    //   type: Boolean,
-    // },
     {
       settingID: ModuleSettingKeys.soundVolume,
       name: 'swr.settings.soundVolume',
