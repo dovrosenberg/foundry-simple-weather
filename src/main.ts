@@ -158,7 +158,7 @@ Hooks.on('renderSceneConfig', async (app: SceneConfig, element: JQuery) => {
       padding: 0 15px 5px 15px;
   }</style>
   <fieldset class="swr-scene-config">
-    <legend> <i class="fas fa-cloud-sun"></i><span>Simple Weather</span></legend>
+    <legend><span>Simple Weather</span></legend>
     <div class="form-group">
       <label>FX on</label>
       <input
