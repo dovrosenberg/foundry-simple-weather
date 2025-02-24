@@ -1,5 +1,12 @@
 # Change Log
 
+## v1.19.0 - Added ability to control scene FX from scene configuration screen
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-February%2024%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.19.0/module.zip)
+
+Updated all translations.
+
 ## v1.18.1 - Updated language translations for 1.18
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-February%2022%2C%202025-blue)
