@@ -29,8 +29,10 @@ export class SceneSettings {
     return Object.keys(setting).length === 0 || setting === null || setting === undefined;
   }
 
-  public static get<T extends SceneSettingKeys>(setting: T): SettingType<T> {
-    let value = SceneSettings._currentScene?.getFlag(moduleJson.id, setting) as SettingType<T>;
+  public static get<T extends SceneSettingKeys>(setting: T, scene?: Scene): SettingType<T> {
+    const sceneToUse = scene || SceneSettings._currentScene; 
+
+    let value: SettingType<T> | undefined = sceneToUse?.getFlag(moduleJson.id, setting);
 
     // if undefined, return the default (and initialize on the scene)
     if (value===undefined) {
@@ -41,17 +43,19 @@ export class SceneSettings {
     return value;
   }
 
-  public static async set<T extends SceneSettingKeys>(setting: T, value: SettingType<T>): Promise<void> {
+  public static async set<T extends SceneSettingKeys>(setting: T, value: SettingType<T>, scene?: Scene): Promise<void> {
     // confirm the user can set it
     if (!isClientGM()) {
       return;
     }
 
-    if (!SceneSettings._currentScene) {
+    const sceneToUse = scene || SceneSettings._currentScene;
+
+    if (!sceneToUse) {
       throw new Error('Tried to save scene setting but no active scene');
     }
 
-    await SceneSettings._currentScene?.setFlag(moduleJson.id, setting, value);
+    await sceneToUse?.setFlag(moduleJson.id, setting, value);
   }
 
   private static params: SceneSettingConfig<any>[] = [

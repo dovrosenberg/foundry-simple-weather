@@ -7,7 +7,7 @@ import { getGame, isClientGM } from '@/utils/game';
 import { allowSeasonSync, Climate, Humidity, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
 import { initializeLocalizedText as initializeLocalizedWeatherText } from '@/weather/weatherMap';
 import { updateWeatherApplication, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
-import { updateWeatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
+import { updateWeatherEffects, weatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
 import { KeyBindings } from '@/settings/KeyBindings';
 import moduleJson from '@module';
 import { SceneSettingKeys, SceneSettings, } from '@/settings/SceneSettings';
@@ -137,6 +137,65 @@ Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
       });
     }
   }
+})
+
+// add the setting to the scene config application
+Hooks.on('renderSceneConfig', async (app: SceneConfig, html: HTMLElement) => {
+  if (!isClientGM())
+    return;
+
+  if (!ModuleSettings.get(ModuleSettingKeys.FXByScene))
+    return;
+  
+  // get the setting
+  const currentSceneFX = SceneSettings.get(SceneSettingKeys.fxActive, app.object);
+
+  const injection = `
+  <style> .swr-scene-config {
+      border: 1px solid #999;
+      border-radius: 8px;
+      margin: 8px 0;
+      padding: 0 15px 5px 15px;
+  }</style>
+  <fieldset class="swr-scene-config">
+    <legend> <i class="fas fa-cloud-sun"></i><span>Simple Weather</span></legend>
+    <div class="form-group">
+      <label>FX on</label>
+      <input
+        type="checkbox"
+        id="swr-scene-fx-active"
+        name="flags.simple-weather.swr-fxActive"
+        ${currentSceneFX ? 'checked' : ''}>
+      <p class="notes">Should FX be used on this scene?</p>
+    </div>
+  </fieldset>`;
+  
+  const matchElementById = /<[^>]*id[\\s]?=[\\s]?['\"](SceneConfig-Scene-.*-weather)['\"]/gi;
+  const weatherEffectBox = matchElementById.exec(html.outerHTML);
+  if (!weatherEffectBox)
+    throw new Error('Format of SceneConfig sheet invalid');
+
+  const boxId = weatherEffectBox[1];
+  const formGroup = html.querySelector('#' + boxId )?.closest('.form-group');
+
+  if (!formGroup)
+    throw new Error('Format of SceneConfig sheet invalid');
+
+  // insert our html
+  formGroup.insertAdjacentHTML('afterend', injection);
+
+  // insert the click handler
+  // we could have used 'name=flags.simple-weather.swr-fxActive' on the checkbox, but that only saves the value, it doesn't update
+  // the value in the popup or actually handle turning the fx on/off
+  const checkbox = html.querySelector('#swr-scene-fx-active') as HTMLInputElement;
+  if (checkbox) {
+    checkbox.addEventListener("change", async (event) => {
+      await weatherEffects.setFxActive(checkbox.checked);
+      weatherApplication.render();
+    });
+  }
+  // fix box height
+  app.setPosition({ height: 'auto' });
 })
 
 // make sure we have a compatible version of simple-calendar installed
