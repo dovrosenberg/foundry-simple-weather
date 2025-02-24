@@ -5,7 +5,7 @@
       "dialogDisplayHelp": "Po zaznaczeniu tej opcji klienci niebędący MG będą mogli zobaczyć okno dialogowe (ale tylko godzinę, temperaturę i opis pogody). Nie będą mogli zobaczyć rozwijanych menu ani wygenerować pogody.",
       "useCelsius": "Użyj skali Celsjusza",
       "useCelsiusHelp": "Do wyświetlania temperatury używane są stopnie Celsjusza.",
-      "outputWeatherToChat": "Wygenerowana pogoda na czat?",
+      "outputWeatherToChat": "Wygenerować pogodę na czat?",
       "outputWeatherToChatHelp": "Czy nowo wygenerowana pogoda powinna być wyświetlana na czacie?",
       "outputDateToChat": "Wygenerowana data na czat?",
       "outputDateToChatHelp": "Czy data kalendarzowa powinna być uwzględniana w danych wyjściowych czatu? Ta opcja jest ignorowana, jeśli pogoda nie jest wysyłana do czatu. Wymaga Simple Calendar.",
@@ -30,9 +30,9 @@
       "useForecasts": "Używać prognoz?",
       "useForecastsHelp": "Pokaż MG najbliższe kilka dni nadchodzącej pogody. Wymaga Simple Calendar.",
       "playSound": "Odtwarzać efekty dźwiękowe?",
-      "playSoundHelp": "Odtwarzaj efekty dźwiękowe podczas wyświetlania efektów pogodowych.",
+      "playSoundHelp": "Odtwarzanie efektów dźwiękowych podczas wyświetlania efektów pogodowych.",
       "soundVolume": "Głośność",
-      "soundVolumeHelp": "Poziom głośności do użycia"
+      "soundVolumeHelp": "Używany poziom głośności"
     },
 
     "keybindings": {
@@ -480,3 +480,4 @@
     }
   }
 }
+ 
