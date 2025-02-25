@@ -508,7 +508,7 @@ _______________________________________
               const flagData = note.getFlag(moduleJson.id, SC_NOTE_WEATHER_FLAG_NAME) as WeatherData;
       
               // if it has the flag, it's a prior weather entry - use it
-              if (flagData && flagData.temperature!==undefined && flagData.hexFlowerCell!==undefined) {
+              if (flagData && flagData.temperature!=null && flagData.hexFlowerCell!=null) {
                 foundWeatherNote = true;
 
                 this._currentWeather = new WeatherData(

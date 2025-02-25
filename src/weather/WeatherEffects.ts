@@ -106,7 +106,7 @@ class WeatherEffects {
       if (!this._sceneReady)
         return;
 
-      if (!weatherData || weatherData.climate === null || weatherData.humidity === null || weatherData.hexFlowerCell === null)
+      if (!weatherData || weatherData.climate == null || weatherData.humidity == null || weatherData.hexFlowerCell == null)
         return;
 
       // turn off any old ones

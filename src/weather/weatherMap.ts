@@ -154,6 +154,8 @@ startingCells[Season.Spring] = [ 15, 16, 17, 18, 19, 20, 21, ];
 // indexed by Season, then the cell # you're starting in, and then Direction
 const nextCell: number[][][] = [[], [], [], []];
 
+TODO - these aren't all the same length... need to investigate and fix --- if one is short
+that is highly likely to be the source of the issue
 nextCell[Season.Summer] = [
   // N, NE, SE, S, SW, NW
   [ 0, 1, 5, 4, 3, 18, ],
@@ -235,42 +237,40 @@ nextCell[Season.Fall] = [
 ];
 
 nextCell[Season.Winter] = [
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
   // N, NE, SE, S, SW, NW
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
   [ 22, 23, 28, 22, 27, 22, ],
   [ 28, 24, 29, 28, 22, 23, ],
   [ 24, 25, 30, 24, 23, 23, ],
   [ 30, 26, 31, 30, 24, 36, ],
   [ 26, 27, 32, 31, 25, 26, ],
   [ 27, 22, 27, 27, 26, 27, ],
-
   [ 23, 29, 33, 17, 28, 22, ],
   [ 29, 30, 34, 33, 28, 23, ],
   [ 25, 31, 35, 34, 29, 24, ],
   [ 26, 32, 36, 35, 30, 25, ],
   [ 32, 32, 32, 36, 31, 26, ],
-
   [ 29, 34, 33, 33, 36, 28, ],
   [ 30, 35, 34, 34, 33, 29, ],
   [ 31, 32, 36, 35, 35, 30, ],
@@ -408,7 +408,7 @@ const manualOptions = [  // build list of manual weather options; for simplicity
   { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.springfall_cool1 },   // clear sky
   { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.summer4},   // fleecy clouds
   { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.winter6},   // gray, windy
-  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall_warm5},,   // dark storm clouds
+  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall_warm5},   // dark storm clouds
   { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.summer7 },   // light rain
   { climate: Climate.Cold, humidity: Humidity.Verdant, hexCell: descriptionCells.summer6 },   // steady rain
   { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.summer7 },   // heavy rain

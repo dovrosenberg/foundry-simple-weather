@@ -5,7 +5,6 @@ import { Climate, Humidity, Season, } from './climateData';
 import { WeatherData } from './WeatherData';
 import { log } from '@/utils/log';
 import { generateForecast } from './forecastGeneration';
-import { simpleCalendarInstalled } from '@/main';
 import { cleanDate } from '@/utils/calendar';
 
 // note: we don't actually care if the date on yesterday is the day before today; yesterday is used to determine if we should be picking a random
