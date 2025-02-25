@@ -13,6 +13,7 @@ import moduleJson from '@module';
 import { SceneSettingKeys, SceneSettings, } from '@/settings/SceneSettings';
 import { initSounds } from '@/utils/playlist';
 import { migrateData } from '@/utils/migration';
+import { WeatherData } from './weather/WeatherData';
 
 // track which modules we have
 export let simpleCalendarInstalled = false;
@@ -61,6 +62,10 @@ Hooks.once('init', async () => {
   if (module) {
     module.api = {
       runWeather: function(climate: Climate, humidity: Humidity, hexFlowerCell: number): void { 
+        // validate because input coming from outside
+        if (!WeatherData.validateWeatherParameters(climate, humidity, hexFlowerCell))
+          throw new Error('Invalid parameters in runWeather()');
+
         weatherApplication.setSpecificWeather(climate, humidity, hexFlowerCell); 
       },
 

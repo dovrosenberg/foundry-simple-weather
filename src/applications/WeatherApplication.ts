@@ -527,7 +527,7 @@ _______________________________________
               } else if (flagData) {
                 log(false, 'Found a weather note for today, but it\'s corrupt:');
                 log(false, flagData);
-                return;
+                break;  // pretend we didn't have any notes
               }
             }
           }
@@ -1015,7 +1015,9 @@ _______________________________________
       if (!forecast)
         return forecasts;
 
-      forecasts.push(new Forecast(forecast.timestamp, forecast.climate, forecast.humidity, forecast.hexFlowerCell));
+      // validate the forecast or skip it 
+      if (WeatherData.validateWeatherParameters(forecast.climate, forecast.humidity, forecast.hexFlowerCell))
+        forecasts.push(new Forecast(forecast.timestamp, forecast.climate, forecast.humidity, forecast.hexFlowerCell));
     }
 
     return forecasts;

@@ -13,6 +13,7 @@ import { cleanDate } from '@/utils/calendar';
 
 // forForecast indicates
 const generateWeather = function(climate: Climate, humidity: Humidity, season: Season, today: SimpleCalendar.DateData | null, yesterday: WeatherData | null, forForecast = false): WeatherData {
+  // XXX
   const weatherData = new WeatherData(today, season, humidity, climate, null, null);
 
   // do the generation
@@ -29,6 +30,7 @@ const generateWeather = function(climate: Climate, humidity: Humidity, season: S
 
     // make sure the climate/humidity hasn't changed
     if (climate===forecast.climate && humidity===forecast.humidity) {
+      // XXX
       weatherData.hexFlowerCell = forecast.hexFlowerCell;
 
       // we need to generate one more day on the end
@@ -38,6 +40,7 @@ const generateWeather = function(climate: Climate, humidity: Humidity, season: S
     // random start if no valid prior day or the prior day" was manually set
     if (!yesterday || yesterday.season !== season || !yesterday.hexFlowerCell || yesterday.isManual) {
       // no yesterday data (or starting a new season), so just pick a random starting point based on the season
+      // XXX
       weatherData.hexFlowerCell = getDefaultStart(season);
     } else {
       log(false, 'Current cell: ' + yesterday.hexFlowerCell + ' (' + weatherDescriptions[climate][humidity][yesterday.hexFlowerCell] + ')')
@@ -47,12 +50,15 @@ const generateWeather = function(climate: Climate, humidity: Humidity, season: S
       log(false, 'Direction: ' + Direction[direction]);
 
       if (direction===Direction.stay) {
+        // XXX
         weatherData.hexFlowerCell = yesterday.hexFlowerCell;
       } else {
+        // XXX
         weatherData.hexFlowerCell = nextCell[season][yesterday.hexFlowerCell][direction];
 
         // a -1 should never happen; if it does, something got screwy, so go to a default starting position
         if (weatherData.hexFlowerCell === -1) {
+          // XXX
           weatherData.hexFlowerCell = weatherData.hexFlowerCell = getDefaultStart(season);
         }
       }
@@ -88,6 +94,7 @@ const createManual = function(today: SimpleCalendar.DateData | null, temperature
   const plusMinus = Math.max(2, Math.ceil(.04*temperature));
   const temp = temperature + Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
 
+  // XXX
   const weatherData = new WeatherData(today, null, options.humidity, options.climate, options.hexCell, temp);
   weatherData.isManual = true;
 
@@ -96,11 +103,15 @@ const createManual = function(today: SimpleCalendar.DateData | null, temperature
 
 // used to pick a specific cell for weather (for testing or use by other applications)
 const createSpecificWeather = function(today: SimpleCalendar.DateData | null, climate: Climate, humidity: Humidity, hexFlowerCell: number): WeatherData | null {
+  if (!WeatherData.validateWeatherParameters(climate, humidity, hexFlowerCell))
+    throw new Error('Invalid parameters in createSpecificWeather()');
+
   let temp = weatherTemperatures[climate][humidity][hexFlowerCell];
 
   const plusMinus = Math.max(2, Math.ceil(.04*temp));
   temp += Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
 
+  // XXX
   const weatherData = new WeatherData(today, null, humidity, climate, hexFlowerCell, temp);
   weatherData.isManual = true;
 

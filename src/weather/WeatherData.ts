@@ -19,6 +19,7 @@ export class WeatherData {
     this.season = season;
     this.humidity = humidity;
     this.climate = climate;
+    // XXX
     this.hexFlowerCell = hexFlowerCell;
     this.temperature = temperature;
     this.isManual = false;
@@ -54,5 +55,17 @@ export class WeatherData {
 
     return weatherDescriptions[this.climate][this.humidity][this.hexFlowerCell];
   };
+
+  /** makes sure the climate, humdity, and cell are valid */
+  static validateWeatherParameters = (climate: Climate | null, humidity: Humidity | null, hexFlowerCell: number | null): boolean => {
+    if (climate==null || !Object.values(Climate).includes(climate))
+      return false;
+    if (humidity==null || !Object.values(Humidity).includes(humidity))
+      return false;
+    if (hexFlowerCell==null || !(/^\d+$/.test(hexFlowerCell as unknown as string)) || hexFlowerCell<0 || hexFlowerCell > 36)
+      return false;
+    
+    return true;
+  }
 }
 

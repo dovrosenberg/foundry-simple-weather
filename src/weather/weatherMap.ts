@@ -154,8 +154,6 @@ startingCells[Season.Spring] = [ 15, 16, 17, 18, 19, 20, 21, ];
 // indexed by Season, then the cell # you're starting in, and then Direction
 const nextCell: number[][][] = [[], [], [], []];
 
-TODO - these aren't all the same length... need to investigate and fix --- if one is short
-that is highly likely to be the source of the issue
 nextCell[Season.Summer] = [
   // N, NE, SE, S, SW, NW
   [ 0, 1, 5, 4, 3, 18, ],
@@ -173,6 +171,7 @@ nextCell[Season.Summer] = [
   [ 12, 13, 13, 12, 11, 6, ],
   [ 8, 14, 14, 8, 12, 7, ],
   [ 14, 9, 9, 14, 13, 8, ],
+  [ -1, -1, -1, -1, -1, -1, ],
   [ -1, -1, -1, -1, -1, -1, ],
   [ -1, -1, -1, -1, -1, -1, ],
   [ -1, -1, -1, -1, -1, -1, ],

@@ -13,6 +13,7 @@ const generateForecast = async function(todayTimestamp: number, todayWeather: We
   const numDays = 7;
   const currentForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
 
+  // XXX - is this right?
   if (todayWeather.climate===null || todayWeather.humidity===null || todayWeather.season===null)
     return currentForecasts;
 
@@ -27,6 +28,7 @@ const generateForecast = async function(todayTimestamp: number, todayWeather: We
     if (currentForecasts[forecastTimeStamp] && extendOnly) {
       const todayWeather = currentForecasts[forecastTimeStamp];
       const todayDate = SimpleCalendar.api.timestampToDate(forecastTimeStamp);
+      // XXX
       yesterdayWeather = new WeatherData(
         todayDate,
         todayDate?.currentSeason?.numericRepresentation || null,

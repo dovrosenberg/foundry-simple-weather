@@ -82,10 +82,15 @@ export class ModuleSettings {
     if (setting === ModuleSettingKeys.lastWeatherData) {
       const loaded = getGame().settings.get(moduleJson.id, setting) as SettingType<T> as WeatherData;  // not really WeatherData - need to attach functions
 
-      if (loaded) 
+      if (loaded) {
+        // validate
+        if (!WeatherData.validateWeatherParameters(loaded.climate as Climate, loaded.humidity, loaded.hexFlowerCell))
+          throw new Error('Invalid lastWeatherData when loading settings()');
+
         return new WeatherData(loaded.date, loaded.season, loaded.humidity, loaded.climate, loaded.hexFlowerCell, loaded.temperature) as SettingType<T>;
-      else 
+      } else {
         return null as SettingType<T>;
+      }
     } else {
       // for some reason booleans are sometimes coming back as Boolean
       if (getGame().settings.get(moduleJson.id, setting) instanceof Boolean) {
