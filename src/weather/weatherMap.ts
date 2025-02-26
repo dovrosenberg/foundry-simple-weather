@@ -1,8 +1,9 @@
 import { localize } from '@/utils/game';
 import { log } from '@/utils/log';
-import { Climate, Humidity, Season } from './climateData';
+import { Climate, HexFlowerCell, Humidity, Season } from './climateData';
 import { availableEffects, EffectDetails, joinEffects } from '@/weather/effectsMap';
 import { Sunniness } from './Forecast';
+import { EmptyObject } from '@league-of-foundry-developers/foundry-vtt-types/src/utils/index.mjs';
 
 // drop down selections for manually setting weather
 let manualSelections: { text:string, value: string}[];
@@ -46,7 +47,7 @@ function initializeLocalizedText(): void {
   // need value and text, and then a way to map the values back to the weather
   //    for effects
   manualSelections = manualOptions.map((val, i) =>
-      ({ value: i.toString(), text: weatherDescriptions[val?.climate as number][val?.humidity as number][val?.hexCell as number] }));
+      ({ value: i.toString(), text: weatherDescriptions[val.climate as number][val.humidity as number][val.hexCell] }));
 }
 
 // rather than specifying weather by biome, we take a more flexible approach (though we also define some biomes as defaults)
@@ -144,7 +145,7 @@ const getDirection = (season: Season): Direction => {
 };
 
 // keyed by season, contains the possible cell starting points for each season
-const startingCells: number[][] = [[], [], [], []];
+const startingCells: HexFlowerCell[][] = [[], [], [], []];
 
 startingCells[Season.Summer] = [ 9, 10, 11, 12, 13, 14, ];
 startingCells[Season.Fall] = [ 15, 16, 17, 18, 19, 20, 21,];
@@ -152,7 +153,7 @@ startingCells[Season.Winter] = [ 22, 23, 24, 25, 26, 27, ];
 startingCells[Season.Spring] = [ 15, 16, 17, 18, 19, 20, 21, ];
 
 // indexed by Season, then the cell # you're starting in, and then Direction
-const nextCell: number[][][] = [[], [], [], []];
+const nextCell: (HexFlowerCell | -1)[][][] = [[], [], [], []];
 
 nextCell[Season.Summer] = [
   // N, NE, SE, S, SW, NW
@@ -171,6 +172,7 @@ nextCell[Season.Summer] = [
   [ 12, 13, 13, 12, 11, 6, ],
   [ 8, 14, 14, 8, 12, 7, ],
   [ 14, 9, 9, 14, 13, 8, ],
+  [ -1, -1, -1, -1, -1, -1, ],
   [ -1, -1, -1, -1, -1, -1, ],
   [ -1, -1, -1, -1, -1, -1, ],
   [ -1, -1, -1, -1, -1, -1, ],
@@ -235,42 +237,40 @@ nextCell[Season.Fall] = [
 ];
 
 nextCell[Season.Winter] = [
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
-  [ -1, -1, -1, -1, -1, -1, ],
   // N, NE, SE, S, SW, NW
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
+  [ -1, -1, -1, -1, -1, -1, ],
   [ 22, 23, 28, 22, 27, 22, ],
   [ 28, 24, 29, 28, 22, 23, ],
   [ 24, 25, 30, 24, 23, 23, ],
   [ 30, 26, 31, 30, 24, 36, ],
   [ 26, 27, 32, 31, 25, 26, ],
   [ 27, 22, 27, 27, 26, 27, ],
-
   [ 23, 29, 33, 17, 28, 22, ],
   [ 29, 30, 34, 33, 28, 23, ],
   [ 25, 31, 35, 34, 29, 24, ],
   [ 26, 32, 36, 35, 30, 25, ],
   [ 32, 32, 32, 36, 31, 26, ],
-
   [ 29, 34, 33, 33, 36, 28, ],
   [ 30, 35, 34, 34, 33, 29, ],
   [ 31, 32, 36, 35, 35, 30, ],
@@ -303,7 +303,7 @@ const weatherSunniness: Sunniness[][][] = new Array(Object.keys(Climate).length/
     .map(() => new Array(37).fill(0)));
 
 type WeatherOptions = {
-  fx: EffectDetails
+  fx?: EffectDetails | undefined;
 }
 
 const weatherOptions: WeatherOptions[][][] = new Array(Object.keys(Climate).length/2)
@@ -402,13 +402,13 @@ const descriptionCells = {
   'winter7': 34,
   'winter8': 35,
   'winter9': 36,
-};
+} as Record<string, HexFlowerCell>;
 
 const manualOptions = [  // build list of manual weather options; for simplicity, we steal them from ones that already exist
   { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.springfall_cool1 },   // clear sky
   { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.summer4},   // fleecy clouds
   { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.winter6},   // gray, windy
-  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall_warm5},,   // dark storm clouds
+  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall_warm5},   // dark storm clouds
   { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.summer7 },   // light rain
   { climate: Climate.Cold, humidity: Humidity.Verdant, hexCell: descriptionCells.summer6 },   // steady rain
   { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.summer7 },   // heavy rain

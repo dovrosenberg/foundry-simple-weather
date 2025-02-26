@@ -51,12 +51,12 @@
         "tundra": "Tundra",
         "alpine": "Alpin",
         "taiga": "Taiga",
-        "chapparel": "Busksnår",
+        "chaparral": "Busksnår",
         "grassland": "Gräsmark",
         "forest": "Skog",
         "desert": "Öken",
         "savannah": "Savann",
-        "rainforest": "Regnskog"
+        "rainForest": "Regnskog"
       },
       
       "humidity": {

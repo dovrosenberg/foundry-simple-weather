@@ -44,7 +44,7 @@ export type RandomRange = {
 
 export interface FXMParticleOptions {
   scale: number; 
-  direction?: RandomRange | undefined; 
+  direction?: RandomRange | number | undefined; 
   speed: number; 
   lifetime: number; 
   density: number; 

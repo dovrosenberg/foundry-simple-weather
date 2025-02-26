@@ -1,5 +1,5 @@
 import { ModuleSettingKeys, ModuleSettings } from '@/settings/ModuleSettings';
-import { Climate, Humidity } from './climateData';
+import { Climate, HexFlowerCell, Humidity } from './climateData';
 import { weatherDescriptions, weatherSunniness, weatherTemperatures } from './weatherMap';
 
 // the types of "sunniness"
@@ -23,9 +23,9 @@ export class Forecast {
   public timestamp: number;      // the timestamp of the forecast
   public humidity: Humidity;    // the humidity selection
   public climate: Climate;      // the climate selection
-  public hexFlowerCell: number;      // number of the cell in the hex flower
+  public hexFlowerCell: HexFlowerCell;      // number of the cell in the hex flower
 
-  constructor(timestamp: number, climate: Climate, humidity: Humidity, hexFlowerCell: number) {
+  constructor(timestamp: number, climate: Climate, humidity: Humidity, hexFlowerCell: HexFlowerCell) {
     this.timestamp = timestamp;
     this.climate = climate;
     this.humidity = humidity;

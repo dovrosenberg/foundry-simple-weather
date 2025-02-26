@@ -7,7 +7,7 @@ import { createHtmlPlugin } from 'vite-plugin-html';
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import { defineConfig, Plugin } from 'vite';
 
-// to get the verison number
+// to get the version number
 import npmPackage from './package.json';
 
 export default defineConfig({

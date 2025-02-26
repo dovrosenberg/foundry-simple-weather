@@ -1,11 +1,20 @@
 # Change Log
 
+## v1.19.1 - Assorted bug fixes
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-February%2026%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.19.1/module.zip)
+
+Eliminated some obscure bugs, as well as a more severe one that sometimes caused weather to display a blank or NaN.  Also fixed
+an issue from 1.18 where sounds didn't always properly stop when turning off FX for a scene.
+
 ## v1.19.0 - Added ability to control scene FX from scene configuration screen
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-February%2024%2C%202025-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.19.0/module.zip)
 
-Updated all translations.
+You can now control whether each scene displays FX (and sound) from the scene configuration screen (right click on a scene 
+and select 'Configure').
 
 ## v1.18.1 - Updated language translations for 1.18
 #### Support for Simple Calendar v2.4.18

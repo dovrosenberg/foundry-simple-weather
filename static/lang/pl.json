@@ -53,12 +53,12 @@
         "tundra": "Tundra",
         "alpine": "Alpejski",
         "taiga": "Tajga",
-        "chapparel": "Chaparral",
+        "chaparral": "Chaparral",
         "grassland": "Łąka",
         "forest": "Las",
         "desert": "Pustynia",
         "savannah": "Sawanna",
-        "rainforest": "Las deszczowy"
+        "rainForest": "Las deszczowy"
       },
 
       "humidity": {

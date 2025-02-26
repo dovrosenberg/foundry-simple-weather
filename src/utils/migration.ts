@@ -2,6 +2,7 @@ import { ModuleSettingKeys, ModuleSettings } from '@/settings/ModuleSettings'
 import { Forecast } from '@/weather/Forecast';
 import { cleanDate } from '@/utils/calendar';
 import { version } from '@module';
+import { WeatherData } from '@/weather/WeatherData';
 
 export const migrateData = async(): Promise<void> => {
   // we just look at the prior version to see what upgrades need to apply
@@ -19,10 +20,13 @@ export const migrateData = async(): Promise<void> => {
       
       if (date) {
         const cleanedTimestamp = cleanDate(date);
-        updatedForecasts[cleanedTimestamp.toString()] = new Forecast(cleanedTimestamp, forecast.climate, forecast.humidity, forecast.hexFlowerCell); 
+        // validate or skip
+        if (WeatherData.validateWeatherParameters(forecast.climate, forecast.humidity, forecast.hexFlowerCell))
+          updatedForecasts[cleanedTimestamp.toString()] = new Forecast(cleanedTimestamp, forecast.climate, forecast.humidity, forecast.hexFlowerCell); 
       }
     }
 
+    // TODO - delete any of the keys that are no longer present
     await ModuleSettings.set(ModuleSettingKeys.forecasts, updatedForecasts);
   }
 
