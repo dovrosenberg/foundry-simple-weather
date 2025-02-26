@@ -34,7 +34,7 @@ const generateWeather = function(climate: Climate, humidity: Humidity, season: S
       generateForecast(cleanDate(today), weatherData, true);
     }
   } else {
-    // random start if no valid prior day or the prior day" was manually set
+    // random start if no valid prior day or the prior day" was manually set or we changed season
     if (!yesterday || yesterday.season !== season || yesterday.hexFlowerCell==null || yesterday.isManual) {
       // no yesterday data (or starting a new season), so just pick a random starting point based on the season
       weatherData.hexFlowerCell = getDefaultStart(season);

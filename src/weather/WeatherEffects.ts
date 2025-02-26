@@ -112,17 +112,10 @@ class WeatherEffects {
       // turn off any old ones
       await this.deactivateFX(this._useFX === 'core');
 
-      if (!this._fxActive) {
-        await stopSounds();
-        return;
-      }
-  
-      const effectOptions = weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell].fx;
+      const effectOptions = weatherOptions[weatherData.climate][weatherData.humidity][weatherData.hexFlowerCell]?.fx;
 
-      if (!effectOptions || this._useFX === 'off') {
-        await stopSounds();
+      if (!effectOptions)
         return;
-      }
 
       switch (this._useFX) {
         case 'core':
@@ -211,7 +204,9 @@ class WeatherEffects {
         await FXMASTER.filters.removeFilter(effectName);
       }
       await this.clearFXMFilterEffects();
-    }
+
+      await stopSounds();
+    }    
   }
 
   private async addFXMParticleEffect(name: string): Promise<void> {
