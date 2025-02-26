@@ -156,6 +156,8 @@ class WeatherEffects {
                 this.addFXMParticleEffect(name);
               } else if (effects[e].style === FXMStyleTypes.Filter) {
                 log(false, 'Adding fxmaster: ' + name);
+
+                // @ts-ignore - FXMASTER not typed
                 await FXMASTER.filters.addFilter(name, effects[e].type, effects[e].options);
                 await this.addFXMFilterEffect(name);
               }
@@ -205,6 +207,7 @@ class WeatherEffects {
       for (let i=0; i<this._activeFXMFilterEffects.length; i++) {
         const effectName = this._activeFXMFilterEffects[i];
 
+        // @ts-ignore - FXMASTER not typed
         await FXMASTER.filters.removeFilter(effectName);
       }
       await this.clearFXMFilterEffects();

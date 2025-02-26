@@ -4,7 +4,7 @@ import '@/../styles/menu-icon.scss';
 import { ModuleSettings, ModuleSettingKeys, } from '@/settings/ModuleSettings';
 import { VersionUtils } from '@/utils/versionUtils';
 import { getGame, isClientGM } from '@/utils/game';
-import { allowSeasonSync, Climate, Humidity, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
+import { allowSeasonSync, Climate, HexFlowerCell, Humidity, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
 import { initializeLocalizedText as initializeLocalizedWeatherText } from '@/weather/weatherMap';
 import { updateWeatherApplication, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
 import { updateWeatherEffects, weatherEffects, WeatherEffects } from '@/weather/WeatherEffects';
@@ -61,7 +61,7 @@ Hooks.once('init', async () => {
   const module = getGame().modules.get(moduleJson.id);
   if (module) {
     module.api = {
-      runWeather: function(climate: Climate, humidity: Humidity, hexFlowerCell: number): void { 
+      runWeather: function(climate: Climate, humidity: Humidity, hexFlowerCell: HexFlowerCell): void { 
         // validate because input coming from outside
         if (!WeatherData.validateWeatherParameters(climate, humidity, hexFlowerCell))
           throw new Error('Invalid parameters in runWeather()');

@@ -1,4 +1,4 @@
-import { Season, Climate, Humidity } from '@/weather/climateData';
+import { Season, Climate, Humidity, HexFlowerCell } from '@/weather/climateData';
 import { weatherDescriptions } from '@/weather/weatherMap';
 import { Icons } from 'foundryvtt-simple-calendar/src/constants';
   
@@ -10,16 +10,15 @@ export class WeatherData {
   public season: Season | null;        // which season we were in (i.e. actually using for weather)
   public humidity: Humidity | null;    // the humidity selection
   public climate: Climate | null;      // the climate selection
-  public hexFlowerCell: number | null;      // number of the cell in the hex flower
+  public hexFlowerCell: HexFlowerCell | null;      // number of the cell in the hex flower
   public temperature: number | null;   // the temperature (with random variation) in F
   public isManual: boolean | false;    // was this set manually... if yes, the next generation will reset to a starting point
 
-  constructor(date: SimpleCalendar.DateData | null, season: Season | null, humidity: Humidity | null, climate: Climate | null, hexFlowerCell: number | null, temperature: number | null) {
+  constructor(date: SimpleCalendar.DateData | null, season: Season | null, humidity: Humidity | null, climate: Climate | null, hexFlowerCell: HexFlowerCell | null, temperature: number | null) {
     this.date = date;
     this.season = season;
     this.humidity = humidity;
     this.climate = climate;
-    // XXX
     this.hexFlowerCell = hexFlowerCell;
     this.temperature = temperature;
     this.isManual = false;
@@ -56,8 +55,8 @@ export class WeatherData {
     return weatherDescriptions[this.climate][this.humidity][this.hexFlowerCell];
   };
 
-  /** makes sure the climate, humdity, and cell are valid */
-  static validateWeatherParameters = (climate: Climate | null, humidity: Humidity | null, hexFlowerCell: number | null): boolean => {
+  /** makes sure the climate, humidity, and cell are valid */
+  static validateWeatherParameters = (climate: Climate | null, humidity: Humidity | null, hexFlowerCell: HexFlowerCell | null): boolean => {
     if (climate==null || !Object.values(Climate).includes(climate))
       return false;
     if (humidity==null || !Object.values(Humidity).includes(humidity))

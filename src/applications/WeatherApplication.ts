@@ -5,7 +5,7 @@ import { log } from '@/utils/log';
 import { WindowPosition } from '@/window/WindowPosition';
 import { WindowDrag } from '@/window/windowDrag';
 import { WeatherData } from '@/weather/WeatherData';
-import { SelectOption, seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings } from '@/weather/climateData';
+import { SelectOption, seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings, HexFlowerCell } from '@/weather/climateData';
 import { manualSelections, weatherDescriptions } from '@/weather/weatherMap';
 import { ModuleSettingKeys } from '@/settings/ModuleSettings';
 import { getGame, isClientGM } from '@/utils/game';
@@ -634,7 +634,7 @@ _______________________________________
    * 
    * @internal
    */
-  public setSpecificWeather(climate: Climate, humidity: Humidity, hexFlowerCell: number): void {
+  public setSpecificWeather(climate: Climate, humidity: Humidity, hexFlowerCell: HexFlowerCell): void {
     const season = this.getSeason();
 
     log(false, 'Running weather for ' + weatherDescriptions[climate][humidity][hexFlowerCell]);

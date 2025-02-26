@@ -13,8 +13,8 @@ const generateForecast = async function(todayTimestamp: number, todayWeather: We
   const numDays = 7;
   const currentForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
 
-  // XXX - is this right?
-  if (todayWeather.climate===null || todayWeather.humidity===null || todayWeather.season===null)
+  // if we don't have a climate or season, don't change the forecasts
+  if (todayWeather.climate==null || todayWeather.humidity==null || todayWeather.season==null)
     return currentForecasts;
 
   let yesterdayWeather = todayWeather;
@@ -28,7 +28,10 @@ const generateForecast = async function(todayTimestamp: number, todayWeather: We
     if (currentForecasts[forecastTimeStamp] && extendOnly) {
       const todayWeather = currentForecasts[forecastTimeStamp];
       const todayDate = SimpleCalendar.api.timestampToDate(forecastTimeStamp);
-      // XXX
+
+      if (!WeatherData.validateWeatherParameters(todayWeather.climate, todayWeather.humidity, todayWeather.hexFlowerCell))
+        throw new Error('Bad current forecast in generateForecast(): ' + forecastTimeStamp);
+
       yesterdayWeather = new WeatherData(
         todayDate,
         todayDate?.currentSeason?.numericRepresentation || null,

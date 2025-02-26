@@ -53,12 +53,12 @@
         "tundra": "Toundra",
         "alpine": "Alpin",
         "taiga": "Taïga",
-        "chapparel": "Chaparral",
+        "chaparral": "Chaparral",
         "grassland": "Prairies",
         "forest": "Forêt",
         "desert": "Désert",
         "savannah": "Savane",
-        "rainforest": "Forêt tropicale"
+        "rainForest": "Forêt tropicale"
       },
 
       "humidity": {

@@ -1,7 +1,7 @@
 import { nextCell, startingCells, getDirection, weatherTemperatures, Direction, weatherDescriptions, manualOptions } from '@/weather/weatherMap';
 import { ModuleSettings, ModuleSettingKeys } from '@/settings/ModuleSettings';
 import { localize } from '@/utils/game';
-import { Climate, Humidity, Season, } from './climateData';
+import { Climate, HexFlowerCell, Humidity, Season, } from './climateData';
 import { WeatherData } from './WeatherData';
 import { log } from '@/utils/log';
 import { generateForecast } from './forecastGeneration';
@@ -13,7 +13,6 @@ import { cleanDate } from '@/utils/calendar';
 
 // forForecast indicates
 const generateWeather = function(climate: Climate, humidity: Humidity, season: Season, today: SimpleCalendar.DateData | null, yesterday: WeatherData | null, forForecast = false): WeatherData {
-  // XXX
   const weatherData = new WeatherData(today, season, humidity, climate, null, null);
 
   // do the generation
@@ -24,23 +23,20 @@ const generateWeather = function(climate: Climate, humidity: Humidity, season: S
 
   // if the date has a forecast, use that
   const allForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
-  if (today && ModuleSettings.get(ModuleSettingKeys.useForecasts) && allForecasts && 
-      allForecasts[cleanDate(today)]) {
-    const forecast = allForecasts[cleanDate(today)];
-
+  const todayForecast = today && allForecasts ? allForecasts[cleanDate(today)] ?? null : null;
+  if (today && ModuleSettings.get(ModuleSettingKeys.useForecasts) &&  todayForecast &&
+    WeatherData.validateWeatherParameters(todayForecast.climate, todayForecast.humidity, todayForecast.hexFlowerCell)) {
     // make sure the climate/humidity hasn't changed
-    if (climate===forecast.climate && humidity===forecast.humidity) {
-      // XXX
-      weatherData.hexFlowerCell = forecast.hexFlowerCell;
+    if (climate===todayForecast.climate && humidity===todayForecast.humidity) {
+      weatherData.hexFlowerCell = todayForecast.hexFlowerCell;  // we know this is good because of the validateWeatherParameters()
 
       // we need to generate one more day on the end
       generateForecast(cleanDate(today), weatherData, true);
     }
   } else {
     // random start if no valid prior day or the prior day" was manually set
-    if (!yesterday || yesterday.season !== season || !yesterday.hexFlowerCell || yesterday.isManual) {
+    if (!yesterday || yesterday.season !== season || yesterday.hexFlowerCell==null || yesterday.isManual) {
       // no yesterday data (or starting a new season), so just pick a random starting point based on the season
-      // XXX
       weatherData.hexFlowerCell = getDefaultStart(season);
     } else {
       log(false, 'Current cell: ' + yesterday.hexFlowerCell + ' (' + weatherDescriptions[climate][humidity][yesterday.hexFlowerCell] + ')')
@@ -50,16 +46,13 @@ const generateWeather = function(climate: Climate, humidity: Humidity, season: S
       log(false, 'Direction: ' + Direction[direction]);
 
       if (direction===Direction.stay) {
-        // XXX
         weatherData.hexFlowerCell = yesterday.hexFlowerCell;
       } else {
-        // XXX
-        weatherData.hexFlowerCell = nextCell[season][yesterday.hexFlowerCell][direction];
-
-        // a -1 should never happen; if it does, something got screwy, so go to a default starting position
-        if (weatherData.hexFlowerCell === -1) {
-          // XXX
-          weatherData.hexFlowerCell = weatherData.hexFlowerCell = getDefaultStart(season);
+        if (nextCell[season][yesterday.hexFlowerCell][direction]!==-1) {
+          weatherData.hexFlowerCell = nextCell[season][yesterday.hexFlowerCell][direction] as HexFlowerCell;
+        } else {
+          // a -1 should never happen; if it does, something got screwy, so go to a default starting position
+          weatherData.hexFlowerCell = getDefaultStart(season);
         }
       }
     }
@@ -74,7 +67,7 @@ const generateWeather = function(climate: Climate, humidity: Humidity, season: S
 
   // randomize the temperature (+/- # degrees)
   // margin of error is 4% of temperature, but always at least 2 degrees
-  weatherData.temperature = weatherTemperatures[climate][humidity][weatherData.hexFlowerCell as number];
+  weatherData.temperature = weatherTemperatures[climate][humidity][weatherData.hexFlowerCell as HexFlowerCell];
 
   const plusMinus = Math.max(2, Math.ceil(.04*weatherData.temperature));
   weatherData.temperature += Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
@@ -94,7 +87,6 @@ const createManual = function(today: SimpleCalendar.DateData | null, temperature
   const plusMinus = Math.max(2, Math.ceil(.04*temperature));
   const temp = temperature + Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
 
-  // XXX
   const weatherData = new WeatherData(today, null, options.humidity, options.climate, options.hexCell, temp);
   weatherData.isManual = true;
 
@@ -102,7 +94,7 @@ const createManual = function(today: SimpleCalendar.DateData | null, temperature
 }
 
 // used to pick a specific cell for weather (for testing or use by other applications)
-const createSpecificWeather = function(today: SimpleCalendar.DateData | null, climate: Climate, humidity: Humidity, hexFlowerCell: number): WeatherData | null {
+const createSpecificWeather = function(today: SimpleCalendar.DateData | null, climate: Climate, humidity: Humidity, hexFlowerCell: HexFlowerCell): WeatherData | null {
   if (!WeatherData.validateWeatherParameters(climate, humidity, hexFlowerCell))
     throw new Error('Invalid parameters in createSpecificWeather()');
 
@@ -111,7 +103,6 @@ const createSpecificWeather = function(today: SimpleCalendar.DateData | null, cl
   const plusMinus = Math.max(2, Math.ceil(.04*temp));
   temp += Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
 
-  // XXX
   const weatherData = new WeatherData(today, null, humidity, climate, hexFlowerCell, temp);
   weatherData.isManual = true;
 

@@ -1,6 +1,6 @@
 import { localize } from '@/utils/game';
 import { log } from '@/utils/log';
-import { Climate, Humidity, Season } from './climateData';
+import { Climate, HexFlowerCell, Humidity, Season } from './climateData';
 import { availableEffects, EffectDetails, joinEffects } from '@/weather/effectsMap';
 import { Sunniness } from './Forecast';
 
@@ -46,7 +46,7 @@ function initializeLocalizedText(): void {
   // need value and text, and then a way to map the values back to the weather
   //    for effects
   manualSelections = manualOptions.map((val, i) =>
-      ({ value: i.toString(), text: weatherDescriptions[val?.climate as number][val?.humidity as number][val?.hexCell as number] }));
+      ({ value: i.toString(), text: weatherDescriptions[val.climate as number][val.humidity as number][val.hexCell] }));
 }
 
 // rather than specifying weather by biome, we take a more flexible approach (though we also define some biomes as defaults)
@@ -144,7 +144,7 @@ const getDirection = (season: Season): Direction => {
 };
 
 // keyed by season, contains the possible cell starting points for each season
-const startingCells: number[][] = [[], [], [], []];
+const startingCells: HexFlowerCell[][] = [[], [], [], []];
 
 startingCells[Season.Summer] = [ 9, 10, 11, 12, 13, 14, ];
 startingCells[Season.Fall] = [ 15, 16, 17, 18, 19, 20, 21,];
@@ -152,7 +152,7 @@ startingCells[Season.Winter] = [ 22, 23, 24, 25, 26, 27, ];
 startingCells[Season.Spring] = [ 15, 16, 17, 18, 19, 20, 21, ];
 
 // indexed by Season, then the cell # you're starting in, and then Direction
-const nextCell: number[][][] = [[], [], [], []];
+const nextCell: (HexFlowerCell | -1)[][][] = [[], [], [], []];
 
 nextCell[Season.Summer] = [
   // N, NE, SE, S, SW, NW
@@ -401,7 +401,7 @@ const descriptionCells = {
   'winter7': 34,
   'winter8': 35,
   'winter9': 36,
-};
+} as Record<string, HexFlowerCell>;
 
 const manualOptions = [  // build list of manual weather options; for simplicity, we steal them from ones that already exist
   { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.springfall_cool1 },   // clear sky
