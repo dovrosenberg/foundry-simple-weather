@@ -18,7 +18,7 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
 - Ability to manually pick weather for special events
 - Ability to store weather history to calendar day, enabling replaying weather history
 - Ability to add custom text (ex. movement penalties during snowstorms) to each weather condition
-- Supports Farenheit and Celsius temperatures
+- Supports Fahrenheit and Celsius temperatures
 - Helpful keybinding options
 
 ### And if using Simple Calendar:
@@ -64,7 +64,7 @@ The GM can activate weather effects in the module settings.  This includes suppo
 
 Once activated in settings, the scene weather will automatically be changed whenever the weather warrants it.  There is currently only support for inclement weather (rain, hail, snow, fog).  Let me know if there's any desire to do something to show sunny days, as I wasn't sure what made the most sense.
 
-When players go inside, you can easily toggle the fx on/off temporarily using the toggle button on the toolbar.  There is also a module setting to make weather FX turned on/off by scene instead of globally, so you can just set them to not display on indoor scenes and they'll automatically come back when you switch back to an outdoor scene.
+When players go inside, you can easily toggle the fx on/off temporarily using the toggle button on the toolbar.  You can also do this from the 'Ambiance' tab of the Foundry scene configuration, which can make it easier to control without having to actually open the scene.  There is also a module setting to make weather FX turned on/off by scene instead of globally, so you can just set them to not display on indoor scenes and they'll automatically come back when you switch back to an outdoor scene.
 
 ***Note: I've mixed up the weather effects a bit - in particular whether or not clouds show up when it's raining.  In all cases, I'd love to hear if there are setups you'd like to change how they work.  I suspect different types of gameplay will have issues with different FX.  Simply open an issue.  At the very least, I need the text description of the weather at issue.  Preferably, the biome, climate and/or humidity as well.  Whatever you have. A description of the type of scene would be helpful, too (battle map, theater of the mind image, etc.) ***
 

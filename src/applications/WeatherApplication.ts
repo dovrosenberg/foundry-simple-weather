@@ -5,7 +5,7 @@ import { log } from '@/utils/log';
 import { WindowPosition } from '@/window/WindowPosition';
 import { WindowDrag } from '@/window/windowDrag';
 import { WeatherData } from '@/weather/WeatherData';
-import { SelectOption, seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings } from '@/weather/climateData';
+import { SelectOption, seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings, HexFlowerCell } from '@/weather/climateData';
 import { manualSelections, weatherDescriptions } from '@/weather/weatherMap';
 import { ModuleSettingKeys } from '@/settings/ModuleSettings';
 import { getGame, isClientGM } from '@/utils/game';
@@ -508,7 +508,7 @@ _______________________________________
               const flagData = note.getFlag(moduleJson.id, SC_NOTE_WEATHER_FLAG_NAME) as WeatherData;
       
               // if it has the flag, it's a prior weather entry - use it
-              if (flagData && flagData.temperature!==undefined && flagData.hexFlowerCell!==undefined) {
+              if (flagData && flagData.temperature!=null && flagData.hexFlowerCell!=null) {
                 foundWeatherNote = true;
 
                 this._currentWeather = new WeatherData(
@@ -527,7 +527,7 @@ _______________________________________
               } else if (flagData) {
                 log(false, 'Found a weather note for today, but it\'s corrupt:');
                 log(false, flagData);
-                return;
+                break;  // pretend we didn't have any notes
               }
             }
           }
@@ -634,7 +634,7 @@ _______________________________________
    * 
    * @internal
    */
-  public setSpecificWeather(climate: Climate, humidity: Humidity, hexFlowerCell: number): void {
+  public setSpecificWeather(climate: Climate, humidity: Humidity, hexFlowerCell: HexFlowerCell): void {
     const season = this.getSeason();
 
     log(false, 'Running weather for ' + weatherDescriptions[climate][humidity][hexFlowerCell]);
@@ -1015,7 +1015,9 @@ _______________________________________
       if (!forecast)
         return forecasts;
 
-      forecasts.push(new Forecast(forecast.timestamp, forecast.climate, forecast.humidity, forecast.hexFlowerCell));
+      // validate the forecast or skip it 
+      if (WeatherData.validateWeatherParameters(forecast.climate, forecast.humidity, forecast.hexFlowerCell))
+        forecasts.push(new Forecast(forecast.timestamp, forecast.climate, forecast.humidity, forecast.hexFlowerCell));
     }
 
     return forecasts;

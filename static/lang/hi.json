@@ -53,12 +53,12 @@
         "tundra": "टंडरा",
         "alpine": "अल्पाइन",
         "taiga": "टैगा",
-        "chapparel": "चैपरेल",
+        "chaparral": "चैपरेल",
         "grassland": "घासक्षेत्र",
         "forest": "वन",
         "desert": "रेगिस्तान",
         "savannah": "सवाना",
-        "rainforest": "वर्षावन"
+        "rainForest": "वर्षावन"
       },
 
       "humidity": {

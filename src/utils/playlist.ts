@@ -125,7 +125,8 @@ async function playSound(sound: Sounds): Promise<void>  {
 }
 
 async function stopSounds(): Promise<void>  {
-  await playlist.stopAll();    
+  if (playlist)
+    await playlist.stopAll();    
 }
 
 export { 

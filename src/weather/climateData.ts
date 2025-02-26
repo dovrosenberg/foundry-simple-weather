@@ -20,6 +20,9 @@ export enum Climate {
   Hot
 }
 
+
+export type HexFlowerCell = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36;
+
 // these are used to create the drop downs; the first value in each
 //    subarray is the value, the second the description
 export type SelectOption = { value: string, text: string};
@@ -38,12 +41,12 @@ export function initializeLocalizedText(): void {
     { value: 'tundra', text: localize('swr.options.biome.tundra') },
     { value: 'alpine', text: localize('swr.options.biome.alpine') },
     { value: 'taiga', text: localize('swr.options.biome.taiga') },
-    { value: 'chapparel', text: localize('swr.options.biome.chapparel') },
+    { value: 'chaparral', text: localize('swr.options.biome.chaparral') },
     { value: 'grassland', text: localize('swr.options.biome.grassland') },
     { value: 'forest', text: localize('swr.options.biome.forest') },
     { value: 'desert', text: localize('swr.options.biome.desert') },
     { value: 'savannah', text: localize('swr.options.biome.savannah') },
-    { value: 'rainforest', text: localize('swr.options.biome.rainforest') },
+    { value: 'rainForest', text: localize('swr.options.biome.rainForest') },
   ];
 
   climateSelections= [
@@ -76,12 +79,12 @@ const biomeMappings: Record<string, { climate: number, humidity: number }> = {
   tundra: { climate: Climate.Cold, humidity: Humidity.Barren },
   alpine: { climate: Climate.Cold, humidity: Humidity.Modest },
   taiga: { climate: Climate.Cold, humidity: Humidity.Verdant },
-  chapparel: { climate: Climate.Temperate, humidity: Humidity.Barren },
+  chaparral: { climate: Climate.Temperate, humidity: Humidity.Barren },
   grassland: { climate: Climate.Temperate, humidity: Humidity.Modest },
   forest: { climate: Climate.Temperate, humidity: Humidity.Verdant },
   desert: { climate: Climate.Hot, humidity: Humidity.Barren }, 
   savannah: { climate: Climate.Hot, humidity: Humidity.Modest },
-  rainforest: { climate: Climate.Hot, humidity: Humidity.Verdant },
+  rainForest: { climate: Climate.Hot, humidity: Humidity.Verdant },
 };
 
 export { 
