@@ -1,7 +1,7 @@
 import moduleJson from '@module';
 
 import { WindowPosition } from '@/window/WindowPosition';
-import { getGame, isClientGM, localize } from '@/utils/game';
+import { isClientGM, localize } from '@/utils/game';
 import { WeatherData } from '@/weather/WeatherData';
 import { DisplayOptions } from '@/types/DisplayOptions';
 import { CustomMessageSettingsApplication } from '@/applications/CustomMessageSettingsApplication';
@@ -80,7 +80,7 @@ export class ModuleSettings {
 
   public static get<T extends ModuleSettingKeys>(setting: T): SettingType<T> {
     if (setting === ModuleSettingKeys.lastWeatherData) {
-      const loaded = getGame().settings.get(moduleJson.id, setting) as SettingType<T> as WeatherData;  // not really WeatherData - need to attach functions
+      const loaded = game.settings.get(moduleJson.id, setting) as SettingType<T> as WeatherData;  // not really WeatherData - need to attach functions
 
       if (loaded) {
         // validate
@@ -93,10 +93,10 @@ export class ModuleSettings {
       }
     } else {
       // for some reason booleans are sometimes coming back as Boolean
-      if (getGame().settings.get(moduleJson.id, setting) instanceof Boolean) {
-        return (getGame().settings.get(moduleJson.id, setting) as Boolean).valueOf() as SettingType<T>;
+      if (game.settings.get(moduleJson.id, setting) instanceof Boolean) {
+        return (game.settings.get(moduleJson.id, setting) as Boolean).valueOf() as SettingType<T>;
       } else {
-        return getGame().settings.get(moduleJson.id, setting) as SettingType<T>;
+        return game.settings.get(moduleJson.id, setting) as SettingType<T>;
       }
     }
   }
@@ -111,15 +111,15 @@ export class ModuleSettings {
       return;
     }
 
-    await getGame().settings.set(moduleJson.id, setting, value);
+    await game.settings.set(moduleJson.id, setting, value);
   }
 
   private static register(settingKey: string, settingConfig: ClientSettings.PartialSettingConfig) {
-    getGame().settings.register(moduleJson.id, settingKey, settingConfig);
+    game.settings.register(moduleJson.id, settingKey, settingConfig);
   }
 
   private static registerMenu(settingKey: string, settingConfig: ClientSettings.PartialSettingSubmenuConfig) {
-    getGame().settings.registerMenu(moduleJson.id, settingKey, settingConfig);
+    game.settings.registerMenu(moduleJson.id, settingKey, settingConfig);
   }
 
   // these are global menus (shown at top)

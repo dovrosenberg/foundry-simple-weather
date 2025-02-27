@@ -1,6 +1,6 @@
 import moduleJson from '@module';
 
-import { getGame, isClientGM } from '@/utils/game';
+import { isClientGM } from '@/utils/game';
 
 // stores the settings in flags with the given names, so should all have 'swr' in front of them
 export enum SceneSettingKeys {
@@ -22,7 +22,7 @@ export class SceneSettings {
   
   public static get currentScene(): Scene | null { return SceneSettings._currentScene; }
   public static set currentScene(scene: Scene | null) {
-    SceneSettings._currentScene = scene || getGame().scenes?.active || null;
+    SceneSettings._currentScene = scene || game.scenes?.active || null;
   }
 
   public static isSettingValueEmpty(setting: any): boolean {

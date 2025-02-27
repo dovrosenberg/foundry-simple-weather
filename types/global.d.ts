@@ -3,3 +3,10 @@ export * from '@league-of-foundry-developers/foundry-vtt-types/src/index.d.mts';
 import 'foundryvtt-simple-calendar';
 
 declare let SimpleCalendar: SimpleCalendar;
+
+declare global {
+  interface LenientGlobalVariableTypes {
+    game: never;
+    quench: never;
+  }
+}
