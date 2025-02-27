@@ -48,7 +48,12 @@ Hooks.once('devModeReady', async ({ registerPackageDebugFlag: registerPackageDeb
 });
 
 Hooks.once('init', async () => {
-  // initialize settings first, so other things can use them
+  // Load Quench test in development environment
+  if (import.meta.env.DEV) {
+    await import('@test/index');
+  }
+
+// initialize settings first, so other things can use them
   ModuleSettings.registerSettings();
 
   updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX

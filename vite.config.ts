@@ -21,6 +21,10 @@ export default defineConfig({
         find: '@module',
         replacement: path.resolve(__dirname,'static/module.json')
       },
+      {
+        find: '@test',
+        replacement: path.resolve(__dirname,'test')
+      },
     ],
     extensions: [
       '.mjs',
