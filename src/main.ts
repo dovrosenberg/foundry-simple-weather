@@ -14,7 +14,6 @@ import { SceneSettingKeys, SceneSettings, } from '@/settings/SceneSettings';
 import { initSounds } from '@/utils/playlist';
 import { migrateData } from '@/utils/migration';
 import { WeatherData } from './weather/WeatherData';
-import { log } from './utils/log';
 
 // track which modules we have
 export let simpleCalendarInstalled = false;

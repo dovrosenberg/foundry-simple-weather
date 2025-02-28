@@ -461,7 +461,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
-    sound: Sounds.Rain,
+    sound: Sounds.None,
   },
   ModerateFog: { 
     core: {
@@ -481,7 +481,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
-    sound: Sounds.Rain,
+    sound: Sounds.None,
   },
   HeavyFog: { 
     core: {
@@ -501,7 +501,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],
-    sound: Sounds.Rain,
+    sound: Sounds.None,
   },
   RollingFog: { 
     core: {

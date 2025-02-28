@@ -110,10 +110,7 @@ class WeatherApplication extends Application {
     // get default position or set default
     this._windowPosition = ModuleSettings.get(ModuleSettingKeys.windowPosition) || { left: 100, bottom: 300 }
 
-    log(true, "QX");
     this.setWeather();  
-
-    log(true, "R");
   }
 
   // draw the window
@@ -565,28 +562,21 @@ _______________________________________
    * clients when GM updates the settings.
   */
   public setWeather(): void {
-    log(true, "SX");
     const weatherData = ModuleSettings.get(ModuleSettingKeys.lastWeatherData);
 
-    log(true, JSON.stringify(weatherData));
-    log(true, "TX");
-
     if (weatherData) {
-      log(true, "U");
       log(false, 'Using saved weather data');
+      log(false, JSON.stringify(weatherData));
 
       this._currentWeather = weatherData;
-      log(true, "V");
       weatherEffects.activateFX(weatherData);
-      log(true, "W");
     } else if (isClientGM()) {
       log(false, 'No saved weather data - Generating weather');
-      log(true, "X");
 
       this.generateWeather(null);
     } else {
-      log(true, 'Non-GM loaded blank weather');
-      log(true, JSON.stringify(game.user));
+      log(false, 'Non-GM loaded blank weather');
+      log(false, JSON.stringify(game.user));
     }
 
     this.render();
@@ -599,16 +589,12 @@ _______________________________________
    * @param currentDate the date for which to generate weather, or null to use today's date
    */
   private generateWeather(currentDate: SimpleCalendar.DateData | null): void {
-    log(true, "Y");
     // if we're paused, do nothing (except update the date)
     if (this._manualPause) {
-      log(true, "Z");
       this._currentWeather.date = currentDate;
     } else {
-      log(true, "AA");
       const season = this.getSeason();
 
-      log(true, "AB");
       this._currentWeather = generateWeather(
         this._currentClimate ?? Climate.Temperate, 
         this._currentHumidity ?? Humidity.Modest, 
@@ -617,9 +603,7 @@ _______________________________________
         this._currentWeather || null
       );
 
-      log(true, "AC");
       this.activateWeather(this._currentWeather);
-      log(true, "AD");
     }
   }
 

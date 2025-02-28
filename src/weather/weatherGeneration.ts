@@ -24,16 +24,21 @@ const generateWeather = function(climate: Climate, humidity: Humidity, season: S
   // if the date has a forecast, use that
   const allForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
   const todayForecast = today && allForecasts ? allForecasts[cleanDate(today)] ?? null : null;
+  // see if we already have a valid forecast for today
   if (today && ModuleSettings.get(ModuleSettingKeys.useForecasts) &&  todayForecast &&
-    WeatherData.validateWeatherParameters(todayForecast.climate, todayForecast.humidity, todayForecast.hexFlowerCell)) {
+      WeatherData.validateWeatherParameters(todayForecast.climate, todayForecast.humidity, todayForecast.hexFlowerCell)) {
     // make sure the climate/humidity hasn't changed
     if (climate===todayForecast.climate && humidity===todayForecast.humidity) {
+      // just use the same weather we had before
       weatherData.hexFlowerCell = todayForecast.hexFlowerCell;  // we know this is good because of the validateWeatherParameters()
-
-      // we need to generate one more day on the end
-      if (!forForecast)
-        generateForecast(cleanDate(today), weatherData, true);
+    } else {
+      // we changed climate/humidity, so just pick a random starting point based on the season
+      weatherData.hexFlowerCell = getDefaultStart(season);
     }
+
+    // we need to generate one more day on the end
+    if (!forForecast)
+      generateForecast(cleanDate(today), weatherData, true);
   } else {
     // random start if no valid prior day or the prior day" was manually set or we changed season
     if (!yesterday || yesterday.season !== season || yesterday.hexFlowerCell==null || yesterday.isManual) {
