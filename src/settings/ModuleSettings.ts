@@ -81,7 +81,6 @@ export class ModuleSettings {
 
   public static get<T extends ModuleSettingKeys>(setting: T): SettingType<T> {
     if (setting === ModuleSettingKeys.lastWeatherData) {
-      log(true, "AEX");
       const loaded = game.settings.get(moduleJson.id, setting) as SettingType<T> as WeatherData;  // not really WeatherData - need to attach functions
 
       log(true, "AFX");

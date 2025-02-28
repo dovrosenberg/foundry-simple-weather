@@ -54,20 +54,12 @@ Hooks.once('init', async () => {
     await import('@test/index');
   }
 
-  log(true, "AX");
-
   // initialize settings first, so other things can use them
   ModuleSettings.registerSettings();
 
-  log(true, "BX");
-
   updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
 
-  log(true, "CX");
-
   updateWeatherApplication(new WeatherApplication());
-
-  log(true, "D");
 
   // register keybindings
   KeyBindings.register();
