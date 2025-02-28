@@ -89,10 +89,10 @@ export class ModuleSettings {
 
       if (loaded) {
         log(true, "AG");
-        // validate
-        if (!WeatherData.validateWeatherParameters(loaded.climate as Climate, loaded.humidity, loaded.hexFlowerCell))
-          throw new Error('Invalid lastWeatherData when loading settings()');
-
+        // validate - if invalid, pretend we didn't find anything
+        if (!WeatherData.validateWeatherParameters(loaded.climate as Climate, loaded.humidity, loaded.hexFlowerCell)) 
+          return null as SettingType<T>;
+          
         log(true, "AH");
         return new WeatherData(loaded.date, loaded.season, loaded.humidity, loaded.climate, loaded.hexFlowerCell, loaded.temperature) as SettingType<T>;
       } else {
