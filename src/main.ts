@@ -3,7 +3,7 @@ import '@/../styles/menu-icon.scss';
 
 import { ModuleSettings, ModuleSettingKeys, } from '@/settings/ModuleSettings';
 import { VersionUtils } from '@/utils/versionUtils';
-import { getGame, isClientGM } from '@/utils/game';
+import { isClientGM } from '@/utils/game';
 import { allowSeasonSync, Climate, HexFlowerCell, Humidity, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
 import { initializeLocalizedText as initializeLocalizedWeatherText } from '@/weather/weatherMap';
 import { updateWeatherApplication, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
@@ -48,7 +48,12 @@ Hooks.once('devModeReady', async ({ registerPackageDebugFlag: registerPackageDeb
 });
 
 Hooks.once('init', async () => {
-  // initialize settings first, so other things can use them
+  // Load Quench test in development environment
+  if (import.meta.env.DEV) {
+    await import('@test/index');
+  }
+
+// initialize settings first, so other things can use them
   ModuleSettings.registerSettings();
 
   updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
@@ -58,7 +63,7 @@ Hooks.once('init', async () => {
   KeyBindings.register();
 
   // expose the api
-  const module = getGame().modules.get(moduleJson.id);
+  const module = game.modules.get(moduleJson.id);
   if (module) {
     module.api = {
       runWeather: function(climate: Climate, humidity: Humidity, hexFlowerCell: HexFlowerCell): void { 
@@ -200,7 +205,7 @@ Hooks.on('renderSceneConfig', async (app: SceneConfig, element: JQuery) => {
 
 // make sure we have a compatible version of simple-calendar installed
 function checkDependencies(): void {
-  const module = getGame().modules.get('foundryvtt-simple-calendar');
+  const module = game.modules.get('foundryvtt-simple-calendar');
 
   const scVersion = module?.version;
 

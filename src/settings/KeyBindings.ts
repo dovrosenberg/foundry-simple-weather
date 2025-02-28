@@ -1,4 +1,3 @@
-import { getGame } from '@/utils/game';
 import { weatherApplication } from '@/applications/WeatherApplication';
 import moduleJson from '@module';
 
@@ -45,7 +44,7 @@ export class KeyBindings {
     for (let i=0; i<keybindings.length; i++) {
       const binding = keybindings[i];
 
-      getGame().keybindings.register(moduleJson.id, binding.bindingId, {
+      game.keybindings.register(moduleJson.id, binding.bindingId, {
         name: binding.name,
         hint: binding.hint,
         onDown: binding.onDown,
