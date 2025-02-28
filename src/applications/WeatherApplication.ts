@@ -465,6 +465,7 @@ ModuleSettings.FXByScene: ${ModuleSettings.get(ModuleSettingKeys.FXByScene)}
 ModuleSettings.attachToCalendar: ${ModuleSettings.get(ModuleSettingKeys.attachToCalendar)}
 ModuleSettings.storeInSCNotes: ${ModuleSettings.get(ModuleSettingKeys.storeInSCNotes)}
 ModuleSettings.fxActive: ${ModuleSettings.get(ModuleSettingKeys.fxActive)}
+ModuleSettings.lastWeatherData: ${ModuleSettings.get(ModuleSettingKeys.lastWeatherData)}
 getData: ${JSON.stringify(await this.getData(), null, 2)}
 _______________________________________
     `;
