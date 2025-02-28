@@ -91,6 +91,16 @@ export class ModuleSettings {
       } else {
         return null as SettingType<T>;
       }
+    } else if (setting === ModuleSettingKeys.forecasts) {
+      // need to cast to forecasts
+      const loaded = game.settings.get(moduleJson.id, setting) as Record<string, Forecast>;
+      const cleaned = {} as Record<string, Forecast>;
+
+      for (const key in loaded) {
+        cleaned[key] = new Forecast(loaded[key].timestamp, loaded[key].climate, loaded[key].humidity, loaded[key].hexFlowerCell);
+      }
+
+      return cleaned as SettingType<T>;
     } else {
       // for some reason booleans are sometimes coming back as Boolean
       if (game.settings.get(moduleJson.id, setting) instanceof Boolean) {

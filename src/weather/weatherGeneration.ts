@@ -11,7 +11,7 @@ import { cleanDate } from '@/utils/calendar';
 //    starting spot or moving from the prior one
 // today is used to set the date on the returned object
 
-// forForecast indicates
+// forForecast indicates it's being generated as part of a re-forecast, so don't add more forecasts
 const generateWeather = function(climate: Climate, humidity: Humidity, season: Season, today: SimpleCalendar.DateData | null, yesterday: WeatherData | null, forForecast = false): WeatherData {
   const weatherData = new WeatherData(today, season, humidity, climate, null, null);
 
@@ -31,7 +31,8 @@ const generateWeather = function(climate: Climate, humidity: Humidity, season: S
       weatherData.hexFlowerCell = todayForecast.hexFlowerCell;  // we know this is good because of the validateWeatherParameters()
 
       // we need to generate one more day on the end
-      generateForecast(cleanDate(today), weatherData, true);
+      if (!forForecast)
+        generateForecast(cleanDate(today), weatherData, true);
     }
   } else {
     // random start if no valid prior day or the prior day" was manually set or we changed season
