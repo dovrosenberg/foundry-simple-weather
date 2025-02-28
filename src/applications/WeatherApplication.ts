@@ -570,19 +570,12 @@ _______________________________________
    * clients when GM updates the settings.
   */
   public setWeather(): void {
-    log(true, "S");
+    log(true, "SX");
     const weatherData = ModuleSettings.get(ModuleSettingKeys.lastWeatherData);
 
-    log(true, `{
-      weatherData.date: ${weatherData?.date}
-      weatherData.season: ${weatherData?.season}
-      weatherData.humidity: ${weatherData?.humidity}
-      weatherData.climate: ${weatherData?.climate}
-      weatherData.hexFlowerCell: ${weatherData?.hexFlowerCell}
-      weatherData.temperature: ${weatherData?.temperature}
-      weatherData.isManual: ${weatherData?.isManual}
-    }`);
-    log(true, "T");
+    log(true, JSON.stringify(weatherData));
+    log(true, "TX");
+
     if (weatherData) {
       log(true, "U");
       log(false, 'Using saved weather data');
@@ -596,6 +589,9 @@ _______________________________________
       log(true, "X");
 
       this.generateWeather(null);
+    } else {
+      log(true, 'Non-GM loaded blank weather');
+      log(true, JSON.stringify(game.user));
     }
 
     this.render();

@@ -81,20 +81,21 @@ export class ModuleSettings {
 
   public static get<T extends ModuleSettingKeys>(setting: T): SettingType<T> {
     if (setting === ModuleSettingKeys.lastWeatherData) {
-      log(true, "AE");
+      log(true, "AEX");
       const loaded = game.settings.get(moduleJson.id, setting) as SettingType<T> as WeatherData;  // not really WeatherData - need to attach functions
 
-      log(true, "AF");
+      log(true, "AFX");
       log(true, JSON.stringify(loaded));
 
       if (loaded) {
-        log(true, "AG");
+        log(true, "AGX");
         // validate - if invalid, pretend we didn't find anything
-        if (!WeatherData.validateWeatherParameters(loaded.climate as Climate, loaded.humidity, loaded.hexFlowerCell)) 
+        if (!WeatherData.validateWeatherParameters(loaded.climate as Climate, loaded.humidity, loaded.hexFlowerCell)) {
           return null as SettingType<T>;
-          
-        log(true, "AH");
-        return new WeatherData(loaded.date, loaded.season, loaded.humidity, loaded.climate, loaded.hexFlowerCell, loaded.temperature) as SettingType<T>;
+        } else {
+          log(true, "AH");
+          return new WeatherData(loaded.date, loaded.season, loaded.humidity, loaded.climate, loaded.hexFlowerCell, loaded.temperature) as SettingType<T>;
+        }
       } else {
         return null as SettingType<T>;
       }
