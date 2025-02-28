@@ -83,11 +83,12 @@ export class ModuleSettings {
       const loaded = game.settings.get(moduleJson.id, setting) as SettingType<T> as WeatherData;  // not really WeatherData - need to attach functions
 
       if (loaded) {
-        // validate
-        if (!WeatherData.validateWeatherParameters(loaded.climate as Climate, loaded.humidity, loaded.hexFlowerCell))
-          throw new Error('Invalid lastWeatherData when loading settings()');
-
-        return new WeatherData(loaded.date, loaded.season, loaded.humidity, loaded.climate, loaded.hexFlowerCell, loaded.temperature) as SettingType<T>;
+        // validate - if invalid, pretend we didn't find anything
+        if (!WeatherData.validateWeatherParameters(loaded.climate as Climate, loaded.humidity, loaded.hexFlowerCell)) {
+          return null as SettingType<T>;
+        } else {
+          return new WeatherData(loaded.date, loaded.season, loaded.humidity, loaded.climate, loaded.hexFlowerCell, loaded.temperature) as SettingType<T>;
+        }
       } else {
         return null as SettingType<T>;
       }
@@ -145,9 +146,9 @@ export class ModuleSettings {
     // },
     {
       settingID: 'mySettingsMenu',
-      name: 'sweath.settings.customWeather',
-      label: 'sweath.settings.customWeatherButton',
-      hint: 'sweath.settings.customWeatherHelp',
+      name: 'settings.customWeather',
+      label: 'settings.customWeatherButton',
+      hint: 'settings.customWeatherHelp',
       icon: 'fas fa-bars',               // A Font Awesome icon used in the submenu button
       type: CustomMessageSettingsApplication,
     }
@@ -162,97 +163,97 @@ export class ModuleSettings {
   private static displayParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
     {
       settingID: ModuleSettingKeys.outputWeatherToChat,
-      name: 'sweath.settings.outputWeatherToChat',
-      hint: 'sweath.settings.outputWeatherToChatHelp',
+      name: 'settings.outputWeatherToChat',
+      hint: 'settings.outputWeatherToChatHelp',
       default: true,
       type: Boolean,
     },
     {
       settingID: ModuleSettingKeys.outputDateToChat,
-      name: 'sweath.settings.outputDateToChat',
-      hint: 'sweath.settings.outputDateToChatHelp',
+      name: 'settings.outputDateToChat',
+      hint: 'settings.outputDateToChatHelp',
       default: false,
       type: Boolean,
     },
     {
       settingID: ModuleSettingKeys.publicChat,
-      name: 'sweath.settings.publicChat',
-      hint: 'sweath.settings.publicChatHelp',
+      name: 'settings.publicChat',
+      hint: 'settings.publicChatHelp',
       default: true,
       type: Boolean,
     },
     {
       settingID: ModuleSettingKeys.dialogDisplay, 
-      name: 'sweath.settings.dialogDisplay',
-      hint: 'sweath.settings.dialogDisplayHelp',
+      name: 'settings.dialogDisplay',
+      hint: 'settings.dialogDisplayHelp',
       default: true,
       type: Boolean,
     },
     {
       settingID: ModuleSettingKeys.useFX, 
-      name: 'sweath.settings.useFX',
-      hint: 'sweath.settings.useFXHelp',
+      name: 'settings.useFX',
+      hint: 'settings.useFXHelp',
       requiresReload: true,   
       type: String,
       choices: {  
-        'off': 'sweath.settings.options.useFX.choices.off',
-        'core': 'sweath.settings.options.useFX.choices.core',
-        'fxmaster': 'sweath.settings.options.useFX.choices.fxmaster',
+        'off': 'settings.options.useFX.choices.off',
+        'core': 'settings.options.useFX.choices.core',
+        'fxmaster': 'settings.options.useFX.choices.fxmaster',
       },
       default: 'off',
     },
     {
       settingID: ModuleSettingKeys.FXByScene, 
-      name: 'sweath.settings.FXByScene',
-      hint: 'sweath.settings.FXBySceneHelp',
+      name: 'settings.FXByScene',
+      hint: 'settings.FXBySceneHelp',
       requiresReload: true,     
       type: Boolean,
       default: false,
     },
     {
       settingID: ModuleSettingKeys.attachToCalendar, 
-      name: 'sweath.settings.attachToCalendar',
-      hint: 'sweath.settings.attachToCalendarHelp',
+      name: 'settings.attachToCalendar',
+      hint: 'settings.attachToCalendarHelp',
       default: false,
       requiresReload: true,    
       type: Boolean,
     },
     {
       settingID: ModuleSettingKeys.storeInSCNotes, 
-      name: 'sweath.settings.storeInSCNotes',
-      hint: 'sweath.settings.storeInSCNotesHelp',
+      name: 'settings.storeInSCNotes',
+      hint: 'settings.storeInSCNotesHelp',
       default: false,
       requiresReload: false,    
       type: Boolean,
     },
     {
       settingID: ModuleSettingKeys.useForecasts, 
-      name: 'sweath.settings.useForecasts',
-      hint: 'sweath.settings.useForecastsHelp',
-      default: false,
+      name: 'settings.useForecasts',
+      hint: 'settings.useForecastsHelp',
+      default: true,
       requiresReload: true,    
       type: Boolean,
     },
     {
       settingID: ModuleSettingKeys.playSound,
-      name: 'sweath.settings.playSound',
-      hint: 'sweath.settings.playSoundHelp',
+      name: 'settings.playSound',
+      hint: 'settings.playSoundHelp',
       default: true,
       requiresReload: true,
       type: Boolean,
     },
     // {
     //   settingID: ModuleSettingKeys.normalizeVolume,
-    //   name: 'sweath.settings.normalizeVolume',
-    //   hint: 'sweath.settings.normalizeVolumeHelp',
+    //   name: 'settings.normalizeVolume',
+    //   hint: 'settings.normalizeVolumeHelp',
     //   default: true,
     //   requiresReload: true,
     //   type: Boolean,
     // },
     {
       settingID: ModuleSettingKeys.soundVolume,
-      name: 'sweath.settings.soundVolume',
-      hint: 'sweath.settings.soundVolumeHelp',
+      name: 'settings.soundVolume',
+      hint: 'settings.soundVolumeHelp',
       default: 0.5,
       requiresReload: true,
       type: new foundry.data.fields.NumberField({ nullable: false, min: 0, max: 100, step: 1, initial: 50}),
@@ -263,8 +264,8 @@ export class ModuleSettings {
   private static localDisplayParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
     {
       settingID: ModuleSettingKeys.useCelsius, 
-      name: 'sweath.settings.useCelsius',
-      hint: 'sweath.settings.useCelsiusHelp',
+      name: 'settings.useCelsius',
+      hint: 'settings.useCelsiusHelp',
       default: false,
       type: Boolean,
     },
@@ -381,6 +382,7 @@ export class ModuleSettings {
   public static registerSettings(): void {
     for (let i=0; i<ModuleSettings.menuParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.menuParams[i];
+
       ModuleSettings.registerMenu(settingID, {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
@@ -391,6 +393,7 @@ export class ModuleSettings {
 
     for (let i=0; i<ModuleSettings.localMenuParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.localMenuParams[i];
+
       ModuleSettings.registerMenu(settingID, {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
@@ -401,6 +404,7 @@ export class ModuleSettings {
 
     for (let i=0; i<ModuleSettings.displayParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.displayParams[i];
+
       ModuleSettings.register(settingID, {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
@@ -412,6 +416,7 @@ export class ModuleSettings {
 
     for (let i=0; i<ModuleSettings.localDisplayParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.localDisplayParams[i];
+
       ModuleSettings.register(settingID, {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
@@ -423,6 +428,7 @@ export class ModuleSettings {
 
     for (let i=0; i<ModuleSettings.internalParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.internalParams[i];
+
       ModuleSettings.register(settingID, {
         ...settings,
         scope: 'world',
@@ -432,6 +438,7 @@ export class ModuleSettings {
 
     for (let i=0; i<ModuleSettings.localInternalParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.localInternalParams[i];
+
       ModuleSettings.register(settingID, {
         ...settings,
         scope: 'client',

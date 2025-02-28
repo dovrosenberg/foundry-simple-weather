@@ -49,7 +49,7 @@ class WeatherEffects {
         }
       }
     }
-
+    
     this._activeFXMParticleEffects = ModuleSettings.get(ModuleSettingKeys.activeFXMParticleEffects);
     this._sceneReady = false;
     this.firstRefresh = true;

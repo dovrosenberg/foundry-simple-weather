@@ -3,7 +3,6 @@ import { log } from '@/utils/log';
 import { Climate, HexFlowerCell, Humidity, Season } from './climateData';
 import { availableEffects, EffectDetails, joinEffects } from '@/weather/effectsMap';
 import { Sunniness } from './Forecast';
-import { EmptyObject } from '@league-of-foundry-developers/foundry-vtt-types/src/utils/index.mjs';
 
 // drop down selections for manually setting weather
 let manualSelections: { text:string, value: string}[];

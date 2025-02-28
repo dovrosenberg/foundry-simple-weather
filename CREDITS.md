@@ -58,3 +58,5 @@ Royalty-free sound files from pixabay.com:
 * [Tornado](https://pixabay.com/sound-effects/tornado-sound-better-quality-68141/)
 * [WildFire](https://pixabay.com/sound-effects/digital-wildfire-64073/)
 
+### Others
+* Thanks to october1210 for reporting a particularly tricky (but bad) bug and then spending a ton of time helping to debug it

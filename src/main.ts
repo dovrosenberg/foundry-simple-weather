@@ -53,10 +53,11 @@ Hooks.once('init', async () => {
     await import('@test/index');
   }
 
-// initialize settings first, so other things can use them
+  // initialize settings first, so other things can use them
   ModuleSettings.registerSettings();
 
   updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
+
   updateWeatherApplication(new WeatherApplication());
 
   // register keybindings
