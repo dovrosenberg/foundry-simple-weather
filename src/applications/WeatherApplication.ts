@@ -572,6 +572,15 @@ _______________________________________
     log(true, "S");
     const weatherData = ModuleSettings.get(ModuleSettingKeys.lastWeatherData);
 
+    log(true, `{
+      weatherData.date: ${weatherData?.date}
+      weatherData.season: ${weatherData?.season}
+      weatherData.humidity: ${weatherData?.humidity}
+      weatherData.climate: ${weatherData?.climate}
+      weatherData.hexFlowerCell: ${weatherData?.hexFlowerCell}
+      weatherData.temperature: ${weatherData?.temperature}
+      weatherData.isManual: ${weatherData?.isManual}
+    }`);
     log(true, "T");
     if (weatherData) {
       log(true, "U");
