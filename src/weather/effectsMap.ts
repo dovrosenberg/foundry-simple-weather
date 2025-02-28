@@ -521,7 +521,7 @@ export const availableEffects: Record<string, EffectDetails> = {
         },
       },
     ],    
-    sound: Sounds.Rain,
+    sound: Sounds.None,
   },
   Lightning: {
     core: null,

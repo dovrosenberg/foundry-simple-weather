@@ -1,7 +1,7 @@
 import { weatherApplication } from '@/applications/WeatherApplication';
 import { ModuleSettings, ModuleSettingKeys } from '@/settings/ModuleSettings';
 import { SceneSettingKeys, SceneSettings } from '@/settings/SceneSettings';
-import { getGame, isClientGM } from '@/utils/game';
+import { isClientGM } from '@/utils/game';
 import { log } from '@/utils/log';
 import { VersionUtils } from '@/utils/versionUtils';
 import { WeatherData } from '@/weather/WeatherData';
@@ -36,9 +36,9 @@ class WeatherEffects {
 
     // check the version
     if (this._useFX==='fxmaster') {
-      const fxVersion = getGame().modules.get('fxmaster')?.version;
+      const fxVersion = game.modules.get('fxmaster')?.version;
 
-      if (!fxVersion || !getGame().modules.get('fxmaster')?.active) {
+      if (!fxVersion || !game.modules.get('fxmaster')?.active) {
         // module is missing... but they picked it so just disable for now
         this._useFX = 'off';
         ui.notifications?.error('Disabling FXMaster because module not present');
@@ -177,7 +177,7 @@ class WeatherEffects {
       if (!skipCore)
         await SceneSettings.currentScene?.update({ weather: '' });
 
-      if (getGame().modules.get('fxmaster')?.active) {
+      if (game.modules.get('fxmaster')?.active) {
         // this isn't really safe because this is checking an internal setting but it's too easy to 
         //    get out of sync with FX master, in which case attempting to turn something off may actually
         //    add it instead

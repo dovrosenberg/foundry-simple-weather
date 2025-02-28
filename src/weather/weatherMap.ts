@@ -39,7 +39,7 @@ function initializeLocalizedText(): void {
       const humidity = humidityArray[h];
 
       for (let i=0; i<37; i++) {
-        weatherDescriptions[climate][humidity][i] = localize(`swr.description.${localizeClimates[climate]}.${localizeHumidities[humidity]}.${descriptionOrder[i]}`);
+        weatherDescriptions[climate][humidity][i] = localize(`description.${localizeClimates[climate]}.${localizeHumidities[humidity]}.${descriptionOrder[i]}`);
       }
     }
   }
@@ -57,7 +57,7 @@ function initializeLocalizedText(): void {
 // this approach borrows from Dave's All-Purpose Weather Table from reddit u/AlliedSalad2
 // https://docs.google.com/spreadsheets/d/1j0d1MtsWtJT-Q-Ncbl8DsBlf6cK51j5T13JTll5bSTE/edit#gid=0
 
-// but it's heavilty based on this weather system (see /docs/weather.png) from reddit user iceandstorm as described in the comments to this post: 
+// but it's heavily based on this weather system (see /docs/weather.png) from reddit user iceandstorm as described in the comments to this post: 
 //    https://www.reddit.com/r/rpg/comments/p0wq9n/weather_hex_flower_random_weather_generation/
 
 // the numbered cells in the hex flower

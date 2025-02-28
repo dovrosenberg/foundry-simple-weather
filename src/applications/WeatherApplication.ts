@@ -8,14 +8,13 @@ import { WeatherData } from '@/weather/WeatherData';
 import { SelectOption, seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings, HexFlowerCell } from '@/weather/climateData';
 import { manualSelections, weatherDescriptions } from '@/weather/weatherMap';
 import { ModuleSettingKeys } from '@/settings/ModuleSettings';
-import { getGame, isClientGM } from '@/utils/game';
+import { isClientGM } from '@/utils/game';
 import { generateWeather, outputWeatherToChat, createManual, createSpecificWeather } from '@/weather/weatherGeneration';
 import { ModuleSettings } from '@/settings/ModuleSettings';
 import { weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
 import { Forecast } from '@/weather/Forecast';
 import { cleanDate } from '@/utils/calendar';
-import { initSounds } from '@/utils/playlist';
 
 // the solo instance
 let weatherApplication: WeatherApplication;
@@ -74,7 +73,7 @@ class WeatherApplication extends Application {
   private _calendarPresent = false;   // is simple calendar present?
   private _manualPause = false;
   private _attachedMode = false;
-  private _attachmodeHidden = true;   // like _currentlyHidden but have to track separately because that's for managing ready state not popup state
+  private _attachModeHidden = true;   // like _currentlyHidden but have to track separately because that's for managing ready state not popup state
   private _simpleCalendarInstalled = false;
 
   private _currentClimate: Climate;
@@ -97,7 +96,7 @@ class WeatherApplication extends Application {
 
     // get attached mode
     this._attachedMode = ModuleSettings.get(ModuleSettingKeys.attachToCalendar) || false;
-    this._attachmodeHidden = true;
+    this._attachModeHidden = true;
 
     // assume no SC unless told otherwise
     this._simpleCalendarInstalled = false;
@@ -172,11 +171,11 @@ class WeatherApplication extends Application {
       fxActive: weatherEffects.fxActive,
       useCelsius: ModuleSettings.get(ModuleSettingKeys.useCelsius),
       attachedMode: this._attachedMode,
-      showAttached: this._attachedMode && !this._attachmodeHidden,
+      showAttached: this._attachedMode && !this._attachModeHidden,
       SCContainerClasses: !this._attachedMode ? '' : `${SC_CLASS_FOR_TAB_WRAPPER} sc-right ${SC_CLASS_FOR_TAB_EXTENDED}`,
       windowPosition: this._attachedMode ? { bottom: 0, left: 0 } : this._windowPosition,
       containerPosition: this._attachedMode ? 'relative' : 'fixed',
-      hideDialog: (this._attachedMode && this._attachmodeHidden) || this._currentlyHidden || !(isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)),  // hide dialog - don't show anything
+      hideDialog: (this._attachedMode && this._attachModeHidden) || this._currentlyHidden || !(isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)),  // hide dialog - don't show anything
 
       showForecast: isClientGM() && ModuleSettings.get(ModuleSettingKeys.useForecasts),
       forecasts: this.getForecasts(),
@@ -188,7 +187,7 @@ class WeatherApplication extends Application {
 
   /**
    * Updates the position of the weather application window and saves the new position.  Triggers a re-render of the window.
-   * We can't use Foundry's setPosition() because it doesn't work for fixed size, non popout windows
+   * We can't use Foundry's setPosition() because it doesn't work for fixed size, non pop-out windows
    * @param newPosition - The new position of the window.
    */
   public updateWindowPosition(newPosition: WindowPosition) {
@@ -212,7 +211,7 @@ class WeatherApplication extends Application {
    * Toggle the visibility of the weather application when it's in attached mode.
    */
   public toggleAttachModeHidden(): void {
-    this._attachmodeHidden = !this._attachmodeHidden;
+    this._attachModeHidden = !this._attachModeHidden;
     this.render();
   }
 
@@ -286,7 +285,7 @@ class WeatherApplication extends Application {
             if (mutation.attributeName === 'class' && $(mutation.target).hasClass(SC_CLASS_FOR_TAB_EXTENDED) && 
                 $(mutation.target).hasClass(SC_CLASS_FOR_TAB_WRAPPER) && ((mutation.target as HTMLElement).id!='swr-fsc-container')) {
                 // Class SC_CLASS_FOR_TAB_EXTENDED has been added to another panel (opening it), so turn off ours
-                this._attachmodeHidden = true;
+                this._attachModeHidden = true;
                 $('#swr-fsc-container').remove();
             }
           });
@@ -447,9 +446,9 @@ currentHumidity: ${this._currentHumidity}
 currentBiome: ${this._currentBiome}
 currentSeason: ${this._currentSeason}
 currentSeasonSync: ${this._currentSeasonSync}
-SW version: ${getGame().modules.get('simple-weather')?.version},
-SC version: ${getGame().modules.get('foundryvtt-simple-calendar')?.version},
-FXMaster version: ${getGame().modules.get('fxmaster')?.version},
+SW version: ${game.modules.get('simple-weather')?.version},
+SC version: ${game.modules.get('foundryvtt-simple-calendar')?.version},
+FXMaster version: ${game.modules.get('fxmaster')?.version},
 ModuleSettings.dialogDisplay: ${ModuleSettings.get(ModuleSettingKeys.dialogDisplay)}
 ModuleSettings.outputWeatherToChat: ${ModuleSettings.get(ModuleSettingKeys.outputWeatherToChat)}
 ModuleSettings.publicChat: ${ModuleSettings.get(ModuleSettingKeys.publicChat)}
@@ -967,7 +966,7 @@ _______________________________________
   override _injectHTML(html: JQuery<HTMLElement>) {
     if (this._attachedMode) {
 
-      if (!this._attachmodeHidden) {
+      if (!this._attachModeHidden) {
         // turn off any existing calendar panels
         const existingPanels = $(`#${SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SC_CLASS_FOR_TAB_WRAPPER}.${SC_CLASS_FOR_TAB_EXTENDED}`);
         existingPanels.addClass(SC_CLASS_FOR_TAB_CLOSED).removeClass(SC_CLASS_FOR_TAB_EXTENDED);

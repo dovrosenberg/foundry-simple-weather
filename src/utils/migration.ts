@@ -21,7 +21,7 @@ export const migrateData = async(): Promise<void> => {
       if (date) {
         const cleanedTimestamp = cleanDate(date);
         // validate or skip
-        if (WeatherData.validateWeatherParameters(forecast.climate, forecast.humidity, forecast.hexFlowerCell))
+        if (forecast && WeatherData.validateWeatherParameters(forecast.climate, forecast.humidity, forecast.hexFlowerCell))
           updatedForecasts[cleanedTimestamp.toString()] = new Forecast(cleanedTimestamp, forecast.climate, forecast.humidity, forecast.hexFlowerCell); 
       }
     }

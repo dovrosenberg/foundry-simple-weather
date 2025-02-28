@@ -22,14 +22,14 @@ export class CustomMessageSettingsApplication extends FormApplication {
     super(object, options);
 
     const climates = [
-      localize('swr.options.climate.cold'),
-      localize('swr.options.climate.temperate'),
-      localize('swr.options.climate.hot'),
+      localize('options.climate.cold'),
+      localize('options.climate.temperate'),
+      localize('options.climate.hot'),
     ];
     const humidities = [
-      localize('swr.options.humidity.barren'),
-      localize('swr.options.humidity.modest'),
-      localize('swr.options.humidity.verdant'),
+      localize('options.humidity.barren'),
+      localize('options.humidity.modest'),
+      localize('options.humidity.verdant'),
     ];
   
     // flatten the weatherDescriptions into an object
