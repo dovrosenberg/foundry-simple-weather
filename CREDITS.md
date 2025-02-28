@@ -59,4 +59,4 @@ Royalty-free sound files from pixabay.com:
 * [WildFire](https://pixabay.com/sound-effects/digital-wildfire-64073/)
 
 ### Others
-* Thanks to october1210 for reporting a particularly tricky (but bad) bug and then spending a ton of time helping to debug it
+* Thanks to October for reporting a particularly tricky (but bad) bug and then spending a ton of time helping to debug it
