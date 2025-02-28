@@ -380,7 +380,7 @@ export class ModuleSettings {
   ];
 
   public static registerSettings(): void {
-    log(true, "G");
+    log(true, "GX");
     for (let i=0; i<ModuleSettings.menuParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.menuParams[i];
 
@@ -393,7 +393,7 @@ export class ModuleSettings {
       });
     }
 
-    log(true, "H");
+    log(true, "HX");
     for (let i=0; i<ModuleSettings.localMenuParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.localMenuParams[i];
 
@@ -406,7 +406,7 @@ export class ModuleSettings {
       });
     }
 
-    log(true, "I");
+    log(true, "IX");
 
     for (let i=0; i<ModuleSettings.displayParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.displayParams[i];
@@ -421,7 +421,7 @@ export class ModuleSettings {
       });
     }
 
-    log(true, "J");
+    log(true, "JX");
     for (let i=0; i<ModuleSettings.localDisplayParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.localDisplayParams[i];
 
@@ -435,7 +435,7 @@ export class ModuleSettings {
       });
     }
 
-    log(true, "K");
+    log(true, "KX");
     for (let i=0; i<ModuleSettings.internalParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.internalParams[i];
 
@@ -447,7 +447,7 @@ export class ModuleSettings {
       });
     }
 
-    log(true, "L");
+    log(true, "LX");
     for (let i=0; i<ModuleSettings.localInternalParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.localInternalParams[i];
 

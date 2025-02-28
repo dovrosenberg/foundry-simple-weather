@@ -27,7 +27,7 @@ class WeatherEffects {
   private _activeFXMFilterEffects: string[] = [];   // names of the active filter effects (so we can turn off)
 
   constructor() {
-    log(true, "E");
+    log(true, "EX");
     if (ModuleSettings.get(ModuleSettingKeys.FXByScene)) {
       this._fxActive = false;  // scene probably isn't ready... so need to recheck once it is
     } else {
@@ -51,7 +51,7 @@ class WeatherEffects {
       }
     }
 
-    log(true, "F");
+    log(true, "FX");
     
     this._activeFXMParticleEffects = ModuleSettings.get(ModuleSettingKeys.activeFXMParticleEffects);
     this._sceneReady = false;

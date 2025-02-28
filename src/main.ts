@@ -54,16 +54,16 @@ Hooks.once('init', async () => {
     await import('@test/index');
   }
 
-  log(true, "A");
+  log(true, "AX");
 
   // initialize settings first, so other things can use them
   ModuleSettings.registerSettings();
 
-  log(true, "B");
+  log(true, "BX");
 
   updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
 
-  log(true, "C");
+  log(true, "CX");
 
   updateWeatherApplication(new WeatherApplication());
 

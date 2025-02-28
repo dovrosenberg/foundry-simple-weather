@@ -91,31 +91,31 @@ class WeatherApplication extends Application {
 
     log(false, 'WeatherApplication construction');
 
-    log(true, "M");
+    log(true, "MX");
 
     // set the initial display
     this._displayOptions = ModuleSettings.get(ModuleSettingKeys.displayOptions) || { dateBox: false, weatherBox: true, biomeBar: true, seasonBar: true }    
 
-    log(true, "N");
+    log(true, "NX");
     // get attached mode
     this._attachedMode = ModuleSettings.get(ModuleSettingKeys.attachToCalendar) || false;
     this._attachModeHidden = true;
 
-    log(true, "O");
+    log(true, "OX");
     // assume no SC unless told otherwise
     this._simpleCalendarInstalled = false;
 
     // get whether the manual pause is on
     this._manualPause = ModuleSettings.get(ModuleSettingKeys.manualPause || false);
 
-    log(true, "P");
+    log(true, "PX");
     // don't show it until ready() has been called
     this._currentlyHidden = true;
 
     // get default position or set default
     this._windowPosition = ModuleSettings.get(ModuleSettingKeys.windowPosition) || { left: 100, bottom: 300 }
 
-    log(true, "Q");
+    log(true, "QX");
     this.setWeather();  
 
     log(true, "R");
@@ -569,15 +569,21 @@ _______________________________________
    * clients when GM updates the settings.
   */
   public setWeather(): void {
+    log(true, "S");
     const weatherData = ModuleSettings.get(ModuleSettingKeys.lastWeatherData);
 
+    log(true, "T");
     if (weatherData) {
+      log(true, "U");
       log(false, 'Using saved weather data');
 
       this._currentWeather = weatherData;
+      log(true, "V");
       weatherEffects.activateFX(weatherData);
+      log(true, "W");
     } else if (isClientGM()) {
       log(false, 'No saved weather data - Generating weather');
+      log(true, "X");
 
       this.generateWeather(null);
     }
@@ -592,12 +598,16 @@ _______________________________________
    * @param currentDate the date for which to generate weather, or null to use today's date
    */
   private generateWeather(currentDate: SimpleCalendar.DateData | null): void {
+    log(true, "Y");
     // if we're paused, do nothing (except update the date)
     if (this._manualPause) {
+      log(true, "Z");
       this._currentWeather.date = currentDate;
     } else {
+      log(true, "AA");
       const season = this.getSeason();
 
+      log(true, "AB");
       this._currentWeather = generateWeather(
         this._currentClimate ?? Climate.Temperate, 
         this._currentHumidity ?? Humidity.Modest, 
@@ -606,7 +616,9 @@ _______________________________________
         this._currentWeather || null
       );
 
+      log(true, "AC");
       this.activateWeather(this._currentWeather);
+      log(true, "AD");
     }
   }
 
