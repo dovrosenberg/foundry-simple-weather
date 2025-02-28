@@ -7,6 +7,7 @@ import { DisplayOptions } from '@/types/DisplayOptions';
 import { CustomMessageSettingsApplication } from '@/applications/CustomMessageSettingsApplication';
 import { Climate, Humidity } from '@/weather/climateData';
 import { Forecast } from '@/weather/Forecast';
+import { log } from '@/utils/log';
 
 export enum ModuleSettingKeys {
   // displayed in settings
@@ -379,8 +380,11 @@ export class ModuleSettings {
   ];
 
   public static registerSettings(): void {
+    log(true, "G");
     for (let i=0; i<ModuleSettings.menuParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.menuParams[i];
+
+      log(true, settingID);
       ModuleSettings.registerMenu(settingID, {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
@@ -389,8 +393,11 @@ export class ModuleSettings {
       });
     }
 
+    log(true, "H");
     for (let i=0; i<ModuleSettings.localMenuParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.localMenuParams[i];
+
+      log(true, settingID);
       ModuleSettings.registerMenu(settingID, {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
@@ -399,8 +406,12 @@ export class ModuleSettings {
       });
     }
 
+    log(true, "I");
+
     for (let i=0; i<ModuleSettings.displayParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.displayParams[i];
+
+      log(true, settingID);
       ModuleSettings.register(settingID, {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
@@ -410,8 +421,11 @@ export class ModuleSettings {
       });
     }
 
+    log(true, "J");
     for (let i=0; i<ModuleSettings.localDisplayParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.localDisplayParams[i];
+
+      log(true, settingID);
       ModuleSettings.register(settingID, {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
@@ -421,8 +435,11 @@ export class ModuleSettings {
       });
     }
 
+    log(true, "K");
     for (let i=0; i<ModuleSettings.internalParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.internalParams[i];
+
+      log(true, settingID);
       ModuleSettings.register(settingID, {
         ...settings,
         scope: 'world',
@@ -430,8 +447,11 @@ export class ModuleSettings {
       });
     }
 
+    log(true, "L");
     for (let i=0; i<ModuleSettings.localInternalParams.length; i++) {
       const { settingID, ...settings} = ModuleSettings.localInternalParams[i];
+
+      log(true, settingID);
       ModuleSettings.register(settingID, {
         ...settings,
         scope: 'client',

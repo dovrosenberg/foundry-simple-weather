@@ -14,6 +14,7 @@ import { SceneSettingKeys, SceneSettings, } from '@/settings/SceneSettings';
 import { initSounds } from '@/utils/playlist';
 import { migrateData } from '@/utils/migration';
 import { WeatherData } from './weather/WeatherData';
+import { log } from './utils/log';
 
 // track which modules we have
 export let simpleCalendarInstalled = false;
@@ -53,11 +54,20 @@ Hooks.once('init', async () => {
     await import('@test/index');
   }
 
-// initialize settings first, so other things can use them
+  log(true, "A");
+
+  // initialize settings first, so other things can use them
   ModuleSettings.registerSettings();
 
+  log(true, "B");
+
   updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
+
+  log(true, "C");
+
   updateWeatherApplication(new WeatherApplication());
+
+  log(true, "D");
 
   // register keybindings
   KeyBindings.register();

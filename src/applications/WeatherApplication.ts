@@ -91,26 +91,34 @@ class WeatherApplication extends Application {
 
     log(false, 'WeatherApplication construction');
 
+    log(true, "M");
+
     // set the initial display
     this._displayOptions = ModuleSettings.get(ModuleSettingKeys.displayOptions) || { dateBox: false, weatherBox: true, biomeBar: true, seasonBar: true }    
 
+    log(true, "N");
     // get attached mode
     this._attachedMode = ModuleSettings.get(ModuleSettingKeys.attachToCalendar) || false;
     this._attachModeHidden = true;
 
+    log(true, "O");
     // assume no SC unless told otherwise
     this._simpleCalendarInstalled = false;
 
     // get whether the manual pause is on
     this._manualPause = ModuleSettings.get(ModuleSettingKeys.manualPause || false);
 
+    log(true, "P");
     // don't show it until ready() has been called
     this._currentlyHidden = true;
 
     // get default position or set default
     this._windowPosition = ModuleSettings.get(ModuleSettingKeys.windowPosition) || { left: 100, bottom: 300 }
 
+    log(true, "Q");
     this.setWeather();  
+
+    log(true, "R");
   }
 
   // draw the window
