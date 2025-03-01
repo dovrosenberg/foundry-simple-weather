@@ -11,9 +11,6 @@ import { defineConfig, Plugin } from 'vite';
 import npmPackage from './package.json';
 
 export default defineConfig({
-  optimizeDeps: {
-    exclude: ['pnpapi'],
-  },
   resolve: {
     alias: [
       {
@@ -83,7 +80,6 @@ export default defineConfig({
         entryFileNames: (assetInfo): string => 'scripts/index.js',
         format: 'es',
       },
-      external: ['pnpapi'],
     },
   }
 });

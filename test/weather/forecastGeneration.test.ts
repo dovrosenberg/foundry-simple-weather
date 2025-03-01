@@ -6,8 +6,7 @@ import { QuenchBatchContext } from '@ethaks/fvtt-quench';
 import { backupSettings, restoreSettings } from '@test/index';
 import { generateForecast } from '@/weather/forecastGeneration';
 
-const esmock = await import('esmock');
-let generateWeatherMock;
+// let generateWeatherMock;
 
 export const registerForecastGenerationTests = () => {
   quench.registerBatch(
@@ -51,16 +50,16 @@ export const registerForecastGenerationTests = () => {
         
         // mock generateWeather 
         let callCount = 0;
-        const generateWeatherMock = await esmock('@/weather/weatherGeneration', {
-          generateWeather: (_climate: Climate, _humidity: Humidity, _season: Season, today: SimpleCalendar.DateData | null, _yesterday: WeatherData | null, _forForecast = false): WeatherData => {
-            callCount++;
+        // const generateWeatherMock = await esmock('@/weather/weatherGeneration', {
+        //   generateWeather: (_climate: Climate, _humidity: Humidity, _season: Season, today: SimpleCalendar.DateData | null, _yesterday: WeatherData | null, _forForecast = false): WeatherData => {
+        //     callCount++;
         
-            // update the date
-            const weatherToReturn = weather[(callCount-1) % weather.length];
-            weatherToReturn.date = today;
-            return weatherToReturn;
-          }
-        });
+        //     // update the date
+        //     const weatherToReturn = weather[(callCount-1) % weather.length];
+        //     weatherToReturn.date = today;
+        //     return weatherToReturn;
+        //   }
+        // });
       });
 
       describe('generateForecast', () => {
@@ -89,7 +88,7 @@ export const registerForecastGenerationTests = () => {
         await restoreSettings();
 
         // clear mocks
-        await esmock.purge(generateWeatherMock);
+        // await esmock.purge(generateWeatherMock);
       });
     }
   )
