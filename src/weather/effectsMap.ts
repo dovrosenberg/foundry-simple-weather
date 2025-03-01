@@ -798,17 +798,16 @@ export const availableEffects: Record<string, EffectDetails> = {
 // combine two effects into one
 // for fx like core where there can only be one option, effect1 is used if present
 export const joinEffects = function(effect1: EffectDetails, effect2: EffectDetails): EffectDetails {
-  const output = foundry.utils.deepClone({
-    ...effect1
-  });
-
+  const output = foundry.utils.deepClone(effect1);
+  
   if (!output.core)
     output.core = { effect: '' };
   if (!output.fxMaster)
     output.fxMaster = [];
 
   output.core.effect = output.core?.effect || effect2.core?.effect || '';
-  output.fxMaster = output.fxMaster.concat(effect2.fxMaster || []);
+  output.fxMaster = output.fxMaster.length + (effect2?.fxMaster?.length || 0) == 0 ? null : output.fxMaster.concat(effect2.fxMaster || []);
+  output.sound = effect1.sound ?? effect2.sound ?? Sounds.None;
 
   return output;
-}
+};
