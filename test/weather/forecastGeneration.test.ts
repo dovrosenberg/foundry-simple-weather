@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 import { ModuleSettingKeys, ModuleSettings } from '@/settings/ModuleSettings';
 import { Climate, HexFlowerCell, Humidity, Season } from '@/weather/climateData';
 import { Forecast } from '@/weather/Forecast';
@@ -5,8 +6,6 @@ import { WeatherData } from '@/weather/WeatherData';
 import { QuenchBatchContext } from '@ethaks/fvtt-quench';
 import { backupSettings, restoreSettings } from '@test/index';
 import { generateForecast } from '@/weather/forecastGeneration';
-
-// let generateWeatherMock;
 
 export const registerForecastGenerationTests = () => {
   quench.registerBatch(
@@ -47,19 +46,6 @@ export const registerForecastGenerationTests = () => {
 
       before(async () => {
         backupSettings();
-        
-        // mock generateWeather 
-        let callCount = 0;
-        // const generateWeatherMock = await esmock('@/weather/weatherGeneration', {
-        //   generateWeather: (_climate: Climate, _humidity: Humidity, _season: Season, today: SimpleCalendar.DateData | null, _yesterday: WeatherData | null, _forForecast = false): WeatherData => {
-        //     callCount++;
-        
-        //     // update the date
-        //     const weatherToReturn = weather[(callCount-1) % weather.length];
-        //     weatherToReturn.date = today;
-        //     return weatherToReturn;
-        //   }
-        // });
       });
 
       describe('generateForecast', () => {
@@ -74,6 +60,9 @@ export const registerForecastGenerationTests = () => {
         });
 
         it('should generate forecasts for the next 7 days', async () => {
+          // test with forecasts
+
+          // test with only some forecasts
         });
 
         it('should not overwrite when extendOnly set to true', async () => {
@@ -88,7 +77,7 @@ export const registerForecastGenerationTests = () => {
         await restoreSettings();
 
         // clear mocks
-        // await esmock.purge(generateWeatherMock);
+        generateWeatherStub.restore();      
       });
     }
   )
