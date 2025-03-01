@@ -1,10 +1,10 @@
 name: Foundry VTT Quench Tests
 
 on:
-  workflow_dispatch
-  # push:
-  #   branches:
-  #     - main
+  workflow_dispatch:
+  push:
+      branches:
+        - main
 
 jobs:
   test:
