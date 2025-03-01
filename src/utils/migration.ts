@@ -4,7 +4,7 @@ import { cleanDate } from '@/utils/calendar';
 import { version } from '@module';
 import { WeatherData } from '@/weather/WeatherData';
 
-export const migrateData = async(): Promise<void> => {
+const migrateData = async(): Promise<void> => {
   // we just look at the prior version to see what upgrades need to apply
   const priorVersion = ModuleSettings.get(ModuleSettingKeys.previousVersion);
 
@@ -31,4 +31,8 @@ export const migrateData = async(): Promise<void> => {
   }
 
   await ModuleSettings.set(ModuleSettingKeys.previousVersion, version);
+}
+
+export {
+  migrateData,
 }

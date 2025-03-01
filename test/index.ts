@@ -3,7 +3,6 @@
 // -------------------------------- //
 
 import { ModuleSettingKeys, ModuleSettings } from '@/settings/ModuleSettings';
-import { log } from '@/utils/log';
 import { registerUtilTests } from '@test/utils';
 import { registerWeatherTests } from '@test/weather';
 
@@ -15,14 +14,19 @@ Hooks.on("quenchReady", () => {
 
 const settings = {};
 
-export const backupSettings = () => {
+const backupSettings = () => {
   for (const k of Object.values(ModuleSettingKeys)) {
     settings[k] = ModuleSettings.get(k as ModuleSettingKeys);
   }
 }
 
-export const restoreSettings = async () => {
+const restoreSettings = async () => {
   for (const k of Object.values(ModuleSettingKeys)) {
     await ModuleSettings.set(k as ModuleSettingKeys, settings[k]);
   }
+}
+
+export { 
+  backupSettings,
+  restoreSettings,
 }
