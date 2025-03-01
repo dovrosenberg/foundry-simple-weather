@@ -1,0 +1,25 @@
+name: Foundry VTT Quench Tests
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      foundry:
+        image: ghcr.io/[YOUR_GITHUB_USERNAME]/[CONTAINER_NAME]:latest
+        ports:
+          - 30000:30000
+        options: --health-cmd "curl -f http://localhost:30000 || exit 1" --health-interval=10s --health-retries=5
+
+    # steps:
+    #   - name: Checkout Code
+    #     uses: actions/checkout@v4
+
+    #   - name: Run Tests with Puppeteer
+    #     run: |
+    #       npm install puppeteer
+    #       node run-tests.js
