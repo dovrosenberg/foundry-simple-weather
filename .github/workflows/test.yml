@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       foundry:
-        image: ghcr.io/[YOUR_GITHUB_USERNAME]/[CONTAINER_NAME]:latest
+        image: ghcr.io/dovrosenberg/simple-weather-testing:latest
         ports:
           - 30000:30000
         options: --health-cmd "curl -f http://localhost:30000 || exit 1" --health-interval=10s --health-retries=5
