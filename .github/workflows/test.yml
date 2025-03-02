@@ -50,10 +50,5 @@ jobs:
           done
           echo "✅ Foundry is up and running!"
 
-
-      # do this in the docker image; also store run-tests.js in it somewhere
-      - name: Install Puppeteer
-        run: npm install -g puppeteer
-
       - name: Run Quench Tests
-        run: node run-tests.js
+        run: node testScript/run-tests.js
