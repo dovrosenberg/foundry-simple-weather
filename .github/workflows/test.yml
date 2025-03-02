@@ -3,11 +3,13 @@ name: Foundry VTT Quench Tests
 on:
   workflow_dispatch:
   push:
-      branches:
-        - master
-        - attempt-mock
+    branches:
+      - master
+      - attempt-mock
   pull_request:
-        
+    branches:
+        - master
+        - attempt-mock        
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -34,11 +36,11 @@ jobs:
       - name: Debug List Running Containers
         run: docker ps -a
 
-      - name: Get Foundry Container ID
-        run: |
-          CONTAINER_ID=$(docker ps -q --filter "ancestor=ghcr.io/dovrosenberg/simple-weather-testing")
-          echo "CONTAINER_ID=$CONTAINER_ID" >> $GITHUB_ENV
-          echo "🛠 Assigned CONTAINER_ID: $CONTAINER_ID"
+      # - name: Get Foundry Container ID
+      #   run: |
+      #     CONTAINER_ID=$(docker ps -q --filter "ancestor=ghcr.io/dovrosenberg/simple-weather-testing")
+      #     echo "CONTAINER_ID=$CONTAINER_ID" >> $GITHUB_ENV
+      #     echo "🛠 Assigned CONTAINER_ID: $CONTAINER_ID"
 
       - name: Copy Built Files to module folder in container
         run: |
