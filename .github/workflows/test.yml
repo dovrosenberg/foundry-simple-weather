@@ -6,7 +6,8 @@ on:
       branches:
         - master
         - attempt-mock
-
+  pull_request:
+        
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -15,13 +16,44 @@ jobs:
         image: ghcr.io/dovrosenberg/simple-weather-testing:latest
         ports:
           - 30000:30000
-        options: --health-cmd "curl -f http://localhost:30000 || exit 1" --health-interval=10s --health-retries=5
+        options: >-
+          --health-cmd "curl -f http://localhost:30000 || exit 1"
+          --health-interval=5s
+          --health-retries=10
+        volumes:
+          - ~/foundry-simple-weather:/foundryData/Data/modules/simple-weather
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-    #   - name: Run Tests with Puppeteer
-    #     run: |
-    #       npm install puppeteer
-    #       node run-tests.js
+      - name: Install Node Dependencies
+        run: npm install
+
+      - name: Create development build
+        run: npm run debug
+
+      - name: Copy Built Files to module folder in container
+        run: |
+          CONTAINER_ID=$(docker ps -q --filter "ancestor=ghcr.io/dovrosenberg/simple-weather-testing")
+
+          docker exec $CONTAINER_ID rm -rf /foundryData/Data/modules/simple-weather
+          docker exec $CONTAINER_ID mkdir -p /foundryData/Data/modules/simple-weather
+          docker cp dist/. $CONTAINER_ID:/foundryData/Data/modules/simple-weather/
+
+      - name: Make sure Foundry is running
+        run: |
+          echo "Waiting for Foundry to start..."
+          until curl -sSf "http://localhost:30000" >/dev/null; do
+            echo "Still waiting for Foundry..."
+            sleep 2
+          done
+          echo "✅ Foundry is up and running!"
+
+
+      # do this in the docker image; also store run-tests.js in it somewhere
+      - name: Install Puppeteer
+        run: npm install -g puppeteer
+
+      - name: Run Quench Tests
+        run: node run-tests.js
