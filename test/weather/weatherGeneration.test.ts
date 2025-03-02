@@ -5,9 +5,9 @@ import { Forecast } from '@/weather/Forecast';
 import { WeatherData } from '@/weather/WeatherData';
 import { QuenchBatchContext } from '@ethaks/fvtt-quench';
 import { backupSettings, restoreSettings } from '@test/index';
-import { generateForecast } from '@/weather/forecastGeneration';
+import { GenerateWeather } from '@/weather/weatherGeneration';
 
-export const registerForecastGenerationTests = () => {
+export const registerWeatherGenerationTests = () => {
   quench.registerBatch(
     'simple-weather.weather.forecastGeneration',
     (context: QuenchBatchContext) => {
@@ -52,10 +52,10 @@ export const registerForecastGenerationTests = () => {
         it('should do nothing if todayWeather.climate/humidity/season are null', async () => {
           await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);
 
-          generateForecast(todayTimestamp, weather[0], true);
+          GenerateWeather.generateForecast(todayTimestamp, weather[0], true);
           expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
 
-          generateForecast(todayTimestamp, weather[0], false);
+          GenerateWeather.generateForecast(todayTimestamp, weather[0], false);
           expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
         });
 
