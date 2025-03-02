@@ -12,7 +12,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     services:
-      foundry-container:
+      foundry:
         image: ghcr.io/dovrosenberg/simple-weather-testing:latest
         ports:
           - 30000:30000
@@ -33,9 +33,11 @@ jobs:
 
       - name: Copy Built Files to module folder in container
         run: |
-          docker exec foundry-container rm -rf /foundryData/Data/modules/simple-weather
-          docker exec foundry-container mkdir -p /foundryData/Data/modules/simple-weather
-          docker cp dist/. foundry-container:/foundryData/Data/modules/simple-weather/
+          echo "CONTAINER_ID=$(docker ps -q --filter 'ancestor=ghcr.io/dovrosenberg/simple-weather-testing')" >> $GITHUB_ENV 
+
+          docker exec $CONTAINER_ID rm -rf /foundryData/Data/modules/simple-weather
+          docker exec $CONTAINER_ID mkdir -p /foundryData/Data/modules/simple-weather
+          docker cp dist/. $CONTAINER_ID:/foundryData/Data/modules/simple-weather/
 
       - name: Make sure Foundry is running
         run: |
@@ -49,5 +51,5 @@ jobs:
       # do this in the docker image; also store run-tests.js in it somewhere
       - name: Run Quench Tests
         run: |
-          docker exec foundry-container node /testScript/run-tests.js
+          docker exec $CONTAINER_ID node /testScript/run-tests.js
         continue-on-error: false   # ensure GitHub Action fails
