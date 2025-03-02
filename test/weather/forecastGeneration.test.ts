@@ -61,6 +61,7 @@ export const registerForecastGenerationTests = () => {
 
         it('should generate forecasts for the next 7 days', async () => {
           // test with forecasts
+          expect(1).to.equal(2);
 
           // test with only some forecasts
         });

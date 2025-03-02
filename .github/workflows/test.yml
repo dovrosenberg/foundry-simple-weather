@@ -48,5 +48,8 @@ jobs:
           done
           echo "✅ Foundry is up and running!"
 
+      # do this in the docker image; also store run-tests.js in it somewhere
       - name: Run Quench Tests
-        run: node testScript/run-tests.js
+        run: |
+          docker exec $CONTAINER_ID node /testScript/run-tests.js
+        continue-on-error: false   # ensure GitHub Action fails
