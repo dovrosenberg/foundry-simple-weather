@@ -20,8 +20,6 @@ jobs:
           --health-cmd "curl -f http://localhost:30000 || exit 1"
           --health-interval=5s
           --health-retries=10
-        volumes:
-          - ~/foundry-simple-weather:/foundryData/Data/modules/simple-weather
 
     steps:
       - name: Checkout Code
