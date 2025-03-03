@@ -44,6 +44,7 @@
     "sass": "^1.45.0",
     "sass-loader": "^13.3.2",
     "semver-increment": "^1.0.1",
+    "sinon": "^19.0.2",
     "source-map-loader": "^3.0.0",
     "string-replace-loader": "^3.0.3",
     "style-loader": "^3.3.0",
