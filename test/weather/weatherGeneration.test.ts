@@ -7,6 +7,8 @@ import { QuenchBatchContext } from '@ethaks/fvtt-quench';
 import { backupSettings, restoreSettings } from '@test/index';
 import { GenerateWeather } from '@/weather/weatherGeneration';
 
+let generateWeatherMock;
+
 export const registerWeatherGenerationTests = () => {
   quench.registerBatch(
     'simple-weather.weather.forecastGeneration',
@@ -46,6 +48,17 @@ export const registerWeatherGenerationTests = () => {
 
       before(async () => {
         backupSettings();
+
+        // mock generateWeather for testing forecasts
+        let callCount = 0;
+        generateWeatherMock = (_climate: Climate, _humidity: Humidity, _season: Season, today: SimpleCalendar.DateData | null, _yesterday: WeatherData | null, _forForecast = false): WeatherData => {
+          callCount++;
+
+          // update the date
+          const weatherToReturn = weather[(callCount-1) % weather.length];
+          weatherToReturn.date = today;
+          return weatherToReturn;
+        }
       });
 
       describe('generateForecast', () => {
@@ -60,10 +73,17 @@ export const registerWeatherGenerationTests = () => {
         });
 
         it('should generate forecasts for the next 7 days', async () => {
+          const stub = sinon.stub(GenerateWeather, 'generateWeather').callsFake(generateWeatherMock);
+
+          // test with no forecasts
+
           // test with forecasts
           expect(1).to.equal(2);
 
           // test with only some forecasts
+
+          // restore the mock
+          stub.restore();
         });
 
         it('should not overwrite when extendOnly set to true', async () => {
