@@ -3,13 +3,9 @@ name: Foundry VTT Quench Tests
 on:
   workflow_dispatch:
   push:
-    branches:
-      - master
-      - attempt-mock
   pull_request:
     branches:
         - master
-        - attempt-mock        
 jobs:
   test:
     runs-on: ubuntu-latest
