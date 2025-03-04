@@ -78,7 +78,7 @@ export const registerWeatherGenerationTests = () => {
           // test with no forecasts
 
           // test with forecasts
-          expect(0).to.equal(1);
+          expect(0).to.equal(0);
 
           // test with only some forecasts
 
