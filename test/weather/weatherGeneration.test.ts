@@ -35,6 +35,7 @@ export const registerWeatherGenerationTests = () => {
         new WeatherData(todayDate, Season.Spring, Humidity.Modest, Climate.Temperate, 17, 78),
       ];
 
+      // this is used to prepopulate forecasts with known values
       const forecasts: Record<string, Forecast> = {};
       for (let i = 0; i < 7; i++) {
         const timestamp = SimpleCalendar.api.dateToTimestamp({
@@ -65,10 +66,34 @@ export const registerWeatherGenerationTests = () => {
         it('should do nothing if todayWeather.climate/humidity/season are null', async () => {
           await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);
 
-          GenerateWeather.generateForecast(todayTimestamp, weather[0], true);
+          await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(
+            weather[0].date, 
+            weather[0].season, 
+            weather[0].humidity, 
+            null, 
+            weather[0].hexFlowerCell, 
+            weather[0].temperature,
+          ), true);
           expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
 
-          GenerateWeather.generateForecast(todayTimestamp, weather[0], false);
+          await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(
+            weather[0].date, 
+            weather[0].season, 
+            null, 
+            weather[0].climate, 
+            weather[0].hexFlowerCell, 
+            weather[0].temperature,
+          ), true);
+          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
+
+          await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(
+            weather[0].date, 
+            null, 
+            weather[0].humidity, 
+            weather[0].climate, 
+            weather[0].hexFlowerCell, 
+            weather[0].temperature,
+          ), true);
           expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
         });
 
@@ -76,11 +101,64 @@ export const registerWeatherGenerationTests = () => {
           const stub = sinon.stub(GenerateWeather, 'generateWeather').callsFake(generateWeatherMock);
 
           // test with no forecasts
+          await ModuleSettings.set(ModuleSettingKeys.forecasts, {});
+          let forecasts = await GenerateWeather.generateForecast(todayTimestamp, weather[0], true);
+          expect(Object.keys(forecasts).length).to.equal(7);
+          for (let i=0; i<7; i++) {
+            // make sure the key is the timestamp
+            expect(forecasts[Object.keys(forecasts)[i]].timestamp.toString()).to.equal(Object.keys(forecasts)[i]);
 
-          // test with forecasts
-          expect(0).to.equal(0);
+            // make sure the forecast is correct
+            expect(forecasts[Object.keys(forecasts)[i]]).to.deep.equal(new Forecast(
+              SimpleCalendar.api.timestampPlusInterval(todayTimestamp, { day: i+1 }),
+              weather[i].climate as Climate,
+              weather[i].humidity as Humidity,
+              weather[i].hexFlowerCell as HexFlowerCell,
+            ));
+          }
 
-          // test with only some forecasts
+          // test with only some forecasts - don't use the the ones in the right order
+          //    because then we can't tell if they're overwritten or not
+          await ModuleSettings.set(ModuleSettingKeys.forecasts, {
+            [forecasts[0].timestamp.toString()]: new Forecast(forecasts[0].timestamp,forecasts[4].climate, forecasts[4].humidity, forecasts[4].hexFlowerCell),
+            [forecasts[1].timestamp.toString()]: new Forecast(forecasts[1].timestamp,forecasts[5].climate, forecasts[5].humidity, forecasts[5].hexFlowerCell),
+            [forecasts[2].timestamp.toString()]: new Forecast(forecasts[2].timestamp,forecasts[6].climate, forecasts[6].humidity, forecasts[6].hexFlowerCell),
+          });
+          forecasts = await GenerateWeather.generateForecast(todayTimestamp, weather[0], true);
+          expect(Object.keys(forecasts).length).to.equal(7);
+
+          // the first 3 should match above
+          for (let i=0; i<3; i++) {
+            // make sure the key is the timestamp
+            expect(forecasts[Object.keys(forecasts)[i]].timestamp.toString()).to.equal(Object.keys(forecasts)[i]);
+
+            // make sure the forecast is correct
+            expect(forecasts[Object.keys(forecasts)[i]]).to.deep.equal(new Forecast(
+              SimpleCalendar.api.timestampPlusInterval(todayTimestamp, { day: i+1 }),
+              weather[4+i].climate as Climate,
+              weather[4+i].humidity as Humidity,
+              weather[4+i].hexFlowerCell as HexFlowerCell,
+            ));
+          }
+
+          // the last 4 should match weather[0..3]
+          for (let i=3; i<7; i++) {
+            // make sure the key is the timestamp
+            expect(forecasts[Object.keys(forecasts)[i]].timestamp.toString()).to.equal(Object.keys(forecasts)[i]);
+
+            // make sure the forecast is correct
+            expect(forecasts[Object.keys(forecasts)[i]]).to.deep.equal(new Forecast(
+              SimpleCalendar.api.timestampPlusInterval(todayTimestamp, { day: i+1 }),
+              weather[i-3].climate as Climate,
+              weather[i-3].humidity as Humidity,
+              weather[i-3].hexFlowerCell as HexFlowerCell,
+            ));
+          }
+
+          // if all 7 forecasts are there, they shouldn't change
+          await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);
+          await GenerateWeather.generateForecast(todayTimestamp, weather[0], true);
+          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
 
           // restore the mock
           stub.restore();
