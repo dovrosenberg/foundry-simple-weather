@@ -9,7 +9,7 @@ import { SelectOption, seasonSelections, biomeSelections, Climate, climateSelect
 import { manualSelections, weatherDescriptions } from '@/weather/weatherMap';
 import { ModuleSettingKeys } from '@/settings/ModuleSettings';
 import { isClientGM } from '@/utils/game';
-import { generateWeather, outputWeatherToChat, createManual, createSpecificWeather } from '@/weather/weatherGeneration';
+import { GenerateWeather } from '@/weather/weatherGeneration';
 import { ModuleSettings } from '@/settings/ModuleSettings';
 import { weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
@@ -595,7 +595,7 @@ _______________________________________
     } else {
       const season = this.getSeason();
 
-      this._currentWeather = generateWeather(
+      this._currentWeather = GenerateWeather.generateWeather(
         this._currentClimate ?? Climate.Temperate, 
         this._currentHumidity ?? Humidity.Modest, 
         season ?? Season.Spring, 
@@ -617,7 +617,7 @@ _______________________________________
   private setManualWeather(currentDate: SimpleCalendar.DateData | null, temperature: number, weatherIndex: number): void {
     const season = this.getSeason();
 
-    const result = createManual(currentDate, temperature, weatherIndex);
+    const result = GenerateWeather.createManual(currentDate, temperature, weatherIndex);
     if (result) {
       this._currentWeather = result;
       this.activateWeather(this._currentWeather);
@@ -643,7 +643,7 @@ _______________________________________
 
     log(false, 'Running weather for ' + weatherDescriptions[climate][humidity][hexFlowerCell]);
 
-    const result = createSpecificWeather(this._currentWeather?.date || null, climate, humidity, hexFlowerCell);
+    const result = GenerateWeather.createSpecificWeather(this._currentWeather?.date || null, climate, humidity, hexFlowerCell);
     if (result) {
       this._currentWeather = result;
       this.activateWeather(this._currentWeather);
@@ -670,7 +670,7 @@ _______________________________________
     if (isClientGM()) {
       // Output to chat if enabled
       if (ModuleSettings.get(ModuleSettingKeys.outputWeatherToChat)) {
-        outputWeatherToChat(weatherData);
+        GenerateWeather.outputWeatherToChat(weatherData);
       }
 
       // activate special effects
@@ -773,7 +773,7 @@ _______________________________________
     event.preventDefault();
 
     if (isClientGM()) {
-      outputWeatherToChat(this._currentWeather);
+      GenerateWeather.outputWeatherToChat(this._currentWeather);
     }
   };
 

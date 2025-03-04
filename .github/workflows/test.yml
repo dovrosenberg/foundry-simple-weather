@@ -1,0 +1,60 @@
+name: Foundry VTT Quench Tests
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+    branches:
+        - master
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      foundry:
+        image: ghcr.io/dovrosenberg/simple-weather-testing:latest
+        ports:
+          - 30000:30000
+        options: >-
+          --health-cmd "curl -f http://localhost:30000 || exit 1"
+          --health-interval=5s
+          --health-retries=10
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Node Dependencies
+        run: npm install
+
+      - name: Create development build
+        run: npm run debug
+
+      - name: Debug List Running Containers
+        run: docker ps -a
+
+      - name: Get Foundry Container ID
+        run: |
+          CONTAINER_ID=$(docker ps -q --filter "ancestor=ghcr.io/dovrosenberg/simple-weather-testing")
+          echo "CONTAINER_ID=$CONTAINER_ID" >> $GITHUB_ENV
+          echo "Assigned CONTAINER_ID: $CONTAINER_ID"
+
+      - name: Copy Built Files to module folder in container
+        run: |
+          docker exec $CONTAINER_ID rm -rf /foundryData/Data/modules/simple-weather && \
+          docker exec $CONTAINER_ID mkdir -p /foundryData/Data/modules/simple-weather && \
+          docker cp dist/. $CONTAINER_ID:/foundryData/Data/modules/simple-weather/
+
+      - name: Make sure Foundry is running
+        run: |
+          echo "Waiting for Foundry to start..."
+          until curl -sSf "http://localhost:30000" >/dev/null; do
+            echo "Still waiting for Foundry..."
+            sleep 2
+          done
+          echo "✅ Foundry is up and running!"
+
+      # do this in the docker image; also store run-tests.js in it somewhere
+      - name: Run Quench Tests
+        run: |
+          docker exec $CONTAINER_ID node /testScript/run-tests.js
+        continue-on-error: false   # ensure GitHub Action fails

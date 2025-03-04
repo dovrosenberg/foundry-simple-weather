@@ -71,8 +71,7 @@ export type FXDetailType =
   type: FXMParticleTypes;
   options: FXMParticleOptions;
 }  
-
-    
+   
 export type EffectDetails = {
   core: CoreDetails | null,
   fxMaster: FXDetailType[] | null,
@@ -80,7 +79,7 @@ export type EffectDetails = {
 }
 
 // weather options
-export const availableEffects: Record<string, EffectDetails> = {
+const availableEffects: Record<string, EffectDetails> = {
   LightClouds: {
     core: null,
     fxMaster: [
@@ -797,7 +796,7 @@ export const availableEffects: Record<string, EffectDetails> = {
 
 // combine two effects into one
 // for fx like core where there can only be one option, effect1 is used if present
-export const joinEffects = function(effect1: EffectDetails, effect2: EffectDetails): EffectDetails {
+const joinEffects = function(effect1: EffectDetails, effect2: EffectDetails): EffectDetails {
   const output = foundry.utils.deepClone(effect1);
   
   if (!output.core)
@@ -811,3 +810,8 @@ export const joinEffects = function(effect1: EffectDetails, effect2: EffectDetai
 
   return output;
 };
+
+export { 
+  availableEffects,
+  joinEffects,
+}
