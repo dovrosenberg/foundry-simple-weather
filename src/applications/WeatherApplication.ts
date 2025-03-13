@@ -6,7 +6,8 @@ import { WindowPosition } from '@/window/WindowPosition';
 import { WindowDrag } from '@/window/windowDrag';
 import { WeatherData } from '@/weather/WeatherData';
 import { SelectOption, seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings, HexFlowerCell } from '@/weather/climateData';
-import { manualSelections, weatherDescriptions } from '@/weather/weatherMap';
+import { weatherDescriptions } from '@/weather/weatherMap';
+import { getManualOptionsBySeason, } from '@/weather/manualWeather';
 import { ModuleSettingKeys } from '@/settings/ModuleSettings';
 import { isClientGM } from '@/utils/game';
 import { GenerateWeather } from '@/weather/weatherGeneration';
@@ -160,7 +161,7 @@ class WeatherApplication extends Application {
       seasonSelections: seasonSelections,
       humiditySelections: humiditySelections,
       climateSelections: climateSelections,
-      manualSelections: manualSelections,
+      manualSelections: getManualOptionsBySeason(this._currentSeason, this._currentClimate, this._currentHumidity),
 
       displayOptions: this._displayOptions,
       hideCalendar: this._attachedMode || !this._calendarPresent || !this._displayOptions.dateBox,
@@ -614,10 +615,13 @@ _______________________________________
    * @param temperature The temperature to use.
    * @param weatherIndex The index into the set of manual options.
    */
-  private setManualWeather(currentDate: SimpleCalendar.DateData | null, temperature: number, weatherIndex: number): void {
+  private setManualWeather(currentDate: SimpleCalendar.DateData, temperature: number, weatherIndex: number): void {
     const season = this.getSeason();
 
-    const result = GenerateWeather.createManual(currentDate, temperature, weatherIndex);
+    if (!season)
+      throw new Error('Trying to setManualWeather() without season');
+
+    const result = GenerateWeather.createManual(currentDate, season, this._currentClimate, this._currentHumidity, temperature, weatherIndex);
     if (result) {
       this._currentWeather = result;
       this.activateWeather(this._currentWeather);

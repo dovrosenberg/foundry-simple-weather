@@ -1,11 +1,8 @@
 import { localize } from '@/utils/game';
 import { log } from '@/utils/log';
-import { Climate, HexFlowerCell, Humidity, Season } from './climateData';
+import { Climate, HexFlowerCell, Humidity, Season, seasonSelections } from './climateData';
 import { availableEffects, EffectDetails, joinEffects } from '@/weather/effectsMap';
 import { Sunniness } from './Forecast';
-
-// drop down selections for manually setting weather
-let manualSelections: { text:string, value: string}[];
 
 // call to set everything up after the game has loaded
 function initializeLocalizedText(): void {
@@ -42,11 +39,6 @@ function initializeLocalizedText(): void {
       }
     }
   }
-
-  // need value and text, and then a way to map the values back to the weather
-  //    for effects
-  manualSelections = manualOptions.map((val, i) =>
-      ({ value: i.toString(), text: weatherDescriptions[val.climate as number][val.humidity as number][val.hexCell] }));
 }
 
 // rather than specifying weather by biome, we take a more flexible approach (though we also define some biomes as defaults)
@@ -278,6 +270,10 @@ nextCell[Season.Winter] = [
 
 nextCell[Season.Spring] = nextCell[Season.Fall];
 
+const cellValidForSeason = (season: Season, cell: HexFlowerCell): boolean => {
+  return nextCell[season][cell][0] !== -1;
+}
+
 // descriptions and temperatures and options are indexed by Climate, then Humidity, then cell #
 // seasons are handled by controlling which parts of the grid you can get to
 // we need to populate the descriptions because we might call them before localization happens
@@ -402,24 +398,6 @@ const descriptionCells = {
   'winter8': 35,
   'winter9': 36,
 } as Record<string, HexFlowerCell>;
-
-const manualOptions = [  // build list of manual weather options; for simplicity, we steal them from ones that already exist
-  { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.springfall_cool1 },   // clear sky
-  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.summer4},   // fleecy clouds
-  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.winter6},   // gray, windy
-  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall_warm5},   // dark storm clouds
-  { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.summer7 },   // light rain
-  { climate: Climate.Cold, humidity: Humidity.Verdant, hexCell: descriptionCells.summer6 },   // steady rain
-  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.summer7 },   // heavy rain
-  { climate: Climate.Temperate, humidity: Humidity.Barren, hexCell: descriptionCells.springfall_cool2 },   // light fog
-  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall3 },   // fog banks
-  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall_cool2},   // heavy fog
-  { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.winter5 },   // light snow
-  { climate: Climate.Temperate, humidity: Humidity.Verdant, hexCell: descriptionCells.winter9 },   // moderate snow, windy
-  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.winter3},   // heavy snow
-  { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall_warm6},   // hail
-];
-
 
 ///////////////////////////////////////
 // define the extra metadata for each cell
@@ -901,6 +879,6 @@ export {
   weatherOptions,
   startingCells,
   nextCell,
-  manualSelections,
-  manualOptions,
+  cellValidForSeason,
+  descriptionCells,
 }

@@ -1,4 +1,5 @@
-import { nextCell, startingCells, getDirection, weatherTemperatures, Direction, weatherDescriptions, manualOptions } from '@/weather/weatherMap';
+import { nextCell, startingCells, getDirection, weatherTemperatures, Direction, weatherDescriptions, } from '@/weather/weatherMap';
+import { getManualOptionsBySeason } from '@/weather/manualWeather';
 import { ModuleSettings, ModuleSettingKeys } from '@/settings/ModuleSettings';
 import { localize } from '@/utils/game';
 import { Climate, HexFlowerCell, Humidity, Season, } from './climateData';
@@ -43,7 +44,7 @@ export class GenerateWeather {
         GenerateWeather.generateForecast(cleanDate(today), weatherData, true);
     } else {
       // random start if no valid prior day or the prior day" was manually set or we changed season
-      if (!yesterday || yesterday.season !== season || yesterday.hexFlowerCell==null || yesterday.isManual) {
+      if (!yesterday || yesterday.season !== season || yesterday.hexFlowerCell==null || yesterday.manualOnly) {
         // no yesterday data (or starting a new season), so just pick a random starting point based on the season
         weatherData.hexFlowerCell = getDefaultStart(season);
       } else {
@@ -84,19 +85,21 @@ export class GenerateWeather {
   };
 
   // used to create manual weather; returns null if data is invalid (weatherIndex in particular)
-  static createManual = function(today: SimpleCalendar.DateData | null, temperature: number, weatherIndex: number): WeatherData | null {
-    const options = manualOptions[weatherIndex];   // get the details behind the option
+  static createManual = function(today: SimpleCalendar.DateData, season: Season, climate: Climate, humidity: Humidity, temperature: number, weatherIndex: number): WeatherData | null {
+    const options = getManualOptionsBySeason(season, climate, humidity);   // get the details behind the option
 
-    if (!options)
+    if (!options || !options[weatherIndex])
       return null;
+
+    const option = options[weatherIndex];
 
     // randomize the temperature (+/- # degrees)
     // margin of error is 4% of temperature, but always at least 2 degrees
     const plusMinus = Math.max(2, Math.ceil(.04*temperature));
     const temp = temperature + Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
 
-    const weatherData = new WeatherData(today, null, options.humidity, options.climate, options.hexCell, temp);
-    weatherData.isManual = true;
+    const weatherData = new WeatherData(today, null, option.weather.humidity, option.weather.climate, option.weather.hexCell, temp);
+    weatherData.manualOnly = option.valid;
 
     return weatherData;
   }
@@ -112,7 +115,7 @@ export class GenerateWeather {
     temp += Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
 
     const weatherData = new WeatherData(today, null, humidity, climate, hexFlowerCell, temp);
-    weatherData.isManual = true;
+    weatherData.manualOnly = true;
 
     return weatherData;
   }

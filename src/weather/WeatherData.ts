@@ -12,7 +12,7 @@ export class WeatherData {
   public climate: Climate | null;      // the climate selection
   public hexFlowerCell: HexFlowerCell | null;      // number of the cell in the hex flower
   public temperature: number | null;   // the temperature (with random variation) in F
-  public isManual: boolean | false;    // was this set manually... if yes, the next generation will reset to a starting point
+  public manualOnly: boolean | false;    // was this set manually to an invalid local weather... if yes, the next generation will reset to a starting point
 
   constructor(date: SimpleCalendar.DateData | null, season: Season | null, humidity: Humidity | null, climate: Climate | null, hexFlowerCell: HexFlowerCell | null, temperature: number | null) {
     this.date = date;
@@ -21,7 +21,7 @@ export class WeatherData {
     this.climate = climate;
     this.hexFlowerCell = hexFlowerCell;
     this.temperature = temperature;
-    this.isManual = false;
+    this.manualOnly = false;
   }
 
   // getters
