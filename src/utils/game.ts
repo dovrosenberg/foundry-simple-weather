@@ -4,7 +4,7 @@
 const isClientGM = (): boolean => (game.user?.isGM || false);
 
 // localize a string
-const localize = (stringId: string) => game.i18n?.localize('sweath.' + stringId) || '';
+const localize = (stringId: string) => game.i18n?.localize('swr.' + stringId) || '';
 
 export { 
   isClientGM,

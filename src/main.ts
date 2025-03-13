@@ -138,7 +138,7 @@ Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
     if (noteControls && noteControls.tools) {
       noteControls.tools.push({ 
           name: "simple-weather",
-          title: "sweath.labels.openButton",  // localized by Foundry
+          title: "swr.labels.openButton",  // localized by Foundry
           icon: "fas swr-icon",
           button: true,
           onClick: () => {   

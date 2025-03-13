@@ -147,7 +147,7 @@ export class ModuleSettings {
     {
       settingID: 'mySettingsMenu',
       name: 'settings.customWeather',
-      label: 'sweath.settings.customWeatherButton',   // localized by Foundry
+      label: 'swr.settings.customWeatherButton',   // localized by Foundry
       hint: 'settings.customWeatherHelp',
       icon: 'fas fa-bars',               // A Font Awesome icon used in the submenu button
       type: CustomMessageSettingsApplication,
@@ -196,9 +196,9 @@ export class ModuleSettings {
       requiresReload: true,   
       type: String,
       choices: {  
-        'off': 'sweath.settings.options.useFX.choices.off', // localized by Foundry
-        'core': 'sweath.settings.options.useFX.choices.core', // localized by Foundry
-        'fxmaster': 'sweath.settings.options.useFX.choices.fxmaster', // localized by Foundry
+        'off': 'swr.settings.options.useFX.choices.off', // localized by Foundry
+        'core': 'swr.settings.options.useFX.choices.core', // localized by Foundry
+        'fxmaster': 'swr.settings.options.useFX.choices.fxmaster', // localized by Foundry
       },
       default: 'off',
     },

@@ -1,5 +1,5 @@
 {
-  "sweath": {
+  "swr": {
     "settings": {
       "dialogDisplay": "Les joueurs peuvent-ils voir la fenêtre ?",
       "dialogDisplayHelp": "Si cette case est cochée, les clients non MJ pourront voir la fenêtre (mais seulement l'heure, la température et la description du temps).  Ils ne pourront pas voir les menus déroulants ni générer la météo.",

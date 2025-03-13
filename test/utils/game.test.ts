@@ -14,8 +14,8 @@ export const registerGameTests = () => {
       });
 
       describe('localize', () => {
-        it('adds "sweath."', () => {
-          expect(localize('abc')).to.equal('sweath.abc');
+        it('adds "swr."', () => {
+          expect(localize('abc')).to.equal('swr.abc');
         });
       });
     }
