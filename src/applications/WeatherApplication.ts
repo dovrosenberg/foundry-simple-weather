@@ -279,6 +279,15 @@ class WeatherApplication extends Application {
       // buttons
       html.find('#swr-submit-weather').on('click', this.onSubmitWeatherClick);
 
+      // select
+      html.find('#swr-manual-weather-selection').on('change', this.onManualWeatherChange);
+
+      // if we're in manual mode and there's no temp, set it
+      const tempElement = html.find('#swr-manual-temperature');
+      if (tempElement && !tempElement.val()) {
+        this.onManualWeatherChange();
+      }
+
       // watch for sc calendar to open a different panel
       if (this._attachedMode) {
         const observer = new MutationObserver((mutations) => {
@@ -935,6 +944,9 @@ _______________________________________
   }
 
   private onSubmitWeatherClick = (): void => {
+    if (this._currentWeather?.date)
+      throw new Error('Trying to submit manual weather without current date');
+
     // confirm temp is valid, though the input filter above should prevent this
     const input = document.getElementById('swr-manual-temperature') as HTMLInputElement;
     let temp = Number(input?.value);
@@ -949,7 +961,26 @@ _______________________________________
     if (ModuleSettings.get(ModuleSettingKeys.useCelsius))
       temp = Math.round((temp*9/5)+32);
 
-    this.setManualWeather(this._currentWeather?.date || null, temp, Number(select.value));
+    this.setManualWeather(this._currentWeather?.date as SimpleCalendar.DateData, temp, Number(select.value));
+  }
+
+  private onManualWeatherChange = (): void => {
+    // set the temperature  based on the selected option
+    const select = document.getElementById('swr-manual-weather-selection') as HTMLSelectElement;
+
+    if (!select) 
+      return;
+    const selectedValue = select.value;
+    const season = this.getSeason();
+
+    if (season===null || !selectedValue)
+      return;
+
+    // find the option
+    const option = getManualOptionsBySeason(season, this._currentClimate, this._currentHumidity)[selectedValue];
+
+    const temp = document.getElementById('swr-manual-temperature') as HTMLInputElement;
+    temp.value = option.temperature.toString();
   }
 
   // get the class to apply to get the proper icon by season

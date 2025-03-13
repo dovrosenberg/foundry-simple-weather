@@ -1,5 +1,5 @@
 import { Climate, HexFlowerCell, Humidity, Season, } from './climateData';
-import { cellValidForSeason, descriptionCells, weatherDescriptions } from './weatherMap';
+import { cellValidForSeason, descriptionCells, weatherDescriptions, weatherTemperatures } from './weatherMap';
 
 type ManualOption = {
   climate: Climate;   // climate for the source weather to use
@@ -627,12 +627,15 @@ const getManualOptionsBySeason = (season: Season, climate: Climate, humidity: Hu
   value: string; 
   text: string; 
   weather: ManualOption; 
+  temperature: number;
   valid: boolean 
 }[] => {
   return manualOptionsBySeason[season][climate][humidity].map((option: ManualOption, i: number) => ({
     value: i.toString(),
     text: weatherDescriptions[option.climate as number][option.humidity as number][option.hexCell],
     weather: option,
+
+    temperature: weatherTemperatures[option.climate as number][option.humidity as number][option.hexCell],
 
     // calculate validity; valid if climate and humidity match the request and the cell is legit for the season
     valid: option.climate === climate && option.humidity === humidity && cellValidForSeason(season, option.hexCell),
