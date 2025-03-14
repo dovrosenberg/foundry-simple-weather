@@ -816,8 +816,8 @@ _______________________________________
     ModuleSettings.set(ModuleSettingKeys.seasonSync, this._currentSeasonSync);
     ModuleSettings.set(ModuleSettingKeys.season, this._currentSeason);
 
-    // render to update the icon
-    this.render();
+    // render to update the icon and the manual weather list
+    this.render(false);
   };
 
   private onClimateSelectChange = (event): void => {
@@ -830,6 +830,9 @@ _______________________________________
     jQuery(document).find('#swr-biome-selection').val('');
     this._currentBiome = '';
     ModuleSettings.set(ModuleSettingKeys.biome, '');
+
+    // force the manual weather dropdown to regenerate
+    this.render(false);
   };
 
   private onHumiditySelectChange = (event): void => {
@@ -842,6 +845,9 @@ _______________________________________
     jQuery(document).find('#swr-biome-selection').val('');
     this._currentBiome = '';
     ModuleSettings.set(ModuleSettingKeys.biome, '');
+
+    // force the manual weather dropdown to regenerate
+    this.render(false);
   };
 
   private onBiomeSelectChange = (event): void => {
@@ -872,6 +878,9 @@ _______________________________________
         ModuleSettings.set(ModuleSettingKeys.humidity, biomeMapping.humidity);
       }
     }
+
+    // force the manual weather dropdown to regenerate
+    this.render(false);
   };
 
   private onManualPauseChange = (event): void => {
@@ -983,8 +992,13 @@ _______________________________________
     // find the option
     const option = getManualOptionsBySeason(season, this._currentClimate, this._currentHumidity)[selectedValue];
 
+    // fill in temp - but only for valid ones
     const temp = document.getElementById('swr-manual-temperature') as HTMLInputElement;
-    temp.value = option.temperature.toString();
+    if (option.valid) {
+      temp.value = option.temperature.toString();
+    } else {
+      temp.value = '';
+    }
   }
 
   // get the class to apply to get the proper icon by season

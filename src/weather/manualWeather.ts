@@ -421,8 +421,8 @@ const manualOptionsBySeason = {
         { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall3, },   // fog banks
         { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.springfall_cool2, },   // heavy fog
         { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.winter9, },   // light snow
-        { climate: Climate.Temperate, humidity: Humidity.Verdant, hexCell: descriptionCells.winter2, },   // moderate snow, windy
-        { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.winter9, },   // heavy snow
+        { climate: Climate.Temperate, humidity: Humidity.Verdant, hexCell: descriptionCells.winter9, },   // moderate snow, windy
+        { climate: Climate.Cold, humidity: Humidity.Modest, hexCell: descriptionCells.winter3, },   // heavy snow
         { climate: Climate.Cold, humidity: Humidity.Barren, hexCell: descriptionCells.springfall_warm6, },   // hail
       ],
       [Humidity.Modest]: [
@@ -517,6 +517,24 @@ const manualOptionsBySeason = {
 } as Record<Season, Record<Climate, Record<Humidity, ManualOption[]>>>;  
 manualOptionsBySeason[Season.Fall] = manualOptionsBySeason[Season.Spring];
 
+const manualDescriptions = [
+  'Clear sky',
+  'Light clouds',
+  'Gray skies',
+  'Windy',
+  'Storm clouds',
+  'Light rain',
+  'Moderate rain',
+  'Heavy rain',
+  'Light fog',
+  'Fog banks',
+  'Heavy fog',
+  'Light snow',
+  'Moderate snow',
+  'Heavy snow',
+  'Hail',
+];
+
 // valid tells us whether that's a normal weather option for this season, etc. or not (which determines how to forecast)
 const getManualOptionsBySeason = (season: Season, climate: Climate, humidity: Humidity): {
   value: string; 
@@ -527,7 +545,11 @@ const getManualOptionsBySeason = (season: Season, climate: Climate, humidity: Hu
 }[] => {
   return manualOptionsBySeason[season][climate][humidity].map((option: ManualOption, i: number) => ({
     value: i.toString(),
-    text: weatherDescriptions[option.climate as number][option.humidity as number][option.hexCell],
+
+    // TODO - consider an option to show the full descriptions... but note there will be some duplicates
+    //  could rework some of those to give more options, I guess
+    // text: weatherDescriptions[option.climate as number][option.humidity as number][option.hexCell],
+    text: manualDescriptions[i],
     weather: option,
 
     temperature: weatherTemperatures[option.climate as number][option.humidity as number][option.hexCell],
