@@ -68,7 +68,7 @@ export class GenerateWeather {
 
       // generate an updated forecast
       if (!forForecast && ModuleSettings.get(ModuleSettingKeys.useForecasts) && today!==null) {
-        GenerateWeather.generateForecast(cleanDate(today), weatherData);
+        GenerateWeather.generateForecast(cleanDate(today), weatherData, false);
       }
 
       log(false, 'New cell: ' + weatherData.hexFlowerCell + ' (' + weatherDescriptions[climate][humidity][weatherData.hexFlowerCell] + ')')
@@ -155,8 +155,9 @@ export class GenerateWeather {
   // generate N days of forecast starting with tomorrow, based on today
   // will overwrite any previously generated forecasts for those days
   // returns the updated forecast object (and saves it to settings)
-  // extendOnly is used to fill in needed days but not overwrite ones already generated
-  static generateForecast = async function(todayTimestamp: number, todayWeather: WeatherData, extendOnly = false): Promise<Record<string, Forecast>> {
+  // if extendOnly is true, will only fill in missing ones; otherwise will prompt about overwriting if existing ones found and either skip or overwrite
+  //    based on prompt response
+  static generateForecast = async function(todayTimestamp: number, todayWeather: WeatherData, extendOnly: boolean): Promise<Record<string, Forecast>> {
     const numDays = 7;
     const currentForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
 
@@ -172,7 +173,7 @@ export class GenerateWeather {
       forecastTimeStamp = SimpleCalendar.api.timestampPlusInterval(todayTimestamp, { day: day});
 
       // if there's already one, and we're just extending, use it as is
-      if (currentForecasts[forecastTimeStamp] && extendOnly) {
+      if (currentForecasts[forecastTimeStamp] && !forceOverwrite) {
         const todayWeather = currentForecasts[forecastTimeStamp];
         const todayDate = SimpleCalendar.api.timestampToDate(forecastTimeStamp);
 

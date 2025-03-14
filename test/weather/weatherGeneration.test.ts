@@ -86,10 +86,16 @@ export const registerWeatherGenerationTests = () => {
           stub.restore();
         });
 
-        it('should not overwrite when extendOnly set to true', async () => {
+        it('should only fill in missing days when extendOnly set to true', async () => {
         });
 
-        it('should overwrite when extendOnly set to false', async () => {
+        it('should prompt about overwrite when extendOnly set to false', async () => {
+        });
+
+        it('should overwrite if extendOnly==false and prompt is yes', async () => {
+        });
+
+        it('should only fill in missing days if extendOnly==false and prompt is no', async () => {
         });
 
       });
