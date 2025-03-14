@@ -38,7 +38,11 @@ type WeatherApplicationData = {
   seasonSelections: SelectOption[],
   humiditySelections: SelectOption[],
   climateSelections: SelectOption[],
-  manualSelections: SelectOption[],
+  manualSelections: {
+    value: string;
+    text: string;
+    valid: boolean;
+  }[],
   displayOptions: DisplayOptions,
   hideCalendar: boolean,
   hideCalendarToggle: boolean,

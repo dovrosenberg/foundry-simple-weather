@@ -64,7 +64,7 @@
 							<div class="select-wrapper" style="flex: 0 0 50%">
 								<select id="swr-manual-weather-selection" title="{{localize 'swr.options.manualWeather.select'}}">
 									{{#each manualSelections}}
-										<option title="{{text}}" value="{{value}}">{{text}}</option>
+										<option title="{{text}}" {{#if valid}}{{else}}class="swr-invalid-manual-option"{{/if}} value="{{value}}">{{text}}</option>
 									{{/each}}
 								</select>
 							</div>

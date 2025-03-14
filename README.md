@@ -55,9 +55,16 @@ When using Simple Calendar, you can choose "Sync with Simple Calendar" and the s
 In some cases, you may need to override Simple Calendar's season. In particular, if you change hemispheres - because what Simple Calendar thinks is summer (ex. July) may actually be cold temperatures (ex. if in South America), so you'll want to manually override it.  "Winter" is always cold in Simple Weather.  In that case, simply pick the season you want in the drop down.  It will remain in the manual setting until you set it back to "Sync".
 
 ### Manual weather
-Sometimes you might want to specify the exact weather that you need, rather than having it randomly generated (for example when approaching the lair of a frost witch).  To do this, open the manual toolbar and check "Pause updates" (which will collapse the season and biome toolbars for simplicity).  Note that pausing isn't technically required, but if you don't then if you hit "regenerate" or advance the date, the weather will go back to the normal weather pattern.  You can then choose the weather desired from the dropdown and enter a temperature before hitting the submit button.  This will then cause the weather to appear in the chat, player dialogs, and weather effects just as if the system generated it (as determined by your settings).  
+Sometimes you might want to specify the exact weather that you need, rather than having it randomly generated.  There are two typical use cases here:
 
-Unchecking "Pause updates" won't immediately trigger a regeneration of weather, but if you want one without advancing the date, just then hit the "regenerate" button.
+1. A special weather "event" - for example when approaching the lair of a frost witch.  
+1. You just want to nudge the weather a bit.
+
+To do this, open the manual toolbar and check "Pause updates" (which will collapse the season and biome toolbars for simplicity).  Note that pausing isn't technically required, but if you don't then if you hit "regenerate" or advance the date, the weather will go back to the normal weather pattern.  You can then choose the weather desired from the dropdown and enter a temperature before hitting the submit button.  This will then cause the weather to appear in the chat, player dialogs, and weather effects just as if the system generated it (as determined by your settings).  
+
+The options in the drop-down that are colored red are ones that don't "naturally" occur in the current season/climate/humidity.  This matters because the next time weather or a forecast is generated after you pick one of these, it will essentially be a random valid weather.  If you pick a natural one, though, future weather will be generated that flows more reasonably from it.  This does not apply to temperature - if you pick a natural weather but a funky temperature, the next weather generated will go back to a more normal temperature range.
+
+"Pause updates" - this prevents any further generation of weather (ex. when advancing the date).  Helpful if you want to stay in that frost witch lair for several days without some chats going out about sunny skies or whatever each morning.  Unchecking "Pause updates" won't immediately trigger a regeneration of weather, but if you want one without advancing the date, just then hit the "regenerate" button or the manual regenerate button as desired.
 
 ### Weather Effects 
 The GM can activate weather effects in the module settings.  This includes support for the scene weather in the Foundry core, as well as FX Master.  
