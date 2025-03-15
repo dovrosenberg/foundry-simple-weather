@@ -7,7 +7,7 @@ import { Icons } from 'foundryvtt-simple-calendar/src/constants';
 // season is only used so that if we want to pick the next day's weather we can tell if we've changed seasons
 export class WeatherData {
   public date: SimpleCalendar.DateData | null;
-  public season: Season | null;        // which season we were in (i.e. actually using for weather)
+  public season: Season | null;        // which season we were in (i.e. actually using for weather)... note that the season may not match the hex flower if manualOnly is true
   public humidity: Humidity | null;    // the humidity selection
   public climate: Climate | null;      // the climate selection
   public hexFlowerCell: HexFlowerCell | null;      // number of the cell in the hex flower

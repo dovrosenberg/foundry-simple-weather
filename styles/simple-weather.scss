@@ -245,7 +245,7 @@
   height: 0;
 }
 
-#swr-submit-weather {
+#swr-manual-submit {
   display: flex;
   height: 20px;
   justify-content: center;
@@ -278,6 +278,10 @@
   box-shadow: none !important;
 }
 
-body.game .window-app select option.swr-invalid-manual-option {
+body.game #swr-container select option.swr-invalid-manual-option {
   color: red !important;   // make invalid manual options red in the dropdown
+}
+
+body.game #swr-container #swr-manual-weather-selection.swr-invalid-manual-option {
+  color: red !important;   // make select text red if invalid currently selected
 }

@@ -7,7 +7,7 @@ import { WindowDrag } from '@/window/windowDrag';
 import { WeatherData } from '@/weather/WeatherData';
 import { SelectOption, seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings, HexFlowerCell } from '@/weather/climateData';
 import { weatherDescriptions } from '@/weather/weatherMap';
-import { getManualOptionsBySeason, } from '@/weather/manualWeather';
+import { getManualOptionsBySeason, ManualOption, } from '@/weather/manualWeather';
 import { ModuleSettingKeys } from '@/settings/ModuleSettings';
 import { isClientGM } from '@/utils/game';
 import { GenerateWeather } from '@/weather/weatherGeneration';
@@ -166,7 +166,7 @@ class WeatherApplication extends Application {
       humiditySelections: humiditySelections,
       climateSelections: climateSelections,
       manualSelections: getManualOptionsBySeason(this._currentSeason, this._currentClimate, this._currentHumidity),
-
+      selectedManualOption: this.getSelectedManualOption() || getManualOptionsBySeason(this._currentSeason, this._currentClimate, this._currentHumidity)[0],
       displayOptions: this._displayOptions,
       hideCalendar: this._attachedMode || !this._calendarPresent || !this._displayOptions.dateBox,
       hideCalendarToggle: this._attachedMode || !this._calendarPresent,
@@ -281,7 +281,7 @@ class WeatherApplication extends Application {
       html.find('#swr-manual-temperature').on('input', (e: JQuery.Event) => { this.onManualTempInput(e) });
 
       // buttons
-      html.find('#swr-submit-weather').on('click', this.onSubmitWeatherClick);
+      html.find('#swr-manual-submit').on('click', this.onSubmitWeatherClick);
 
       // select
       html.find('#swr-manual-weather-selection').on('change', this.onManualWeatherChange);
@@ -622,7 +622,8 @@ _______________________________________
   }
 
   /**
-   * Generates weather for a specific manual weather option, temperature, and date.
+   * Generates weather for a specific manual weather option, temperature, and date.  Will prompt 
+   * to overwrite forecasts but only if it's a "natural" "weather
    * 
    * @param currentDate The current date to use, or null if none.
    * @param temperature The temperature to use.
@@ -637,6 +638,14 @@ _______________________________________
     const result = GenerateWeather.createManual(currentDate, season, this._currentClimate, this._currentHumidity, temperature, weatherIndex);
     if (result) {
       this._currentWeather = result;
+
+      // see if we need to generate forecasts
+      const options = getManualOptionsBySeason(season, this._currentClimate, this._currentHumidity);   
+
+      if (options && options[weatherIndex] && options[weatherIndex].valid) {
+        await GenerateWeather.generateForecast(cleanDate(currentDate), this._currentWeather, true);
+      }
+
       await this.activateWeather(this._currentWeather);
       await this.render();
     }
@@ -943,7 +952,7 @@ _______________________________________
 
   private onManualTempInput = (event?: JQuery.Event): void => {
     event?.stopPropagation()
-    const btn = document.getElementById('swr-submit-weather') as HTMLButtonElement;
+    const btn = document.getElementById('swr-manual-submit') as HTMLButtonElement;
 
     btn.disabled = !this.isTempValid();
   }
@@ -977,20 +986,36 @@ _______________________________________
     void this.setManualWeather(this._currentWeather?.date as SimpleCalendar.DateData, temp, Number(select.value));
   }
 
-  private onManualWeatherChange = (): void => {
+  // returns the currently selected manual option in the dropdown (not necessarily what
+  //   the current weather is)
+  private getSelectedManualOption = (): {
+      value: string;
+      text: string;
+      weather: ManualOption;
+      temperature: number;
+      valid: boolean;
+  } | null => {
     // set the temperature  based on the selected option
     const select = document.getElementById('swr-manual-weather-selection') as HTMLSelectElement;
 
     if (!select) 
-      return;
+      return null;
+
     const selectedValue = select.value;
     const season = this.getSeason();
 
     if (season===null || !selectedValue)
-      return;
+      return null;
 
     // find the option
-    const option = getManualOptionsBySeason(season, this._currentClimate, this._currentHumidity)[selectedValue];
+    return getManualOptionsBySeason(season, this._currentClimate, this._currentHumidity)[selectedValue];
+  }
+
+  private onManualWeatherChange = async (): Promise<void> => {
+    const option = this.getSelectedManualOption();
+
+    if (option==null)
+      return;
 
     // fill in temp - but only for valid ones
     const temp = document.getElementById('swr-manual-temperature') as HTMLInputElement;
@@ -1006,6 +1031,8 @@ _______________________________________
 
     // trigger as if we'd entered it - to update the button status
     this.onManualTempInput()
+
+    await this.render();
   }
 
   // get the class to apply to get the proper icon by season

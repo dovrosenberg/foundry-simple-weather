@@ -99,7 +99,7 @@ export class GenerateWeather {
     const plusMinus = Math.max(2, Math.ceil(.04*temperature));
     const temp = temperature + Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
 
-    const weatherData = new WeatherData(today, null, option.weather.humidity, option.weather.climate, option.weather.hexCell, temp);
+    const weatherData = new WeatherData(today, season, option.weather.humidity, option.weather.climate, option.weather.hexCell, temp);
     weatherData.manualOnly = option.valid;
 
     return weatherData;

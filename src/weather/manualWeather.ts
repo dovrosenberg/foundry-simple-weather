@@ -1,7 +1,7 @@
 import { Climate, HexFlowerCell, Humidity, Season, } from './climateData';
 import { cellValidForSeason, descriptionCells, weatherDescriptions, weatherTemperatures } from './weatherMap';
 
-type ManualOption = {
+export type ManualOption = {
   climate: Climate;   // climate for the source weather to use
   humidity: Humidity;  // humidity for the source weather to use
   hexCell: HexFlowerCell;  // cell for the source weather to use
