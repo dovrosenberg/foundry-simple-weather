@@ -1,5 +1,5 @@
 {
-  "swr": {
+  "sweath": {
     "settings": {
       "dialogDisplay": "Les joueurs peuvent-ils voir la fenêtre ?",
       "dialogDisplayHelp": "Si cette case est cochée, les clients non MJ pourront voir la fenêtre (mais seulement l'heure, la température et la description du temps).  Ils ne pourront pas voir les menus déroulants ni générer la météo.",
@@ -103,7 +103,9 @@
       "manualPauseHint": "Activer pour empêcher la météo automatique (utile lorsque vous voulez la régler manuellement)",
       "manualWeatherTemperature": "Régler la Température (variera légèrement par rapport à celle-ci)",
       "manualWeatherSubmit": "Activer la météo et la température sélectionnées",
-      "forecast": "Prévisions"
+      "forecast": "Prévisions",
+      "overwriteDialogTitle": "Écraser les prévisions existantes ?",
+      "overwriteDialogContent": "Cette génération météorologique écrasera une ou plusieurs prévisions existantes. Êtes-vous sûr ? Si vous choisissez 'Non', seuls les jours sans prévisions existantes seront générés."
     },
 
     "chat": {

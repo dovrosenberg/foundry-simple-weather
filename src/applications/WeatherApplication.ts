@@ -115,7 +115,7 @@ class WeatherApplication extends Application {
     // get default position or set default
     this._windowPosition = ModuleSettings.get(ModuleSettingKeys.windowPosition) || { left: 100, bottom: 300 }
 
-    this.setWeather();  
+    void this.setWeather();  
   }
 
   // draw the window
@@ -505,7 +505,7 @@ _______________________________________
    * 
    * @param currentDate the SimpleCalendar.DateData object that contains the current date
    */
-  public updateDateTime(currentDate: SimpleCalendar.DateData | null): void {
+  public async updateDateTime(currentDate: SimpleCalendar.DateData | null): Promise<void> {
     if (!currentDate)
       return;
 
@@ -534,7 +534,7 @@ _______________________________________
                   flagData.temperature
                 );
 
-                this.activateWeather(this._currentWeather);
+                await this.activateWeather(this._currentWeather);
 
                 // should only be one, so we can skip rest of notes;
                 break;
@@ -547,13 +547,13 @@ _______________________________________
           }
 
           if (!foundWeatherNote) {
-            this.generateWeather(currentDate);
+            await this.generateWeather(currentDate);
           }      
         } else {
           // otherwise generate new weather
           log(false, 'Generate new weather');
           
-          this.generateWeather(currentDate);
+          await this.generateWeather(currentDate);
         }
       }
     } else {
@@ -563,7 +563,7 @@ _______________________________________
       this._currentWeather.date = currentDate;
     }
 
-    this.render();
+    await this.render();
   }
 
   
@@ -575,7 +575,7 @@ _______________________________________
    * Called from outside, to load the last weather from the settings.  Also called by player 
    * clients when GM updates the settings.
   */
-  public setWeather(): void {
+  public async setWeather(): Promise<void> {
     const weatherData = ModuleSettings.get(ModuleSettingKeys.lastWeatherData);
 
     if (weatherData) {
@@ -587,13 +587,13 @@ _______________________________________
     } else if (isClientGM()) {
       log(false, 'No saved weather data - Generating weather');
 
-      this.generateWeather(null);
+      await this.generateWeather(null);
     } else {
       log(false, 'Non-GM loaded blank weather');
       log(false, JSON.stringify(game.user));
     }
 
-    this.render();
+    await this.render();
   }
 
   /**
@@ -602,14 +602,14 @@ _______________________________________
    * new weather based on the current settings and then activates that weather.
    * @param currentDate the date for which to generate weather, or null to use today's date
    */
-  private generateWeather(currentDate: SimpleCalendar.DateData | null): void {
+  private async generateWeather(currentDate: SimpleCalendar.DateData | null): Promise<void> {
     // if we're paused, do nothing (except update the date)
     if (this._manualPause) {
       this._currentWeather.date = currentDate;
     } else {
       const season = this.getSeason();
 
-      this._currentWeather = GenerateWeather.generateWeather(
+      this._currentWeather = await GenerateWeather.generateWeather(
         this._currentClimate ?? Climate.Temperate, 
         this._currentHumidity ?? Humidity.Modest, 
         season ?? Season.Spring, 
@@ -617,7 +617,7 @@ _______________________________________
         this._currentWeather || null
       );
 
-      this.activateWeather(this._currentWeather);
+      await this.activateWeather(this._currentWeather);
     }
   }
 
@@ -628,17 +628,17 @@ _______________________________________
    * @param temperature The temperature to use.
    * @param weatherIndex The index into the set of manual options.
    */
-  private setManualWeather(currentDate: SimpleCalendar.DateData, temperature: number, weatherIndex: number): void {
+  private async setManualWeather(currentDate: SimpleCalendar.DateData, temperature: number, weatherIndex: number): Promise<void> {
     const season = this.getSeason();
 
-    if (!season)
+    if (season==null)
       throw new Error('Trying to setManualWeather() without season');
 
     const result = GenerateWeather.createManual(currentDate, season, this._currentClimate, this._currentHumidity, temperature, weatherIndex);
     if (result) {
       this._currentWeather = result;
-      this.activateWeather(this._currentWeather);
-      this.render();
+      await this.activateWeather(this._currentWeather);
+      await this.render();
     }
   }
 
@@ -683,7 +683,7 @@ _______________________________________
    * Activates the given weather data; saves to settings, output to chat, display FX, and save to calendar notes if enabled.
    * @param weatherData the WeatherData to activate
    */
-  private activateWeather(weatherData: WeatherData): void {
+  private async activateWeather(weatherData: WeatherData): Promise<void> {
     if (isClientGM()) {
       // Output to chat if enabled
       if (ModuleSettings.get(ModuleSettingKeys.outputWeatherToChat)) {
@@ -691,15 +691,15 @@ _______________________________________
       }
 
       // activate special effects
-      weatherEffects.activateFX(weatherData);
+      await weatherEffects.activateFX(weatherData);
 
       // if we're saving to the calendar, do that
       if (ModuleSettings.get(ModuleSettingKeys.storeInSCNotes)) {
-        void this.saveWeatherToCalendarNote(weatherData);
+        await this.saveWeatherToCalendarNote(weatherData);
       }
 
       // save 
-      ModuleSettings.set(ModuleSettingKeys.lastWeatherData, this._currentWeather);        
+      await ModuleSettings.set(ModuleSettingKeys.lastWeatherData, this._currentWeather);        
     }
   }
 
@@ -782,7 +782,7 @@ _______________________________________
   private onWeatherRegenerateClick = (event): void => {
     event.preventDefault();
 
-    this.regenerateWeather();
+    void this.regenerateWeather();
   };
 
   // just output the current weather to the chat again
@@ -794,11 +794,11 @@ _______________________________________
     }
   };
 
-  public regenerateWeather() {
+  public async regenerateWeather() {
     if (isClientGM()) {
-      this.generateWeather(this._currentWeather?.date || null);
+      await this.generateWeather(this._currentWeather?.date || null);
       ModuleSettings.set(ModuleSettingKeys.lastWeatherData, this._currentWeather);        
-      this.render();
+      await this.render();
     }
   }
 
@@ -941,8 +941,8 @@ _______________________________________
     }
   }
 
-  private onManualTempInput = (event: JQuery.Event): void => {
-    event.stopPropagation()
+  private onManualTempInput = (event?: JQuery.Event): void => {
+    event?.stopPropagation()
     const btn = document.getElementById('swr-submit-weather') as HTMLButtonElement;
 
     btn.disabled = !this.isTempValid();
@@ -957,7 +957,7 @@ _______________________________________
   }
 
   private onSubmitWeatherClick = (): void => {
-    if (this._currentWeather?.date)
+    if (!this._currentWeather?.date)
       throw new Error('Trying to submit manual weather without current date');
 
     // confirm temp is valid, though the input filter above should prevent this
@@ -974,7 +974,7 @@ _______________________________________
     if (ModuleSettings.get(ModuleSettingKeys.useCelsius))
       temp = Math.round((temp*9/5)+32);
 
-    this.setManualWeather(this._currentWeather?.date as SimpleCalendar.DateData, temp, Number(select.value));
+    void this.setManualWeather(this._currentWeather?.date as SimpleCalendar.DateData, temp, Number(select.value));
   }
 
   private onManualWeatherChange = (): void => {
@@ -995,10 +995,17 @@ _______________________________________
     // fill in temp - but only for valid ones
     const temp = document.getElementById('swr-manual-temperature') as HTMLInputElement;
     if (option.valid) {
-      temp.value = option.temperature.toString();
+      if (ModuleSettings.get(ModuleSettingKeys.useCelsius)) {
+        temp.value = Math.round((option.temperature-32)*5/9).toString();
+      } else {
+        temp.value = option.temperature.toString();
+      }
     } else {
       temp.value = '';
     }
+
+    // trigger as if we'd entered it - to update the button status
+    this.onManualTempInput()
   }
 
   // get the class to apply to get the proper icon by season

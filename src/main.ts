@@ -110,7 +110,7 @@ Hooks.once('i18nInit', async () => {
 // on non-GMs, we need to update whenever the GM changes the weather
 Hooks.on('updateSetting', async (setting: Setting) => {
   if (!isClientGM() && setting.key === 'simple-weather.' + ModuleSettingKeys.lastWeatherData) 
-    weatherApplication.setWeather();
+    await weatherApplication.setWeather();
 });
 
 // handle scene changes

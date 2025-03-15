@@ -103,7 +103,9 @@
       "manualPauseHint": "Włącz, aby zapobiec automatycznej pogodzie (przydatne, gdy chcesz ustawić ją ręcznie).",
       "manualWeatherTemperature": "Temperatura do ustawienia (będzie się nieznacznie różnić od podanej)",
       "manualWeatherSubmit": "Ustaw wybraną pogodę i temperaturę",
-      "forecast": "Prognoza"
+      "forecast": "Prognoza",
+      "overwriteDialogTitle": "Nadpisać istniejące prognozy?",
+      "overwriteDialogContent": "To generowanie pogody nadpisze jedną lub więcej istniejących prognoz. Czy jesteś pewien? Jeśli wybierzesz 'Nie', zostaną wygenerowane tylko dni, które nie mają istniejących prognoz."
     },
 
     "chat": {

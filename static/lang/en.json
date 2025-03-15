@@ -103,7 +103,9 @@
       "manualPauseHint": "Turn on to prevent automatic weather (useful for when you want to set it manually)",
       "manualWeatherTemperature": "Temperature to set (will vary slightly from this)",
       "manualWeatherSubmit": "Set selected weather and temperature",
-      "forecast": "Forecast"
+      "forecast": "Forecast",
+      "overwriteDialogTitle": "Overwrite existing forecasts?",
+      "overwriteDialogContent": "This weather generation will overwrite one or more existing forecasts.  Are you sure?  If you choose no, only days that do not have existing forecasts will be generated."
     },
 
     "chat": {
