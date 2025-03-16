@@ -62,7 +62,6 @@
 							<div class="row-break"></div>
 
 							<div class="select-wrapper" style="flex: 0 0 50%">
-								{{log selectedManualOption}}
 								<select id="swr-manual-weather-selection" {{#if selectedManualOption.valid}}{{else}}class="swr-invalid-manual-option"{{/if}} title="{{localize 'swr.options.manualWeather.select'}}">
 									{{#each manualSelections }}
 										<option title="{{text}}" {{#if (eq @root.selectedManualOption.value value)}}selected="selected"{{/if}} {{#if valid}}{{else}}class="swr-invalid-manual-option"{{/if}} value="{{value}}">{{text}}</option>

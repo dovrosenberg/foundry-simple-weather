@@ -1,12 +1,18 @@
 # Change Log
 
+## v1.20.0 - Support for re-forecasting
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-March%2015%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.20.0/module.zip)
+
+Provide option to refresh forecasts when regenerating weather. Enabled ability to regenerate weather and/or pick manual weather for a day that already had a forecast.  Enabled ability to forecast off of manually selected weather - when "naturally" consistent with the current season and biome - and highlighted when you're picking a manual weather option that's not natural.  For natural manual weather, provided default temperatures to save a step.
+
 ## v1.19.2 - Bug fix when changing climate/humidity and using forecasts
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-February%2028%2C%202025-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.19.2/module.zip)
 
-Fixed bug where changing the climate/humidity and then regenerating a day where you already had a forecast for a different
-climate/humidity would break the weather.
+Fixed bug where changing the climate/humidity and then regenerating a day where you already had a forecast for a different climate/humidity would break the weather.
 
 ## v1.19.1 - Assorted bug fixes
 #### Support for Simple Calendar v2.4.18
