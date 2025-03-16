@@ -110,7 +110,7 @@ Hooks.once('i18nInit', async () => {
 // on non-GMs, we need to update whenever the GM changes the weather
 Hooks.on('updateSetting', async (setting: Setting) => {
   if (!isClientGM() && setting.key === 'simple-weather.' + ModuleSettingKeys.lastWeatherData) 
-    weatherApplication.setWeather();
+    await weatherApplication.setWeather();
 });
 
 // handle scene changes
@@ -138,7 +138,7 @@ Hooks.on('getSceneControlButtons', async (controls: SceneControl[]) => {
     if (noteControls && noteControls.tools) {
       noteControls.tools.push({ 
           name: "simple-weather",
-          title: "sweath.labels.openButton",
+          title: "swr.labels.openButton",  // localized by Foundry
           icon: "fas swr-icon",
           button: true,
           onClick: () => {   

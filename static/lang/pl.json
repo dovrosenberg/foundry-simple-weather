@@ -1,5 +1,5 @@
 {
-  "sweath": {
+  "swr": {
     "settings": {
       "dialogDisplay": "Czy gracze widzą okna dialogowe?",
       "dialogDisplayHelp": "Po zaznaczeniu tej opcji klienci niebędący MG będą mogli zobaczyć okno dialogowe (ale tylko godzinę, temperaturę i opis pogody). Nie będą mogli zobaczyć rozwijanych menu ani wygenerować pogody.",
@@ -103,7 +103,9 @@
       "manualPauseHint": "Włącz, aby zapobiec automatycznej pogodzie (przydatne, gdy chcesz ustawić ją ręcznie).",
       "manualWeatherTemperature": "Temperatura do ustawienia (będzie się nieznacznie różnić od podanej)",
       "manualWeatherSubmit": "Ustaw wybraną pogodę i temperaturę",
-      "forecast": "Prognoza"
+      "forecast": "Prognoza",
+      "overwriteDialogTitle": "Nadpisać istniejące prognozy?",
+      "overwriteDialogContent": "To generowanie pogody nadpisze jedną lub więcej istniejących prognoz. Czy jesteś pewien? Jeśli wybierzesz 'Nie', zostaną wygenerowane tylko dni, które nie mają istniejących prognoz."
     },
 
     "chat": {

@@ -1,5 +1,5 @@
 {
-  "sweath": {
+  "swr": {
     "settings": {
       "dialogDisplay": "Kan spelare se dialogen?",
       "dialogDisplayHelp": "När markerad kan icke-GM-klienter se dialogen (men endast tid, temperatur och väderbeskrivning). De kommer inte att kunna se dropdowns eller generera väder.",
@@ -101,7 +101,9 @@
       "manualPauseHint": "Aktivera för att förhindra automatiskt väder (användbart när du vill ställa in det manuellt)",
       "manualWeatherTemperature": "Temperatur att ställa in (kommer att variera något från detta)",
       "manualWeatherSubmit": "Ställ in valt väder och temperatur",
-      "forecast": "Väderprognos"
+      "forecast": "Väderprognos",
+      "overwriteDialogTitle": "Skriv över befintliga prognoser?",
+      "overwriteDialogContent": "Denna vädergenerering kommer att skriva över en eller flera befintliga prognoser. Är du säker? Om du väljer 'Nej' kommer endast dagar utan befintliga prognoser att genereras."
     },
 
     "chat": {

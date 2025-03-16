@@ -13,29 +13,29 @@ export class KeyBindings {
     const keybindings = [
       {
         bindingId: KeyBindingKeys.toggleMainApp,
-        name: "sweath.keybindings.toggle",
-        hint: "sweath.keybindings.toggleHelp",
+        name: "swr.keybindings.toggle",  // localized by Foundry
+        hint: "swr.keybindings.toggleHelp", // localized by Foundry
         onDown: weatherApplication.toggleWindow.bind(weatherApplication),
         editable: [],
       },
       {
         bindingId: KeyBindingKeys.regenerate,
-        name: "sweath.keybindings.regenerate",
-        hint: "sweath.keybindings.regenerateHelp",
+        name: "swr.keybindings.regenerate", // localized by Foundry
+        hint: "swr.keybindings.regenerateHelp", // localized by Foundry
         onDown: weatherApplication.regenerateWeather.bind(weatherApplication),
         editable: [],
       },
       {
         bindingId: KeyBindingKeys.manualPause,
-        name: "sweath.keybindings.manualPause",
-        hint: "sweath.keybindings.manualPauseHelp",
+        name: "swr.keybindings.manualPause", // localized by Foundry
+        hint: "swr.keybindings.manualPauseHelp", // localized by Foundry
         onDown: weatherApplication.manualPauseToggle.bind(weatherApplication),
         editable: [],
       },
       {
         bindingId: KeyBindingKeys.pauseFX,
-        name: "sweath.keybindings.pauseFX",
-        hint: "sweath.keybindings.pauseFXHelp",
+        name: "swr.keybindings.pauseFX", // localized by Foundry
+        hint: "swr.keybindings.pauseFXHelp", // localized by Foundry
         onDown: weatherApplication.toggleFX.bind(weatherApplication),
         editable: [],
       },

@@ -1,4 +1,5 @@
-import { nextCell, startingCells, getDirection, weatherTemperatures, Direction, weatherDescriptions, manualOptions } from '@/weather/weatherMap';
+import { nextCell, startingCells, getDirection, weatherTemperatures, Direction, weatherDescriptions, } from '@/weather/weatherMap';
+import { getManualOptionsBySeason } from '@/weather/manualWeather';
 import { ModuleSettings, ModuleSettingKeys } from '@/settings/ModuleSettings';
 import { localize } from '@/utils/game';
 import { Climate, HexFlowerCell, Humidity, Season, } from './climateData';
@@ -14,7 +15,8 @@ export class GenerateWeather {
   // today is used to set the date on the returned object
 
   // forForecast indicates it's being generated as part of a re-forecast, so don't add more forecasts
-  static generateWeather = function(climate: Climate, humidity: Humidity, season: Season, today: SimpleCalendar.DateData | null, yesterday: WeatherData | null, forForecast = false): WeatherData {
+  // forceRegenerate means to regenerate even if we have a valid forecast
+  static generateWeather = async function(climate: Climate, humidity: Humidity, season: Season, today: SimpleCalendar.DateData | null, yesterday: WeatherData | null, forForecast = false, forceRegenerate = false): WeatherData {
     const weatherData = new WeatherData(today, season, humidity, climate, null, null);
 
     // do the generation
@@ -27,7 +29,7 @@ export class GenerateWeather {
     const allForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
     const todayForecast = today && allForecasts ? allForecasts[cleanDate(today)] ?? null : null;
     // see if we already have a valid forecast for today
-    if (today && ModuleSettings.get(ModuleSettingKeys.useForecasts) &&  todayForecast &&
+    if (today && ModuleSettings.get(ModuleSettingKeys.useForecasts) && (todayForecast && !forceRegenerate) &&
         WeatherData.validateWeatherParameters(todayForecast.climate, todayForecast.humidity, todayForecast.hexFlowerCell)) {
       // make sure the climate/humidity hasn't changed
       if (climate===todayForecast.climate && humidity===todayForecast.humidity) {
@@ -40,10 +42,10 @@ export class GenerateWeather {
 
       // we need to generate one more day on the end
       if (!forForecast)
-        GenerateWeather.generateForecast(cleanDate(today), weatherData, true);
+        await GenerateWeather.generateForecast(cleanDate(today), weatherData, true);
     } else {
       // random start if no valid prior day or the prior day" was manually set or we changed season
-      if (!yesterday || yesterday.season !== season || yesterday.hexFlowerCell==null || yesterday.isManual) {
+      if (!yesterday || yesterday.season !== season || yesterday.hexFlowerCell==null || yesterday.manualOnly) {
         // no yesterday data (or starting a new season), so just pick a random starting point based on the season
         weatherData.hexFlowerCell = getDefaultStart(season);
       } else {
@@ -67,7 +69,7 @@ export class GenerateWeather {
 
       // generate an updated forecast
       if (!forForecast && ModuleSettings.get(ModuleSettingKeys.useForecasts) && today!==null) {
-        GenerateWeather.generateForecast(cleanDate(today), weatherData);
+        await GenerateWeather.generateForecast(cleanDate(today), weatherData, true);
       }
 
       log(false, 'New cell: ' + weatherData.hexFlowerCell + ' (' + weatherDescriptions[climate][humidity][weatherData.hexFlowerCell] + ')')
@@ -84,19 +86,21 @@ export class GenerateWeather {
   };
 
   // used to create manual weather; returns null if data is invalid (weatherIndex in particular)
-  static createManual = function(today: SimpleCalendar.DateData | null, temperature: number, weatherIndex: number): WeatherData | null {
-    const options = manualOptions[weatherIndex];   // get the details behind the option
+  static createManual = function(today: SimpleCalendar.DateData, season: Season, climate: Climate, humidity: Humidity, temperature: number, weatherIndex: number): WeatherData | null {
+    const options = getManualOptionsBySeason(season, climate, humidity);   // get the details behind the option
 
-    if (!options)
+    if (!options || !options[weatherIndex])
       return null;
+
+    const option = options[weatherIndex];
 
     // randomize the temperature (+/- # degrees)
     // margin of error is 4% of temperature, but always at least 2 degrees
     const plusMinus = Math.max(2, Math.ceil(.04*temperature));
     const temp = temperature + Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
 
-    const weatherData = new WeatherData(today, null, options.humidity, options.climate, options.hexCell, temp);
-    weatherData.isManual = true;
+    const weatherData = new WeatherData(today, season, option.weather.humidity, option.weather.climate, option.weather.hexCell, temp);
+    weatherData.manualOnly = option.valid;
 
     return weatherData;
   }
@@ -112,7 +116,7 @@ export class GenerateWeather {
     temp += Math.floor(Math.random()*(2*plusMinus + 1) - plusMinus);
 
     const weatherData = new WeatherData(today, null, humidity, climate, hexFlowerCell, temp);
-    weatherData.isManual = true;
+    weatherData.manualOnly = true;
 
     return weatherData;
   }
@@ -152,8 +156,9 @@ export class GenerateWeather {
   // generate N days of forecast starting with tomorrow, based on today
   // will overwrite any previously generated forecasts for those days
   // returns the updated forecast object (and saves it to settings)
-  // extendOnly is used to fill in needed days but not overwrite ones already generated
-  static generateForecast = async function(todayTimestamp: number, todayWeather: WeatherData, extendOnly = false): Promise<Record<string, Forecast>> {
+  // if extendOnly is true, will only fill in missing ones; otherwise will prompt about overwriting if existing ones found and either skip or overwrite
+  //    based on prompt response
+  static generateForecast = async function(todayTimestamp: number, todayWeather: WeatherData, extendOnly: boolean): Promise<Record<string, Forecast>> {
     const numDays = 7;
     const currentForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
 
@@ -163,13 +168,37 @@ export class GenerateWeather {
 
     let yesterdayWeather = todayWeather;
 
+    // if there are any forecasts we're going to hit and we're in "extendOnly" mode, prompt to see if we should overwrite
+    let shouldOverwrite = false;
+    let needPrompt = false;
+    if (extendOnly) {
+      for (let day=1; day<=numDays; day++) {
+        const forecastTimeStamp = SimpleCalendar.api.timestampPlusInterval(todayTimestamp, { day: day});
+
+        if (currentForecasts[forecastTimeStamp]) {
+          needPrompt = true;
+          break;
+        }
+      }
+    } else {
+      shouldOverwrite = true;
+    }
+    if (needPrompt) {
+      shouldOverwrite = await Dialog.confirm({
+        title: localize('labels.overwriteDialogTitle'),  
+        content: localize('labels.overwriteDialogContent'),
+        rejectClose: false,
+        defaultYes: true,
+      }) ?? false;
+    }
+
     for (let day=1; day<=numDays; day++) {
-      let forecastTimeStamp;
+      const forecastTimeStamp = SimpleCalendar.api.timestampPlusInterval(todayTimestamp, { day: day});
 
-      forecastTimeStamp = SimpleCalendar.api.timestampPlusInterval(todayTimestamp, { day: day});
+      // if there's already one, and we're just extending, prompt to see if we should overwrite
 
-      // if there's already one, and we're just extending, use it as is
-      if (currentForecasts[forecastTimeStamp] && extendOnly) {
+      if (currentForecasts[forecastTimeStamp] && !shouldOverwrite) {
+        // don't overwrite - just use as is and get ready for the next day
         const todayWeather = currentForecasts[forecastTimeStamp];
         const todayDate = SimpleCalendar.api.timestampToDate(forecastTimeStamp);
 
@@ -186,7 +215,7 @@ export class GenerateWeather {
         );
       } else {
         // create a new forecast
-        const newWeather = GenerateWeather.generateWeather(todayWeather.climate, todayWeather.humidity, todayWeather.season, SimpleCalendar.api.timestampToDate(forecastTimeStamp), yesterdayWeather, true);
+        const newWeather = await GenerateWeather.generateWeather(todayWeather.climate, todayWeather.humidity, todayWeather.season, SimpleCalendar.api.timestampToDate(forecastTimeStamp), yesterdayWeather, true, true);
 
         if (newWeather.climate!=null && newWeather.humidity!=null && newWeather.hexFlowerCell!=null) {
           const forecast = new Forecast(forecastTimeStamp, newWeather.climate, newWeather.humidity, newWeather.hexFlowerCell);
