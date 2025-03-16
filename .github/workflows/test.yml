@@ -5,11 +5,9 @@ on:
   push:
     branches:
       - master
-      - attempt-mock
   pull_request:
     branches:
         - master
-        - attempt-mock        
 jobs:
   test:
     runs-on: ubuntu-latest
