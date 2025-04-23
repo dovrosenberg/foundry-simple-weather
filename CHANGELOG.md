@@ -1,5 +1,13 @@
 # Change Log
 
+## v1.20.1 - Bug fix for active scene when first loading Foundry
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-April%2023%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.20.1/module.zip)
+
+Active scene now respects weather FX on/off setting properly when first loading Foundry.
+
+
 ## v1.20.0 - Support for re-forecasting
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-March%2015%2C%202025-blue)

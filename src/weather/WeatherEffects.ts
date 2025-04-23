@@ -64,9 +64,15 @@ class WeatherEffects {
   public ready(weatherData: WeatherData | null): void {
     this._sceneReady = true;
 
-    if (weatherData)
+    if (ModuleSettings.get(ModuleSettingKeys.FXByScene)) {
+      this._fxActive = SceneSettings.get(SceneSettingKeys.fxActive); 
+    } else {
+      this._fxActive = ModuleSettings.get(ModuleSettingKeys.fxActive)
+    }
+
+    if (weatherData && this._fxActive)
       this.activateFX(weatherData);
-    else if (this._lastWeatherData)
+    else if (this._lastWeatherData && this._fxActive)
       this.activateFX(this._lastWeatherData);
   };
 
