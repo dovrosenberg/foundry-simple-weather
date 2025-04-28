@@ -180,7 +180,10 @@ class WeatherApplication extends Application {
       SCContainerClasses: !this._attachedMode ? '' : `${SC_CLASS_FOR_TAB_WRAPPER} sc-right ${SC_CLASS_FOR_TAB_EXTENDED}`,
       windowPosition: this._attachedMode ? { bottom: 0, left: 0 } : this._windowPosition,
       containerPosition: this._attachedMode ? 'relative' : 'fixed',
-      hideDialog: (this._attachedMode && this._attachModeHidden) || this._currentlyHidden || !(isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)),  // hide dialog - don't show anything
+      // For attached mode, we only hide if _attachModeHidden is true
+      // For non-attached mode, we hide if _currentlyHidden is true or if the user is not a GM and dialogDisplay is false
+      hideDialog: (this._attachedMode && this._attachModeHidden) || 
+                 (!this._attachedMode && (this._currentlyHidden || !(isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)))),
 
       showForecast: isClientGM() && ModuleSettings.get(ModuleSettingKeys.useForecasts),
       forecasts: this.getForecasts(),
