@@ -1,5 +1,14 @@
 # Change Log
 
+## v1.20.2 - Player dialog now working (better)
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-April%2028%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.20.2/module.zip)
+
+Players can now see the dialog properly when in non-attached mode or when SimpleCalendar is in compact mode.  There is still a bug where when SimpleCalendar is in full mode you need to put into compact and then reopen before the weather button will appear.
+
+Also cleaned up settings so non-GM players see the right ones.
+
 ## v1.20.1 - Bug fix for active scene when first loading Foundry
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-April%2023%2C%202025-blue)

@@ -543,6 +543,9 @@ const getManualOptionsBySeason = (season: Season, climate: Climate, humidity: Hu
   temperature: number;
   valid: boolean 
 }[] => {
+  // sometimes this gets called before things are initialized (only for players, not GM...)
+  if (season==null || climate==null || humidity===null) return [];
+
   return manualOptionsBySeason[season][climate][humidity].map((option: ManualOption, i: number) => ({
     value: i.toString(),
 

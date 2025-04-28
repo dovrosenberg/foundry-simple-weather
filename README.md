@@ -124,6 +124,8 @@ Then refresh (F5).  That should make the window reappear.  If that doesn't work 
 ### Simple Calendar attachment (compact mode)
 The attachment to the calendar when the calendar is in compact mode is highly dependent on the Simple Calendar version.  Check the ([change log](https://github.com/dovrosenberg/foundry-simple-weather/blob/master/CHANGELOG.md)) and make sure that the version of Simple Calendar you are using matches what's listed for your version of Simple Weather.
 
+### Missing weather button (when attached to non-compact Simple Calendar)
+Players can now see the dialog properly when in non-attached mode or when SimpleCalendar is in compact mode.  But when attached to SimpleCalendar in its full mode, non-GM players will not see the button to open the weather panel when first starting the game (or reloading browser).  The workaround is to double click the SimpleCalendar header bar to enter compact mode and then double click it again to go back to normal.  The button should then appear properly.
 
 ### Missing box (when attached to non-compact Simple Calendar)
 Sometimes when you have another Simple Calendar side tab open and you try to switch to the weather tab, it will close the other tab but not show the weather.  The workaround is just to hit the weather button again.
