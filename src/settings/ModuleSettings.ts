@@ -10,16 +10,22 @@ import { Forecast } from '@/weather/Forecast';
 
 export enum ModuleSettingKeys {
   // displayed in settings
+  // GM only
   dialogDisplay = 'dialogDisplay',   // can non-GM clients see the dialog box
   outputWeatherToChat = 'outputWeatherChat',   // when new weather is generated, should it be put in the chat box
   outputDateToChat = 'outputDateToChat',   // should we include the date in chat posts?
   publicChat = 'publicChat',   // should everyone see the chat (true) or just the GM (false)
-  useCelsius = 'useCelsius',   // should we use Celsius
   useFX = 'useFX',  // the name of the package used for FX (or 'off' if none)
   FXByScene = 'FXByScene',  // should we use FX by scene or by module
   attachToCalendar = 'attachToCalendar',  // should we attach to simple calendar instead of standalone window
   storeInSCNotes = 'storeInSCNotes',   // should we store weather in simple calendar notes 
   useForecasts = 'useForecasts',   // should we generate and display forecasts?
+
+  // players can set
+  useCelsius = 'useCelsius',   // should we use Celsius
+  playSound = 'playSound',   // should we play sounds when showing effects?
+  // normalizeVolume = 'normalizeVolume',   // should we normalize the volume level across all clips?
+  soundVolume = 'soundVolume',   // volume level for sounds
 
   // internal only
   fxActive = 'fxActive',   // are the fx currently showing
@@ -36,9 +42,6 @@ export enum ModuleSettingKeys {
   manualPause = 'manualPause',   // is the manual pause currently active (will prevent any auto or regen updates)
   customChatMessages = 'customChatMessages',  // [climate][humidity][index]: message
   forecasts = 'forecasts',   // a map from the timestamp for a day to a Forecast object for that day
-  playSound = 'playSound',   // should we play sounds when showing effects?
-  // normalizeVolume = 'normalizeVolume',   // should we normalize the volume level across all clips?
-  soundVolume = 'soundVolume',   // volume level for sounds
   previousVersion = 'previousVersion',   // the previous version of the module - checked in init() to determine if any data migration is needed
 }
 
@@ -47,12 +50,16 @@ type SettingType<K extends ModuleSettingKeys> =
     K extends ModuleSettingKeys.publicChat ? boolean :
     K extends ModuleSettingKeys.outputWeatherToChat ? boolean :
     K extends ModuleSettingKeys.outputDateToChat ? boolean :
-    K extends ModuleSettingKeys.useCelsius ? boolean :
     K extends ModuleSettingKeys.useFX ? string :
     K extends ModuleSettingKeys.FXByScene ? boolean :
     K extends ModuleSettingKeys.attachToCalendar ? boolean :
     K extends ModuleSettingKeys.storeInSCNotes ? boolean :
     K extends ModuleSettingKeys.useForecasts ? boolean :
+    K extends ModuleSettingKeys.useCelsius ? boolean :
+    K extends ModuleSettingKeys.playSound ? boolean :
+    // K extends ModuleSettingKeys.normalizeVolume ? boolean :
+    K extends ModuleSettingKeys.soundVolume ? number :
+    K extends ModuleSettingKeys.previousVersion ? string :
     K extends ModuleSettingKeys.displayOptions ? DisplayOptions :
     K extends ModuleSettingKeys.lastWeatherData ? (WeatherData | null) :  
     K extends ModuleSettingKeys.season ? number :
@@ -67,10 +74,6 @@ type SettingType<K extends ModuleSettingKeys> =
     K extends ModuleSettingKeys.manualPause ? boolean :
     K extends ModuleSettingKeys.customChatMessages ? string[][][] :
     K extends ModuleSettingKeys.forecasts ? Record<string, Forecast> :
-    K extends ModuleSettingKeys.playSound ? boolean :
-    // K extends ModuleSettingKeys.normalizeVolume ? boolean :
-    K extends ModuleSettingKeys.soundVolume ? number :
-    K extends ModuleSettingKeys.previousVersion ? string :
     never;  
 
 export class ModuleSettings {
@@ -234,6 +237,17 @@ export class ModuleSettings {
       requiresReload: true,    
       type: Boolean,
     },
+  ];
+
+  // these are client-specific and displayed in settings
+  private static localDisplayParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
+    {
+      settingID: ModuleSettingKeys.useCelsius, 
+      name: 'settings.useCelsius',
+      hint: 'settings.useCelsiusHelp',
+      default: false,
+      type: Boolean,
+    },
     {
       settingID: ModuleSettingKeys.playSound,
       name: 'settings.playSound',
@@ -257,17 +271,6 @@ export class ModuleSettings {
       default: 0.5,
       requiresReload: true,
       type: new foundry.data.fields.NumberField({ nullable: false, min: 0, max: 100, step: 1, initial: 50}),
-    },
-  ];
-
-  // these are client-specific and displayed in settings
-  private static localDisplayParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
-    {
-      settingID: ModuleSettingKeys.useCelsius, 
-      name: 'settings.useCelsius',
-      hint: 'settings.useCelsiusHelp',
-      default: false,
-      type: Boolean,
     },
   ];
 
@@ -387,7 +390,7 @@ export class ModuleSettings {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
         hint: settings.hint ? localize(settings.hint) : '',
-        restricted: false,
+        restricted: true,
       });
     }
 
@@ -398,7 +401,7 @@ export class ModuleSettings {
         ...settings,
         name: settings.name ? localize(settings.name) : '',
         hint: settings.hint ? localize(settings.hint) : '',
-        restricted: true,
+        restricted: false,
       });
     }
 
@@ -433,6 +436,7 @@ export class ModuleSettings {
         ...settings,
         scope: 'world',
         config: false,
+        restricted: true,
       });
     }
 
@@ -443,6 +447,7 @@ export class ModuleSettings {
         ...settings,
         scope: 'client',
         config: false,
+        restricted: false,
       });
     }
   }
