@@ -5,6 +5,10 @@ Dynamic weather generation, by season and biome, including automatically activat
 
 I built this as a way to learn Foundry better, but I plan to maintain it for now and am happy to consider [feature requests](https://github.com/dovrosenberg/foundry-simple-weather/issues/new/choose)
 
+## Note on v13 compatibility
+
+I will be definitely supporting v13 in this package, and much of the work is done.  There's not a whole lot else I can do until Simple Calendar provides an update, though, short of breaking the connection.  Please encourage them to do so.  If you're using this module without Simple Calendar - open an issue and I'll see about doing some sort of interim, SC-free release.   
+
 ## Features
 
 - Intuitive UI to generate weather  
