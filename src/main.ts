@@ -49,7 +49,7 @@ Hooks.once('devModeReady', async ({ registerPackageDebugFlag: registerPackageDeb
 
 Hooks.once('init', async () => {
   // Load Quench test in development environment
-  if (import.meta.env.DEV) {
+  if (import.meta.env.MODE === 'development') {
     await import('@test/index');
   }
 
