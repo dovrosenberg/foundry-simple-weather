@@ -103,6 +103,7 @@
       "manualPauseHint": "Activer pour empêcher la météo automatique (utile lorsque vous voulez la régler manuellement)",
       "manualWeatherTemperature": "Régler la Température (variera légèrement par rapport à celle-ci)",
       "manualWeatherSubmit": "Activer la météo et la température sélectionnées",
+      "manualWeatherDisabled": "Entre une température avant de définir la météo",
       "forecast": "Prévisions"
     },
 

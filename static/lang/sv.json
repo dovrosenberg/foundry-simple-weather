@@ -101,6 +101,7 @@
       "manualPauseHint": "Aktivera för att förhindra automatiskt väder (användbart när du vill ställa in det manuellt)",
       "manualWeatherTemperature": "Temperatur att ställa in (kommer att variera något från detta)",
       "manualWeatherSubmit": "Ställ in valt väder och temperatur",
+      "manualWeatherDisabled": "Ange en temperatur innan du ställer in vädret",
       "forecast": "Väderprognos"
     },
 
