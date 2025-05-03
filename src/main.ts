@@ -253,7 +253,7 @@ function checkDependencies(): void {
   }
 }
 
-if (SimpleCalendar?.Hooks?.init) {
+if ('SimpleCalendar' in globalThis) {  // make sure it's present at
   Hooks.once(SimpleCalendar.Hooks.Init, async (): Promise<void> => {
     // it's possible this gets called but the version # is too low - just ignore in that case
     if (simpleCalendarInstalled) {

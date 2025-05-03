@@ -8,7 +8,7 @@ import { WeatherData } from '@/weather/WeatherData';
 import { SelectOption, seasonSelections, biomeSelections, Climate, climateSelections, Humidity, humiditySelections, Season, biomeMappings, HexFlowerCell } from '@/weather/climateData';
 import { manualSelections, weatherDescriptions } from '@/weather/weatherMap';
 import { ModuleSettingKeys } from '@/settings/ModuleSettings';
-import { isClientGM } from '@/utils/game';
+import { isClientGM, localize } from '@/utils/game';
 import { generateWeather, outputWeatherToChat, createManual, createSpecificWeather } from '@/weather/weatherGeneration';
 import { ModuleSettings } from '@/settings/ModuleSettings';
 import { weatherEffects } from '@/weather/WeatherEffects';
@@ -915,6 +915,7 @@ _______________________________________
     const btn = document.getElementById('swr-submit-weather') as HTMLButtonElement;
 
     btn.disabled = !this.isTempValid();
+    btn.title = btn.disabled ? localize('labels.manualWeatherDisabled') : localize('labels.manualWeatherSubmit');
   }
 
   private isTempValid(): boolean {
