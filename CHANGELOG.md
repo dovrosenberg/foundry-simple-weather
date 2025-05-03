@@ -1,6 +1,6 @@
 # Change Log
 
-## v2.0.0 - Support for Foundry v13 (Caution! Read notes)
+## v2.0.1 - Support for Foundry v13 (Caution! Read notes)
 #### **No Support for Simple Calendar !??!**
 
 ![](https://img.shields.io/badge/release%20date-May%203%2C%202025-blue)
@@ -11,6 +11,9 @@ Foundry v13 had breaking changes that impacted Simple Weather.  This version wor
 **Unfortunately, Simple Calendar doesn't currently support Foundry v13, so be forewarned that while Simple Weather will run in standalone mode, that's all you're going to get.  If you were using Simple Calendar before, this may result in some strange behavior either when you first generate weather and/or when Simple Calendar comes back. I'm pretty sure that when Simple Calendar upgrades, this version will still work correctly with it, but there's no way to test it until then.  There's an [open issue](https://github.com/vigoren/foundryvtt-simple-calendar/issues/669) on Simple Calendar requesting support - please upvote.**
 
 FXMaster is also having issues at the moment (ex. you can't manually use it), but Simple Weather is still able to use it successfully, as far as I can tell.
+
+Other notes:
+- Also fixed a longstanding issue where lightning wouldn't turn off
 
 ## v1.20.2 - Player dialog now working (better)
 #### Support for Simple Calendar v2.4.18

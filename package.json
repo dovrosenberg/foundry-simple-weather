@@ -1,7 +1,7 @@
 {
   "name": "simple-weather",
   "title": "Foundry VTT Simple Weather",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Add dynamic weather to your FoundryVTT world (on top of Simple Calendar).  Note: not affiliated with creators of Simple Calendar.",
   "repository": {
     "type": "git",

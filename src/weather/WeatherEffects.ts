@@ -188,27 +188,26 @@ class WeatherEffects {
         //    get out of sync with FX master, in which case attempting to turn something off may actually
         //    add it instead
         // update takes an array, but the ones we want to remove are stored in an object
-        const filteredEffects = SceneSettings.currentScene?.getFlag('fxmaster', 'effects') ?? {};
+        const particleEffects = SceneSettings.currentScene?.getFlag('fxmaster', 'effects') ?? {};
+        const filterEffects = SceneSettings.currentScene?.getFlag('fxmaster', 'filters') ?? {};
 
         // sometimes deactivate gets called multiple times before fxmaster has processed all of them (since we can't await the hook)
         // when that happens, it ends up adding effects with just the name set; not sure we can do much there except
         //    pull them out again later, but it's causing a warning to be thrown by fxmaster (but no other issues)
         // it may not actually be an issue any more now that fxmaster fixed the async issue in 4.1.0
-        for (let key in filteredEffects) {
+        for (const key in particleEffects) {
           if (key.toString().startsWith('swr-')) { 
             Hooks.call('fxmaster.switchParticleEffect', { name: key });
+          }
+        }
+        for (const key in filterEffects) {
+          if (key.toString().startsWith('swr-')) { 
+            await FXMASTER.filters.removeFilter(key);
           }
         }
       }
       
       await this.clearFXMParticleEffects();
-      
-      for (let i=0; i<this._activeFXMFilterEffects.length; i++) {
-        const effectName = this._activeFXMFilterEffects[i];
-
-        // @ts-ignore - FXMASTER not typed
-        await FXMASTER.filters.removeFilter(effectName);
-      }
       await this.clearFXMFilterEffects();
 
       await stopSounds();
