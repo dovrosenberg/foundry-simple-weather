@@ -7,7 +7,9 @@ I built this as a way to learn Foundry better, but I plan to maintain it for now
 
 ## Note on v13 compatibility
 
-I will be definitely supporting v13 in this package, and much of the work is done.  There's not a whole lot else I can do until Simple Calendar provides an update, though, short of breaking the connection.  Please encourage them to do so.  If you're using this module without Simple Calendar - open an issue and I'll see about doing some sort of interim, SC-free release.   
+**Unfortunately, Simple Calendar doesn't currently support Foundry v13, so be forewarned that while Simple Weather will run in standalone mode, that's all you're going to get.  If you were using Simple Calendar before, this may result in some strange behavior either when you first generate weather and/or when Simple Calendar comes back. I'm pretty sure that when Simple Calendar upgrades, this version will still work correctly with it, but there's no way to test it until then.  There's an [open issue](https://github.com/vigoren/foundryvtt-simple-calendar/issues/669) on Simple Calendar requesting support - please upvote.**
+
+FXMaster is also having issues at the moment (ex. you can't manually use it), but Simple Weather is still able to use it successfully, as far as I can tell.
 
 ## Features
 
