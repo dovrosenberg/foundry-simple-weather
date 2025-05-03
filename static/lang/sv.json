@@ -102,7 +102,9 @@
       "manualWeatherTemperature": "Temperatur att ställa in (kommer att variera något från detta)",
       "manualWeatherSubmit": "Ställ in valt väder och temperatur",
       "manualWeatherDisabled": "Ange en temperatur innan du ställer in vädret",
-      "forecast": "Väderprognos"
+      "forecast": "Väderprognos",
+      "overwriteDialogTitle": "Skriv över befintliga prognoser?",
+      "overwriteDialogContent": "Denna vädergenerering kommer att skriva över en eller flera befintliga prognoser. Är du säker? Om du väljer 'Nej' kommer endast dagar utan befintliga prognoser att genereras."
     },
 
     "chat": {

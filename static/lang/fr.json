@@ -104,7 +104,9 @@
       "manualWeatherTemperature": "Régler la Température (variera légèrement par rapport à celle-ci)",
       "manualWeatherSubmit": "Activer la météo et la température sélectionnées",
       "manualWeatherDisabled": "Entre une température avant de définir la météo",
-      "forecast": "Prévisions"
+      "forecast": "Prévisions",
+      "overwriteDialogTitle": "Écraser les prévisions existantes ?",
+      "overwriteDialogContent": "Cette génération météorologique écrasera une ou plusieurs prévisions existantes. Êtes-vous sûr ? Si vous choisissez 'Non', seuls les jours sans prévisions existantes seront générés."
     },
 
     "chat": {

@@ -104,7 +104,9 @@
       "manualWeatherTemperature": "Temperature to set (will vary slightly from this)",
       "manualWeatherSubmit": "Set selected weather and temperature",
       "manualWeatherDisabled": "Enter a temperature before setting weather",
-      "forecast": "Forecast"
+      "forecast": "Forecast",
+      "overwriteDialogTitle": "Overwrite existing forecasts?",
+      "overwriteDialogContent": "This weather generation will overwrite one or more existing forecasts.  Are you sure?  If you choose no, only days that do not have existing forecasts will be generated."
     },
 
     "chat": {

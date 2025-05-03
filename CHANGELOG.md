@@ -8,11 +8,40 @@
 
 Foundry v13 had breaking changes that impacted Simple Weather.  This version works in v13, prior ones do not.
 
-**Unfortunately, Simple Calendar doesn't currently support Foundry v13, so be forewarned that while Simple Weather will run in standalone mode, 
-that's all you're going to get.  I'm pretty sure that when Simple Calendar upgrades, this version will still work correctly with it,
-but there's no way to test it until then.  There's an [open issue](https://github.com/vigoren/foundryvtt-simple-calendar/issues/669) on Simple Calendar requesting support - please upvote.**
+**Unfortunately, Simple Calendar doesn't currently support Foundry v13, so be forewarned that while Simple Weather will run in standalone mode, that's all you're going to get.  If you were using Simple Calendar before, this may result in some strange behavior either when you first generate weather and/or when Simple Calendar comes back. I'm pretty sure that when Simple Calendar upgrades, this version will still work correctly with it, but there's no way to test it until then.  There's an [open issue](https://github.com/vigoren/foundryvtt-simple-calendar/issues/669) on Simple Calendar requesting support - please upvote.**
 
 FXMaster is also having issues at the moment (ex. you can't manually use it), but Simple Weather is still able to use it successfully, as far as I can tell.
+
+## v1.20.2 - Player dialog now working (better)
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-April%2028%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.20.2/module.zip)
+
+Players can now see the dialog properly when in non-attached mode or when SimpleCalendar is in compact mode.  There is still a bug where when SimpleCalendar is in full mode you need to put into compact and then reopen before the weather button will appear.
+
+Also cleaned up settings so non-GM players see the right ones.
+
+## v1.20.1 - Bug fix for active scene when first loading Foundry
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-April%2023%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.20.1/module.zip)
+
+Active scene now respects weather FX on/off setting properly when first loading Foundry.
+
+
+## v1.20.0 - Support for re-forecasting
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-March%2015%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.20.0/module.zip)
+
+Provide option to refresh forecasts when regenerating weather. Enabled ability to regenerate weather and/or pick manual weather for a day that already had a forecast.  Enabled ability to forecast off of manually selected weather - when "naturally" consistent with the current season and biome - and highlighted when you're picking a manual weather option that's not natural.  For natural manual weather, provided default temperatures to save a step.
+
+## v1.19.2 - Bug fix when changing climate/humidity and using forecasts
+#### Support for Simple Calendar v2.4.18
+![](https://img.shields.io/badge/release%20date-February%2028%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.19.2/module.zip)
+
+Fixed bug where changing the climate/humidity and then regenerating a day where you already had a forecast for a different climate/humidity would break the weather.
 
 ## v1.19.1 - Assorted bug fixes
 #### Support for Simple Calendar v2.4.18

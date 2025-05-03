@@ -4,12 +4,21 @@ import { cleanDate } from '@/utils/calendar';
 import { version } from '@module';
 import { WeatherData } from '@/weather/WeatherData';
 
-export const migrateData = async(): Promise<void> => {
+const migrateData = async(): Promise<void> => {
   // we just look at the prior version to see what upgrades need to apply
   const priorVersion = ModuleSettings.get(ModuleSettingKeys.previousVersion);
 
   // this captures everything before 1.17.4
   if (priorVersion === '') {
+    if (!('SimpleCalendar' in globalThis)) {
+      const errorMessage = 'You cannot currently migrate Simple Weather from a version prior to 1.17.4 without having Simple Calendar installed.  It is highly recommended \
+        that you turn off Simple Weather until you have Simple Calendar installed and then re-enable it after installing Simple Calendar.  Once migrated, you can then \
+        remove Simple Calendar again, if desired.';
+      
+        ui.notifications.error(errorMessage);
+        throw new Error(errorMessage);
+    }
+
     let updatedForecasts = {} as Record<string, Forecast>;
 
     // forecast timestamps need to be set to the sunset time
@@ -31,4 +40,8 @@ export const migrateData = async(): Promise<void> => {
   }
 
   await ModuleSettings.set(ModuleSettingKeys.previousVersion, version);
+}
+
+export {
+  migrateData,
 }

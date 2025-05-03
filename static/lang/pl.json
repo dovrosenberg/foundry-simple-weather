@@ -104,7 +104,9 @@
       "manualWeatherTemperature": "Temperatura do ustawienia (będzie się nieznacznie różnić od podanej)",
       "manualWeatherSubmit": "Ustaw wybraną pogodę i temperaturę",
       "manualWeatherDisabled": "Wprowadź temperaturę przed ustawieniem pogody",
-      "forecast": "Prognoza"
+      "forecast": "Prognoza",
+      "overwriteDialogTitle": "Nadpisać istniejące prognozy?",
+      "overwriteDialogContent": "To generowanie pogody nadpisze jedną lub więcej istniejących prognoz. Czy jesteś pewien? Jeśli wybierzesz 'Nie', zostaną wygenerowane tylko dni, które nie mają istniejących prognoz."
     },
 
     "chat": {

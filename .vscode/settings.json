@@ -4,11 +4,14 @@
     "fxmaster",
     "swr",
     "originjs",
+    "REFORECAST",
+    "reforecasts",
     "springfall",
-    "sweath"
+    "swr"
   ],
   "cSpell.ignoreWords": [
     "rainsimple",
     "raintop"
-  ]
+  ],
+  "zencoder.enableRepoIndexing": true
 }

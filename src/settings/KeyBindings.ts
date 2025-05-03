@@ -13,29 +13,29 @@ export class KeyBindings {
     const keybindings = [
       {
         bindingId: KeyBindingKeys.toggleMainApp,
-        name: "swr.keybindings.toggle",
-        hint: "swr.keybindings.toggleHelp",
+        name: "swr.keybindings.toggle",  // localized by Foundry
+        hint: "swr.keybindings.toggleHelp", // localized by Foundry
         onDown: weatherApplication.toggleWindow.bind(weatherApplication),
         editable: [],
       },
       {
         bindingId: KeyBindingKeys.regenerate,
-        name: "swr.keybindings.regenerate",
-        hint: "swr.keybindings.regenerateHelp",
+        name: "swr.keybindings.regenerate", // localized by Foundry
+        hint: "swr.keybindings.regenerateHelp", // localized by Foundry
         onDown: weatherApplication.regenerateWeather.bind(weatherApplication),
         editable: [],
       },
       {
         bindingId: KeyBindingKeys.manualPause,
-        name: "swr.keybindings.manualPause",
-        hint: "swr.keybindings.manualPauseHelp",
+        name: "swr.keybindings.manualPause", // localized by Foundry
+        hint: "swr.keybindings.manualPauseHelp", // localized by Foundry
         onDown: weatherApplication.manualPauseToggle.bind(weatherApplication),
         editable: [],
       },
       {
         bindingId: KeyBindingKeys.pauseFX,
-        name: "swr.keybindings.pauseFX",
-        hint: "swr.keybindings.pauseFXHelp",
+        name: "swr.keybindings.pauseFX", // localized by Foundry
+        hint: "swr.keybindings.pauseFXHelp", // localized by Foundry
         onDown: weatherApplication.toggleFX.bind(weatherApplication),
         editable: [],
       },

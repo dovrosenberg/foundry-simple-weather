@@ -49,14 +49,15 @@ Hooks.once('devModeReady', async ({ registerPackageDebugFlag: registerPackageDeb
 
 Hooks.once('init', async () => {
   // Load Quench test in development environment
-  if (import.meta.env.DEV) {
+  if (import.meta.env.MODE === 'development') {
     await import('@test/index');
   }
 
-// initialize settings first, so other things can use them
+  // initialize settings first, so other things can use them
   ModuleSettings.registerSettings();
 
   updateWeatherEffects(new WeatherEffects());  // has to go first so we can activate any existing FX
+
   updateWeatherApplication(new WeatherApplication());
 
   // register keybindings
@@ -109,7 +110,7 @@ Hooks.once('i18nInit', async () => {
 // on non-GMs, we need to update whenever the GM changes the weather
 Hooks.on('updateSetting', async (setting: Setting) => {
   if (!isClientGM() && setting.key === 'simple-weather.' + ModuleSettingKeys.lastWeatherData) 
-    weatherApplication.setWeather();
+    await weatherApplication.setWeather();
 });
 
 // handle scene changes
@@ -135,7 +136,7 @@ Hooks.on('getSceneControlButtons', async (controls: Record<string, SceneControl>
     if (noteControls && noteControls.tools) {
       noteControls.tools['simple-weather'] = {
         name: 'simple-weather',
-        title: 'swr.labels.openButton',
+        title: 'swr.labels.openButton',  // localized by Foundry
         icon: 'fas swr-icon',
         button: true,
         onChange: () => {   
@@ -282,47 +283,53 @@ if ('SimpleCalendar' in globalThis) {  // make sure it's present at
       Hooks.on('updateWorldTime', (timestamp) => {
         weatherApplication.updateDateTime(SimpleCalendar.api.timestampToDate(timestamp));
       });
-    }
-    
-    // check the setting to see if we want to dock
-    if (weatherApplication.attachedMode) {
-      if (isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)) {
-        // can set this either way, but it does nothing when not in compact mode (but we only need to set it once)
-        SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", false, () => weatherApplication.toggleAttachModeHidden());
-      }
+  
+      // check the setting to see if we want to dock
+      if (weatherApplication.attachedMode) {
+        if (isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)) {
+          // can set this either way, but it does nothing when in compact mode (but we only need to set it once)
+          SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", false, () => weatherApplication.toggleAttachModeHidden());
+        }
+        
+        // check the setting to see if we want to dock
+        if (isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)) {
+          // can set this either way, but it does nothing when not in compact mode (but we only need to set it once)
+          SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", false, () => weatherApplication.toggleAttachModeHidden());
+        }
 
-      // we also need to watch for when the calendar is rendered because in compact mode we
-      //    have to inject the button 
-      Hooks.on('renderMainApp', (_application: Application, html: JQuery<HTMLElement>) => {
-        // if SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER div exists then it's in compact mode
-        // in compact mode, there's no api to add a button, so we monkey patch one in
-        const compactMode = html.find(`.${SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER}`).length>0;
-        if (compactMode) {
-          weatherApplication.render();
+        // we also need to watch for when the calendar is rendered because in compact mode we
+        //    have to inject the button 
+        Hooks.on('renderMainApp', (_application: Application, html: JQuery<HTMLElement>) => {
+          // if SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER div exists then it's in compact mode
+          // in compact mode, there's no api to add a button, so we monkey patch one in
+          const compactMode = html.find(`.${SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER}`).length>0;
+          if (compactMode) {
+            weatherApplication.render();
 
-          // if it's already there, no need to do anything (it doesn't change)
-          if (html.find('#swr-fsc-compact-open').length === 0) {
-            const newButton = `
-            <div id="swr-fsc-compact-open" style="margin-left: 8px; cursor: pointer; ">
-              <div data-tooltip="Simple Weather" style="color:var(--compact-header-control-grey);">    
-                <span class="fa-solid fa-cloud-sun"></span>
+            // if it's already there, no need to do anything (it doesn't change)
+            if (html.find('#swr-fsc-compact-open').length === 0) {
+              const newButton = `
+              <div id="swr-fsc-compact-open" style="margin-left: 8px; cursor: pointer; ">
+                <div data-tooltip="Simple Weather" style="color:var(--compact-header-control-grey);">    
+                  <span class="fa-solid fa-cloud-sun"></span>
+                </div>
               </div>
-            </div>
-            `;
+              `;
 
-            // add the button   
-            // note: how to find the new class when new SC release comes out?
-            //   it's the div that wraps the small buttons in the top left in compact mode
-            html.find(`.${SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER}`).append(newButton);
+              // add the button   
+              // note: how to find the new class when new SC release comes out?
+              //   it's the div that wraps the small buttons in the top left in compact mode
+              html.find(`.${SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER}`).append(newButton);
 
-            html.find('#swr-fsc-compact-open').on('click',() => {
-              weatherApplication.toggleAttachModeHidden();
-            });
-          }
-        } else {
-          weatherApplication.render();
-        }  
-      });
+              html.find('#swr-fsc-compact-open').on('click',() => {
+                weatherApplication.toggleAttachModeHidden();
+              });
+            }
+          } else {
+            weatherApplication.render();
+          }  
+        });
+      }
     }
   });
 }

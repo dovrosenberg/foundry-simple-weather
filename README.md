@@ -5,6 +5,10 @@ Dynamic weather generation, by season and biome, including automatically activat
 
 I built this as a way to learn Foundry better, but I plan to maintain it for now and am happy to consider [feature requests](https://github.com/dovrosenberg/foundry-simple-weather/issues/new/choose)
 
+## Note on v13 compatibility
+
+I will be definitely supporting v13 in this package, and much of the work is done.  There's not a whole lot else I can do until Simple Calendar provides an update, though, short of breaking the connection.  Please encourage them to do so.  If you're using this module without Simple Calendar - open an issue and I'll see about doing some sort of interim, SC-free release.   
+
 ## Features
 
 - Intuitive UI to generate weather  
@@ -55,9 +59,16 @@ When using Simple Calendar, you can choose "Sync with Simple Calendar" and the s
 In some cases, you may need to override Simple Calendar's season. In particular, if you change hemispheres - because what Simple Calendar thinks is summer (ex. July) may actually be cold temperatures (ex. if in South America), so you'll want to manually override it.  "Winter" is always cold in Simple Weather.  In that case, simply pick the season you want in the drop down.  It will remain in the manual setting until you set it back to "Sync".
 
 ### Manual weather
-Sometimes you might want to specify the exact weather that you need, rather than having it randomly generated (for example when approaching the lair of a frost witch).  To do this, open the manual toolbar and check "Pause updates" (which will collapse the season and biome toolbars for simplicity).  Note that pausing isn't technically required, but if you don't then if you hit "regenerate" or advance the date, the weather will go back to the normal weather pattern.  You can then choose the weather desired from the dropdown and enter a temperature before hitting the submit button.  This will then cause the weather to appear in the chat, player dialogs, and weather effects just as if the system generated it (as determined by your settings).  
+Sometimes you might want to specify the exact weather that you need, rather than having it randomly generated.  There are two typical use cases here:
 
-Unchecking "Pause updates" won't immediately trigger a regeneration of weather, but if you want one without advancing the date, just then hit the "regenerate" button.
+1. A special weather "event" - for example when approaching the lair of a frost witch.  
+1. You just want to nudge the weather a bit.
+
+To do this, open the manual toolbar and check "Pause updates" (which will collapse the season and biome toolbars for simplicity).  Note that pausing isn't technically required, but if you don't then if you hit "regenerate" or advance the date, the weather will go back to the normal weather pattern.  You can then choose the weather desired from the dropdown and enter a temperature before hitting the submit button.  This will then cause the weather to appear in the chat, player dialogs, and weather effects just as if the system generated it (as determined by your settings).  
+
+The options in the drop-down that are colored red are ones that don't "naturally" occur in the current season/climate/humidity.  This matters because picking an "unnatural" weather will not generate new forecasts.  If you pick a natural one, though, future weather will be generated that flows more reasonably from it.  This does not apply to temperature - if you pick a natural weather but a funky temperature, the next weather generated will go back to a more normal temperature range.
+
+"Pause updates" - this prevents any further generation of weather (ex. when advancing the date).  Helpful if you want to stay in that frost witch lair for several days without some chats going out about sunny skies or whatever each morning.  Unchecking "Pause updates" won't immediately trigger a regeneration of weather, but if you want one without advancing the date, just then hit the "regenerate" button or the manual regenerate button as desired.
 
 ### Weather Effects 
 The GM can activate weather effects in the module settings.  This includes support for the scene weather in the Foundry core, as well as FX Master.  
@@ -117,6 +128,8 @@ Then refresh (F5).  That should make the window reappear.  If that doesn't work 
 ### Simple Calendar attachment (compact mode)
 The attachment to the calendar when the calendar is in compact mode is highly dependent on the Simple Calendar version.  Check the ([change log](https://github.com/dovrosenberg/foundry-simple-weather/blob/master/CHANGELOG.md)) and make sure that the version of Simple Calendar you are using matches what's listed for your version of Simple Weather.
 
+### Missing weather button (when attached to non-compact Simple Calendar)
+Players can now see the dialog properly when in non-attached mode or when SimpleCalendar is in compact mode.  But when attached to SimpleCalendar in its full mode, non-GM players will not see the button to open the weather panel when first starting the game (or reloading browser).  The workaround is to double click the SimpleCalendar header bar to enter compact mode and then double click it again to go back to normal.  The button should then appear properly.
 
 ### Missing box (when attached to non-compact Simple Calendar)
 Sometimes when you have another Simple Calendar side tab open and you try to switch to the weather tab, it will close the other tab but not show the weather.  The workaround is just to hit the weather button again.
