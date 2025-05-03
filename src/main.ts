@@ -253,75 +253,77 @@ function checkDependencies(): void {
   }
 }
 
-Hooks.once(SimpleCalendar.Hooks.Init, async (): Promise<void> => {
-  // it's possible this gets called but the version # is too low - just ignore in that case
-  if (simpleCalendarInstalled) {
-    weatherApplication.simpleCalendarInstalled();
+if (SimpleCalendar?.Hooks?.init) {
+  Hooks.once(SimpleCalendar.Hooks.Init, async (): Promise<void> => {
+    // it's possible this gets called but the version # is too low - just ignore in that case
+    if (simpleCalendarInstalled) {
+      weatherApplication.simpleCalendarInstalled();
+      
+      // set the date and time
+      if (ModuleSettings.get(ModuleSettingKeys.dialogDisplay) || isClientGM()) {
+        // tell the application we're using the calendar
+        weatherApplication.activateCalendar();
+
+        weatherApplication.updateDateTime(SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp()));   // this is really for the very 1st load; after that this date should match what was saved in settings
+      }
+
+      // modify the drop-downs
+      allowSeasonSync();
+
+      // create the sound playlist
+      await initSounds();
+
+        // check the setting to see if we should be in sync mode (because if we did initial render before getting here, 
+      //    it will have cleared it)
+      weatherApplication.ready();
+
+      // add the datetime change hook - we don't use SimpleCalendar.Hooks.DateTimeChange 
+      //    because it doesn't call the hook on player clients
+      Hooks.on('updateWorldTime', (timestamp) => {
+        weatherApplication.updateDateTime(SimpleCalendar.api.timestampToDate(timestamp));
+      });
+    }
     
-    // set the date and time
-    if (ModuleSettings.get(ModuleSettingKeys.dialogDisplay) || isClientGM()) {
-      // tell the application we're using the calendar
-      weatherApplication.activateCalendar();
+    // check the setting to see if we want to dock
+    if (weatherApplication.attachedMode) {
+      if (isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)) {
+        // can set this either way, but it does nothing when not in compact mode (but we only need to set it once)
+        SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", false, () => weatherApplication.toggleAttachModeHidden());
+      }
 
-      weatherApplication.updateDateTime(SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp()));   // this is really for the very 1st load; after that this date should match what was saved in settings
-    }
+      // we also need to watch for when the calendar is rendered because in compact mode we
+      //    have to inject the button 
+      Hooks.on('renderMainApp', (_application: Application, html: JQuery<HTMLElement>) => {
+        // if SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER div exists then it's in compact mode
+        // in compact mode, there's no api to add a button, so we monkey patch one in
+        const compactMode = html.find(`.${SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER}`).length>0;
+        if (compactMode) {
+          weatherApplication.render();
 
-    // modify the drop-downs
-    allowSeasonSync();
-
-    // create the sound playlist
-    await initSounds();
-
-      // check the setting to see if we should be in sync mode (because if we did initial render before getting here, 
-    //    it will have cleared it)
-    weatherApplication.ready();
-
-    // add the datetime change hook - we don't use SimpleCalendar.Hooks.DateTimeChange 
-    //    because it doesn't call the hook on player clients
-    Hooks.on('updateWorldTime', (timestamp) => {
-      weatherApplication.updateDateTime(SimpleCalendar.api.timestampToDate(timestamp));
-    });
-  }
-  
-  // check the setting to see if we want to dock
-  if (weatherApplication.attachedMode) {
-    if (isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)) {
-      // can set this either way, but it does nothing when not in compact mode (but we only need to set it once)
-      SimpleCalendar.api.addSidebarButton("Simple Weather", "fa-cloud-sun", "", false, () => weatherApplication.toggleAttachModeHidden());
-    }
-
-    // we also need to watch for when the calendar is rendered because in compact mode we
-    //    have to inject the button 
-    Hooks.on('renderMainApp', (_application: Application, html: JQuery<HTMLElement>) => {
-      // if SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER div exists then it's in compact mode
-      // in compact mode, there's no api to add a button, so we monkey patch one in
-      const compactMode = html.find(`.${SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER}`).length>0;
-      if (compactMode) {
-        weatherApplication.render();
-
-        // if it's already there, no need to do anything (it doesn't change)
-        if (html.find('#swr-fsc-compact-open').length === 0) {
-          const newButton = `
-          <div id="swr-fsc-compact-open" style="margin-left: 8px; cursor: pointer; ">
-            <div data-tooltip="Simple Weather" style="color:var(--compact-header-control-grey);">    
-              <span class="fa-solid fa-cloud-sun"></span>
+          // if it's already there, no need to do anything (it doesn't change)
+          if (html.find('#swr-fsc-compact-open').length === 0) {
+            const newButton = `
+            <div id="swr-fsc-compact-open" style="margin-left: 8px; cursor: pointer; ">
+              <div data-tooltip="Simple Weather" style="color:var(--compact-header-control-grey);">    
+                <span class="fa-solid fa-cloud-sun"></span>
+              </div>
             </div>
-          </div>
-          `;
+            `;
 
-          // add the button   
-          // note: how to find the new class when new SC release comes out?
-          //   it's the div that wraps the small buttons in the top left in compact mode
-          html.find(`.${SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER}`).append(newButton);
+            // add the button   
+            // note: how to find the new class when new SC release comes out?
+            //   it's the div that wraps the small buttons in the top left in compact mode
+            html.find(`.${SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER}`).append(newButton);
 
-          html.find('#swr-fsc-compact-open').on('click',() => {
-            weatherApplication.toggleAttachModeHidden();
-          });
-        }
-      } else {
-        weatherApplication.render();
-      }  
-    });
-  }
-});
+            html.find('#swr-fsc-compact-open').on('click',() => {
+              weatherApplication.toggleAttachModeHidden();
+            });
+          }
+        } else {
+          weatherApplication.render();
+        }  
+      });
+    }
+  });
+}
 
