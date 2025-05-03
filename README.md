@@ -1,4 +1,4 @@
-[![Supported Foundry Versions](https://img.shields.io/endpoint?url=https%3A%2F%2Ffoundryshields.com%2Fversion%3Fstyle%3Dflat%26url%3Dhttps%3A%2F%2Fgithub.com%2Fdovrosenberg%2Ffoundry-simple-weather%2Fraw%2Fmaster%2Fstatic%2Fmodule.json))](https://github.com/dovrosenberg/foundry-simple-weather)
+[![Supported Foundry Versions](https://img.shields.io/endpoint?url=https%3A%2F%2Ffoundryshields.com%2Fversion%3Fstyle%3Dflat%26url%3Dhttps%3A%2F%2Fgithub.com%2Fdovrosenberg%2Ffoundry-simple-weather%2Fraw%2Fmaster%2Fstatic%2Fmodule.json)](https://github.com/dovrosenberg/foundry-simple-weather)
 
 *(Also versions 10-12.331 in older versions of the module)*
 
