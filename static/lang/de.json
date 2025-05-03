@@ -103,6 +103,7 @@
       "manualPauseHint": " Auswählen, wenn die automatische Wetterauswahl verhindert werden soll (nützlich, wenn es manuell eingestellt wird)",
       "manualWeatherTemperature": "Trage Temperatur ein (kann leicht abweichen)",
       "manualWeatherSubmit": "Bestätige Wetter und Temperatur",
+      "manualWeatherDisabled": "Gib eine Temperatur ein, bevor du das Wetter festlegst",
       "forecast": "Wettervorhersage",
       "overwriteDialogTitle": "Vorhandene Vorhersagen überschreiben?",
       "overwriteDialogContent": "Diese Wettergenerierung wird eine oder mehrere vorhandene Vorhersagen überschreiben. Sind Sie sicher? Wenn Sie 'Nein' wählen, werden nur Tage ohne vorhandene Vorhersagen generiert."

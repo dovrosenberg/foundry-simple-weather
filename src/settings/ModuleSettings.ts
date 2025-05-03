@@ -198,10 +198,10 @@ export class ModuleSettings {
       hint: 'settings.useFXHelp',
       requiresReload: true,   
       type: String,
-      choices: {  
-        'off': 'swr.settings.options.useFX.choices.off', // localized by Foundry
-        'core': 'swr.settings.options.useFX.choices.core', // localized by Foundry
-        'fxmaster': 'swr.settings.options.useFX.choices.fxmaster', // localized by Foundry
+      choices: {  // these get localized by Foundry
+        'off': 'swr.settings.options.useFX.choices.off',
+        'core': 'swr.settings.options.useFX.choices.core',
+        'fxmaster': 'swr.settings.options.useFX.choices.fxmaster',
       },
       default: 'off',
     },

@@ -35,11 +35,12 @@
     border-radius: 3px;
     border: 1px solid rgb(181, 179, 164);
     font-size: 1rem;
-    padding: 2px;   
+    padding: 3px;   
     margin: 1px;
-    min-width: 1.1rem;
-    min-height: 1.1rem;
-    width: auto;
+    min-width: unset;
+    min-height: unset;
+    width: unset;
+    height: unset;
     box-sizing: content-box;  // make sure the content is at least 1.1rem square
   }
 
@@ -247,9 +248,23 @@
 
 #swr-manual-submit {
   display: flex;
-  height: 20px;
+  height: unset;
+  width: unset;
+  min-height: unset;
+  min-width: unset;
   justify-content: center;
   align-items: center;  
+  background-color: #A9A9A9;
+  padding: 3px 3px;
+
+  &:hover {
+    background-color: var(--button-hover-background-color);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
 // seasons

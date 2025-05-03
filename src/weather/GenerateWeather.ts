@@ -7,6 +7,7 @@ import { WeatherData } from './WeatherData';
 import { log } from '@/utils/log';
 import { cleanDate } from '@/utils/calendar';
 import { Forecast } from './Forecast';
+import { simpleCalendarInstalled } from '@/main';
 
 // structured it as a class to make it mockable for testing
 export class GenerateWeather {
@@ -16,7 +17,7 @@ export class GenerateWeather {
 
   // forForecast indicates it's being generated as part of a re-forecast, so don't add more forecasts
   // forceRegenerate means to regenerate even if we have a valid forecast
-  static generateWeather = async function(climate: Climate, humidity: Humidity, season: Season, today: SimpleCalendar.DateData | null, yesterday: WeatherData | null, forForecast = false, forceRegenerate = false): WeatherData {
+  static generateWeather = async function(climate: Climate, humidity: Humidity, season: Season, today: SimpleCalendar.DateData | null, yesterday: WeatherData | null, forForecast = false, forceRegenerate = false): Promise<WeatherData> {
     const weatherData = new WeatherData(today, season, humidity, climate, null, null);
 
     // do the generation
@@ -86,7 +87,7 @@ export class GenerateWeather {
   };
 
   // used to create manual weather; returns null if data is invalid (weatherIndex in particular)
-  static createManual = function(today: SimpleCalendar.DateData, season: Season, climate: Climate, humidity: Humidity, temperature: number, weatherIndex: number): WeatherData | null {
+  static createManual = function(today: SimpleCalendar.DateData | null, season: Season, climate: Climate, humidity: Humidity, temperature: number, weatherIndex: number): WeatherData | null {
     const options = getManualOptionsBySeason(season, climate, humidity);   // get the details behind the option
 
     if (!options || !options[weatherIndex])
@@ -161,6 +162,10 @@ export class GenerateWeather {
   static generateForecast = async function(todayTimestamp: number, todayWeather: WeatherData, extendOnly: boolean): Promise<Record<string, Forecast>> {
     const numDays = 7;
     const currentForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
+
+    // if there's no simple calendar, don't do anything
+    if (!simpleCalendarInstalled)
+      return {};
 
     // if we don't have a climate or season, don't change the forecasts
     if (todayWeather.climate==null || todayWeather.humidity==null || todayWeather.season==null)

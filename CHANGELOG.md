@@ -1,5 +1,17 @@
 # Change Log
 
+## v2.0.0 - Support for Foundry v13 (Caution! Read notes)
+#### **No Support for Simple Calendar !??!**
+
+![](https://img.shields.io/badge/release%20date-May%203%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v2.0.0/module.zip)
+
+Foundry v13 had breaking changes that impacted Simple Weather.  This version works in v13, prior ones do not.
+
+**Unfortunately, Simple Calendar doesn't currently support Foundry v13, so be forewarned that while Simple Weather will run in standalone mode, that's all you're going to get.  If you were using Simple Calendar before, this may result in some strange behavior either when you first generate weather and/or when Simple Calendar comes back. I'm pretty sure that when Simple Calendar upgrades, this version will still work correctly with it, but there's no way to test it until then.  There's an [open issue](https://github.com/vigoren/foundryvtt-simple-calendar/issues/669) on Simple Calendar requesting support - please upvote.**
+
+FXMaster is also having issues at the moment (ex. you can't manually use it), but Simple Weather is still able to use it successfully, as far as I can tell.
+
 ## v1.20.2 - Player dialog now working (better)
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-April%2028%2C%202025-blue)
@@ -73,7 +85,7 @@ Advancing the calendar time within the same day no longer breaks the forecast.
 ![](https://img.shields.io/badge/release%20date-February%208%2C%202025-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.17.3/module.zip)
 
-I guess no one's been using FXMaster effects? Because they weren't working at all for a few releaes now.  But in any
+I guess no one's been using FXMaster effects? Because they weren't working at all for a few releases now.  But in any
 case they're fixed.  You should now see FXMaster effects.  Plus when you are using scene-specific weather fx, they 
 now save their state by scene vs. always starting off.
 
@@ -145,7 +157,7 @@ Workaround to FXMaster issue (https://github.com/ghost-fvtt/fxmaster/issues/761)
 being turned on/off.  They should now update immediately when changing scenes, applying new weather, or toggling FX on/off.  
 Thanks for your patience - I know this issue has been painful to deal with.
 
-## v1.14.1 - Updated Gerland and French
+## v1.14.1 - Updated German and French
 #### Support for Simple Calendar v2.4.18
 ![](https://img.shields.io/badge/release%20date-August%2026%2C%202024-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.14.1/module.zip)
@@ -217,7 +229,7 @@ Fixed an issue where weather FX weren't always turning off when switching to a c
 
 There is now the ability to manually add any additional text you want to be displayed to chat for each weather condition (ex. system-specific penalties for movement during a blizzard).
 
-This is the first pass at this functionality.  For now, these custom messages are unreliable when manually specifying weather.  I also plan to expand it to enable you to save/load values using external files, in order to create different sets for differen systems that can easily be swapped in and out.  
+This is the first pass at this functionality.  For now, these custom messages are unreliable when manually specifying weather.  I also plan to expand it to enable you to save/load values using external files, in order to create different sets for different systems that can easily be swapped in and out.  
 
 ## v1.11.3 - Updated French
 #### Support for Simple Calendar v2.4.13
@@ -245,7 +257,7 @@ Updates to German localization to fully support v1.11.  Thanks, SesuUisu.
 ![](https://img.shields.io/badge/release%20date-May%2011%2C%202024-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v1.11.0/module.zip)
 
-Can now store daily weather in Simple Calendar notes (to see history and use same weather if you revist a date).  See readme/package description for more details.
+Can now store daily weather in Simple Calendar notes (to see history and use same weather if you revisit a date).  See readme/package description for more details.
 
 ## v1.10.2 - Bug fix - consecutive, duplicate weather using Core FX no longer turns off the effect
 #### Support for Simple Calendar v2.4.13
@@ -494,7 +506,7 @@ The initial public release.
 - Generate weather for every new day automatically
 - Randomized weather for every season across 3 climates (hot, temperate, cold) and 3 humidities (barren, modest, verdant)
 - Weather progresses naturally from day to day
-- Supports Farenheit and Celsius temperatures
+- Supports Fahrenheit and Celsius temperatures
 
 As the GM you will also be able to change the current day in your game and add notes to days. Notes can be events or reminders and can be visible to players or just the GM.
 

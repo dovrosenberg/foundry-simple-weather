@@ -9,8 +9,8 @@ import { SelectOption, seasonSelections, biomeSelections, Climate, climateSelect
 import { weatherDescriptions } from '@/weather/weatherMap';
 import { getManualOptionsBySeason, ManualOption, } from '@/weather/manualWeather';
 import { ModuleSettingKeys } from '@/settings/ModuleSettings';
-import { isClientGM } from '@/utils/game';
-import { GenerateWeather } from '@/weather/weatherGeneration';
+import { isClientGM, localize } from '@/utils/game';
+import { GenerateWeather } from '@/weather/GenerateWeather';
 import { ModuleSettings } from '@/settings/ModuleSettings';
 import { weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
@@ -581,6 +581,12 @@ _______________________________________
   public async setWeather(): Promise<void> {
     const weatherData = ModuleSettings.get(ModuleSettingKeys.lastWeatherData);
 
+    // if we have prior date info but Simple Calendar is no longer installed, we need to clean that up 
+    if (weatherData?.date && !('SimpleCalendar' in globalThis)) {
+      weatherData.date = null;
+      await ModuleSettings.set(ModuleSettingKeys.lastWeatherData, weatherData);
+    }
+
     if (weatherData) {
       log(false, 'Using saved weather data');
       log(false, JSON.stringify(weatherData));
@@ -632,7 +638,7 @@ _______________________________________
    * @param temperature The temperature to use.
    * @param weatherIndex The index into the set of manual options.
    */
-  private async setManualWeather(currentDate: SimpleCalendar.DateData, temperature: number, weatherIndex: number): Promise<void> {
+  private async setManualWeather(currentDate: SimpleCalendar.DateData | null, temperature: number, weatherIndex: number): Promise<void> {
     const season = this.getSeason();
 
     if (season==null)
@@ -645,7 +651,8 @@ _______________________________________
       // see if we need to generate forecasts
       const options = getManualOptionsBySeason(season, this._currentClimate, this._currentHumidity);   
 
-      if (options && options[weatherIndex] && options[weatherIndex].valid) {
+      // can't forecast if we don't have a date or we're not doing forecasts, or options aren't valid
+      if (currentDate && ModuleSettings.get(ModuleSettingKeys.useForecasts) && options && options[weatherIndex] && options[weatherIndex].valid) {
         await GenerateWeather.generateForecast(cleanDate(currentDate), this._currentWeather, true);
       }
 
@@ -865,7 +872,7 @@ _______________________________________
   private onBiomeSelectChange = (event): void => {
     const target = event.originalEvent?.target as HTMLSelectElement;
 
-    // reset the climate and humidity selects (unless we pickee the blank)
+    // reset the climate and humidity selects (unless we picked the blank)
     if (!target.value)
       return;
 
@@ -958,6 +965,7 @@ _______________________________________
     const btn = document.getElementById('swr-manual-submit') as HTMLButtonElement;
 
     btn.disabled = !this.isTempValid();
+    btn.title = btn.disabled ? localize('labels.manualWeatherDisabled') : localize('labels.manualWeatherSubmit');
   }
 
   private isTempValid(): boolean {
@@ -969,9 +977,6 @@ _______________________________________
   }
 
   private onSubmitWeatherClick = (): void => {
-    if (!this._currentWeather?.date)
-      throw new Error('Trying to submit manual weather without current date');
-
     // confirm temp is valid, though the input filter above should prevent this
     const input = document.getElementById('swr-manual-temperature') as HTMLInputElement;
     let temp = Number(input?.value);
@@ -986,7 +991,7 @@ _______________________________________
     if (ModuleSettings.get(ModuleSettingKeys.useCelsius))
       temp = Math.round((temp*9/5)+32);
 
-    void this.setManualWeather(this._currentWeather?.date as SimpleCalendar.DateData, temp, Number(select.value));
+    void this.setManualWeather(this._currentWeather.date, temp, Number(select.value));
   }
 
   // returns the currently selected manual option in the dropdown (not necessarily what

@@ -22,7 +22,7 @@ I will be definitely supporting v13 in this package, and much of the work is don
 - Ability to manually pick weather for special events
 - Ability to store weather history to calendar day, enabling replaying weather history
 - Ability to add custom text (ex. movement penalties during snowstorms) to each weather condition
-- Supports Farenheit and Celsius temperatures
+- Supports Fahrenheit and Celsius temperatures
 - Helpful keybinding options
 
 ### And if using Simple Calendar:
@@ -133,6 +133,9 @@ Players can now see the dialog properly when in non-attached mode or when Simple
 
 ### Missing box (when attached to non-compact Simple Calendar)
 Sometimes when you have another Simple Calendar side tab open and you try to switch to the weather tab, it will close the other tab but not show the weather.  The workaround is just to hit the weather button again.
+
+### Playlist volumes a little off
+The volume on the sounds seems to be off by 1-2 points vs. where the slider in the settings is set.  It's generally not noticeable in the volume, and you can always adjust the slider further, but it's definitely strange.
 
 ## Frequently asked questions
 
