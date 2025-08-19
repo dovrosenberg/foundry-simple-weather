@@ -1,7 +1,5 @@
 [![Supported Foundry Versions](https://img.shields.io/endpoint?url=https%3A%2F%2Ffoundryshields.com%2Fversion%3Fstyle%3Dflat%26url%3Dhttps%3A%2F%2Fgithub.com%2Fdovrosenberg%2Ffoundry-simple-weather%2Fraw%2Fmaster%2Fstatic%2Fmodule.json)](https://github.com/dovrosenberg/foundry-simple-weather)
 
-*(Also versions 10-12.331 in older versions of the module)*
-
 Dynamic weather generation, by season and biome, including automatically activating weather effects.  If [Simple Calendar](https://foundryvtt.com/packages/foundryvtt-simple-calendar) (see changelog for which versions of SC are supported by each version of Simple Weather) is present, Simple Weather will integrate to it and display the date/time and automatically generate new weather when the date changes.  Without Simple Calendar, no date is shown and weather regeneration can be manually triggered. (NOTE: THIS MODULE IS NOT AFFILIATED WITH THE CREATORS OF SIMPLE CALENDAR)
 
 
