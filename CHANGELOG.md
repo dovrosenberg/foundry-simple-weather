@@ -1,5 +1,13 @@
 # Change Log
 
+## v2.0.2 - [___________________]
+#### **No Support for Simple Calendar !??!**
+
+![](https://img.shields.io/badge/release%20date-May%203%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v2.0.0/module.zip)
+
+- Fixed duplicate button showing on Simple Calendar
+
 ## v2.0.1 - Support for Foundry v13 (Caution! Read notes)
 #### **No Support for Simple Calendar !??!**
 
