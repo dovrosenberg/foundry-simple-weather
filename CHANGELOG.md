@@ -1,18 +1,18 @@
 # Change Log
 
-## v2.0.2 - [___________________]
+## v2.0.2 - Removed extra button
 #### **No Support for Simple Calendar !??!**
 
-![](https://img.shields.io/badge/release%20date-May%203%2C%202025-blue)
-![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v2.0.0/module.zip)
+![](https://img.shields.io/badge/release%20date-September%201%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v2.0.2/module.zip)
 
-- Fixed duplicate button showing on Simple Calendar
+- Fixed duplicate button showing on Simple Calendar.  Note: There's still on actual support for Simple Calendar because it doesn't officially work in Foundry v13 yet.  But some people have made workarounds, so this fixes this one bug.
 
 ## v2.0.1 - Support for Foundry v13 (Caution! Read notes)
 #### **No Support for Simple Calendar !??!**
 
 ![](https://img.shields.io/badge/release%20date-May%203%2C%202025-blue)
-![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v2.0.0/module.zip)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v2.0.1/module.zip)
 
 Foundry v13 had breaking changes that impacted Simple Weather.  This version works in v13, prior ones do not.
 
