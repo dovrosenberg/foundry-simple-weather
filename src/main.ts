@@ -20,8 +20,8 @@ export let simpleCalendarInstalled = false;
 
 // look for #swr-fsc-compact-open; what is the class on the parent div that wraps it?
 const SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER = 'fsc-pj';  // no dot in the front
-const SC_MINIMUM_VERSION = '2.4.0';
-const SC_PREFERRED_VERSION = '2.4.18';
+const SC_MINIMUM_VERSION = '2.4.18.5';
+const SC_PREFERRED_VERSION = '2.4.18.5';
 
 // also see instructions in WeatherApplication.ts for adjusting constants
 
