@@ -254,29 +254,35 @@ function checkDependencies(): void {
   }
 }
 
-if ('SimpleCalendar' in globalThis) {  // make sure it's present at
-  Hooks.once(SimpleCalendar.Hooks.Init, async (): Promise<void> => {
-    // it's possible this gets called but the version # is too low - just ignore in that case
-    if (simpleCalendarInstalled) {
-      weatherApplication.simpleCalendarInstalled();
-      
-      // set the date and time
-      if (ModuleSettings.get(ModuleSettingKeys.dialogDisplay) || isClientGM()) {
-        // tell the application we're using the calendar
-        weatherApplication.activateCalendar();
+// Register Simple Calendar integration in setup hook instead of parse-time
+// This allows compatibility with both the original Simple Calendar module and
+// compatibility bridge modules that may register the SimpleCalendar global later.
+// Using 'setup' ensures all init hooks have completed, so the bridge's fake module
+// registration and parse-time global exposure will be available regardless of load order.
+Hooks.once('setup', (): void => {
+  if ('SimpleCalendar' in globalThis) {
+    Hooks.once(SimpleCalendar.Hooks.Init, async (): Promise<void> => {
+      // it's possible this gets called but the version # is too low - just ignore in that case
+      if (simpleCalendarInstalled) {
+        weatherApplication.simpleCalendarInstalled();
 
-        weatherApplication.updateDateTime(SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp()));   // this is really for the very 1st load; after that this date should match what was saved in settings
-      }
+        // set the date and time
+        if (ModuleSettings.get(ModuleSettingKeys.dialogDisplay) || isClientGM()) {
+          // tell the application we're using the calendar
+          weatherApplication.activateCalendar();
 
-      // modify the drop-downs
-      allowSeasonSync();
+          weatherApplication.updateDateTime(SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp()));   // this is really for the very 1st load; after that this date should match what was saved in settings
+        }
 
-      // create the sound playlist
-      await initSounds();
+        // modify the drop-downs
+        allowSeasonSync();
 
-        // check the setting to see if we should be in sync mode (because if we did initial render before getting here, 
-      //    it will have cleared it)
-      weatherApplication.ready();
+        // create the sound playlist
+        await initSounds();
+
+          // check the setting to see if we should be in sync mode (because if we did initial render before getting here,
+        //    it will have cleared it)
+        weatherApplication.ready();
 
       // add the datetime change hook - we don't use SimpleCalendar.Hooks.DateTimeChange 
       //    because it doesn't call the hook on player clients
@@ -326,5 +332,6 @@ if ('SimpleCalendar' in globalThis) {  // make sure it's present at
       }
     }
   });
-}
+  }
+});
 
