@@ -1,12 +1,18 @@
 # Change Log
 
-## v2.0.2 - Removed extra button
-#### **No Support for Simple Calendar !??!**
+## v2.1.0 - Temporary support for Simple Calendar fork
+#### **Support for temporary fork of Simple Calendar - v2.4.18.5 **
 
-![](https://img.shields.io/badge/release%20date-September%201%2C%202025-blue)
-![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v2.0.2/module.zip)
+![](https://img.shields.io/badge/release%20date-May%203%2C%202025-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v2.0.3/module.zip)
 
-- Fixed duplicate button showing on Simple Calendar.  Note: There's still on actual support for Simple Calendar because it doesn't officially work in Foundry v13 yet.  But some people have made workarounds, so this fixes this one bug.
+- While waiting for official Simple Calendar package to be updated to v13, *CarlosFdez* has created a fork that is compatible with v13.
+You can now use Simple Weather with this fork.  For those not actively following the conversation on the Simple Calendar github page, 
+you can find the latest version at https://github.com/CarlosFdez/foundryvtt-simple-calendar/releases.  Use the link to the most recent `module.json`
+as the URL to install from in the Foundry VTT module manager.
+- Fixed potential race condition that caused Simple Calendar (or some substitutes) not to be detected at times, even when installed.  
+- Fixed duplicate button showing on Simple Calendar
+
 
 ## v2.0.1 - Support for Foundry v13 (Caution! Read notes)
 #### **No Support for Simple Calendar !??!**
