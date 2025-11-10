@@ -3,7 +3,7 @@
 ## v2.1.0 - Temporary support for Simple Calendar fork
 #### **Support for temporary fork of Simple Calendar - v2.4.18.5 **
 
-![](https://img.shields.io/badge/release%20date-May%203%2C%202025-blue)
+![](https://img.shields.io/badge/release%20date-November%206%2C%202025-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v2.0.3/module.zip)
 
 - While waiting for official Simple Calendar package to be updated to v13, *CarlosFdez* has created a fork that is compatible with v13.
