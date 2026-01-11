@@ -512,6 +512,9 @@ _______________________________________
 
     if (this.hasDateChanged(currentDate)) {
       if (isClientGM()) {
+        // Check if this is a single day advancement
+        const isSingleDayAdvance = this.isSingleDayAdvance(currentDate);
+        
         if (ModuleSettings.get(ModuleSettingKeys.storeInSCNotes)) {
           // if we're using notes from SC (and have a valid note) pull that weather
           const notes = await getCalendarAdapter()?.getNotesForDay(currentDate.year, currentDate.month, currentDate.day) || [];
@@ -548,13 +551,13 @@ _______________________________________
           }
 
           if (!foundWeatherNote) {
-            await this.generateWeather(currentDate);
+            await this.generateWeather(currentDate, isSingleDayAdvance);
           }      
         } else {
           // otherwise generate new weather
           log(false, 'Generate new weather');
           
-          await this.generateWeather(currentDate);
+          await this.generateWeather(currentDate, isSingleDayAdvance);
         }
       }
     } else {
@@ -608,8 +611,9 @@ _______________________________________
    * If the module is paused, it does nothing except update the date.  Otherwise, it generates
    * new weather based on the current settings and then activates that weather.
    * @param currentDate the date for which to generate weather, or null to use today's date
+   * @param isSingleDayAdvance whether the date advanced by exactly one day
    */
-  private async generateWeather(currentDate: SimpleCalendarDate | null): Promise<void> {
+  private async generateWeather(currentDate: SimpleCalendarDate | null, isSingleDayAdvance: boolean = false): Promise<void> {
     // if we're paused, do nothing (except update the date)
     if (this._manualPause) {
       this._currentWeather.date = currentDate;
@@ -621,7 +625,10 @@ _______________________________________
         this._currentHumidity ?? Humidity.Modest, 
         season ?? Season.Spring, 
         currentDate,
-        this._currentWeather || null
+        this._currentWeather || null,
+        false,
+        false,
+        isSingleDayAdvance
       );
 
       await this.activateWeather(this._currentWeather);
@@ -745,6 +752,31 @@ _______________________________________
     await (newNote as any)?.setFlag(moduleJson.id, SC_NOTE_WEATHER_FLAG_NAME, weatherData);
   }
 
+  /**
+   * Checks if the date has advanced by exactly one day from the previous date
+   * @param currentDate The current date
+   * @returns true if the date is exactly one day after the previous date
+   */
+  private isSingleDayAdvance(currentDate: SimpleCalendarDate): boolean {
+    const previous = this._currentWeather?.date;
+    
+    if (!previous || !this.isDateTimeValid(currentDate) || !this.isDateTimeValid(previous))
+      return false;
+    
+    const calendarAdapter = getCalendarAdapter();
+    if (!calendarAdapter) return false;
+    
+    // Convert both dates to timestamps
+    const currentTimestamp = cleanDate(currentDate);
+    const previousTimestamp = cleanDate(previous);
+    
+    // Calculate what tomorrow would be from the previous date
+    const expectedTimestamp = calendarAdapter.timestampPlusInterval(previousTimestamp, { day: 1 });
+    
+    // If the current date is exactly one day (or less... just in case we allow partial days in the future)
+    return currentTimestamp <= expectedTimestamp;
+  }
+
   // has the date part changed
   private hasDateChanged(currentDate: SimpleCalendarDate): boolean {
     const previous = this._currentWeather?.date;
@@ -801,7 +833,7 @@ _______________________________________
 
   public async regenerateWeather() {
     if (isClientGM()) {
-      await this.generateWeather(this._currentWeather?.date || null);
+      await this.generateWeather(this._currentWeather?.date || null, false);
       ModuleSettings.set(ModuleSettingKeys.lastWeatherData, this._currentWeather);        
       await this.render();
     }

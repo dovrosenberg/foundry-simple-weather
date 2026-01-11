@@ -18,7 +18,8 @@ export class GenerateWeather {
 
   // forForecast indicates it's being generated as part of a re-forecast, so don't add more forecasts
   // forceRegenerate means to regenerate even if we have a valid forecast
-  static generateWeather = async function(climate: Climate, humidity: Humidity, season: Season, today: SimpleCalendarDate | null, yesterday: WeatherData | null, forForecast = false, forceRegenerate = false): Promise<WeatherData> {
+  // isSingleDayAdvance means the date advanced by exactly one day, so we should auto-extend forecasts
+  static generateWeather = async function(climate: Climate, humidity: Humidity, season: Season, today: SimpleCalendarDate | null, yesterday: WeatherData | null, forForecast = false, forceRegenerate = false, isSingleDayAdvance: boolean = false): Promise<WeatherData> {
     const weatherData = new WeatherData(today, season, humidity, climate, null, null);
 
     // do the generation
@@ -42,9 +43,8 @@ export class GenerateWeather {
         weatherData.hexFlowerCell = getDefaultStart(season);
       }
 
-      // we need to generate one more day on the end
-      if (!forForecast)
-        await GenerateWeather.generateForecast(cleanDate(today), weatherData, true);
+      // When using an existing forecast, we don't need to generate anything
+      // The forecast window will naturally shift when the next day advances
     } else {
       // random start if no valid prior day or the prior day" was manually set or we changed season
       if (!yesterday || yesterday.season !== season || yesterday.hexFlowerCell==null || yesterday.manualOnly) {
@@ -71,7 +71,9 @@ export class GenerateWeather {
 
       // generate an updated forecast
       if (!forForecast && ModuleSettings.get(ModuleSettingKeys.useForecasts) && today!==null) {
-        await GenerateWeather.generateForecast(cleanDate(today), weatherData, true);
+        // If this is a single day advance, use extendOnly mode to avoid prompting
+        const extendOnly = isSingleDayAdvance;
+        await GenerateWeather.generateForecast(cleanDate(today), weatherData, extendOnly);
       }
 
       log(false, 'New cell: ' + weatherData.hexFlowerCell + ' (' + weatherDescriptions[climate][humidity][weatherData.hexFlowerCell] + ')')
@@ -174,76 +176,78 @@ export class GenerateWeather {
 
     let yesterdayWeather = todayWeather;
 
-    // if there are any forecasts we're going to hit and we're in "extendOnly" mode, prompt to see if we should overwrite
+    // if there are any forecasts we're going to hit and we're in "extendOnly" mode, don't overwrite existing ones
     let shouldOverwrite = false;
-    let needPrompt = false;
+    let startDay = 1;
+    let daysToGenerate = [] as number[];
+    
     if (extendOnly) {
-      for (let day=1; day<=numDays; day++) {
-        const calendarAdapter = getCalendarAdapter();
-        if (calendarAdapter) {
+      // Check which days need to be generated
+      const calendarAdapter = getCalendarAdapter();
+      if (calendarAdapter) {
+        // First, check days 1-7 for gaps
+        for (let day=1; day<=numDays; day++) {
           const forecastTimeStamp = calendarAdapter.timestampPlusInterval(todayTimestamp, { day: day});
-
-          if (currentForecasts[forecastTimeStamp]) {
-            needPrompt = true;
-            break;
+          if (!currentForecasts[forecastTimeStamp]) {
+            daysToGenerate.push(day);
           }
         }
+        
+        // If all days 1-7 exist, we need to generate day 8
+        if (daysToGenerate.length === 0) {
+          startDay = 8;
+          // Find the next day that doesn't exist
+          while (currentForecasts[calendarAdapter.timestampPlusInterval(todayTimestamp, { day: startDay })]) {
+            startDay++;
+          }
+          daysToGenerate.push(startDay);
+        }
       }
+      // Never prompt when extending - just skip existing forecasts
+      shouldOverwrite = false;
     } else {
       shouldOverwrite = true;
-    }
-    if (needPrompt) {
-      shouldOverwrite = await Dialog.confirm({
-        title: localize('labels.overwriteDialogTitle'),  
-        content: localize('labels.overwriteDialogContent'),
-        rejectClose: false,
-        defaultYes: true,
-      }) ?? false;
+      daysToGenerate = Array.from({length: numDays}, (_, i) => i + 1);
     }
 
-    for (let day=1; day<=numDays; day++) {
+    for (const day of daysToGenerate) {
       const calendarAdapter = getCalendarAdapter();
       let forecastTimeStamp;
       if (calendarAdapter) {
         forecastTimeStamp = calendarAdapter.timestampPlusInterval(todayTimestamp, { day: day});
       }
 
-      // if there's already one, and we're just extending, prompt to see if we should overwrite
-
-      if (currentForecasts[forecastTimeStamp] && !shouldOverwrite) {
-        // don't overwrite - just use as is and get ready for the next day
-        const todayWeather = currentForecasts[forecastTimeStamp];
-        const calendarAdapter = getCalendarAdapter();
-        let todayDate;
-        if (calendarAdapter) {
-          todayDate = calendarAdapter.timestampToDate(forecastTimeStamp);
+      // Find yesterday's weather for this specific day
+      let yesterdayWeatherForDay = yesterdayWeather;
+      if (day > 1) {
+        const yesterdayTimeStamp = calendarAdapter.timestampPlusInterval(todayTimestamp, { day: day - 1});
+        if (currentForecasts[yesterdayTimeStamp]) {
+          const yesterdayForecast = currentForecasts[yesterdayTimeStamp];
+          const yesterdayDate = calendarAdapter.timestampToDate(yesterdayTimeStamp);
+          
+          if (WeatherData.validateWeatherParameters(yesterdayForecast.climate, yesterdayForecast.humidity, yesterdayForecast.hexFlowerCell)) {
+            yesterdayWeatherForDay = new WeatherData(
+              yesterdayDate,
+              yesterdayDate?.currentSeason?.numericRepresentation || null,
+              yesterdayForecast.humidity,
+              yesterdayForecast.climate,
+              yesterdayForecast.hexFlowerCell,
+              null
+            );
+          }
         }
+      }
 
-        if (!WeatherData.validateWeatherParameters(todayWeather.climate, todayWeather.humidity, todayWeather.hexFlowerCell))
-          throw new Error('Bad current forecast in generateForecast(): ' + forecastTimeStamp);
+      // create a new forecast
+      let newWeather;
+      if (calendarAdapter) {
+        newWeather = await GenerateWeather.generateWeather(todayWeather.climate, todayWeather.humidity, todayWeather.season, calendarAdapter.timestampToDate(forecastTimeStamp), yesterdayWeatherForDay, true, true, false);
+      }
 
-        yesterdayWeather = new WeatherData(
-          todayDate,
-          todayDate?.currentSeason?.numericRepresentation || null,
-          todayWeather.humidity, 
-          todayWeather.climate,
-          todayWeather.hexFlowerCell,
-          null
-        );
-      } else {
-        // create a new forecast
-        const calendarAdapter = getCalendarAdapter();
-        let newWeather;
-        if (calendarAdapter) {
-          newWeather = await GenerateWeather.generateWeather(todayWeather.climate, todayWeather.humidity, todayWeather.season, calendarAdapter.timestampToDate(forecastTimeStamp), yesterdayWeather, true, true);
-        }
-
-        if (newWeather && newWeather.climate!=null && newWeather.humidity!=null && newWeather.hexFlowerCell!=null) {
-          const forecast = new Forecast(forecastTimeStamp, newWeather.climate, newWeather.humidity, newWeather.hexFlowerCell);
-          currentForecasts[forecastTimeStamp] = forecast;
-        }
-
-        // save the weather to use for the next day's generation
+      if (newWeather && newWeather.climate!=null && newWeather.humidity!=null && newWeather.hexFlowerCell!=null) {
+        const forecast = new Forecast(forecastTimeStamp, newWeather.climate, newWeather.humidity, newWeather.hexFlowerCell);
+        currentForecasts[forecastTimeStamp] = forecast;
+        // Update yesterdayWeather for the next iteration
         yesterdayWeather = newWeather;
       }
     }
