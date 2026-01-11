@@ -31,7 +31,6 @@ export class SimpleCalendarAdapter implements ICalendarAdapter {
       day: date.day,
       hour: date.hour,
       minute: date.minute,
-      seconds: date.seconds,
       sunset: date.sunset,
       sunrise: date.sunrise,
       currentSeason: date.currentSeason,

@@ -4,7 +4,6 @@ export interface SimpleCalendarDate {
   day: number;
   hour?: number;
   minute?: number;
-  seconds?: number;
   sunset?: number;
   sunrise?: number;
   currentSeason?: {

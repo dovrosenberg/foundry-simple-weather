@@ -767,8 +767,7 @@ _______________________________________
   }
 
   private isDateTimeValid(date: SimpleCalendarDate): boolean {
-    if (date.seconds != null && date.minute != null && date.day != null &&
-        date.month != null && date.year != null) {
+    if (date.minute != null && date.day != null && date.month != null && date.year != null) {
       return true;
     }
 
