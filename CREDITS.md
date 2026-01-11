@@ -24,7 +24,9 @@ Would love to have help providing translations to other languages
 
 ### Simple Calendar
 
-Simple Weather optionally uses [Simple Calendar](https://github.com/vigoren/foundryvtt-simple-calendar) by [Vigoren](https://github.com/vigoren). 
+Simple Weather optionally uses [Simple Calendar](https://github.com/vigoren/foundryvtt-simple-calendar) by [Vigoren](https://github.com/vigoren). Or for v13 this fork (at least for now): https://github.com/CarlosFdez/foundryvtt-simple-calendar.
+
+It also has support for [Simple Calendar Reborn](https://github.com/Fireblight-Studios/foundryvtt-simple-calendar).
 
 ## Weather algorithm
 The weather algorithm was inspired by:

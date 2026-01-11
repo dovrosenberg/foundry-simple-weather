@@ -1,6 +1,7 @@
 import { ModuleSettingKeys, ModuleSettings } from '@/settings/ModuleSettings';
 import { Climate, HexFlowerCell, Humidity } from './climateData';
 import { weatherDescriptions, weatherSunniness, weatherTemperatures } from './weatherMap';
+import { getCalendarAdapter } from '@/calendar';
 
 // the types of "sunniness"
 export enum Sunniness {
@@ -38,7 +39,8 @@ export class Forecast {
   }
 
   get description(): string {
-    const dayOfWeek = SimpleCalendar.api.timestampToDate(this.timestamp)?.display.weekday;
+    const calendarAdapter = getCalendarAdapter();
+    const dayOfWeek = calendarAdapter?.timestampToDate(this.timestamp)?.display.weekday || '';
 
     return `${dayOfWeek} - ${weatherDescriptions[this.climate][this.humidity][this.hexFlowerCell]} (${this.temperature})`;
   }
