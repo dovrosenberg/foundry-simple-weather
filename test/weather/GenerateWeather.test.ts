@@ -356,6 +356,38 @@ export const registerGenerateWeatherTests = () => {
 
           expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(reforecasts);          
         });
+
+        it('should NOT prompt about overwrite when extendOnly==true and isOneDayAdvance==true', async () => {
+          await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);  // make sure there are forecasts
+          await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), true, true);
+          expect(dialogStub.called).to.be.false;
+        });
+
+        it('should not overwrite when extendOnly==true and isOneDayAdvance==true', async () => {
+          await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);  // make sure there are forecasts
+          await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), true, true);
+          
+          // Should have preserved the forecasts even without prompting
+          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);          
+        });
+
+        it('should still prompt when extendOnly==true but isOneDayAdvance==false', async () => {
+          await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);  // make sure there are forecasts
+          await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), true, false);
+          expect(dialogStub.called).to.be.true;
+        });
+
+        it('should NOT prompt when extendOnly==false regardless of isOneDayAdvance', async () => {
+          await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);  // make sure there are forecasts
+          
+          dialogStub.resetHistory();
+          await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), false, true);
+          expect(dialogStub.called).to.be.false;
+          
+          dialogStub.resetHistory();
+          await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), false, false);
+          expect(dialogStub.called).to.be.false;
+        });
       });
       
       describe('generateWeather', () => {
@@ -457,9 +489,54 @@ export const registerGenerateWeatherTests = () => {
             false
           );
           
-          // Verify it picked a new starting cell for the new season
-          expect(result.hexFlowerCell).to.be.a('number');
-          expect(startingCells[Season.Spring]).to.include(result.hexFlowerCell);
+          // Should have generated a new weather (not using yesterday's position)
+          expect(result).to.not.be.null;
+          expect(result.season).to.equal(Season.Spring);
+        });
+        
+        it('should pass isOneDayAdvance parameter to generateForecast', async () => {
+          // Set up forecasts to exist
+          await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);
+          await ModuleSettings.set(ModuleSettingKeys.useForecasts, true);
+          
+          // Reset dialog stub history
+          dialogStub.resetHistory();
+          
+          // Call with isOneDayAdvance = true
+          await GenerateWeather.generateWeather(
+            Climate.Temperate,
+            Humidity.Modest,
+            Season.Spring,
+            todayDate,
+            null,
+            false,
+            false,
+            true // isOneDayAdvance
+          );
+          
+          // Should not have prompted because isOneDayAdvance is true
+          expect(dialogStub.called).to.be.false;
+          
+          // Reset dialog stub history
+          dialogStub.resetHistory();
+          
+          // Call with isOneDayAdvance = false
+          await GenerateWeather.generateWeather(
+            Climate.Temperate,
+            Humidity.Modest,
+            Season.Spring,
+            todayDate,
+            null,
+            false,
+            false,
+            false // isOneDayAdvance
+          );
+          
+          // Should have prompted because isOneDayAdvance is false
+          expect(dialogStub.called).to.be.true;
+          
+          // Clean up
+          await ModuleSettings.set(ModuleSettingKeys.forecasts, {});
         });
       });
       

@@ -1,5 +1,10 @@
 # Change Log
 
+## v2.2.0 - Temporary support for Simple Calendar fork
+#### [_____________]
+
+- Advancing the calendar one day will no longer prompt for overwriting forecasts.  It will just use the existing forecats and extend the extra day.  If you jump around on the calendar, you will still be prompted if you wish to overwrite, as you may not know in that scenario if there were already forecasts provided.
+
 ## v2.1.0 - Temporary support for Simple Calendar fork
 #### **Support for temporary fork of Simple Calendar - v2.4.18.5 **
 

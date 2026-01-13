@@ -16,8 +16,24 @@ export class GenerateWeather {
   // today is used to set the date on the returned object
 
   // forForecast indicates it's being generated as part of a re-forecast, so don't add more forecasts
-  // forceRegenerate means to regenerate even if we have a valid forecast
-  static generateWeather = async function(climate: Climate, humidity: Humidity, season: Season, today: SimpleCalendar.DateData | null, yesterday: WeatherData | null, forForecast = false, forceRegenerate = false): Promise<WeatherData> {
+  // forceRegenerate  // used to generate weather for the current day
+  // 
+  // When isOneDayAdvance is true, it means the date has advanced by exactly one day (normal progression).
+  // In this case, we skip the confirmation prompt when extending forecasts, as users typically want to 
+  // preserve existing forecast data during normal day-to-day advancement.
+  // 
+  // When isOneDayAdvance is false (or undefined), it could be a random date jump, so we prompt 
+  // to confirm whether to overwrite existing forecasts.
+  static generateWeather = async function(
+    climate: Climate, 
+    humidity: Humidity, 
+    season: Season, 
+    today: SimpleCalendar.DateData | null, 
+    yesterday: WeatherData | null, 
+    forceRegenerate: boolean = false, 
+    forForecast: boolean = false,
+    isOneDayAdvance: boolean = false
+  ): Promise<WeatherData> {
     const weatherData = new WeatherData(today, season, humidity, climate, null, null);
 
     // do the generation
@@ -43,7 +59,7 @@ export class GenerateWeather {
 
       // we need to generate one more day on the end
       if (!forForecast)
-        await GenerateWeather.generateForecast(cleanDate(today), weatherData, true);
+        await GenerateWeather.generateForecast(cleanDate(today), weatherData, true, isOneDayAdvance);
     } else {
       // random start if no valid prior day or the prior day" was manually set or we changed season
       if (!yesterday || yesterday.season !== season || yesterday.hexFlowerCell==null || yesterday.manualOnly) {
@@ -70,7 +86,7 @@ export class GenerateWeather {
 
       // generate an updated forecast
       if (!forForecast && ModuleSettings.get(ModuleSettingKeys.useForecasts) && today!==null) {
-        await GenerateWeather.generateForecast(cleanDate(today), weatherData, true);
+        await GenerateWeather.generateForecast(cleanDate(today), weatherData, true, isOneDayAdvance);
       }
 
       log(false, 'New cell: ' + weatherData.hexFlowerCell + ' (' + weatherDescriptions[climate][humidity][weatherData.hexFlowerCell] + ')')
@@ -159,7 +175,12 @@ export class GenerateWeather {
   // returns the updated forecast object (and saves it to settings)
   // if extendOnly is true, will only fill in missing ones; otherwise will prompt about overwriting if existing ones found and either skip or overwrite
   //    based on prompt response
-  static generateForecast = async function(todayTimestamp: number, todayWeather: WeatherData, extendOnly: boolean): Promise<Record<string, Forecast>> {
+  // 
+  // The isOneDayAdvance parameter indicates whether the date advanced by exactly one day (normal progression).
+  // When true, we skip the confirmation prompt even when extending forecasts, as users typically want to 
+  // preserve existing forecast data during normal day-to-day advancement.
+  // When false, we prompt to confirm whether to overwrite existing forecasts (for random date jumps).
+  static generateForecast = async function(todayTimestamp: number, todayWeather: WeatherData, extendOnly: boolean, isOneDayAdvance: boolean = false): Promise<Record<string, Forecast>> {
     const numDays = 7;
     const currentForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
 
@@ -174,9 +195,10 @@ export class GenerateWeather {
     let yesterdayWeather = todayWeather;
 
     // if there are any forecasts we're going to hit and we're in "extendOnly" mode, prompt to see if we should overwrite
+    // unless this is a one-day advancement (normal progression), in which case we skip the prompt
     let shouldOverwrite = false;
     let needPrompt = false;
-    if (extendOnly) {
+    if (extendOnly && !isOneDayAdvance) {
       for (let day=1; day<=numDays; day++) {
         const forecastTimeStamp = SimpleCalendar.api.timestampPlusInterval(todayTimestamp, { day: day});
 
@@ -185,6 +207,8 @@ export class GenerateWeather {
           break;
         }
       }
+    } else if (extendOnly && isOneDayAdvance) {
+      shouldOverwrite = false;
     } else {
       shouldOverwrite = true;
     }

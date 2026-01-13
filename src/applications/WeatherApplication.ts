@@ -506,6 +506,12 @@ _______________________________________
   /**
    * Updates the current date/time showing in the weather dialog.  Generates new weather if the date has changed.
    * 
+   * There are two scenarios when generating weather:
+   * 1. Normal day advancement: When the date advances by exactly one day (the common case), we preserve 
+   *    existing forecasts and don't prompt for confirmation, as users typically want to keep their forecast data.
+   * 2. Random date jumps: When users jump around in the calendar (e.g., skipping ahead weeks or months), 
+   *    we prompt to confirm whether to overwrite existing forecasts, as this may not be intended.
+   * 
    * @param currentDate the SimpleCalendar.DateData object that contains the current date
    */
   public async updateDateTime(currentDate: SimpleCalendar.DateData | null): Promise<void> {
@@ -514,6 +520,9 @@ _______________________________________
 
     if (this.hasDateChanged(currentDate)) {
       if (isClientGM()) {
+        // Check if this is a one-day advancement (normal progression)
+        const isOneDayAdvance = this.isOneDayAdvance(currentDate);
+        
         if (ModuleSettings.get(ModuleSettingKeys.storeInSCNotes)) {
           // if we're using notes from SC (and have a valid note) pull that weather
           const notes = SimpleCalendar.api.getNotesForDay(currentDate.year, currentDate.month, currentDate.day);
@@ -521,7 +530,7 @@ _______________________________________
 
           for (let i=0; i<notes.length; i++) {
             if (notes[i]) {
-              const note = notes[i] as StoredDocument<JournalEntry>;
+              const note = notes[i] as JournalEntry.ConfiguredInstance;
               const flagData = note.getFlag(moduleJson.id, SC_NOTE_WEATHER_FLAG_NAME) as WeatherData;
       
               // if it has the flag, it's a prior weather entry - use it
@@ -550,13 +559,13 @@ _______________________________________
           }
 
           if (!foundWeatherNote) {
-            await this.generateWeather(currentDate);
+            await this.generateWeather(currentDate, isOneDayAdvance);
           }      
         } else {
           // otherwise generate new weather
           log(false, 'Generate new weather');
           
-          await this.generateWeather(currentDate);
+          await this.generateWeather(currentDate, isOneDayAdvance);
         }
       }
     } else {
@@ -596,7 +605,7 @@ _______________________________________
     } else if (isClientGM()) {
       log(false, 'No saved weather data - Generating weather');
 
-      await this.generateWeather(null);
+      await this.generateWeather(null, false); // initial generation always prompts
     } else {
       log(false, 'Non-GM loaded blank weather');
       log(false, JSON.stringify(game.user));
@@ -610,8 +619,9 @@ _______________________________________
    * If the module is paused, it does nothing except update the date.  Otherwise, it generates
    * new weather based on the current settings and then activates that weather.
    * @param currentDate the date for which to generate weather, or null to use today's date
+   * @param isOneDayAdvance whether the date advanced by exactly one day (used to skip forecast confirmation)
    */
-  private async generateWeather(currentDate: SimpleCalendar.DateData | null): Promise<void> {
+  private async generateWeather(currentDate: SimpleCalendar.DateData | null, isOneDayAdvance: boolean = false): Promise<void> {
     // if we're paused, do nothing (except update the date)
     if (this._manualPause) {
       this._currentWeather.date = currentDate;
@@ -623,7 +633,10 @@ _______________________________________
         this._currentHumidity ?? Humidity.Modest, 
         season ?? Season.Spring, 
         currentDate,
-        this._currentWeather || null
+        this._currentWeather || null,
+        false,  // forceRegenerate
+        false,  // forForecast
+        isOneDayAdvance  // pass the one-day advance flag
       );
 
       await this.activateWeather(this._currentWeather);
@@ -653,7 +666,7 @@ _______________________________________
 
       // can't forecast if we don't have a date or we're not doing forecasts, or options aren't valid
       if (currentDate && ModuleSettings.get(ModuleSettingKeys.useForecasts) && options && options[weatherIndex] && options[weatherIndex].valid) {
-        await GenerateWeather.generateForecast(cleanDate(currentDate), this._currentWeather, true);
+        await GenerateWeather.generateForecast(cleanDate(currentDate), this._currentWeather, true, false); // manual weather always prompts
       }
 
       await this.activateWeather(this._currentWeather);
@@ -740,7 +753,7 @@ _______________________________________
 
         // if it has the flag, it's a prior weather entry - delete it
         if (flagData) {
-          await SimpleCalendar.api.removeNote((notes[i] as StoredDocument<JournalEntry>).id);
+          await SimpleCalendar.api.removeNote((notes[i] as any).id);
         }
       }
     }
@@ -773,6 +786,34 @@ _______________________________________
     
     // if either matches or it's invalid (so we don't want to go around updating things)
     return false;
+  }
+
+  /**
+   * Checks if the current date is exactly one day after the previous date.
+   * This is used to determine if we should skip the forecast overwrite confirmation prompt.
+   * @param currentDate The new current date
+   * @returns true if the date is exactly one day after the previous date
+   */
+  private isOneDayAdvance(currentDate: SimpleCalendar.DateData): boolean {
+    const previous = this._currentWeather?.date;
+
+    // If we don't have a previous date or the current date is invalid, we can't determine
+    if (!previous || !this.isDateTimeValid(currentDate) || !this.isDateTimeValid(previous))
+      return false;
+
+    // Convert both dates to timestamps to compare
+    const previousTimestamp = SimpleCalendar.api.dateToTimestamp(previous);
+    const currentTimestamp = SimpleCalendar.api.dateToTimestamp(currentDate);
+
+    if (previousTimestamp === null || currentTimestamp === null)
+      return false;
+
+    // Calculate the timestamp for exactly one day after the previous date
+    const nextDayTimestamp = SimpleCalendar.api.timestampPlusInterval(previousTimestamp, { day: 1 });
+
+    // If the current timestamp matches the next day timestamp, it's a one-day advance
+    // we also count advances of less than a day the same way
+    return currentTimestamp <= nextDayTimestamp;
   }
 
   private isDateTimeValid(date: SimpleCalendar.DateData): boolean {
@@ -815,7 +856,7 @@ _______________________________________
 
   public async regenerateWeather() {
     if (isClientGM()) {
-      await this.generateWeather(this._currentWeather?.date || null);
+      await this.generateWeather(this._currentWeather?.date || null, false); // regenerate always prompts
       ModuleSettings.set(ModuleSettingKeys.lastWeatherData, this._currentWeather);        
       await this.render();
     }
