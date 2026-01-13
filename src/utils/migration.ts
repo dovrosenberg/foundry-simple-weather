@@ -3,6 +3,7 @@ import { Forecast } from '@/weather/Forecast';
 import { cleanDate } from '@/utils/calendar';
 import { version } from '@module';
 import { WeatherData } from '@/weather/WeatherData';
+import { getCalendarAdapter } from '@/calendar';
 
 const migrateData = async(): Promise<void> => {
   // we just look at the prior version to see what upgrades need to apply
@@ -23,14 +24,20 @@ const migrateData = async(): Promise<void> => {
 
     // forecast timestamps need to be set to the sunset time
     const forecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
+    const calendarAdapter = getCalendarAdapter();
+    
+    if (!calendarAdapter) {
+      throw new Error('No calendar adapter available during migration');
+    }
+    
     for (const [timestamp, forecast] of Object.entries(forecasts)) {
       // get the date from the timestamp
-      const date = SimpleCalendar.api.timestampToDate(Number(timestamp));
+      const date = calendarAdapter.timestampToDate(Number(timestamp));
       
       if (date) {
         const cleanedTimestamp = cleanDate(date);
         // validate or skip
-        if (forecast && WeatherData.validateWeatherParameters(forecast.climate, forecast.humidity, forecast.hexFlowerCell))
+        if (cleanedTimestamp !== null && forecast && WeatherData.validateWeatherParameters(forecast.climate, forecast.humidity, forecast.hexFlowerCell))
           updatedForecasts[cleanedTimestamp.toString()] = new Forecast(cleanedTimestamp, forecast.climate, forecast.humidity, forecast.hexFlowerCell); 
       }
     }

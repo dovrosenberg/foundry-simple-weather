@@ -7,7 +7,8 @@ import { WeatherData } from './WeatherData';
 import { log } from '@/utils/log';
 import { cleanDate } from '@/utils/calendar';
 import { Forecast } from './Forecast';
-import { simpleCalendarInstalled } from '@/main';
+import { calendarManager, CalendarType } from '@/calendar';
+import { getCalendarAdapter, CalendarDate } from '@/calendar';
 
 // structured it as a class to make it mockable for testing
 export class GenerateWeather {
@@ -28,7 +29,7 @@ export class GenerateWeather {
     climate: Climate, 
     humidity: Humidity, 
     season: Season, 
-    today: SimpleCalendar.DateData | null, 
+    today: CalendarDate | null, 
     yesterday: WeatherData | null, 
     forceRegenerate: boolean = false, 
     forForecast: boolean = false,
@@ -103,7 +104,7 @@ export class GenerateWeather {
   };
 
   // used to create manual weather; returns null if data is invalid (weatherIndex in particular)
-  static createManual = function(today: SimpleCalendar.DateData | null, season: Season, climate: Climate, humidity: Humidity, temperature: number, weatherIndex: number): WeatherData | null {
+  static createManual = function(today: CalendarDate | null, season: Season, climate: Climate, humidity: Humidity, temperature: number, weatherIndex: number): WeatherData | null {
     const options = getManualOptionsBySeason(season, climate, humidity);   // get the details behind the option
 
     if (!options || !options[weatherIndex])
@@ -123,7 +124,7 @@ export class GenerateWeather {
   }
 
   // used to pick a specific cell for weather (for testing or use by other applications)
-  static createSpecificWeather = function(today: SimpleCalendar.DateData | null, climate: Climate, humidity: Humidity, hexFlowerCell: HexFlowerCell): WeatherData | null {
+  static createSpecificWeather = function(today: CalendarDate | null, climate: Climate, humidity: Humidity, hexFlowerCell: HexFlowerCell): WeatherData | null {
     if (!WeatherData.validateWeatherParameters(climate, humidity, hexFlowerCell))
       throw new Error('Invalid parameters in createSpecificWeather()');
 
@@ -182,12 +183,16 @@ export class GenerateWeather {
   // When false, we prompt to confirm whether to overwrite existing forecasts (for random date jumps).
   static generateForecast = async function(todayTimestamp: number, todayWeather: WeatherData, extendOnly: boolean, isOneDayAdvance: boolean = false): Promise<Record<string, Forecast>> {
     const numDays = 7;
-    const currentForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
+    let currentForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
 
-    // if there's no simple calendar, don't do anything
-    if (!simpleCalendarInstalled)
+    // if there's no calendar, don't do anything
+    if (!calendarManager.hasActiveCalendar)
       return {};
 
+    const adapter = calendarManager.getAdapter();
+    if (!adapter)  // need a calendar to do forecasts
+      return {};
+    
     // if we don't have a climate or season, don't change the forecasts
     if (todayWeather.climate==null || todayWeather.humidity==null || todayWeather.season==null)
       return currentForecasts;
@@ -200,7 +205,7 @@ export class GenerateWeather {
     let needPrompt = false;
     if (extendOnly && !isOneDayAdvance) {
       for (let day=1; day<=numDays; day++) {
-        const forecastTimeStamp = SimpleCalendar.api.timestampPlusInterval(todayTimestamp, { day: day});
+        const forecastTimeStamp = adapter.timestampPlusInterval(todayTimestamp, { day: day});
 
         if (currentForecasts[forecastTimeStamp]) {
           needPrompt = true;

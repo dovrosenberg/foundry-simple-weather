@@ -16,6 +16,7 @@ import { weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
 import { Forecast } from '@/weather/Forecast';
 import { cleanDate } from '@/utils/calendar';
+import { getCalendarAdapter, calendarManager, CalendarType, CalendarDate } from '@/calendar';
 
 // the solo instance
 let weatherApplication: WeatherApplication;
@@ -79,7 +80,6 @@ class WeatherApplication extends Application {
   private _manualPause = false;
   private _attachedMode = false;
   private _attachModeHidden = true;   // like _currentlyHidden but have to track separately because that's for managing ready state not popup state
-  private _simpleCalendarInstalled = false;
 
   private _currentClimate: Climate;
   private _currentHumidity: Humidity;
@@ -102,9 +102,6 @@ class WeatherApplication extends Application {
     // get attached mode
     this._attachedMode = ModuleSettings.get(ModuleSettingKeys.attachToCalendar) || false;
     this._attachModeHidden = true;
-
-    // assume no SC unless told otherwise
-    this._simpleCalendarInstalled = false;
 
     // get whether the manual pause is on
     this._manualPause = ModuleSettings.get(ModuleSettingKeys.manualPause || false);
@@ -131,9 +128,6 @@ class WeatherApplication extends Application {
 
   public get attachedMode() { return this._attachedMode; }
 
-  // tell application that SC is present (used for notes)
-  public simpleCalendarInstalled() { this._simpleCalendarInstalled = true; }
-
   // window options; called by parent class
   static get defaultOptions() {
     const options = super.defaultOptions;
@@ -157,7 +151,9 @@ class WeatherApplication extends Application {
       displayDate: this._currentWeather?.date?.display ? this._currentWeather.date.display.date : '',
       formattedDate: this._currentWeather?.date ? this._currentWeather.date.day + '/' + this._currentWeather.date.month + '/' + this._currentWeather.date.year : '',
       formattedTime: this._currentWeather?.date?.display ? this._currentWeather.date.display.time : '',
-      weekday: this._currentWeather?.date ? this._currentWeather.date.weekdays[this._currentWeather.date.dayOfTheWeek] : '',
+      weekday: this._currentWeather?.date?.weekdays && this._currentWeather.date.dayOfTheWeek !== undefined 
+        ? this._currentWeather.date.weekdays[this._currentWeather.date.dayOfTheWeek] 
+        : '',
       currentTemperature: this._currentWeather ? this._currentWeather.getTemperature(ModuleSettings.get(ModuleSettingKeys.useCelsius)) : '',
       currentDescription: this._currentWeather ? this._currentWeather.getDescription() : '',
       currentSeasonClass: this.currentSeasonClass(),
@@ -457,15 +453,17 @@ isGM: ${isClientGM()}
 // displayOptions: ${JSON.stringify(this._displayOptions, null, 2)}
 dialogDisplay: ${ModuleSettings.get(ModuleSettingKeys.dialogDisplay)}
 calendarPresent: ${this._calendarPresent}
+activeCalendarType: ${calendarManager.calendarType}
 manualPause: ${this._manualPause}
 currentClimate: ${this._currentClimate}
 currentHumidity: ${this._currentHumidity}
 currentBiome: ${this._currentBiome}
 currentSeason: ${this._currentSeason}
 currentSeasonSync: ${this._currentSeasonSync}
-SW version: ${game.modules.get('simple-weather')?.version},
-SC version: ${game.modules.get('foundryvtt-simple-calendar')?.version},
-FXMaster version: ${game.modules.get('fxmaster')?.version},
+SW version: ${game?.modules?.get('simple-weather')?.version},
+Calendar: ${calendarManager.calendarType}
+Calendar version: ${calendarManager.currentCalendar.version},
+FXMaster version: ${game?.modules?.get('fxmaster')?.version},
 ModuleSettings.dialogDisplay: ${ModuleSettings.get(ModuleSettingKeys.dialogDisplay)}
 ModuleSettings.outputWeatherToChat: ${ModuleSettings.get(ModuleSettingKeys.outputWeatherToChat)}
 ModuleSettings.publicChat: ${ModuleSettings.get(ModuleSettingKeys.publicChat)}
@@ -512,9 +510,9 @@ _______________________________________
    * 2. Random date jumps: When users jump around in the calendar (e.g., skipping ahead weeks or months), 
    *    we prompt to confirm whether to overwrite existing forecasts, as this may not be intended.
    * 
-   * @param currentDate the SimpleCalendar.DateData object that contains the current date
+   * @param currentDate the CalendarDate object that contains the current date
    */
-  public async updateDateTime(currentDate: SimpleCalendar.DateData | null): Promise<void> {
+  public async updateDateTime(currentDate: CalendarDate | null): Promise<void> {
     if (!currentDate)
       return;
 
@@ -525,7 +523,7 @@ _______________________________________
         
         if (ModuleSettings.get(ModuleSettingKeys.storeInSCNotes)) {
           // if we're using notes from SC (and have a valid note) pull that weather
-          const notes = SimpleCalendar.api.getNotesForDay(currentDate.year, currentDate.month, currentDate.day);
+          const notes = getCalendarAdapter()?.getNotesForDay(currentDate.year, currentDate.month, currentDate.day) || [];
           let foundWeatherNote = false;
 
           for (let i=0; i<notes.length; i++) {
@@ -621,7 +619,7 @@ _______________________________________
    * @param currentDate the date for which to generate weather, or null to use today's date
    * @param isOneDayAdvance whether the date advanced by exactly one day (used to skip forecast confirmation)
    */
-  private async generateWeather(currentDate: SimpleCalendar.DateData | null, isOneDayAdvance: boolean = false): Promise<void> {
+  private async generateWeather(currentDate: CalendarDate | null, isOneDayAdvance: boolean = false): Promise<void> {
     // if we're paused, do nothing (except update the date)
     if (this._manualPause) {
       this._currentWeather.date = currentDate;
@@ -651,7 +649,7 @@ _______________________________________
    * @param temperature The temperature to use.
    * @param weatherIndex The index into the set of manual options.
    */
-  private async setManualWeather(currentDate: SimpleCalendar.DateData | null, temperature: number, weatherIndex: number): Promise<void> {
+  private async setManualWeather(currentDate: CalendarDate | null, temperature: number, weatherIndex: number): Promise<void> {
     const season = this.getSeason();
 
     if (season==null)
@@ -737,38 +735,44 @@ _______________________________________
 
   // save the weather to a calendar note
   private async saveWeatherToCalendarNote(weatherData: WeatherData): Promise<void> {
+    if (!weatherData.date || !calendarManager.hasActiveCalendar) 
+      return;
+    
+    const adapter = getCalendarAdapter();
+    if (!adapter) return;
+    
     const noteTitle = 'Simple Weather - Daily Weather';
 
-    // is simple calendar present?
-    if (!this._simpleCalendarInstalled || !weatherData?.date) {
-      return;
-    }
-
     // remove any previous note for the day
-    const notes = SimpleCalendar.api.getNotesForDay(weatherData.date.year, weatherData.date.month, weatherData.date.day);
+    const notes = adapter.getNotesForDay(weatherData.date.year, weatherData.date.month, weatherData.date.day);
     for (let i=0; i<notes.length; i++) {
       if (notes[i]) {
-        const note = notes[i] as StoredDocument<JournalEntry>;
+        const note = notes[i] as JournalEntry.ConfiguredInstance;
         const flagData = note.getFlag(moduleJson.id, SC_NOTE_WEATHER_FLAG_NAME) as WeatherData;
 
         // if it has the flag, it's a prior weather entry - delete it
         if (flagData) {
-          await SimpleCalendar.api.removeNote((notes[i] as any).id);
+          await adapter.removeNote((notes[i]).id);
         }
       }
     }
 
     // add a new one
     const noteContent = `Todays weather: ${weatherData.getTemperature(ModuleSettings.get(ModuleSettingKeys.useCelsius))} -  ${weatherData.getDescription() }`;
-    const theDate = { year: weatherData.date.year, month: weatherData.date.month, day: weatherData.date.day};
+    const theDate = { 
+      year: weatherData.date.year, 
+      month: weatherData.date.month, 
+      day: weatherData.date.day,
+    };
 
     // create the note and store the weather detail as a flag
-    const newNote = await SimpleCalendar.api.addNote(noteTitle, noteContent, theDate, theDate, true);
-    await newNote?.setFlag(moduleJson.id, SC_NOTE_WEATHER_FLAG_NAME, weatherData);
+    const newNote = await adapter.addNote(noteTitle, noteContent, theDate, theDate, true);
+    // Cast to any to access Foundry's setFlag method
+    await (newNote as any)?.setFlag(moduleJson.id, SC_NOTE_WEATHER_FLAG_NAME, weatherData);
   }
 
   // has the date part changed
-  private hasDateChanged(currentDate: SimpleCalendar.DateData): boolean {
+  private hasDateChanged(currentDate: CalendarDate): boolean {
     const previous = this._currentWeather?.date;
 
     if ((!previous && currentDate) || (previous && !currentDate))
@@ -776,10 +780,11 @@ _______________________________________
     if (!previous && !currentDate) 
       return false;
 
+    // previous exists and currentDate exists
     if (this.isDateTimeValid(currentDate)) {
-      if (currentDate.day !== (previous as SimpleCalendar.DateData).day
-          || currentDate.month !== (previous as SimpleCalendar.DateData).month
-          || currentDate.year !== (previous as SimpleCalendar.DateData).year) {
+      if (currentDate.day !== previous!.day
+          || currentDate.month !== previous!.month
+          || currentDate.year !== previous!.year) {
         return true;
       }
     } 
@@ -794,7 +799,7 @@ _______________________________________
    * @param currentDate The new current date
    * @returns true if the date is exactly one day after the previous date
    */
-  private isOneDayAdvance(currentDate: SimpleCalendar.DateData): boolean {
+  private isOneDayAdvance(currentDate: CalendarDate): boolean {
     const previous = this._currentWeather?.date;
 
     // If we don't have a previous date or the current date is invalid, we can't determine
@@ -816,17 +821,13 @@ _______________________________________
     return currentTimestamp <= nextDayTimestamp;
   }
 
-  private isDateTimeValid(date: SimpleCalendar.DateData): boolean {
-    if (this.isDefined(date.second) && this.isDefined(date.minute) && this.isDefined(date.day) &&
-    this.isDefined(date.month) && this.isDefined(date.year)) {
+  private isDateTimeValid(date: CalendarDate): boolean {
+    if (date.minute != null && date.day != null &&
+    date.month != null && date.year != null) {
       return true;
     }
 
     return false;
-  }
-
-  private isDefined(value: unknown) {
-    return value !== undefined && value !== null;
   }
 
   // access the current selections
@@ -1147,7 +1148,10 @@ _______________________________________
     for (let day=1; day<=numForecasts; day++) {
       let forecastTimeStamp;
 
-      forecastTimeStamp = SimpleCalendar.api.timestampPlusInterval(currentTimestamp, { day: day});
+      const calendarAdapter = getCalendarAdapter();
+      if (calendarAdapter) {
+        forecastTimeStamp = calendarAdapter.timestampPlusInterval(currentTimestamp, { day: day});
+      }
   
       // load the forecast
       const forecast = allForecasts[forecastTimeStamp.toString()];
