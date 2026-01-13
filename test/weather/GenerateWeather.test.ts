@@ -8,6 +8,7 @@ import { backupSettings, restoreSettings } from '@test/index';
 import { GenerateWeather } from '@/weather/GenerateWeather';
 import { getManualOptionsBySeason } from '@/weather/manualWeather';
 import { startingCells, } from '@/weather/weatherMap';
+import { cleanDate } from '@/utils/calendar';
 
 let resetWeatherMock;  // reset to the 1st call
 let dialogMockReturn: boolean = false;   // set this to determine the return value of the dialog prompt 
@@ -408,8 +409,10 @@ export const registerGenerateWeatherTests = () => {
         it('should use existing forecast when available', async () => {
           // Set up a forecast for today
           const forecastCell = 15; // specific hex cell for testing
+          // Use cleanDate to get the same key that the actual code uses
+          const dateKey = cleanDate(todayDate!);
           const forecasts = {
-            [todayTimestamp]: new Forecast(todayTimestamp, Climate.Temperate, Humidity.Modest, forecastCell as HexFlowerCell)
+            [dateKey]: new Forecast(dateKey, Climate.Temperate, Humidity.Modest, forecastCell as HexFlowerCell)
           };
           
           // Set the module settings
@@ -560,7 +563,11 @@ export const registerGenerateWeatherTests = () => {
           
           // Mock the ModuleSettings.get method to return our custom values
           const getStub = sinon.stub(ModuleSettings, 'get');
-          getStub.withArgs(ModuleSettingKeys.customChatMessages).returns([[[{}]], [[{}, { 17: "Custom message for testing" }]], [[{}]]]);
+          const mockCustomMessages = [] as any;
+          mockCustomMessages[1] = []; // Climate.Temperate
+          mockCustomMessages[1][1] = { 17: "Custom message for testing" }; // Humidity.Modest
+          
+          getStub.withArgs(ModuleSettingKeys.customChatMessages).returns(mockCustomMessages);
           getStub.withArgs(ModuleSettingKeys.outputDateToChat).returns(true);
           getStub.withArgs(ModuleSettingKeys.publicChat).returns(true);
           
