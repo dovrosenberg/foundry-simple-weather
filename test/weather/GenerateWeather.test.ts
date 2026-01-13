@@ -37,6 +37,11 @@ export const registerGenerateWeatherTests = () => {
         }
       });
       
+      afterEach(() => {
+        // Ensure all stubs are restored after each test
+        sinon.restore();
+      });
+      
       describe('Weather generation without SimpleCalendar', () => {
         it('should generate weather with null date', async () => {
           // Verify SimpleCalendar is not defined
@@ -169,10 +174,6 @@ export const registerGenerateWeatherTests = () => {
           expect(callArgs.content).to.include(weatherData.getDescription());
           expect(callArgs.content).to.include(weatherData.getTemperature(false));
           expect(callArgs.content).to.include("Custom message for testing");
-          
-          // Restore stubs
-          chatStub.restore();
-          getStub.restore();
         });
         
         it('should handle generateForecast with no SimpleCalendar', async () => {
@@ -205,10 +206,6 @@ export const registerGenerateWeatherTests = () => {
           
           // Verify ModuleSettings.set was not called (no changes to save)
           expect(setStub.called).to.be.false;
-          
-          // Restore stubs
-          getStub.restore();
-          setStub.restore();
         });
       });
       
@@ -259,13 +256,19 @@ export const registerGenerateWeatherTests = () => {
         reforecasts[timestamp] = new Forecast(timestamp, Climate.Temperate, Humidity.Modest, weather[(i+REFORECAST_OFFSET) % weather.length].hexFlowerCell as HexFlowerCell); 
       }
         
+      // Move callCount to batch scope
+      let callCount = 0;
+      
+      // Define resetWeatherMock at batch scope
+      resetWeatherMock = () => { callCount = 0; }
+        
 
       before(async () => {
         backupSettings();
+      });
 
-        // mock generateWeather for testing forecasts
-        let callCount = 0;
-        resetWeatherMock = () => { callCount = 0;}
+      beforeEach(async () => {
+        // Create fresh stubs for each test
         weatherStub = sinon.stub(GenerateWeather, 'generateWeather').callsFake(
           (_climate: Climate, _humidity: Humidity, _season: Season, today: SimpleCalendar.DateData | null, _yesterday: WeatherData | null, _forForecast = false): WeatherData => {
             // update the date -- we start midway through the set to make sure they don't align with forecasts
@@ -280,11 +283,14 @@ export const registerGenerateWeatherTests = () => {
         
         // Mock ChatMessage.create for outputWeatherToChat tests
         chatMessageStub = sinon.stub(ChatMessage, 'create').returns(Promise.resolve({} as ChatMessage));
-      });
-
-      beforeEach(async () => {
+        
         resetWeatherMock();
         chatMessageStub.resetHistory();
+      });
+
+      afterEach(() => {
+        // Clean up all stubs after each test
+        sinon.restore();
       });
 
       describe('generateForecast', () => {
@@ -352,21 +358,25 @@ export const registerGenerateWeatherTests = () => {
       });
       
       describe('generateWeather', () => {
-        // Restore the original generateWeather for these tests
         beforeEach(() => {
-          weatherStub.restore();
+          // Restore the original generateWeather for these tests
+          if (weatherStub) {
+            weatherStub.restore();
+            weatherStub = null;
+          }
         });
         
-        // Re-stub after each test
         afterEach(() => {
-          let callCount = 0;
-          weatherStub = sinon.stub(GenerateWeather, 'generateWeather').callsFake(
-            (_climate: Climate, _humidity: Humidity, _season: Season, today: SimpleCalendar.DateData | null, _yesterday: WeatherData | null, _forForecast = false): WeatherData => {
-              const weatherToReturn = weather[(REFORECAST_OFFSET + callCount++) % weather.length];
-              weatherToReturn.date = today;
-              return weatherToReturn;
-            }
-          );
+          // Re-create the stub after these tests
+          if (!weatherStub) {
+            weatherStub = sinon.stub(GenerateWeather, 'generateWeather').callsFake(
+              (_climate: Climate, _humidity: Humidity, _season: Season, today: SimpleCalendar.DateData | null, _yesterday: WeatherData | null, _forForecast = false): WeatherData => {
+                const weatherToReturn = weather[(REFORECAST_OFFSET + callCount++) % weather.length];
+                weatherToReturn.date = today;
+                return weatherToReturn;
+              }
+            );
+          }
         });
         
         it('should generate weather with valid parameters', async () => {
@@ -564,9 +574,6 @@ export const registerGenerateWeatherTests = () => {
           expect(callArgs.content).to.include(weatherData.getDescription());
           expect(callArgs.content).to.include(weatherData.getTemperature(false));
           expect(callArgs.content).to.include("Custom message for testing");
-          
-          // Restore the original get method
-          getStub.restore();
         });
       });
 
