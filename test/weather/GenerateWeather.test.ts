@@ -9,6 +9,7 @@ import { GenerateWeather } from '@/weather/GenerateWeather';
 import { getManualOptionsBySeason } from '@/weather/manualWeather';
 import { startingCells, } from '@/weather/weatherMap';
 import { cleanDate } from '@/utils/calendar';
+import { SimpleCalendarAdapter, CalendarDate } from '@/calendar';
 
 let resetWeatherMock;  // reset to the 1st call
 let dialogMockReturn: boolean = false;   // set this to determine the return value of the dialog prompt 
@@ -60,7 +61,9 @@ export const registerGenerateWeatherTests = () => {
             season, 
             null, // null date
             null, 
-            false
+            false,
+            false,
+            false // isSingleDayAdvance = false
           );
           
           // Verify the result
@@ -177,7 +180,7 @@ export const registerGenerateWeatherTests = () => {
           expect(callArgs.content).to.include("Custom message for testing");
         });
         
-        it('should handle generateForecast with no SimpleCalendar', async () => {
+        it('should handle generateForecast with no Calendar (turn off all calendar modules to test)', async () => {
           // Verify SimpleCalendar is not defined
           expect('SimpleCalendar' in globalThis).to.be.false;
           
@@ -228,7 +231,7 @@ export const registerGenerateWeatherTests = () => {
         month: 3,
         year: 2001,
       });
-      const todayDate = SimpleCalendar.api.timestampToDate(todayTimestamp);
+      const todayDate = new SimpleCalendarAdapter().timestampToDate(todayTimestamp);
 
       if (!todayTimestamp) throw new Error('could not generate test date');
 
@@ -271,7 +274,7 @@ export const registerGenerateWeatherTests = () => {
       beforeEach(async () => {
         // Create fresh stubs for each test
         weatherStub = sinon.stub(GenerateWeather, 'generateWeather').callsFake(
-          (_climate: Climate, _humidity: Humidity, _season: Season, today: SimpleCalendar.DateData | null, _yesterday: WeatherData | null, _forForecast = false): WeatherData => {
+          async (_climate: Climate, _humidity: Humidity, _season: Season, today: CalendarDate | null, _yesterday: WeatherData | null, _forForecast = false, _forceRegenerate = false, _isSingleDayAdvance = false): Promise<WeatherData> => {
             // update the date -- we start midway through the set to make sure they don't align with forecasts
             const weatherToReturn = weather[(REFORECAST_OFFSET + callCount++) % weather.length];
             weatherToReturn.date = today;
@@ -287,6 +290,7 @@ export const registerGenerateWeatherTests = () => {
         
         resetWeatherMock();
         chatMessageStub.resetHistory();
+        dialogStub.resetHistory();
       });
 
       afterEach(() => {
@@ -300,25 +304,25 @@ export const registerGenerateWeatherTests = () => {
 
           // test with a force overwrite so we can see if they change
           await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, null, Humidity.Modest, Climate.Temperate, 14, 14), false);
-          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
+          expect(ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
 
           await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, null, Climate.Temperate, 14, 14), false);
-          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
+          expect(ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
 
           await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, null, 14, 14), false);
-          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
+          expect(ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
         });
 
         it('should generate forecasts for the next 7 days', async () => {
           await ModuleSettings.set(ModuleSettingKeys.forecasts, {});
           await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), false);
-          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(reforecasts);
+          expect(ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(reforecasts);
         });
 
         it('should overwrite if extendOnly==false', async () => {
           await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);
           await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), false);
-          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(reforecasts);
+          expect(ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(reforecasts);
         });
 
         it('should prompt about overwrite when extendOnly set to true', async () => {
@@ -345,7 +349,7 @@ export const registerGenerateWeatherTests = () => {
 
           // fill back in the forecast (with the 1st weather used)
           holeyForecasts[timestampToRemove] = new Forecast(timestampToRemove, Climate.Temperate, Humidity.Modest, weather[REFORECAST_OFFSET].hexFlowerCell as HexFlowerCell); 
-          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(holeyForecasts);          
+          expect(ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(holeyForecasts);          
         });
 
         it('should overwrite everything if extendOnly==true and prompt is yes', async () => {
@@ -354,7 +358,7 @@ export const registerGenerateWeatherTests = () => {
           await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);  
           await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), true);
 
-          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(reforecasts);          
+          expect(ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(reforecasts);          
         });
 
         it('should NOT prompt about overwrite when extendOnly==true and isOneDayAdvance==true', async () => {
@@ -425,7 +429,9 @@ export const registerGenerateWeatherTests = () => {
             season, 
             todayDate, 
             null, // no yesterday data
-            false
+            false,
+            false,
+            false // isOneDayAdvance = false
           );
           
           // Verify the result
@@ -458,7 +464,9 @@ export const registerGenerateWeatherTests = () => {
             Season.Spring,
             todayDate,
             null,
-            false
+            false,
+            false,
+            false // isOneDayAdvance = false
           );
           
           // Verify it used the forecast
@@ -486,7 +494,9 @@ export const registerGenerateWeatherTests = () => {
             Season.Spring, // changed to spring
             todayDate,
             yesterdayWeather,
-            false
+            false,
+            false,
+            false // isOneDayAdvance = false
           );
           
           // Should have generated a new weather (not using yesterday's position)
