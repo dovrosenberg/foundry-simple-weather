@@ -183,7 +183,7 @@ export class GenerateWeather {
     
     if (extendOnly) {
       // When extending, we need to ensure we always have 7 days of forecasts
-      // Remove any forecasts for days before today and fill gaps
+      // Remove any forecasts from before today and fill gaps
       const calendarAdapter = getCalendarAdapter();
       if (calendarAdapter) {
         // First, remove any forecasts from before today (day 0 or negative)
@@ -197,7 +197,7 @@ export class GenerateWeather {
         }
         currentForecasts = cleanedForecasts;
         
-        // Now check which days 1-7 need to be generated
+        // Check which days 1-7 need to be generated
         for (let day=1; day<=numDays; day++) {
           const forecastTimeStamp = calendarAdapter.timestampPlusInterval(todayTimestamp, { day: day});
           if (!currentForecasts[forecastTimeStamp]) {
