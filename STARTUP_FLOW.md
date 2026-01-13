@@ -166,7 +166,7 @@ export interface ICalendarAdapter {
   timestampPlusInterval(timestamp: number, interval: TimeInterval): number;
   
   // Note management
-  getNotesForDay(year: number, month: number, day: number): Promise<CalendarNote[]>;
+  getNotesForDay(year: number, month: number, day: number): Promise<JournalEntry[]>;
   addNote(title: string, content: string, startDate: any, endDate: any, isAllDay: boolean): Promise<any>;
   removeNote(noteId: string): Promise<void>;
   

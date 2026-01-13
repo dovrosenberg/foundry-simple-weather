@@ -24,13 +24,6 @@ export interface SimpleCalendarDate {
   };
 }
 
-export interface CalendarNote {
-  id: string;
-  title: string;
-  content: string;
-  date: SimpleCalendarDate;
-}
-
 export interface TimeInterval {
   year?: number;
   month?: number;
@@ -47,8 +40,8 @@ export interface ICalendarAdapter {
   timestampPlusInterval(timestamp: number, interval: TimeInterval): number;
   
   // Note management
-  getNotesForDay(year: number, month: number, day: number): Promise<CalendarNote[]>;
-  addNote(title: string, content: string, startDate: SimpleCalendarDate, endDate: SimpleCalendarDate, isPublic?: boolean): Promise<CalendarNote>;
+  getNotesForDay(year: number, month: number, day: number): Promise<JournalEntry[]>;
+  addNote(title: string, content: string, startDate: SimpleCalendarDate, endDate: SimpleCalendarDate, isPublic?: boolean): Promise<JournalEntry>;
   removeNote(noteId: string): Promise<void>;
   
   // UI integration

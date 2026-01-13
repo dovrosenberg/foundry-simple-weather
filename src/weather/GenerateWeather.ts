@@ -164,7 +164,7 @@ export class GenerateWeather {
   //    based on prompt response
   static generateForecast = async function(todayTimestamp: number, todayWeather: WeatherData, extendOnly: boolean): Promise<Record<string, Forecast>> {
     const numDays = 7;
-    const currentForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
+    let currentForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
 
     // if there's no calendar, don't do anything
     if (!calendarManager.hasActiveCalendar)
@@ -182,25 +182,27 @@ export class GenerateWeather {
     let daysToGenerate = [] as number[];
     
     if (extendOnly) {
-      // Check which days need to be generated
+      // When extending, we need to ensure we always have 7 days of forecasts
+      // Remove any forecasts for days before today and fill gaps
       const calendarAdapter = getCalendarAdapter();
       if (calendarAdapter) {
-        // First, check days 1-7 for gaps
+        // First, remove any forecasts from before today (day 0 or negative)
+        const cleanedForecasts: Record<string, Forecast> = {};
+        for (const [timestamp, forecast] of Object.entries(currentForecasts)) {
+          const forecastTimeStamp = parseInt(timestamp);
+          // Only keep forecasts for days after today
+          if (forecastTimeStamp > todayTimestamp) {
+            cleanedForecasts[timestamp] = forecast;
+          }
+        }
+        currentForecasts = cleanedForecasts;
+        
+        // Now check which days 1-7 need to be generated
         for (let day=1; day<=numDays; day++) {
           const forecastTimeStamp = calendarAdapter.timestampPlusInterval(todayTimestamp, { day: day});
           if (!currentForecasts[forecastTimeStamp]) {
             daysToGenerate.push(day);
           }
-        }
-        
-        // If all days 1-7 exist, we need to generate day 8
-        if (daysToGenerate.length === 0) {
-          startDay = 8;
-          // Find the next day that doesn't exist
-          while (currentForecasts[calendarAdapter.timestampPlusInterval(todayTimestamp, { day: startDay })]) {
-            startDay++;
-          }
-          daysToGenerate.push(startDay);
         }
       }
       // Never prompt when extending - just skip existing forecasts

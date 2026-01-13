@@ -1,4 +1,4 @@
-import { ICalendarAdapter, SimpleCalendarDate, CalendarNote, TimeInterval } from './ICalendarAdapter';
+import { ICalendarAdapter, SimpleCalendarDate, TimeInterval } from './ICalendarAdapter';
 
 export class SimpleCalendarRebornAdapter implements ICalendarAdapter {
   private api: any;
@@ -45,29 +45,18 @@ export class SimpleCalendarRebornAdapter implements ICalendarAdapter {
     return this.api.timestampPlusInterval(timestamp, interval);
   }
   
-  public async getNotesForDay(year: number, month: number, day: number): Promise<CalendarNote[]> {
+  public async getNotesForDay(year: number, month: number, day: number): Promise<JournalEntry[]> {
     this.ensureApi();
     const notes = this.api.getNotesForDay(year, month, day);
     
-    // Transform Foundry documents to our interface
-    return notes.map((note: any) => ({
-      id: note.id,
-      title: note.name,
-      content: note.content,
-      date: this.timestampToDate(note.date) || { year, month, day, display: {} }
-    }));
+    return notes;
   }
   
-  public async addNote(title: string, content: string, startDate: SimpleCalendarDate, endDate: SimpleCalendarDate, isPublic: boolean = true): Promise<CalendarNote> {
+  public async addNote(title: string, content: string, startDate: SimpleCalendarDate, endDate: SimpleCalendarDate, isPublic: boolean = true): Promise<JournalEntry> {
     this.ensureApi();
     const note = await this.api.addNote(title, content, startDate, endDate, isPublic);
     
-    return {
-      id: note.id,
-      title: note.name,
-      content: note.content,
-      date: this.timestampToDate(note.date) || startDate
-    };
+    return note;
   }
   
   public async removeNote(noteId: string): Promise<void> {

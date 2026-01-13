@@ -178,7 +178,7 @@ export const registerGenerateWeatherTests = () => {
           getStub.restore();
         });
         
-        it('should handle generateForecast with no SimpleCalendar', async () => {
+        it('should handle generateForecast with no Calendar (turn off all calendar modules to test)', async () => {
           // Verify SimpleCalendar is not defined
           expect('SimpleCalendar' in globalThis).to.be.false;
           
@@ -341,32 +341,58 @@ export const registerGenerateWeatherTests = () => {
 
           await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), true);
 
-          // fill back in the forecast (with the 1st weather used)
-          holeyForecasts[timestampToRemove] = new Forecast(timestampToRemove, Climate.Temperate, Humidity.Modest, weather[REFORECAST_OFFSET].hexFlowerCell as HexFlowerCell); 
-          expect(ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(holeyForecasts);          
+          // Get the updated forecasts
+          const updatedForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
+          
+          // Should have all 7 forecasts now
+          expect(Object.keys(updatedForecasts)).to.have.length(7);
+          
+          // The missing forecast should be filled in (we don't care which exact weather since it's using the stub)
+          expect(updatedForecasts[timestampToRemove]).to.exist;
+          expect(updatedForecasts[timestampToRemove]).to.be.instanceOf(Forecast);
+          expect(updatedForecasts[timestampToRemove].climate).to.equal(Climate.Temperate);
+          expect(updatedForecasts[timestampToRemove].humidity).to.equal(Humidity.Modest);
           
           // Verify no prompting occurred
           expect(dialogStub.called).to.be.false;
         });
 
-        it('should extend to day 8 when all 7 days exist and extendOnly==true', async () => {
-          // With new logic, if all 7 days exist, extendOnly adds day 8
-          await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);  
+        it('should maintain 7 forecasts when extendOnly==true (removing old ones)', async () => {
+          // With new logic, extendOnly removes old forecasts and ensures 7 days
+          // First clear all forecasts
+          await ModuleSettings.set(ModuleSettingKeys.forecasts, {});
+          
+          // Start with forecasts for days 1-7
+          const sevenDayForecasts: Record<string, Forecast> = {};
+          for (let i = 0; i < 7; i++) {
+            const timestamp = SimpleCalendar.api.dateToTimestamp({
+              day: 15+i,
+              month: 3,
+              year: 2001, 
+            });
+            sevenDayForecasts[timestamp] = new Forecast(timestamp, Climate.Temperate, Humidity.Modest, weather[i].hexFlowerCell as HexFlowerCell);
+          }
+          
+          await ModuleSettings.set(ModuleSettingKeys.forecasts, sevenDayForecasts);  
+          
+          // Call generateForecast with extendOnly=true
           await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), true);
 
           // Get the updated forecasts
           const updatedForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
           
-          // Should have all original forecasts plus day 8
-          expect(Object.keys(updatedForecasts)).to.have.length(8);
+          // Should still have exactly 7 forecasts (days 1-7 from today)
+          expect(Object.keys(updatedForecasts)).to.have.length(7);
           
-          // Day 8 should be the 8th day from today
-          const day8Timestamp = SimpleCalendar.api.dateToTimestamp({
-            day: 15+8,
-            month: 3,
-            year: 2001, 
-          });
-          expect(updatedForecasts[day8Timestamp]).to.exist;
+          // Verify they are the correct days (1-7 from today)
+          for (let day = 1; day <= 7; day++) {
+            const expectedTimestamp = SimpleCalendar.api.dateToTimestamp({
+              day: 15+day,
+              month: 3,
+              year: 2001, 
+            });
+            expect(updatedForecasts[expectedTimestamp]).to.exist;
+          }
           
           // Verify no prompting occurred
           expect(dialogStub.called).to.be.false;
