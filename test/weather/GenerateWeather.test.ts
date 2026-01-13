@@ -10,6 +10,7 @@ import { getManualOptionsBySeason } from '@/weather/manualWeather';
 import { startingCells, } from '@/weather/weatherMap';
 import { cleanDate } from '@/utils/calendar';
 import { SimpleCalendarAdapter, CalendarDate } from '@/calendar';
+import { runTestsForEachCalendar } from '@test/calendarTestHelper';
 
 let resetWeatherMock;  // reset to the 1st call
 let dialogMockReturn: boolean = false;   // set this to determine the return value of the dialog prompt 
@@ -222,7 +223,7 @@ export const registerGenerateWeatherTests = () => {
     }
   );
   
-  quench.registerBatch(
+  runTestsForEachCalendar(
     'simple-weather.weather.forecastGeneration',
     (context: QuenchBatchContext) => {
       const { describe, it, expect, before, after, } = context;

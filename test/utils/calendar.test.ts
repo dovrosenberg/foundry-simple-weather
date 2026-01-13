@@ -1,8 +1,9 @@
 import { cleanDate } from '@/utils/calendar';
 import { QuenchBatchContext } from '@ethaks/fvtt-quench';
+import { runTestsForEachCalendar } from '@test/calendarTestHelper';
 
 export const registerCalendarTests = () => {
-  quench.registerBatch(
+  runTestsForEachCalendar(
     'simple-weather.utils.calendar',
     (context: QuenchBatchContext) => {
       const { describe, it, expect } = context;

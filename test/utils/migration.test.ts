@@ -4,9 +4,10 @@ import { Climate, Humidity } from '@/weather/climateData';
 import { Forecast } from '@/weather/Forecast';
 import { QuenchBatchContext } from '@ethaks/fvtt-quench'
 import { version } from '@module';
+import { runTestsForEachCalendar } from '@test/calendarTestHelper';
 
 export const registerMigrationTests = () => {
-  quench.registerBatch(
+  runTestsForEachCalendar(
     'simple-weather.utils.migration',
     (context: QuenchBatchContext) => {
       const { describe, it, expect, before } = context;

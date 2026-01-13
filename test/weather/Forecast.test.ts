@@ -4,9 +4,10 @@ import { Forecast } from '@/weather/Forecast';
 import { weatherDescriptions, weatherSunniness, weatherTemperatures } from '@/weather/weatherMap';
 import { QuenchBatchContext } from '@ethaks/fvtt-quench';
 import { backupSettings, restoreSettings } from '@test/index';
+import { runTestsForEachCalendar } from '@test/calendarTestHelper';
 
 export const registerForecastTests = () => {
-  quench.registerBatch(
+  runTestsForEachCalendar(
     'simple-weather.weather.Forecast',
     (context: QuenchBatchContext) => {
       const { describe, it, expect, before, after, } = context;

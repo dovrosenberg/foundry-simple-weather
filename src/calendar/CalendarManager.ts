@@ -44,7 +44,8 @@ const CALENDAR_MODULES: CalendarModuleInfo[] = [
 export class CalendarManager {
   private static _instance: CalendarManager;
   private _currentCalendar: CalendarInfo;
-  
+  private _availableCalendars: CalendarInfo[] = [];
+
   private constructor() {
     this._currentCalendar = {
       type: CalendarType.NONE,
@@ -120,16 +121,94 @@ export class CalendarManager {
     switch (this._currentCalendar.type) {
       case CalendarType.SIMPLE_CALENDAR:
         return new SimpleCalendarAdapter();
-      
+
       case CalendarType.SIMPLE_CALENDAR_REBORN:
         return new SimpleCalendarRebornAdapter();
-      
+
       case CalendarType.NONE:
       default:
         return null;
     }
   }
-  
+
+  /**
+   * Detects all available calendar modules and returns their info
+   * @returns Array of CalendarInfo for all installed and active calendar modules
+   */
+  public detectAllAvailableCalendars(): CalendarInfo[] {
+    this._availableCalendars = [];
+
+    for (const moduleInfo of CALENDAR_MODULES) {
+      const module = game?.modules?.get(moduleInfo.moduleId);
+
+      if (module && module.active && module.version) {
+        const meetsMinimumVersion = moduleInfo.minimumVersion === module.version ||
+          VersionUtils.isMoreRecent(module.version, moduleInfo.minimumVersion);
+
+        this._availableCalendars.push({
+          type: moduleInfo.type,
+          version: module.version,
+          isActive: true,
+          meetsMinimumVersion
+        });
+      }
+    }
+
+    return this._availableCalendars;
+  }
+
+  /**
+   * Gets the list of available calendars (requires detectAllAvailableCalendars to be called first)
+   * @returns Array of available CalendarInfo objects
+   */
+  public getAvailableCalendars(): CalendarInfo[] {
+    return this._availableCalendars;
+  }
+
+  /**
+   * Manually sets which calendar module to use (useful for testing)
+   * @param type The CalendarType to use
+   * @param skipValidation If true, skips checking if the calendar is actually installed
+   */
+  public setCalendar(type: CalendarType, skipValidation: boolean = false): void {
+    if (type === CalendarType.NONE) {
+      this._currentCalendar = {
+        type: CalendarType.NONE,
+        isActive: false,
+        meetsMinimumVersion: false
+      };
+      return;
+    }
+
+    if (!skipValidation) {
+      // Ensure the calendar is available
+      const available = this._availableCalendars.find(cal => cal.type === type);
+      if (!available) {
+        throw new Error(`Calendar type ${type} is not available. Call detectAllAvailableCalendars() first.`);
+      }
+      this._currentCalendar = available;
+    } else {
+      // For testing purposes, allow setting without validation
+      const moduleInfo = CALENDAR_MODULES.find(m => m.type === type);
+      if (!moduleInfo) {
+        throw new Error(`Unknown calendar type: ${type}`);
+      }
+
+      const module = game?.modules?.get(moduleInfo.moduleId);
+      const version = module?.version;
+      const meetsMinimumVersion = version ?
+        (moduleInfo.minimumVersion === version || VersionUtils.isMoreRecent(version, moduleInfo.minimumVersion)) :
+        false;
+
+      this._currentCalendar = {
+        type,
+        version,
+        isActive: true,
+        meetsMinimumVersion
+      };
+    }
+  }
+
   private showNoCalendarWarnings(): void {
     if (!isClientGM()) return;
     
