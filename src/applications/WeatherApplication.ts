@@ -78,6 +78,26 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
       template: `modules/${moduleJson.id}/templates/weather-dialog.hbs`,
     },
   };
+
+  // Override element getter to return the injected element when in attached mode
+  get element(): HTMLElement {
+    if (this._attachedMode) {
+      // Return the injected element if we have one
+      if (this._injectedElement) {
+        return this._injectedElement;
+      }
+      
+      // Otherwise try to find it in the DOM
+      const found = document.getElementById('swr-fsc-container') || document.getElementById('swr-container');
+      if (found) {
+        this._injectedElement = found;
+        return found;
+      }
+    }
+    
+    // Fall back to the default ApplicationV2 element
+    return super.element;
+  }
   private _currentWeather: WeatherData;
   private _displayOptions: DisplayOptions;
   private _calendarPresent = false;   // is simple calendar present?
@@ -94,6 +114,7 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
   private _windowDragHandler = new WindowDrag();
   private _windowPosition: WindowPosition;
   private _currentlyHidden = false;  // for toggling... we DO NOT save this state
+  private _injectedElement: HTMLElement | null = null;  // stores the injected element when in attached mode
 
   constructor() {
     super();
@@ -120,9 +141,60 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
   }
 
   // draw the window
-  override render(options: foundry.applications.api.ApplicationRenderOptions = {}): this {
+  public render(options: any = {}): this {
     this.checkSeasonSync();
-    return super.render(options);
+    
+    if (this._attachedMode) {
+      // In attached mode, we need to render the template and inject it manually
+      // instead of letting ApplicationV2 create its own element
+      this._renderInAttachedMode();
+      return this;
+    } else {
+      return super.render(options);
+    }
+  }
+
+  // Override close to handle attached mode
+  close(options?: Application.CloseOptions): Promise<void> {
+    if (this._attachedMode) {
+      // In attached mode, we don't have a standard application to close
+      // Just hide the injected element
+      if (this._injectedElement) {
+        this._injectedElement.remove();
+        this._injectedElement = null;
+      }
+      return Promise.resolve();
+    } else {
+      return super.close(options);
+    }
+  }
+
+  private async _renderInAttachedMode(): Promise<void> {
+    const adapter = getCalendarAdapter();
+    if (!adapter)
+      return;
+
+    // Get the rendered HTML using the template
+    const context = await this._prepareContext();
+    const template = WeatherApplication.PARTS?.main?.template;
+    if (!template) {
+      throw new Error('No template found for WeatherApplication');
+    }
+    
+    // Render the template to HTML string
+    const htmlString = await renderTemplate(template, context);
+    const html = $(htmlString);
+    
+    // Inject it into the calendar
+    adapter.inject(html, this._attachModeHidden);
+    
+    // Set up event listeners - we need to find our injected element first
+    const injectedElement = document.getElementById('swr-fsc-container') || document.getElementById('swr-container');
+    if (injectedElement) {
+      // Store the element reference for event handlers
+      this._injectedElement = injectedElement;
+      this._onRender(context, {});
+    }
   }
 
   public attachToCalendar() {
@@ -251,7 +323,7 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
    * 
    * @param html - The jQuery-wrapped HTML container for the weather application.
    */
-  protected override _onRender(context: any, options: any): void {
+  protected _onRender(context: any, options: any): void {
     super._onRender(context, options);
     
     const root = this.element as unknown as HTMLElement;
@@ -303,7 +375,7 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
       // if we're in manual mode and there's no temp, set it
       const tempElement = html.find('#swr-manual-temperature');
       if (tempElement && !tempElement.val()) {
-        this.onManualWeatherChange();
+        this.onManualWeatherChange(false);
       }
 
       // watch for sc calendar to open a different panel
@@ -1062,7 +1134,7 @@ _______________________________________
     return getManualOptionsBySeason(season, this._currentClimate, this._currentHumidity)[selectedValue];
   }
 
-  private onManualWeatherChange = async (): Promise<void> => {
+  private onManualWeatherChange = async (rerender = true): Promise<void> => {
     const option = this.getSelectedManualOption();
 
     if (option==null)
@@ -1083,7 +1155,8 @@ _______________________________________
     // trigger as if we'd entered it - to update the button status
     this.onManualTempInput()
 
-    await this.render();
+    if (rerender)
+      await this.render();
   }
 
   // get the class to apply to get the proper icon by season
@@ -1103,20 +1176,6 @@ _______________________________________
     }
 
     return '';
-  }
-
-  // override this function to handle the cases where we need to manually show the box
-  override _injectHTML(html: JQuery<HTMLElement>) {
-    if (this._attachedMode) {
-
-      const adapter = getCalendarAdapter();
-      if (!adapter)
-        return;
-
-      adapter.inject(html, this._attachModeHidden);
-    } else {
-      super._injectHTML(html);
-    }
   }
 
   // load the next few days of forecasts to display
