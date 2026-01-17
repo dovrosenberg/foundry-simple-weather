@@ -698,11 +698,11 @@ _______________________________________
       this._currentWeather.date = currentDate;
     } else {
       const season = this.getSeason();
-
+      
       this._currentWeather = await GenerateWeather.generateWeather(
         this._currentClimate ?? Climate.Temperate, 
         this._currentHumidity ?? Humidity.Modest, 
-        season ?? Season.Spring, 
+        season ?? Season.Spring,
         currentDate,
         this._currentWeather || null,
         false,  // forceRegenerate

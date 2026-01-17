@@ -45,11 +45,17 @@ export class GenerateWeather {
 
     // if the date has a forecast, use that
     const allForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
-    const adapter = getCalendarAdapter();
-    if (!adapter)
-      throw new Error('Unable to get calendar adapter in Generateweather.generateWeather()');
 
-    const todayForecast = today && allForecasts ? allForecasts[cleanDate(adapter, today)] ?? null : null;
+    const adapter = getCalendarAdapter();
+
+    let todayForecast: Forecast | null = null;
+    if (today && allForecasts) {
+      if (!adapter)  // need an adapter but only for forecasts
+        throw new Error('Unable to get calendar adapter in Generateweather.generateWeather()');
+    
+      todayForecast = allForecasts[cleanDate(adapter, today)] ?? null;
+    }
+
     // see if we already have a valid forecast for today
     if (today && ModuleSettings.get(ModuleSettingKeys.useForecasts) && (todayForecast && !forceRegenerate) &&
         WeatherData.validateWeatherParameters(todayForecast.climate, todayForecast.humidity, todayForecast.hexFlowerCell)) {
@@ -62,9 +68,9 @@ export class GenerateWeather {
         weatherData.hexFlowerCell = getDefaultStart(season);
       }
 
-      // we need to generate one more day on the end
+      // we need to generate one more day on the end; if we're in here, we know we have an adapter
       if (!forForecast)
-        await GenerateWeather.generateForecast(cleanDate(adapter, today), weatherData, true, isOneDayAdvance);
+        await GenerateWeather.generateForecast(cleanDate(adapter!, today), weatherData, true, isOneDayAdvance);
     } else {
       // random start if no valid prior day or the prior day" was manually set or we changed season
       if (!yesterday || yesterday.season !== season || yesterday.hexFlowerCell==null || yesterday.manualOnly) {
@@ -246,7 +252,7 @@ export class GenerateWeather {
 
         yesterdayWeather = new WeatherData(
           todayDate,
-          todayDate?.currentSeason?.numericRepresentation || null,
+          todayDate?.season ?? null,
           todayWeather.humidity, 
           todayWeather.climate,
           todayWeather.hexFlowerCell,

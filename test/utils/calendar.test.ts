@@ -17,12 +17,7 @@ export const registerCalendarTests = () => {
             day: 15,
             hour: 14,
             minute: 30,
-            currentSeason: {
-              name: 'Summer',
-              numericRepresentation: 2,
-              type: 'season',
-              icon: 'fa-sun'
-            },
+            season: 2,
             display: {
               date: '6/15/2024'
             }

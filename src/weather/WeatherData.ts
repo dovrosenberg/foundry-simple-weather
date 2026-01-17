@@ -1,6 +1,5 @@
 import { Season, Climate, Humidity, HexFlowerCell } from '@/weather/climateData';
 import { weatherDescriptions } from '@/weather/weatherMap';
-import { IconToSeasonMap } from '@/utils/seasonIcons';
 import { CalendarDate } from '@/calendar';
   
 // describes the weather for a day
@@ -28,7 +27,7 @@ export class WeatherData {
   // getters
   // returns the season based on the calendar date
   get calendarSeason(): Season | null {
-    return this.date?.currentSeason?.numericRepresentation || null;
+    return this.date?.season ?? null;
   }
 
   public getTemperature = (useCelsius: boolean): string => {

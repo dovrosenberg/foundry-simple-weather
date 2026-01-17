@@ -1,4 +1,5 @@
 import { ICalendarAdapter, CalendarDate, TimeInterval } from './ICalendarAdapter';
+import { Season } from '@/weather/climateData';
 
 export class SimpleCalendarAdapter implements ICalendarAdapter {
   // classes for Simple Calendar injection (see also one in main.ts)
@@ -27,13 +28,21 @@ export class SimpleCalendarAdapter implements ICalendarAdapter {
   }
   
   public APIDateToCalendarDate(date: SimpleCalendar.DateData): CalendarDate {
+    // season icons are weird
+    const seasonMap = {
+      'spring': Season.Spring,
+      'summer': Season.Summer,
+      'fall': Season.Fall,
+      'winter': Season.Winter
+    };
+
     return {
       year: date.year,
       month: date.month,
       day: date.day,
       hour: date.hour,
       minute: date.minute,
-      season: date.currentSeason.numericRepresentation,
+      season: seasonMap[date.currentSeason.icon] ?? Season.Spring,
       weekday: date?.weekdays && date.dayOfTheWeek !== undefined 
         ? date.weekdays[date.dayOfTheWeek] 
         : undefined,
