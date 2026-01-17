@@ -26,11 +26,9 @@ export class WeatherData {
   }
 
   // getters
-  get simpleCalendarSeason(): Season | null {
-    const icon = this.date?.currentSeason?.icon || '';
-
-    // Use our icon mapping instead of direct Simple Calendar constants
-    return IconToSeasonMap[icon] || null;
+  // returns the season based on the calendar date
+  get calendarSeason(): Season | null {
+    return this.date?.currentSeason?.numericRepresentation || null;
   }
 
   public getTemperature = (useCelsius: boolean): string => {

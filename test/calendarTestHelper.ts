@@ -24,12 +24,25 @@ export const detectAvailableCalendarsForTesting = (): CalendarTestInfo[] => {
     }));
   }
 
-  // Fall back to Simple Calendar if it's available in global scope
+  // Fall back to checking global scope for available calendars
+  const fallbackCalendars: CalendarTestInfo[] = [];
+
+  if (typeof (globalThis as any).CALENDARIA !== 'undefined') {
+    fallbackCalendars.push({
+      type: CalendarType.CALENDARIA,
+      name: 'Calendaria'
+    });
+  }
+
   if (typeof SimpleCalendar !== 'undefined') {
-    return [{
+    fallbackCalendars.push({
       type: CalendarType.SIMPLE_CALENDAR,
       name: 'Simple Calendar'
-    }];
+    });
+  }
+
+  if (fallbackCalendars.length > 0) {
+    return fallbackCalendars;
   }
 
   // If nothing is detected, return Simple Calendar as a default
@@ -45,6 +58,8 @@ export const detectAvailableCalendarsForTesting = (): CalendarTestInfo[] => {
  */
 const getCalendarName = (type: CalendarType): string => {
   switch (type) {
+    case CalendarType.CALENDARIA:
+      return 'Calendaria';
     case CalendarType.SIMPLE_CALENDAR:
       return 'Simple Calendar';
     case CalendarType.SIMPLE_CALENDAR_REBORN:

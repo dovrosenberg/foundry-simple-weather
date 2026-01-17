@@ -7,7 +7,6 @@ import { QuenchBatchContext } from '@ethaks/fvtt-quench';
 import { backupSettings, restoreSettings } from '@test/index';
 import { GenerateWeather } from '@/weather/GenerateWeather';
 import { getManualOptionsBySeason } from '@/weather/manualWeather';
-import { startingCells, } from '@/weather/weatherMap';
 import { cleanDate } from '@/utils/calendar';
 import { SimpleCalendarAdapter, CalendarDate } from '@/calendar';
 import { runTestsForEachCalendar } from '@test/calendarTestHelper';
@@ -408,7 +407,7 @@ export const registerGenerateWeatherTests = () => {
           // Re-create the stub after these tests
           if (!weatherStub) {
             weatherStub = sinon.stub(GenerateWeather, 'generateWeather').callsFake(
-              (_climate: Climate, _humidity: Humidity, _season: Season, today: SimpleCalendar.DateData | null, _yesterday: WeatherData | null, _forForecast = false): WeatherData => {
+              (_climate: Climate, _humidity: Humidity, _season: Season, today: CalendarDate | null, _yesterday: WeatherData | null, _forForecast = false): WeatherData => {
                 const weatherToReturn = weather[(REFORECAST_OFFSET + callCount++) % weather.length];
                 weatherToReturn.date = today;
                 return weatherToReturn;
@@ -449,7 +448,8 @@ export const registerGenerateWeatherTests = () => {
           // Set up a forecast for today
           const forecastCell = 15; // specific hex cell for testing
           // Use cleanDate to get the same key that the actual code uses
-          const dateKey = cleanDate(todayDate!);
+          const adapter = new SimpleCalendarAdapter();
+          const dateKey = cleanDate(adapter, todayDate!);
           const forecasts = {
             [dateKey]: new Forecast(dateKey, Climate.Temperate, Humidity.Modest, forecastCell as HexFlowerCell)
           };

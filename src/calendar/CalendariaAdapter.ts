@@ -1,0 +1,210 @@
+import { Season, SeasonDescription } from '@/weather/climateData';
+import { ICalendarAdapter, CalendarDate, TimeInterval } from './ICalendarAdapter';
+
+  type CalendariaDate = {
+    day: number;
+    dayOfMonth: number;
+    dayOfWeek: number;
+    hour: number;
+    leapYear: boolean;
+    minute: number;
+    month: number;
+    season: number;
+    second: number;
+    year: number;
+  }
+
+export class CalendariaAdapter implements ICalendarAdapter {
+  private api: any;
+
+  constructor() {
+    // Calendaria exposes its API on the global CALENDARIA object
+    this.api = (globalThis as any).CALENDARIA?.api;
+  }
+
+  private ensureApi(): void {
+    if (!this.api) {
+      throw new Error('Calendaria API not available');
+    }
+  }
+
+  public getCurrentTimestamp(): number {
+    this.ensureApi();
+    const currentDate = this.api.getCurrentDateTime();
+    return this.api.dateToTimestamp(currentDate);
+  }
+  
+  public APIDateToCalendarDate(date: CalendariaDate): CalendarDate {
+    // map the season
+    const ourSeason = date.season as Season;
+
+    // Calendaria uses 'dayOfMonth' instead of 'day'
+    return {
+      year: date.year,
+      month: date.month,
+      day: date.dayOfMonth,
+      hour: date.hour,
+      minute: date.minute,
+      season: ourSeason,
+      weekday: undefined,
+      display: {
+        weekday: this.api.formatDate(date, 'EEEE'),
+        date: this.api.formatDate(date, 'D MMMM YYYY'),
+        day: this.api.formatDate(date, 'D'),
+        month: this.api.formatDate(date, 'MMMM'),
+        year: this.api.formatDate(date, 'YYYY'),
+        time: `${String(date.hour || 0).padStart(2, '0')}:${String(date.minute || 0).padStart(2, '0')}`
+      }
+    };
+  }
+
+  public timestampToDate(timestamp: number): CalendarDate | null {
+    this.ensureApi();
+
+    const date = this.api.timestampToDate(timestamp);
+    if (!date) 
+      return null;
+
+    return this.APIDateToCalendarDate(date);
+  }
+
+  public dateToTimestamp(date: CalendarDate): number {
+    this.ensureApi();
+    
+    // Convert CalendarDate to Calendaria format
+    const dateCalendaria = {
+      year: date.year,
+      month: date.month,
+      day: date.day,
+      hour: date.hour || 0,
+      minute: date.minute || 0
+    };
+    
+    return this.api.dateToTimestamp(dateCalendaria);
+  }
+
+  public timestampPlusInterval(timestamp: number, interval: TimeInterval): number {
+    this.ensureApi();
+
+
+    // We need to convert to date, add the interval, and convert back
+    let date = this.api.timestampToDate(timestamp);
+    if (!date) {
+      throw new Error('Failed to convert timestamp to date');
+    }
+
+    date = this.api.addYears(date, interval.year || 0);
+    date = this.api.addMonths(date, interval.month || 0);
+    date = this.api.addDays(date, interval.day || 0);
+
+    // it doesn't have functions for time, so we do manually, though it's not necessarily going to work
+    // Calculate new date components
+    date.hour = date.hour + (interval.hour || 0);
+    date.minute = date.minute + (interval.minute || 0);
+
+    // Convert back to timestamp using Calendaria's API
+    return this.api.dateToTimestamp(date);
+  }
+
+  public getNotesForDay(year: number, month: number, day: number): JournalEntry.ConfiguredInstance[] {
+    this.ensureApi();
+    const notes = this.api.getNotesForDate(year, month, day);
+
+    // Calendaria returns note stubs, we need to return them as JournalEntry objects
+    return notes.map((note: { journalId: string }) => JournalEntry.get(note.journalId)) || [];
+  }
+
+  public async addNote(
+    title: string,
+    content: string,
+    startDate: CalendarDate,
+    endDate: CalendarDate,
+    isPublic: boolean = true
+  ): Promise<JournalEntry.ConfiguredInstance> {
+    this.ensureApi();
+
+    // Convert CalendarDate to Calendaria format
+    const startDateCalendaria = {
+      year: startDate.year,
+      month: startDate.month,
+      day: startDate.day,
+      hour: startDate.hour || 0,
+      minute: startDate.minute || 0
+    };
+
+    const endDateCalendaria = {
+      year: endDate.year,
+      month: endDate.month,
+      day: endDate.day,
+      hour: endDate.hour,
+      minute: endDate.minute
+    };
+
+    const note = await this.api.createNote({
+      name: title,
+      content: content,
+      startDate: startDateCalendaria,
+      endDate: endDateCalendaria,
+      allDay: false,
+      gmOnly: !isPublic
+    });
+
+    return note;
+  }
+
+  public async removeNote(noteId: string): Promise<void> {
+    this.ensureApi();
+    await this.api.deleteNote(noteId);
+  }
+
+  public addSidebarButton(_onClick?: () => void): void {
+    this.ensureApi();
+
+    this.api.registerWidget('my-module', {
+      id: 'fcb-calendaria-button',
+      type: 'indicator',
+      replaces: 'weather-indicator',
+      icon: 'fas fa-cloud-sun',
+      label: 'Simple Weather',
+      onClick: () => console.log('Clicked!')
+    });
+
+    // Calendaria doesn't appear to have a direct sidebar button API
+    // We could potentially use a hook or UI manipulation here if needed
+    // For now, we'll leave this as a no-op since it's optional
+    console.log('Calendaria: addSidebarButton not implemented');
+  }
+
+    public inject(html: JQuery<HTMLElement>, hidden: boolean): void {
+    if (!hidden) {
+      // turn off any existing calendar panels
+      const existingPanels = $(`#${SimpleCalendarAdapter.SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_WRAPPER}.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_EXTENDED}`);
+      existingPanels.addClass(SimpleCalendarAdapter.SC_CLASS_FOR_TAB_CLOSED).removeClass(SimpleCalendarAdapter.SC_CLASS_FOR_TAB_EXTENDED);
+
+      // if it's there we'll replace, otherwise we'll append
+      if ($('#swr-fsc-container').length === 0) {
+        // attach to the calendar
+        const siblingPanels = $(`#${SimpleCalendarAdapter.SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_WRAPPER}.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_CLOSED}`);
+        siblingPanels.last().parent().append(html);
+      } else {
+        $('#swr-fsc-container').replaceWith(html);
+      }
+    } else {
+      // hide it
+      $('#swr-fsc-container').remove();
+    }  
+  }
+
+  public activateListeners(hiddenCallback: (hidden: boolean) => void): void {    
+  }
+
+  public get containerClasses(): string {
+    return 'fcb-calendaria-container';
+  }
+
+  public getHooks(): { init: string } {
+    return {
+      init: 'calendaria.ready'
+    };
+  }
+}

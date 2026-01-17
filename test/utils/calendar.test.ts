@@ -1,6 +1,7 @@
 import { cleanDate } from '@/utils/calendar';
 import { QuenchBatchContext } from '@ethaks/fvtt-quench';
 import { runTestsForEachCalendar } from '@test/calendarTestHelper';
+import { calendarManager } from '@/calendar/CalendarManager';
 
 export const registerCalendarTests = () => {
   runTestsForEachCalendar(
@@ -9,17 +10,38 @@ export const registerCalendarTests = () => {
       const { describe, it, expect } = context;
 
       describe('cleanDate', () => {
-        it('should return the timestamp of the sunset', () => {
+        it('should return the timestamp of 0:00 (midnight)', () => {
           const testDate = {
-            year: 0,
-            month: 12,
-            day: 31,
-            dayOffset: 2,
-            sunrise: 1,
-            sunset: 3,
+            year: 2024,
+            month: 6,
+            day: 15,
+            hour: 14,
+            minute: 30,
+            currentSeason: {
+              name: 'Summer',
+              numericRepresentation: 2,
+              type: 'season',
+              icon: 'fa-sun'
+            },
+            display: {
+              date: '6/15/2024'
+            }
           };
       
-          expect(cleanDate(testDate as SimpleCalendar.DateData)).to.equal(3);
+          const adapter = calendarManager.getAdapter();
+          expect(adapter).to.not.be.null;
+          
+          // Get the cleaned timestamp
+          const cleanedTimestamp = cleanDate(adapter!, testDate);
+          
+          // Convert it back to a date to verify the time is 0:00
+          const cleanedDate = adapter!.timestampToDate(cleanedTimestamp);
+          expect(cleanedDate).to.not.be.null;
+          expect(cleanedDate!.hour).to.equal(0);
+          expect(cleanedDate!.minute).to.equal(0);
+          expect(cleanedDate!.year).to.equal(testDate.year);
+          expect(cleanedDate!.month).to.equal(testDate.month);
+          expect(cleanedDate!.day).to.equal(testDate.day);
         });
       });
     }

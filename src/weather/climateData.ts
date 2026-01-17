@@ -8,6 +8,12 @@ export enum Season {
   Winter
 }
 
+export interface SeasonDescription {
+  name: string;
+  numericRepresentation: number;
+  icon: string;
+}
+
 export enum Humidity {
   Barren,
   Modest,

@@ -16,7 +16,7 @@ import { weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
 import { Forecast } from '@/weather/Forecast';
 import { cleanDate } from '@/utils/calendar';
-import { getCalendarAdapter, calendarManager, CalendarType, CalendarDate } from '@/calendar';
+import { getCalendarAdapter, calendarManager, CalendarDate, } from '@/calendar';
 
 // the solo instance
 let weatherApplication: WeatherApplication;
@@ -62,18 +62,22 @@ type WeatherApplicationData = {
   forecasts: Forecast[],
 }
 
-
-// classes for Simple Calendar injection
-// no  dot or # in front
-const SC_CLASS_FOR_TAB_EXTENDED = 'fsc-c';    // open the search panel and find the siblings that are the panels and see what the different code is on search
-const SC_CLASS_FOR_TAB_CLOSED = 'fsc-d';    // look at the other siblings or close search and see what changes
-const SC_CLASS_FOR_TAB_WRAPPER = 'fsc-of';   // the siblings that are tabs all have it - also needs to go in .scss
-const SC_ID_FOR_WINDOW_WRAPPER = 'fsc-if';  // it's the top-level one with classes app, window-app, simple-calendar
-
 // flag name for storing daily weather on SC notes
-const SC_NOTE_WEATHER_FLAG_NAME = 'dailyWeather';
+const CAL_NOTE_WEATHER_FLAG_NAME = 'dailyWeather';
 
-class WeatherApplication extends Application {
+class WeatherApplication extends foundry.applications.api.HandlebarsApplicationMixin(
+  foundry.applications.api.ApplicationV2
+) {
+  static DEFAULT_OPTIONS = {
+    popOut: false,  // self-contained window without the extra wrapper
+    resizable: false,  // window is fixed size
+  };
+
+  static PARTS = {
+    main: {
+      template: `modules/${moduleJson.id}/templates/weather-dialog.hbs`,
+    },
+  };
   private _currentWeather: WeatherData;
   private _displayOptions: DisplayOptions;
   private _calendarPresent = false;   // is simple calendar present?
@@ -104,7 +108,7 @@ class WeatherApplication extends Application {
     this._attachModeHidden = true;
 
     // get whether the manual pause is on
-    this._manualPause = ModuleSettings.get(ModuleSettingKeys.manualPause || false);
+    this._manualPause = ModuleSettings.get(ModuleSettingKeys.manualPause) || false;
 
     // don't show it until ready() has been called
     this._currentlyHidden = true;
@@ -116,10 +120,9 @@ class WeatherApplication extends Application {
   }
 
   // draw the window
-  public render(force?: boolean): void {
+  override render(options: foundry.applications.api.ApplicationRenderOptions = {}): this {
     this.checkSeasonSync();
-
-    super.render(force);
+    return super.render(options);
   }
 
   public attachToCalendar() {
@@ -128,32 +131,21 @@ class WeatherApplication extends Application {
 
   public get attachedMode() { return this._attachedMode; }
 
-  // window options; called by parent class
-  static get defaultOptions() {
-    const options = super.defaultOptions;
-    
-    options.template = `modules/${moduleJson.id}/templates/weather-dialog.hbs`;
-    options.popOut = false;  // self-contained window without the extra wrapper
-    options.resizable = false;  // window is fixed size
-
-    return options;
-  }
-
   /**
    * This function provides the data that the template can use.
    * 
    * @returns A promise that resolves to the data the template can use.
    */
-  public async getData(): Promise<WeatherApplicationData> {
+  override async _prepareContext(): Promise<WeatherApplicationData> {
+    const adapter = calendarManager.getAdapter();
+
     const data = {
-      ...(await super.getData()),
+      ...(await super._prepareContext()),
       isGM: isClientGM(),
       displayDate: this._currentWeather?.date?.display ? this._currentWeather.date.display.date : '',
       formattedDate: this._currentWeather?.date ? this._currentWeather.date.day + '/' + this._currentWeather.date.month + '/' + this._currentWeather.date.year : '',
       formattedTime: this._currentWeather?.date?.display ? this._currentWeather.date.display.time : '',
-      weekday: this._currentWeather?.date?.weekdays && this._currentWeather.date.dayOfTheWeek !== undefined 
-        ? this._currentWeather.date.weekdays[this._currentWeather.date.dayOfTheWeek] 
-        : '',
+      weekday: this._currentWeather?.date?.weekday ? this._currentWeather?.date?.weekday : '',
       currentTemperature: this._currentWeather ? this._currentWeather.getTemperature(ModuleSettings.get(ModuleSettingKeys.useCelsius)) : '',
       currentDescription: this._currentWeather ? this._currentWeather.getDescription() : '',
       currentSeasonClass: this.currentSeasonClass(),
@@ -173,7 +165,7 @@ class WeatherApplication extends Application {
       useCelsius: ModuleSettings.get(ModuleSettingKeys.useCelsius),
       attachedMode: this._attachedMode,
       showAttached: this._attachedMode && !this._attachModeHidden,
-      SCContainerClasses: !this._attachedMode ? '' : `${SC_CLASS_FOR_TAB_WRAPPER} sc-right ${SC_CLASS_FOR_TAB_EXTENDED}`,
+      SCContainerClasses: !this._attachedMode || !adapter ? '' : adapter.containerClasses,
       windowPosition: this._attachedMode ? { bottom: 0, left: 0 } : this._windowPosition,
       containerPosition: this._attachedMode ? 'relative' : 'fixed',
       // For attached mode, we only hide if _attachModeHidden is true
@@ -224,7 +216,7 @@ class WeatherApplication extends Application {
    */
   public showWindow(): void {
     this._currentlyHidden = false;
-    this.render(true);
+    this.render({ force: true });
   }
 
   
@@ -241,7 +233,12 @@ class WeatherApplication extends Application {
    * 
    * @param html - The jQuery-wrapped HTML container for the weather application.
    */
-  public activateListeners(html: JQuery<HTMLElement>): void {
+  protected override _onRender(context: any, options: any): void {
+    super._onRender(context, options);
+    
+    const root = this.element as unknown as HTMLElement;
+    const html: JQuery<HTMLElement> = (globalThis as any).$(root);
+
     // setup handlers and values for everyone
 
     // GM-only
@@ -293,23 +290,11 @@ class WeatherApplication extends Application {
 
       // watch for sc calendar to open a different panel
       if (this._attachedMode) {
-        const observer = new MutationObserver((mutations) => {
-          mutations.forEach((mutation) => {
-            if (mutation.attributeName === 'class' && $(mutation.target).hasClass(SC_CLASS_FOR_TAB_EXTENDED) && 
-                $(mutation.target).hasClass(SC_CLASS_FOR_TAB_WRAPPER) && ((mutation.target as HTMLElement).id!='swr-fsc-container')) {
-                // Class SC_CLASS_FOR_TAB_EXTENDED has been added to another panel (opening it), so turn off ours
-                this._attachModeHidden = true;
-                $('#swr-fsc-container').remove();
-            }
+        const adapter = calendarManager.getAdapter();
+        if (adapter)
+          adapter.activateListeners((hidden: boolean) => {
+            this._attachModeHidden = hidden;
           });
-        });
-
-        // attach the observer to the right element
-        const element: JQuery<HTMLElement> | HTMLElement = $(`#${SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SC_CLASS_FOR_TAB_WRAPPER}`).last().parent();
-        if (element && element.length>0) {
-          const target = element.get(0);
-          observer.observe(target as Node, { attributes: true, childList: true, subtree: true });
-        }
       }
     }
 
@@ -321,8 +306,6 @@ class WeatherApplication extends Application {
     html.find('#swr-weather-box-toggle').on('click', this.onWeatherToggleClick);
     html.find('#swr-date-box-toggle').on('click', this.onDateToggleClick);
     html.find('#swr-close-button').on('click', this.onCloseClick);
-
-    super.activateListeners(html);
   }
 
   // event handlers - note arrow functions because otherwise 'this' doesn't work
@@ -438,7 +421,7 @@ class WeatherApplication extends Application {
     weatherEffects.ready(this._currentWeather);
 
     this._currentlyHidden = false;
-    this.render(true);
+    this.render({ force: true });
   };
 
   /**
@@ -460,10 +443,10 @@ currentHumidity: ${this._currentHumidity}
 currentBiome: ${this._currentBiome}
 currentSeason: ${this._currentSeason}
 currentSeasonSync: ${this._currentSeasonSync}
-SW version: ${game?.modules?.get('simple-weather')?.version},
+SW version: ${game.modules?.get('simple-weather')?.version},
 Calendar: ${calendarManager.calendarType}
 Calendar version: ${calendarManager.currentCalendar.version},
-FXMaster version: ${game?.modules?.get('fxmaster')?.version},
+FXMaster version: ${game.modules?.get('fxmaster')?.version},
 ModuleSettings.dialogDisplay: ${ModuleSettings.get(ModuleSettingKeys.dialogDisplay)}
 ModuleSettings.outputWeatherToChat: ${ModuleSettings.get(ModuleSettingKeys.outputWeatherToChat)}
 ModuleSettings.publicChat: ${ModuleSettings.get(ModuleSettingKeys.publicChat)}
@@ -529,7 +512,7 @@ _______________________________________
           for (let i=0; i<notes.length; i++) {
             if (notes[i]) {
               const note = notes[i] as JournalEntry.ConfiguredInstance;
-              const flagData = note.getFlag(moduleJson.id, SC_NOTE_WEATHER_FLAG_NAME) as WeatherData;
+              const flagData = note.getFlag(moduleJson.id, CAL_NOTE_WEATHER_FLAG_NAME) as WeatherData;
       
               // if it has the flag, it's a prior weather entry - use it
               if (flagData && flagData.temperature!=null && flagData.hexFlowerCell!=null) {
@@ -588,8 +571,8 @@ _______________________________________
   public async setWeather(): Promise<void> {
     const weatherData = ModuleSettings.get(ModuleSettingKeys.lastWeatherData);
 
-    // if we have prior date info but Simple Calendar is no longer installed, we need to clean that up 
-    if (weatherData?.date && !('SimpleCalendar' in globalThis)) {
+    // if we have prior date info but Simple Calendar, etc. is no longer installed, we need to clean that up 
+    if (weatherData?.date && !calendarManager.hasActiveCalendar) {
       weatherData.date = null;
       await ModuleSettings.set(ModuleSettingKeys.lastWeatherData, weatherData);
     }
@@ -663,8 +646,9 @@ _______________________________________
       const options = getManualOptionsBySeason(season, this._currentClimate, this._currentHumidity);   
 
       // can't forecast if we don't have a date or we're not doing forecasts, or options aren't valid
-      if (currentDate && ModuleSettings.get(ModuleSettingKeys.useForecasts) && options && options[weatherIndex] && options[weatherIndex].valid) {
-        await GenerateWeather.generateForecast(cleanDate(currentDate), this._currentWeather, true, false); // manual weather always prompts
+      const adapter = getCalendarAdapter();
+      if (currentDate && ModuleSettings.get(ModuleSettingKeys.useForecasts) && options && options[weatherIndex] && options[weatherIndex].valid && adapter) {
+        await GenerateWeather.generateForecast(cleanDate(adapter, currentDate), this._currentWeather, true, false); // manual weather always prompts
       }
 
       await this.activateWeather(this._currentWeather);
@@ -748,7 +732,7 @@ _______________________________________
     for (let i=0; i<notes.length; i++) {
       if (notes[i]) {
         const note = notes[i] as JournalEntry.ConfiguredInstance;
-        const flagData = note.getFlag(moduleJson.id, SC_NOTE_WEATHER_FLAG_NAME) as WeatherData;
+        const flagData = note.getFlag(moduleJson.id, CAL_NOTE_WEATHER_FLAG_NAME) as WeatherData;
 
         // if it has the flag, it's a prior weather entry - delete it
         if (flagData) {
@@ -759,16 +743,11 @@ _______________________________________
 
     // add a new one
     const noteContent = `Todays weather: ${weatherData.getTemperature(ModuleSettings.get(ModuleSettingKeys.useCelsius))} -  ${weatherData.getDescription() }`;
-    const theDate = { 
-      year: weatherData.date.year, 
-      month: weatherData.date.month, 
-      day: weatherData.date.day,
-    };
 
     // create the note and store the weather detail as a flag
-    const newNote = await adapter.addNote(noteTitle, noteContent, theDate, theDate, true);
+    const newNote = await adapter.addNote(noteTitle, noteContent, weatherData.date, weatherData.date, true);
     // Cast to any to access Foundry's setFlag method
-    await (newNote as any)?.setFlag(moduleJson.id, SC_NOTE_WEATHER_FLAG_NAME, weatherData);
+    await (newNote as any)?.setFlag(moduleJson.id, CAL_NOTE_WEATHER_FLAG_NAME, weatherData);
   }
 
   // has the date part changed
@@ -806,15 +785,19 @@ _______________________________________
     if (!previous || !this.isDateTimeValid(currentDate) || !this.isDateTimeValid(previous))
       return false;
 
+    const adapter = getCalendarAdapter();
+    if (!adapter)
+      throw new Error("No adapter in WeatherApplication.isOneDayAdvance()");
+
     // Convert both dates to timestamps to compare
-    const previousTimestamp = SimpleCalendar.api.dateToTimestamp(previous);
-    const currentTimestamp = SimpleCalendar.api.dateToTimestamp(currentDate);
+    const previousTimestamp = adapter.dateToTimestamp(previous);
+    const currentTimestamp = adapter.dateToTimestamp(currentDate);
 
     if (previousTimestamp === null || currentTimestamp === null)
       return false;
 
     // Calculate the timestamp for exactly one day after the previous date
-    const nextDayTimestamp = SimpleCalendar.api.timestampPlusInterval(previousTimestamp, { day: 1 });
+    const nextDayTimestamp = adapter.timestampPlusInterval(previousTimestamp, { day: 1 });
 
     // If the current timestamp matches the next day timestamp, it's a one-day advance
     // we also count advances of less than a day the same way
@@ -834,7 +817,7 @@ _______________________________________
   public getSeason(): Season | null {
     if (this._currentSeasonSync) {
       // if the season selector is set to "sync", then pull it off the date instead
-      return this._currentWeather.simpleCalendarSeason;
+      return this._currentWeather.calendarSeason;
     } else {
       return this._currentSeason;
     }
@@ -868,7 +851,7 @@ _______________________________________
     const target = event.originalEvent?.target as HTMLSelectElement;
     if (target.value === 'sync') {
       this._currentSeasonSync = true;
-      this._currentSeason = Number(this._currentWeather.simpleCalendarSeason);
+      this._currentSeason = Number(this._currentWeather.calendarSeason);
     } else {
       this._currentSeasonSync = false;
       this._currentSeason = Number(target.value);
@@ -878,7 +861,7 @@ _______________________________________
     ModuleSettings.set(ModuleSettingKeys.season, this._currentSeason);
 
     // render to update the icon and the manual weather list
-    this.render(false);
+    this.render();
   };
 
   private onClimateSelectChange = (event): void => {
@@ -893,7 +876,7 @@ _______________________________________
     ModuleSettings.set(ModuleSettingKeys.biome, '');
 
     // force the manual weather dropdown to regenerate
-    this.render(false);
+    this.render();
   };
 
   private onHumiditySelectChange = (event): void => {
@@ -908,7 +891,7 @@ _______________________________________
     ModuleSettings.set(ModuleSettingKeys.biome, '');
 
     // force the manual weather dropdown to regenerate
-    this.render(false);
+    this.render();
   };
 
   private onBiomeSelectChange = (event): void => {
@@ -941,7 +924,7 @@ _______________________________________
     }
 
     // force the manual weather dropdown to regenerate
-    this.render(false);
+    this.render();
   };
 
   private onManualPauseChange = (event): void => {
@@ -1104,27 +1087,15 @@ _______________________________________
     return '';
   }
 
-  // override this function to handle the compact case
+  // override this function to handle the cases where we need to manually show the box
   override _injectHTML(html: JQuery<HTMLElement>) {
     if (this._attachedMode) {
 
-      if (!this._attachModeHidden) {
-        // turn off any existing calendar panels
-        const existingPanels = $(`#${SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SC_CLASS_FOR_TAB_WRAPPER}.${SC_CLASS_FOR_TAB_EXTENDED}`);
-        existingPanels.addClass(SC_CLASS_FOR_TAB_CLOSED).removeClass(SC_CLASS_FOR_TAB_EXTENDED);
+      const adapter = getCalendarAdapter();
+      if (!adapter)
+        return;
 
-        // if it's there we'll replace, otherwise we'll append
-        if ($('#swr-fsc-container').length === 0) {
-          // attach to the calendar
-          const siblingPanels = $(`#${SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SC_CLASS_FOR_TAB_WRAPPER}.${SC_CLASS_FOR_TAB_CLOSED}`);
-          siblingPanels.last().parent().append(html);
-        } else {
-          $('#swr-fsc-container').replaceWith(html);
-        }
-      } else {
-        // hide it
-        $('#swr-fsc-container').remove();
-      }  
+      adapter.inject(html, this._attachModeHidden);
     } else {
       super._injectHTML(html);
     }
@@ -1139,7 +1110,12 @@ _______________________________________
     
     const forecasts = [] as Forecast[];
 
-    let currentTimestamp = cleanDate(this._currentWeather.date);
+    const adapter = getCalendarAdapter();
+
+    if (!adapter)
+      throw new Error('Unable to get adapter in WeatherApplication.getForecasts()');
+
+    let currentTimestamp = this._currentWeather.date ? cleanDate(adapter, this._currentWeather.date) : 0;
 
     const allForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
     if (!allForecasts || Object.keys(allForecasts).length===0) 

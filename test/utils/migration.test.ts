@@ -14,7 +14,6 @@ export const registerMigrationTests = () => {
 
       let previousVersion: string;
       let forecasts: Record<string, Forecast>;
-      let currentDate: SimpleCalendar.DateTime;
       
       // save the current settings so we can mess with them
       before(() => {
@@ -31,7 +30,7 @@ export const registerMigrationTests = () => {
           expect(ModuleSettings.get(ModuleSettingKeys.previousVersion)).to.equal(version);
         });
 
-        it('should adjust forecast timestamps to the sunset time', async () => {
+        it('should adjust forecast timestamps to 0:00 (midnight)', async () => {
           await ModuleSettings.set(ModuleSettingKeys.previousVersion, '');
 
           // create a date
@@ -45,7 +44,10 @@ export const registerMigrationTests = () => {
 
           const updatedForecast = ModuleSettings.get(ModuleSettingKeys.forecasts);
           expect(Object.keys(updatedForecast).length).to.equal(1);
-          expect(updatedForecast[date.sunset.toString()].timestamp).to.equal(date.sunset);
+          // The timestamp should be cleaned to 0:00 (midnight)
+          const cleanedDate = SimpleCalendar.api.timestampToDate(Object.keys(updatedForecast)[0]) as SimpleCalendar.DateData;
+          expect(cleanedDate.hour).to.equal(0);
+          expect(cleanedDate.minute).to.equal(0);
         });
       });
 

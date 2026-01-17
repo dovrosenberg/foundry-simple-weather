@@ -22,10 +22,8 @@ import { getCalendarAdapter } from '@/calendar';
 
 // look for #swr-fsc-compact-open; what is the class on the parent div that wraps it?
 const SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER = 'fsc-pj';  // no dot in the front
-const SC_MINIMUM_VERSION = '2.4.18.5';
-const SC_PREFERRED_VERSION = '2.4.18.5';
 
-// also see instructions in WeatherApplication.ts for adjusting constants
+// also see instructions in SimpleCalendarAdapter.ts for adjusting constants
 
 
 // how do we decide what mode we're in and whether its visible or not?
@@ -269,11 +267,10 @@ Hooks.once('setup', (): void => {
   // check the setting to see if we want to dock
   if (weatherApplication.attachedMode) {
     if (isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)) {
-      // can set this either way, but it does nothing when in compact mode (but we only need to set it once)
       getCalendarAdapter()?.addSidebarButton(() => weatherApplication.toggleAttachModeHidden());
     }
 
-    // we also need to watch for when the calendar is rendered because in compact mode we
+    // for Simple Calendar, we also need to watch for when the calendar is rendered because in compact mode we
     //    have to inject the button
     Hooks.on('renderMainApp', (_application: Application, html: JQuery<HTMLElement>) => {
       // in compact mode, there's no api to add a button, so we monkey patch one in

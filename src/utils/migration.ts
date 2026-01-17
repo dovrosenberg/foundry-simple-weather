@@ -22,7 +22,7 @@ const migrateData = async(): Promise<void> => {
 
     let updatedForecasts = {} as Record<string, Forecast>;
 
-    // forecast timestamps need to be set to the sunset time
+    // forecast timestamps need to be set to 0:00 (midnight)
     const forecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
     const calendarAdapter = getCalendarAdapter();
     
@@ -35,7 +35,7 @@ const migrateData = async(): Promise<void> => {
       const date = calendarAdapter.timestampToDate(Number(timestamp));
       
       if (date) {
-        const cleanedTimestamp = cleanDate(date);
+        const cleanedTimestamp = cleanDate(calendarAdapter, date);
         // validate or skip
         if (cleanedTimestamp !== null && forecast && WeatherData.validateWeatherParameters(forecast.climate, forecast.humidity, forecast.hexFlowerCell))
           updatedForecasts[cleanedTimestamp.toString()] = new Forecast(cleanedTimestamp, forecast.climate, forecast.humidity, forecast.hexFlowerCell); 

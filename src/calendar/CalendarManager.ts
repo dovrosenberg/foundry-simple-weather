@@ -4,11 +4,13 @@ import { isClientGM } from '@/utils/game';
 import { ICalendarAdapter } from './ICalendarAdapter';
 import { SimpleCalendarAdapter } from './SimpleCalendarAdapter';
 import { SimpleCalendarRebornAdapter } from './SimpleCalendarRebornAdapter';
+import { CalendariaAdapter } from './CalendariaAdapter';
 
 export enum CalendarType {
   NONE = 'none',
   SIMPLE_CALENDAR = 'foundryvtt-simple-calendar',
-  SIMPLE_CALENDAR_REBORN = 'foundryvtt-simple-calendar-reborn'
+  SIMPLE_CALENDAR_REBORN = 'foundryvtt-simple-calendar-reborn',
+  CALENDARIA = 'calendaria'
 }
 
 export interface CalendarInfo {
@@ -27,6 +29,12 @@ export interface CalendarModuleInfo {
 
 // these are sorted in order of preference (1st one found will win)
 const CALENDAR_MODULES: CalendarModuleInfo[] = [
+  {
+    moduleId: 'calendaria',
+    type: CalendarType.CALENDARIA,
+    minimumVersion: '0.7.1',
+    preferredVersion: '0.7.1'
+  },
   {
     moduleId: 'foundryvtt-simple-calendar-reborn',
     type: CalendarType.SIMPLE_CALENDAR_REBORN,
@@ -71,7 +79,7 @@ export class CalendarManager {
     
     // Check each calendar module in order
     for (const moduleInfo of CALENDAR_MODULES) {
-      const module = game?.modules?.get(moduleInfo.moduleId);
+      const module = game.modules?.get(moduleInfo.moduleId);
       
       if (module && module.active && module.version) {
         const meetsMinimumVersion = moduleInfo.minimumVersion === module.version || 
@@ -119,6 +127,9 @@ export class CalendarManager {
   
   public getAdapter(): ICalendarAdapter | null {
     switch (this._currentCalendar.type) {
+      case CalendarType.CALENDARIA:
+        return new CalendariaAdapter();
+
       case CalendarType.SIMPLE_CALENDAR:
         return new SimpleCalendarAdapter();
 
