@@ -35,8 +35,15 @@ export class CalendariaAdapter implements ICalendarAdapter {
   }
   
   public APIDateToCalendarDate(date: CalendariaDate): CalendarDate {
-    // map the season
-    const ourSeason = date.season as Season;
+    // map the season from the icons
+    const seasonIcon = this.api.getCurrentSeason(date)?.icon as string ?? '';
+    const icon = seasonIcon.replace('fas', '').trim();
+    const seasonMap = {
+      'fa-snowflake': Season.Winter,
+      'fa-leaf': Season.Fall,
+      'fa-sun': Season.Summer,
+      'fa-seedling': Season.Spring
+    }
 
     // Calendaria uses 'dayOfMonth' instead of 'day'
     return {
@@ -45,7 +52,7 @@ export class CalendariaAdapter implements ICalendarAdapter {
       day: date.dayOfMonth,
       hour: date.hour,
       minute: date.minute,
-      season: ourSeason,
+      season: seasonMap[icon] ?? Season.Spring,
       weekday: undefined,
       display: {
         weekday: this.api.formatDate(date, 'EEEE'),
@@ -175,7 +182,7 @@ export class CalendariaAdapter implements ICalendarAdapter {
     console.log('Calendaria: addSidebarButton not implemented');
   }
 
-    public inject(html: JQuery<HTMLElement>, hidden: boolean): void {
+  public inject(html: JQuery<HTMLElement>, hidden: boolean): void {
     if (!hidden) {
       // turn off any existing calendar panels
       const existingPanels = $(`#${SimpleCalendarAdapter.SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_WRAPPER}.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_EXTENDED}`);
