@@ -53,6 +53,7 @@ export class CalendarManager {
   private static _instance: CalendarManager;
   private _currentCalendar: CalendarInfo;
   private _availableCalendars: CalendarInfo[] = [];
+  private _hasMultipleCalendars = false;
 
   private constructor() {
     this._currentCalendar = {
@@ -76,6 +77,19 @@ export class CalendarManager {
       isActive: false,
       meetsMinimumVersion: false
     };
+    
+    // First, detect all available calendars
+    this.detectAllAvailableCalendars();
+    
+    // Check if more than one calendar is active
+    if (this._availableCalendars.length > 1) {
+      // Store that we have multiple calendars for later checking
+      this._hasMultipleCalendars = true;
+      // Don't set any calendar as current when multiple are found
+      return;
+    } else {
+      this._hasMultipleCalendars = false;
+    }
     
     // Check each calendar module in order
     for (const moduleInfo of CALENDAR_MODULES) {
@@ -119,6 +133,10 @@ export class CalendarManager {
   
   public get hasActiveCalendar(): boolean {
     return this._currentCalendar.isActive && this._currentCalendar.meetsMinimumVersion;
+  }
+  
+  public get hasMultipleCalendars(): boolean {
+    return this._hasMultipleCalendars;
   }
   
   public get calendarType(): CalendarType {

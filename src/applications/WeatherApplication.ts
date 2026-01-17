@@ -207,6 +207,15 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
    * Toggle the visibility of the weather application when it's in attached mode.
    */
   public toggleAttachModeHidden(): void {
+    // Check if multiple calendars are detected
+    if (calendarManager.hasMultipleCalendars) {
+      ui.notifications?.error(
+        `Multiple calendar modules detected. This is a REALLY bad idea. Please disable all but one calendar module to use Simple Weather.`
+      );
+      this._attachModeHidden = true;
+      return;
+    }
+    
     this._attachModeHidden = !this._attachModeHidden;
     this.render();
   }
@@ -215,6 +224,15 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
    * Show the weather application window. Make it visible and render it.
    */
   public showWindow(): void {
+    // Check if multiple calendars are detected
+    if (calendarManager.hasMultipleCalendars) {
+      ui.notifications?.error(
+        `Multiple calendar modules detected. This is a REALLY bad idea. Please disable all but one calendar module to use Simple Weather.`
+      );
+      this._currentlyHidden = true;
+      return;
+    }
+    
     this._currentlyHidden = false;
     this.render({ force: true });
   }
