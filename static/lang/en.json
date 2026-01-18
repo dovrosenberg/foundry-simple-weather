@@ -77,7 +77,7 @@
 
       "season": {
         "select": "Select the current season",
-        "sync": "Sync with Simple Calendar",
+        "sync": "Sync with Calendar",
         "fall": "Fall",
         "summer": "Summer",
         "spring": "Spring",

@@ -300,3 +300,30 @@ body.game #swr-container select option.swr-invalid-manual-option {
 body.game #swr-container #swr-manual-weather-selection.swr-invalid-manual-option {
   color: red !important;   // make select text red if invalid currently selected
 }
+
+// copied from .mini-notes-panel
+#swr-calendaria-container {
+  display: flex;
+  opacity: 0;
+  z-index: -2;
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: calc(100% + 30px);
+  flex-direction: column;
+  border: 1px solid var(--calendaria-border);
+  border-left: none;
+  border-radius: 0 14px 14px 0;
+  pointer-events: none;
+  background: var(--calendaria-bg);
+  box-shadow: 4px 0 12px var(--calendaria-shadow);
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  transform: translateX(-100%);
+  height: fit-content;
+
+  &.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+  }
+}

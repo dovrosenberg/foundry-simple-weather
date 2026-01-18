@@ -1,5 +1,6 @@
 import { Season, SeasonDescription } from '@/weather/climateData';
 import { ICalendarAdapter, CalendarDate, TimeInterval } from './ICalendarAdapter';
+import { WeatherApplication } from '@/applications/WeatherApplication';
 
   type CalendariaDate = {
     day: number;
@@ -164,7 +165,7 @@ export class CalendariaAdapter implements ICalendarAdapter {
     await this.api.deleteNote(noteId);
   }
 
-  public addSidebarButton(_onClick?: () => void): void {
+  public addSidebarButton(_weatherApplication: WeatherApplication, onClick: () => void): void {
     this.ensureApi();
 
     this.api.registerWidget('my-module', {
@@ -173,41 +174,71 @@ export class CalendariaAdapter implements ICalendarAdapter {
       replaces: 'weather-indicator',
       icon: 'fas fa-cloud-sun',
       label: 'Simple Weather',
-      onClick: () => console.log('Clicked!')
+      onClick: () => onClick()
     });
 
     // Calendaria doesn't appear to have a direct sidebar button API
-    // We could potentially use a hook or UI manipulation here if needed
-    // For now, we'll leave this as a no-op since it's optional
-    console.log('Calendaria: addSidebarButton not implemented');
+    // Hooks.on('renderMiniCalendar', (_application: Application, html: HTMLElement) => {
+    //   // Find the target location in Calendaria's mini-calendar
+    //   const targetPanel = $(html).find('.mini-notes-panel');
+      
+    //   if (targetPanel.length === 0) {
+    //     console.error('Calendaria: Could not find #mini-calendar .mini-notes-panel to inject weather panel');
+    //     return;
+    //   }
+
+    //   // if it's there we'll replace, otherwise we'll append
+    //   if ($('#swr-calendaria-container').length === 0) {
+    //     // inject as sibling right after the mini-notes-panel
+    //     targetPanel.after(html);
+    //   } else {
+    //     $('#swr-calendaria-container').replaceWith(html);
+    //   }
+    // });
   }
 
-  public inject(html: JQuery<HTMLElement>, hidden: boolean): void {
+  public inject(html: JQuery<HTMLElement>, hidden: boolean): string {
+    const elementId = this.wrapperElementId;
+    
     if (!hidden) {
       // turn off any existing calendar panels
-      const existingPanels = $(`#${SimpleCalendarAdapter.SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_WRAPPER}.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_EXTENDED}`);
-      existingPanels.addClass(SimpleCalendarAdapter.SC_CLASS_FOR_TAB_CLOSED).removeClass(SimpleCalendarAdapter.SC_CLASS_FOR_TAB_EXTENDED);
+      // const existingPanels = $(`#${SimpleCalendarAdapter.SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_WRAPPER}.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_EXTENDED}`);
+      // existingPanels.addClass(SimpleCalendarAdapter.SC_CLASS_FOR_TAB_CLOSED).removeClass(SimpleCalendarAdapter.SC_CLASS_FOR_TAB_EXTENDED);
 
-      // if it's there we'll replace, otherwise we'll append
-      if ($('#swr-fsc-container').length === 0) {
+      // if it's there we'll replace, otherwise we'll append      
+      if ($(`#${elementId}`).length === 0) {
         // attach to the calendar
-        const siblingPanels = $(`#${SimpleCalendarAdapter.SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_WRAPPER}.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_CLOSED}`);
-        siblingPanels.last().parent().append(html);
+        const targetPanel = $('#mini-calendar .mini-notes-panel');
+        if (targetPanel.length === 0) {
+          console.error('Calendaria: Could not find #mini-calendar .mini-notes-panel to inject weather panel');
+          return '';
+        }
+      
+        targetPanel.after(html);
+        $(`#${elementId}`).addClass('visible');
       } else {
-        $('#swr-fsc-container').replaceWith(html);
+        $(`#${elementId}`).replaceWith(html);
+        $(`#${elementId}`).addClass('visible');
       }
     } else {
       // hide it
-      $('#swr-fsc-container').remove();
-    }  
+      $(`#${elementId}`).removeClass('visible');
+    }      
+    
+    return elementId;
   }
 
-  public activateListeners(hiddenCallback: (hidden: boolean) => void): void {    
+  public activateListeners(_hiddenCallback: (hidden: boolean) => void): void {    
   }
 
   public get containerClasses(): string {
     return 'fcb-calendaria-container';
   }
+
+  public get wrapperElementId(): string {
+    return 'swr-calendaria-container';
+  }
+
 
   public getHooks(): { init: string } {
     return {

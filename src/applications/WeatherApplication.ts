@@ -54,7 +54,7 @@ type WeatherApplicationData = {
   useCelsius: boolean,
   attachedMode: boolean,
   showAttached: boolean,
-  SCContainerClasses: string,
+  containerClasses: string,
   windowPosition: WindowPosition,
   containerPosition: string,
   hideDialog: boolean,
@@ -86,9 +86,13 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
       if (this._injectedElement) {
         return this._injectedElement;
       }
+
+      const adapter = getCalendarAdapter();
+      if (!adapter)
+        throw new Error("No adapter in attached mode in WeatherApplication.element()");
       
       // Otherwise try to find it in the DOM
-      const found = document.getElementById('swr-fsc-container') || document.getElementById('swr-container');
+      const found = document.getElementById(adapter.wrapperElementId) || document.getElementById('swr-container');
       if (found) {
         this._injectedElement = found;
         return found;
@@ -98,9 +102,10 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
     // Fall back to the default ApplicationV2 element
     return super.element;
   }
+
   private _currentWeather: WeatherData;
   private _displayOptions: DisplayOptions;
-  private _calendarPresent = false;   // is simple calendar present?
+  private _calendarPresent = false;   // is a calendar present?
   private _manualPause = false;
   private _attachedMode = false;
   private _attachModeHidden = true;   // like _currentlyHidden but have to track separately because that's for managing ready state not popup state
@@ -186,10 +191,10 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
     const html = $(htmlString);
     
     // Inject it into the calendar
-    adapter.inject(html, this._attachModeHidden);
+    const elementId = adapter.inject(html, this._attachModeHidden);
     
     // Set up event listeners - we need to find our injected element first
-    const injectedElement = document.getElementById('swr-fsc-container') || document.getElementById('swr-container');
+    const injectedElement = document.getElementById(elementId) || document.getElementById('swr-container');
     if (injectedElement) {
       // Store the element reference for event handlers
       this._injectedElement = injectedElement;
@@ -237,7 +242,8 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
       useCelsius: ModuleSettings.get(ModuleSettingKeys.useCelsius),
       attachedMode: this._attachedMode,
       showAttached: this._attachedMode && !this._attachModeHidden,
-      SCContainerClasses: !this._attachedMode || !adapter ? '' : adapter.containerClasses,
+      wrapperElementId: !this._attachedMode || !adapter ? '' : adapter.wrapperElementId,
+      containerClasses: !this._attachedMode || !adapter ? '' : adapter.containerClasses,
       windowPosition: this._attachedMode ? { bottom: 0, left: 0 } : this._windowPosition,
       containerPosition: this._attachedMode ? 'relative' : 'fixed',
       // For attached mode, we only hide if _attachModeHidden is true

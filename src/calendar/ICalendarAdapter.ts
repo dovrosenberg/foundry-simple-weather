@@ -1,3 +1,4 @@
+import { WeatherApplication } from '@/applications/WeatherApplication';
 import { SeasonDescription } from '@/weather/climateData';
 
 export interface CalendarDate {
@@ -39,10 +40,11 @@ export interface ICalendarAdapter {
   removeNote(noteId: string): Promise<void>;
   
   // UI integration
-  addSidebarButton(onClick?: () => void): void;
-  inject(html: JQuery<HTMLElement>, hidden: boolean): void;  // called when the calendar is rendered if we need to show our window
+  addSidebarButton(weatherApplication: WeatherApplication, onClick?: () => void): void;
+  inject(html: JQuery<HTMLElement>, hidden: boolean): string;  // called when the calendar is rendered if we need to show our window; returns container elementId
   activateListeners(hiddenCallback: (hidden: boolean) => void): void;  // called when the calendar is rendered if we need to attach any listeners
   get containerClasses(): string;
+  get wrapperElementId(): string;
   
   // Hooks/events
   getHooks(): {

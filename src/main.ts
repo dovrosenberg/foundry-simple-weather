@@ -20,11 +20,6 @@ import { calendarManager, CalendarType } from '@/calendar';
 export { calendarManager, CalendarType };
 import { getCalendarAdapter } from '@/calendar';
 
-// look for #swr-fsc-compact-open; what is the class on the parent div that wraps it?
-const SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER = 'fsc-pj';  // no dot in the front
-
-// also see instructions in SimpleCalendarAdapter.ts for adjusting constants
-
 
 // how do we decide what mode we're in and whether its visible or not?
 // 1. look to the attachment setting - this controls whether we're in attached mode or not; 
@@ -267,40 +262,8 @@ Hooks.once('setup', (): void => {
   // check the setting to see if we want to dock
   if (weatherApplication.attachedMode) {
     if (isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)) {
-      getCalendarAdapter()?.addSidebarButton(() => weatherApplication.toggleAttachModeHidden());
+      getCalendarAdapter()?.addSidebarButton(weatherApplication, () => weatherApplication.toggleAttachModeHidden());
     }
-
-    // for Simple Calendar, we also need to watch for when the calendar is rendered because in compact mode we
-    //    have to inject the button
-    Hooks.on('renderMainApp', (_application: Application, html: JQuery<HTMLElement>) => {
-      // in compact mode, there's no api to add a button, so we monkey patch one in
-      const compactMode = html.find(`.${SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER}`).length>0;
-      if (compactMode) {
-        weatherApplication.render();
-
-        // if it's already there, no need to do anything (it doesn't change)
-        if (html.find('#swr-fsc-compact-open').length === 0) {
-          const newButton = `
-          <div id="swr-fsc-compact-open" style="margin-left: 8px; cursor: pointer; ">
-            <div data-tooltip="Simple Weather" style="color:var(--compact-header-control-grey);">    
-              <span class="fa-solid fa-cloud-sun"></span>
-            </div>
-          </div>
-          `;
-
-          // add the button   
-          // note: how to find the new class when new SC release comes out?
-          //   it's the div that wraps the small buttons in the top left in compact mode
-          html.find(`.${SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER}`).append(newButton);
-
-          html.find('#swr-fsc-compact-open').on('click',() => {
-            weatherApplication.toggleAttachModeHidden();
-          });
-        }
-      } else {
-        weatherApplication.render();
-      }  
-    });
-}
+  }
 });
 

@@ -1,3 +1,4 @@
+import { WeatherApplication } from '@/applications/WeatherApplication';
 import { ICalendarAdapter, CalendarDate, TimeInterval } from './ICalendarAdapter';
 import { Season } from '@/weather/climateData';
 
@@ -8,7 +9,10 @@ export class SimpleCalendarAdapter implements ICalendarAdapter {
   public static SC_CLASS_FOR_TAB_CLOSED = 'fsc-d';    // look at the other siblings or close search and see what changes
   public static SC_CLASS_FOR_TAB_WRAPPER = 'fsc-of';   // the siblings that are tabs all have it - also needs to go in .scss
   public static SC_ID_FOR_WINDOW_WRAPPER = 'fsc-if';  // it's the top-level one with classes app, window-app, simple-calendar
-  
+
+  // look for #swr-fsc-compact-open; what is the class on the parent div that wraps it?
+  public static SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER = 'fsc-pj';  // no dot in the front
+
   private api: any;
   
   constructor() {
@@ -96,39 +100,75 @@ export class SimpleCalendarAdapter implements ICalendarAdapter {
     await this.api.removeNote(noteId);
   }
   
-  public addSidebarButton(onClick): void {
+  public addSidebarButton(weatherApplication: WeatherApplication, onClick): void {
     this.ensureApi();
     this.api.addSidebarButton('Simple Weather', 'fa-cloud-sun', '', false, onClick);
+
+    // for Simple Calendar, we also need to watch for when the calendar is rendered because in compact mode we
+    //    have to inject the button
+    Hooks.on('renderMainApp', (_application: Application, html: JQuery<HTMLElement>) => {
+      // in compact mode, there's no api to add a button, so we monkey patch one in
+      const compactMode = html.find(`.${SimpleCalendarAdapter.SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER}`).length>0;
+      if (compactMode) {
+        weatherApplication.render();
+
+        // if it's already there, no need to do anything (it doesn't change)
+        if (html.find('#swr-fsc-compact-open').length === 0) {
+          const newButton = `
+          <div id="swr-fsc-compact-open" style="margin-left: 8px; cursor: pointer; ">
+            <div data-tooltip="Simple Weather" style="color:var(--compact-header-control-grey);">    
+              <span class="fa-solid fa-cloud-sun"></span>
+            </div>
+          </div>
+          `;
+
+          // add the button   
+          // note: how to find the new class when new SC release comes out?
+          //   it's the div that wraps the small buttons in the top left in compact mode
+          html.find(`.${SimpleCalendarAdapter.SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER}`).append(newButton);
+
+          html.find('#swr-fsc-compact-open').on('click',() => {
+            weatherApplication.toggleAttachModeHidden();
+          });
+        }
+      } else {
+        weatherApplication.render();
+      }  
+    });
   }
 
-  public inject(html: JQuery<HTMLElement>, hidden: boolean): void {
+  public inject(html: JQuery<HTMLElement>, hidden: boolean): string {
+    const elementId = this.wrapperElementId;
+
     if (!hidden) {
       // turn off any existing calendar panels
       const existingPanels = $(`#${SimpleCalendarAdapter.SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_WRAPPER}.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_EXTENDED}`);
       existingPanels.addClass(SimpleCalendarAdapter.SC_CLASS_FOR_TAB_CLOSED).removeClass(SimpleCalendarAdapter.SC_CLASS_FOR_TAB_EXTENDED);
 
       // if it's there we'll replace, otherwise we'll append
-      if ($('#swr-fsc-container').length === 0) {
+      if ($(`#${elementId}`).length === 0) {
         // attach to the calendar
         const siblingPanels = $(`#${SimpleCalendarAdapter.SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_WRAPPER}.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_CLOSED}`);
         siblingPanels.last().parent().append(html);
       } else {
-        $('#swr-fsc-container').replaceWith(html);
+        $(`#${elementId}`).replaceWith(html);
       }
     } else {
       // hide it
-      $('#swr-fsc-container').remove();
+      $(`#${elementId}`).remove();
     }      
+
+    return elementId;
   }
   
   public activateListeners(hiddenCallback: (hidden: boolean) => void): void {
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === 'class' && $(mutation.target).hasClass(SimpleCalendarAdapter.SC_CLASS_FOR_TAB_EXTENDED) && 
-            $(mutation.target).hasClass(SimpleCalendarAdapter.SC_CLASS_FOR_TAB_WRAPPER) && ((mutation.target as HTMLElement).id!='swr-fsc-container')) {
+            $(mutation.target).hasClass(SimpleCalendarAdapter.SC_CLASS_FOR_TAB_WRAPPER) && ((mutation.target as HTMLElement).id!=this.wrapperElementId)) {
             // Class SC_CLASS_FOR_TAB_EXTENDED has been added to another panel (opening it), so turn off ours
             hiddenCallback(true);
-            $('#swr-fsc-container').remove();
+            $(`#${this.wrapperElementId}`).remove();
         }
       });
     });
@@ -143,6 +183,10 @@ export class SimpleCalendarAdapter implements ICalendarAdapter {
 
   public get containerClasses(): string {
     return `${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_WRAPPER} sc-right ${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_EXTENDED}`;  
+  }
+
+  public get wrapperElementId(): string {
+    return 'swr-fsc-container';
   }
 
   public getHooks(): { init: string } {
