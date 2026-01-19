@@ -390,7 +390,7 @@ export const registerGenerateWeatherTests = () => {
           expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);          
         });
 
-        it('should still prompt when extendOnly==true but isOneDayAdvance==false', async () => {
+        it('should prompt when extendOnly==true but isOneDayAdvance==false', async () => {
           await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);  // make sure there are forecasts
           await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), true, false);
           expect(dialogStub.called).to.be.true;

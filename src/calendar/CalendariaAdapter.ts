@@ -2,6 +2,7 @@ import { Season, } from '@/weather/climateData';
 import { ICalendarAdapter, CalendarDate, TimeInterval } from './ICalendarAdapter';
 import { WeatherApplication } from '@/applications/WeatherApplication';
 import { id as moduleId } from '@module';
+import Calendar from 'foundryvtt-simple-calendar/src/classes/calendar';
 
 type CalendariaDate = {
   day: number;
@@ -38,6 +39,10 @@ export class CalendariaAdapter implements ICalendarAdapter {
     return this.api.dateToTimestamp(currentDate);
   }
   
+  public CalendarDateToAPIDate(date: CalendarDate): CalendariaDate {
+    return this.api.timestampToDate(this.api.dateToTimestamp(date));
+  }
+
   public APIDateToCalendarDate(date: CalendariaDate): CalendarDate {
     // map the season from the icons
     const seasonIcon = this.api.getCurrentSeason(date)?.icon as string ?? '';
@@ -81,15 +86,16 @@ export class CalendariaAdapter implements ICalendarAdapter {
 
   public dateToTimestamp(date: CalendarDate): number {
     this.ensureApi();
-    
-    // Convert CalendarDate to Calendaria format
+
+    // datetoTimestamp doesn't need the day of year param
     const dateCalendaria = {
       year: date.year,
       month: date.month,
-      day: date.day,
+      dayOfMonth: date.day,
       hour: date.hour || 0,
-      minute: date.minute || 0
-    };
+      minute: date.minute || 0,
+      second: 0
+    }
     
     return this.api.dateToTimestamp(dateCalendaria);
   }
@@ -97,29 +103,26 @@ export class CalendariaAdapter implements ICalendarAdapter {
   public timestampPlusInterval(timestamp: number, interval: TimeInterval): number {
     this.ensureApi();
 
-
     // We need to convert to date, add the interval, and convert back
     let date = this.api.timestampToDate(timestamp);
     if (!date) {
       throw new Error('Failed to convert timestamp to date');
     }
 
-    date = this.api.addYears(date, interval.year || 0);
-    date = this.api.addMonths(date, interval.month || 0);
-    date = this.api.addDays(date, interval.day || 0);
-
-    // it doesn't have functions for time, so we do manually, though it's not necessarily going to work
-    // Calculate new date components
-    date.hour = date.hour + (interval.hour || 0);
-    date.minute = date.minute + (interval.minute || 0);
+    if (interval.year)
+      date = this.api.addYears(date, interval.year);
+    if (interval.month)
+      date = this.api.addMonths(date, interval.month);
+    if (interval.day)
+      date = this.api.addDays(date, interval.day);
 
     // Convert back to timestamp using Calendaria's API
     return this.api.dateToTimestamp(date);
   }
 
-  public getNotesForDay(year: number, month: number, day: number): JournalEntry.ConfiguredInstance[] {
+  public getNotesForDay(date: CalendarDate): JournalEntry.ConfiguredInstance[] {
     this.ensureApi();
-    const notes = this.api.getNotesForDate(year, month, day);
+    const notes = this.api.getNotesForDate(date.year, date.month, date.day);
 
     // Calendaria returns note stubs, we need to return them as JournalEntry objects
     return notes.map((note: { journalId: string }) => JournalEntry.get(note.journalId)) || [];
@@ -134,23 +137,9 @@ export class CalendariaAdapter implements ICalendarAdapter {
   ): Promise<JournalEntry.ConfiguredInstance> {
     this.ensureApi();
 
-    // Convert CalendarDate to Calendaria format
-    const startDateCalendaria = {
-      year: startDate.year,
-      month: startDate.month,
-      day: startDate.day,
-      hour: startDate.hour || 0,
-      minute: startDate.minute || 0
-    };
-
-    const endDateCalendaria = {
-      year: endDate.year,
-      month: endDate.month,
-      day: endDate.day,
-      hour: endDate.hour,
-      minute: endDate.minute
-    };
-
+    const startDateCalendaria = this.CalendarDateToAPIDate(startDate);
+    const endDateCalendaria = this.CalendarDateToAPIDate(endDate);
+    
     const note = await this.api.createNote({
       name: title,
       content: content,

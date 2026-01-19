@@ -32,8 +32,8 @@ const CALENDAR_MODULES: CalendarModuleInfo[] = [
   {
     moduleId: 'calendaria',
     type: CalendarType.CALENDARIA,
-    minimumVersion: '0.7.3',
-    preferredVersion: '0.7.3'
+    minimumVersion: '0.7.4',
+    preferredVersion: '0.7.4'
   },
   {
     moduleId: 'foundryvtt-simple-calendar-reborn',

@@ -83,9 +83,9 @@ export class SimpleCalendarAdapter implements ICalendarAdapter {
     return this.api.timestampPlusInterval(timestamp, interval);
   }
   
-  public getNotesForDay(year: number, month: number, day: number): JournalEntry.ConfiguredInstance[] {
+  public getNotesForDay(date: CalendarDate): JournalEntry.ConfiguredInstance[] {
     this.ensureApi();
-    const notes = this.api.getNotesForDay(year, month, day);
+    const notes = this.api.getNotesForDay(date.year, date.month, date.day);
     
     return notes;
   }

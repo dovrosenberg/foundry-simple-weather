@@ -602,7 +602,7 @@ _______________________________________
         
         if (ModuleSettings.get(ModuleSettingKeys.storeInSCNotes)) {
           // if we're using notes from SC (and have a valid note) pull that weather
-          const notes = getCalendarAdapter()?.getNotesForDay(currentDate.year, currentDate.month, currentDate.day) || [];
+          const notes = getCalendarAdapter()?.getNotesForDay(currentDate) || [];
           let foundWeatherNote = false;
 
           for (let i=0; i<notes.length; i++) {
@@ -824,7 +824,7 @@ _______________________________________
     const noteTitle = 'Simple Weather - Daily Weather';
 
     // remove any previous note for the day
-    const notes = adapter.getNotesForDay(weatherData.date.year, weatherData.date.month, weatherData.date.day);
+    const notes = adapter.getNotesForDay(weatherData.date);
     for (let i=0; i<notes.length; i++) {
       if (notes[i]) {
         const note = notes[i] as JournalEntry.ConfiguredInstance;

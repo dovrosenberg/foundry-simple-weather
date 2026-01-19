@@ -1,9 +1,10 @@
 import { WeatherApplication } from '@/applications/WeatherApplication';
 
+//note: this is our internal calendar date format - it's not the same as Foundry's CalendarData
 export interface CalendarDate {  
   year: number;
   month: number;
-  day: number;
+  day: number; // day of the month (note: in Foundry CalendarData, it's the day of the year)
   hour?: number;
   minute?: number;
   season?: number;
@@ -22,8 +23,6 @@ export interface TimeInterval {
   year?: number;
   month?: number;
   day?: number;
-  hour?: number;
-  minute?: number;
 }
 
 export interface ICalendarAdapter {
@@ -36,7 +35,7 @@ export interface ICalendarAdapter {
   timestampPlusInterval(timestamp: number, interval: TimeInterval): number;
   
   // Note management
-  getNotesForDay(year: number, month: number, day: number): JournalEntry.ConfiguredInstance[];
+  getNotesForDay(date: CalendarDate): JournalEntry.ConfiguredInstance[];
   addNote(title: string, content: string, startDate: CalendarDate, endDate: CalendarDate, isPublic?: boolean): Promise<JournalEntry.ConfiguredInstance>;
   removeNote(noteId: string): Promise<void>;
   

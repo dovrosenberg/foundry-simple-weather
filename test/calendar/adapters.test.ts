@@ -158,7 +158,7 @@ export const registerCalendarAdapterTests = () => {
 
         it('should get notes for day', () => {
           expect(adapter).to.not.be.null;
-          const notes = adapter!.getNotesForDay(2024, 6, 15);
+          const notes = adapter!.getNotesForDay({ year: 2024, month: 6, day: 15, display: { date: '6/15/2024' } });
           expect(notes).to.be.an('array');
         });
 

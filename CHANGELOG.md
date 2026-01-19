@@ -1,12 +1,13 @@
 # Change Log
 
-## v2.2.0 - Simple Calendar Reborn
-#### Support for Simple Calendar Reborn v2.5.3
+## v2.2.0 - New Calendar Support
+#### Support for Simple Calendar Reborn v2.5.3 and Calendaria v0.7.4
 
-![](https://img.shields.io/badge/release%20date-January%2011%2C%202026-blue)
+![](https://img.shields.io/badge/release%20date-January%2018%2C%202026-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v2.2.0/module.zip)
 
 - While it might still work with other forks, Simple Weather now officially supports Simple Calendar Reborn.  Will wait to see what adoption looks like across the community before deciding if I can/need to support multiple forks.
+- Additionally, Simple Weather now supports Calendaria.  Thanks to Sayshal for providing a ton of support to get these working together.
 - Advancing the calendar one day will no longer prompt for overwriting forecasts.  It will just use the existing forecats and extend the extra day.  If you jump around on the calendar, you will still be prompted if you wish to overwrite, as you may not know in that scenario if there were already forecasts provided.
 
 ## v2.1.0 - Temporary support for Simple Calendar fork

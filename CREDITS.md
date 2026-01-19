@@ -24,9 +24,13 @@ Would love to have help providing translations to other languages
 
 ### Simple Calendar
 
-Simple Weather optionally uses [Simple Calendar](https://github.com/vigoren/foundryvtt-simple-calendar) by [Vigoren](https://github.com/vigoren). Or for v13 this fork (at least for now): https://github.com/CarlosFdez/foundryvtt-simple-calendar.
+Simple Weather optionally uses [Simple Calendar](https://github.com/vigoren/foundryvtt-simple-calendar) by [Vigoren](https://github.com/vigoren). Or for v13 this fork (at least for now): https://github.com/CarlosFdez/foundryvtt-simple-calendar. 
 
-It also has support for [Simple Calendar Reborn](https://github.com/Fireblight-Studios/foundryvtt-simple-calendar).
+It also has support for [Simple Calendar Reborn](https://github.com/Fireblight-Studios/foundryvtt-simple-calendar).  
+
+### Calendaria
+
+Thanks to [Sayshal](https://github.com/Sayshal) for building [Calendaria](https://github.com/Sayshal/Calendaria) and providing a ton of support for functionality needed to make it work with Simple Weather.
 
 ## Weather algorithm
 The weather algorithm was inspired by:
@@ -36,7 +40,7 @@ The weather algorithm was inspired by:
 ## Other thanks
 
 ### Simple Calendar
-Thank you to [Vigoren](https://github.com/vigoren) for the simple API.
+Thank you to [Vigoren](https://github.com/vigoren) for the simple API. Even if the original Simple Calendar goes away permanently with Foundry v13, it was the inspiration for this module and the great API made it possible.
 
 ### Original Author
 
