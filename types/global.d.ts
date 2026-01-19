@@ -1,8 +1,4 @@
-import type { SimpleCalendar } from 'foundryvtt-simple-calendar';
 export * from '@types/fvtt-types';
-import 'foundryvtt-simple-calendar';
-
-declare let SimpleCalendar: SimpleCalendar;
 
 declare global {
   interface AssumeHookRan {

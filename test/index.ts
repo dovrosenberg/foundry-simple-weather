@@ -8,6 +8,7 @@ import { registerWeatherTests } from '@test/weather';
 import { registerCalendarTests } from '@test/calendar';
 
 // Registers all `Quench` tests
+// @ts-ignore
 Hooks.on("quenchReady", () => {
   registerUtilTests();
   registerWeatherTests();

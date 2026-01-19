@@ -35,8 +35,8 @@ export interface ICalendarAdapter {
   timestampPlusInterval(timestamp: number, interval: TimeInterval): number;
   
   // Note management
-  getNotesForDay(date: CalendarDate): JournalEntry.ConfiguredInstance[];
-  addNote(title: string, content: string, startDate: CalendarDate, endDate: CalendarDate, isPublic?: boolean): Promise<JournalEntry.ConfiguredInstance>;
+  getNotesForDay(date: CalendarDate): JournalEntry[];
+  addNote(title: string, content: string, startDate: CalendarDate, endDate: CalendarDate, isPublic?: boolean): Promise<JournalEntry>;
   removeNote(noteId: string): Promise<void>;
   
   // UI integration

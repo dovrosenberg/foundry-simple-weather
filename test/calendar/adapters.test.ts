@@ -12,7 +12,7 @@ import { CalendariaAdapter } from '@/calendar/CalendariaAdapter';
 const mockSimpleCalendarApi = {
   api: {
     timestamp: () => 1234567890,
-    timestampToDate: (ts: number) => ({
+    timestampToDate: (_ts: number) => ({
       year: 2024,
       month: 6,
       day: 15,
@@ -30,12 +30,12 @@ const mockSimpleCalendarApi = {
         date: '6/15/2024'
       }
     }),
-    dateToTimestamp: (date: any) => 1234567890,
+    dateToTimestamp: (_date: any) => 1234567890,
     timestampPlusInterval: (ts: number, interval: TimeInterval) => ts + (interval.day || 0) * 86400,
     getNotesForDay: () => [],
     addNote: async () => ({ id: 'test-note' } as any),
     removeNote: async () => {},
-    addSidebarButton: (title: string, icon: string, tooltip: string, active: boolean, onClick: () => void) => {},
+    addSidebarButton: (_title: string, _icon: string, _tooltip: string, _active: boolean, _onClick: () => void) => {},
   },
   Hooks: { Init: 'simple-calendar-init' }
 };
@@ -50,8 +50,8 @@ const mockCalendariaApi = {
       minute: 30,
       season: Season.Summer
     }),
-    dateToTimestamp: (date: any) => 1234567890,
-    timestampToDate: (ts: number) => ({
+    dateToTimestamp: (_date: any) => 1234567890,
+    timestampToDate: (_ts: number) => ({
       year: 2024,
       month: 6,
       dayOfMonth: 15,
@@ -67,7 +67,7 @@ const mockCalendariaApi = {
     createNote: async () => ({ id: 'test-note' } as any),
     deleteNote: async () => {},
     registerWidget: () => {},
-    formatDate: (date: any, format: string) => {
+    formatDate: (_date: any, format: string) => {
       if (format === 'EEEE') return 'Friday';
       if (format === 'D MMMM YYYY') return '15 June 2024';
       if (format === 'D') return '15';
@@ -75,7 +75,7 @@ const mockCalendariaApi = {
       if (format === 'YYYY') return '2024';
       return '15 June 2024';
     },
-    getCurrentSeason: (date: any) => ({ icon: 'fa-sun' })
+    getCurrentSeason: (_date: any) => ({ icon: 'fa-sun' })
   }
 };
 

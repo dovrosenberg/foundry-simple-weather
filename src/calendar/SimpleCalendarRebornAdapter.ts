@@ -82,14 +82,14 @@ export class SimpleCalendarRebornAdapter implements ICalendarAdapter {
     return this.api.timestampPlusInterval(timestamp, interval);
   }
   
-  public getNotesForDay(date: CalendarDate): JournalEntry.ConfiguredInstance[] {
+  public getNotesForDay(date: CalendarDate): JournalEntry[] {
     this.ensureApi();
     const notes = this.api.getNotesForDay(date.year, date.month, date.day);
     
     return notes;
   }
   
-  public async addNote(title: string, content: string, startDate: CalendarDate, endDate: CalendarDate, isPublic: boolean = true): Promise<JournalEntry.ConfiguredInstance> {
+  public async addNote(title: string, content: string, startDate: CalendarDate, endDate: CalendarDate, isPublic: boolean = true): Promise<JournalEntry> {
     this.ensureApi();
     const note = await this.api.addNote(title, content, startDate, endDate, isPublic);
     

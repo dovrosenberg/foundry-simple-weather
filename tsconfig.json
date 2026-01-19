@@ -3,8 +3,8 @@
 		"incremental": true,
 		"target": "es2018",
 		"module": "esnext",
-		"lib": [ "es2015", "es2019", "dom" ],
-		"typeRoots": [ "./src/types", "node", "@league-of-foundry-developers/foundry-vtt-types", "@ethaks/fvtt-quench" ],
+		"lib": [ "es2024", "dom" ],
+		"typeRoots": [ "./src/types", "@league-of-foundry-developers/foundry-vtt-types", "@ethaks/fvtt-quench" ],
 		"moduleResolution": "node",
 		"sourceMap": true,
 		"strict": true,
@@ -17,8 +17,8 @@
 		"noImplicitThis": false,
 		"alwaysStrict": true,
 
-		"noUnusedLocals": false,
-		"noUnusedParameters": false,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
 		"noImplicitReturns": true,
 		"noFallthroughCasesInSwitch": true,
 
@@ -29,12 +29,12 @@
 		"skipLibCheck": true,
 		"resolveJsonModule": true,
 
-		"baseUrl": "./",
 		"paths": {
+			"*": ["./*"],
 			"@/*": ["./src/*"],
 			"@test/*": ["./test/*"],
 			"@module": ["./static/module.json"]
 		}
 	},
-  "exclude": [ "node_modules", "dist" ]
+	"exclude": [ "node_modules", "dist" ]
 }

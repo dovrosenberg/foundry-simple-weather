@@ -151,7 +151,7 @@ export const registerWeatherApplicationTests = (context: QuenchBatchContext) => 
           season: 1
         };
         
-        (weatherApp as any)._currentWeather = new WeatherData(previous, Season.Winter, 'Modest', 'Temperate', 14, 70);
+        (weatherApp as any)._currentWeather = new WeatherData(previous, Season.Winter, Humidity.Modest, Climate.Temperate, 14, 70);
         
         const result = (weatherApp as any).isOneDayAdvance(current);
         expect(result).to.be.true;

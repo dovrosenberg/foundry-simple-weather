@@ -607,7 +607,7 @@ _______________________________________
 
           for (let i=0; i<notes.length; i++) {
             if (notes[i]) {
-              const note = notes[i] as JournalEntry.ConfiguredInstance;
+              const note = notes[i] as JournalEntry;
               const flagData = note.getFlag(moduleJson.id, CAL_NOTE_WEATHER_FLAG_NAME) as WeatherData;
       
               // if it has the flag, it's a prior weather entry - use it
@@ -827,7 +827,7 @@ _______________________________________
     const notes = adapter.getNotesForDay(weatherData.date);
     for (let i=0; i<notes.length; i++) {
       if (notes[i]) {
-        const note = notes[i] as JournalEntry.ConfiguredInstance;
+        const note = notes[i] as JournalEntry;
         const flagData = note.getFlag(moduleJson.id, CAL_NOTE_WEATHER_FLAG_NAME) as WeatherData;
 
         // if it has the flag, it's a prior weather entry - delete it

@@ -2,7 +2,6 @@ import { Season, } from '@/weather/climateData';
 import { ICalendarAdapter, CalendarDate, TimeInterval } from './ICalendarAdapter';
 import { WeatherApplication } from '@/applications/WeatherApplication';
 import { id as moduleId } from '@module';
-import Calendar from 'foundryvtt-simple-calendar/src/classes/calendar';
 
 type CalendariaDate = {
   day: number;
@@ -120,7 +119,7 @@ export class CalendariaAdapter implements ICalendarAdapter {
     return this.api.dateToTimestamp(date);
   }
 
-  public getNotesForDay(date: CalendarDate): JournalEntry.ConfiguredInstance[] {
+  public getNotesForDay(date: CalendarDate): JournalEntry[] {
     this.ensureApi();
     const notes = this.api.getNotesForDate(date.year, date.month, date.day);
 
@@ -134,18 +133,18 @@ export class CalendariaAdapter implements ICalendarAdapter {
     startDate: CalendarDate,
     endDate: CalendarDate,
     isPublic: boolean = true
-  ): Promise<JournalEntry.ConfiguredInstance> {
+  ): Promise<JournalEntry> {
     this.ensureApi();
 
     const startDateCalendaria = this.CalendarDateToAPIDate(startDate);
     const endDateCalendaria = this.CalendarDateToAPIDate(endDate);
-    
+
     const note = await this.api.createNote({
       name: title,
       content: content,
       startDate: startDateCalendaria,
       endDate: endDateCalendaria,
-      allDay: false,
+      allDay: true,
       gmOnly: !isPublic
     });
 
