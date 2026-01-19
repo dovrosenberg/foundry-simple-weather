@@ -1,6 +1,7 @@
-import { Season, SeasonDescription } from '@/weather/climateData';
+import { Season, } from '@/weather/climateData';
 import { ICalendarAdapter, CalendarDate, TimeInterval } from './ICalendarAdapter';
-import { WeatherApplication } from '@/applications/WeatherApplication';
+import { weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
+import { id as moduleId } from '@module';
 
   type CalendariaDate = {
     day: number;
@@ -168,8 +169,8 @@ export class CalendariaAdapter implements ICalendarAdapter {
   public addSidebarButton(_weatherApplication: WeatherApplication, onClick: () => void): void {
     this.ensureApi();
 
-    this.api.registerWidget('my-module', {
-      id: 'fcb-calendaria-button',
+    this.api.registerWidget(moduleId, {
+      id: 'swr-calendaria-button',
       type: 'indicator',
       replaces: 'weather-indicator',
       icon: 'fas fa-cloud-sun',
@@ -178,22 +179,8 @@ export class CalendariaAdapter implements ICalendarAdapter {
     });
 
     // Calendaria doesn't appear to have a direct sidebar button API
-    // Hooks.on('renderMiniCalendar', (_application: Application, html: HTMLElement) => {
-    //   // Find the target location in Calendaria's mini-calendar
-    //   const targetPanel = $(html).find('.mini-notes-panel');
-      
-    //   if (targetPanel.length === 0) {
-    //     console.error('Calendaria: Could not find #mini-calendar .mini-notes-panel to inject weather panel');
-    //     return;
-    //   }
-
-    //   // if it's there we'll replace, otherwise we'll append
-    //   if ($('#swr-calendaria-container').length === 0) {
-    //     // inject as sibling right after the mini-notes-panel
-    //     targetPanel.after(html);
-    //   } else {
-    //     $('#swr-calendaria-container').replaceWith(html);
-    //   }
+    // Hooks.on('renderMiniCalendar', (/*application: Application, html: HTMLElement*/): void => {
+    //   weatherApplication.render();
     // });
   }
 
@@ -232,7 +219,7 @@ export class CalendariaAdapter implements ICalendarAdapter {
   }
 
   public get containerClasses(): string {
-    return 'fcb-calendaria-container';
+    return '';
   }
 
   public get wrapperElementId(): string {

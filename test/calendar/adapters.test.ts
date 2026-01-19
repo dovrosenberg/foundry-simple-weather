@@ -3,6 +3,7 @@ import { CalendariaAdapter } from '@/calendar/CalendariaAdapter';
 import { SimpleCalendarRebornAdapter } from '@/calendar/SimpleCalendarRebornAdapter';
 import { CalendarDate, TimeInterval } from '@/calendar/ICalendarAdapter';
 import { Season } from '@/weather/climateData';
+import { WeatherApplication } from '@/applications/WeatherApplication';
 import { QuenchBatchContext } from '@ethaks/fvtt-quench';
 import { runTestsForEachCalendar } from '@test/calendarTestHelper';
 
@@ -32,7 +33,7 @@ const mockSimpleCalendarApi = {
   getNotesForDay: () => [],
   addNote: async () => ({ id: 'test-note' } as any),
   removeNote: async () => {},
-  addSidebarButton: () => {},
+  addSidebarButton: (title: string, icon: string, tooltip: string, active: boolean, onClick: () => void) => {},
   Hooks: { Init: 'simple-calendar.init' }
 };
 
@@ -149,7 +150,8 @@ export const registerCalendarAdapterTests = () => {
         });
 
         it('should add sidebar button', () => {
-          expect(() => adapter.addSidebarButton(() => {})).to.not.throw;
+          const mockWeatherApp = { render: () => {}, toggleAttachModeHidden: () => {} } as WeatherApplication;
+          expect(() => adapter.addSidebarButton(mockWeatherApp, () => {})).to.not.throw;
         });
 
         it('should inject HTML', () => {
@@ -246,7 +248,8 @@ export const registerCalendarAdapterTests = () => {
         });
 
         it('should add sidebar button', () => {
-          expect(() => adapter.addSidebarButton(() => {})).to.not.throw;
+          const mockWeatherApp = { render: () => {}, toggleAttachModeHidden: () => {} } as WeatherApplication;
+          expect(() => adapter.addSidebarButton(mockWeatherApp, () => {})).to.not.throw;
         });
 
         it('should inject HTML', () => {
@@ -348,7 +351,8 @@ export const registerCalendarAdapterTests = () => {
         });
 
         it('should add sidebar button', () => {
-          expect(() => adapter.addSidebarButton(() => {})).to.not.throw;
+          const mockWeatherApp = { render: () => {}, toggleAttachModeHidden: () => {} } as WeatherApplication;
+          expect(() => adapter.addSidebarButton(mockWeatherApp, () => {})).to.not.throw;
         });
 
         it('should inject HTML', () => {
@@ -363,7 +367,7 @@ export const registerCalendarAdapterTests = () => {
         it('should return container classes', () => {
           const classes = adapter.containerClasses;
           expect(classes).to.be.a('string');
-          expect(classes).to.equal('fcb-calendaria-container');
+          expect(classes).to.equal('');
         });
 
         it('should return hooks', () => {

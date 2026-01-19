@@ -12,7 +12,7 @@ export const registerCalendarTests = () => {
       describe('cleanDate', () => {
         it('should return the timestamp of 0:00 (midnight)', () => {
           const testDate = {
-            year: 2024,
+            year: 2025,
             month: 6,
             day: 15,
             hour: 14,

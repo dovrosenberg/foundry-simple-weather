@@ -2,7 +2,6 @@ import '@/../styles/simple-weather.scss';
 import '@/../styles/menu-icon.scss';
 
 import { ModuleSettings, ModuleSettingKeys, } from '@/settings/ModuleSettings';
-import { VersionUtils } from '@/utils/versionUtils';
 import { isClientGM } from '@/utils/game';
 import { allowSeasonSync, Climate, HexFlowerCell, Humidity, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
 import { initializeLocalizedText as initializeLocalizedWeatherText } from '@/weather/weatherMap';

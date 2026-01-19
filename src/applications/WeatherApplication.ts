@@ -645,14 +645,14 @@ _______________________________________
           await this.generateWeather(currentDate, isOneDayAdvance);
         }
       }
+
+      await this.render();
     } else {
       // always update because the time has likely changed even if the date didn't
       // but we don't need to save the time to the db, because every second
       //    it's getting refreshed 
       this._currentWeather.date = currentDate;
     }
-
-    await this.render();
   }
 
   

@@ -317,7 +317,7 @@ body.game #swr-container #swr-manual-weather-selection.swr-invalid-manual-option
   pointer-events: none;
   background: var(--calendaria-bg);
   box-shadow: 4px 0 12px var(--calendaria-shadow);
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  // transition: transform 0.25s ease, opacity 0.25s ease;
   transform: translateX(-100%);
   height: fit-content;
 
