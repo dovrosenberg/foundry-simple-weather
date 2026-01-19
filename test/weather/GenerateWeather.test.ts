@@ -8,7 +8,7 @@ import { backupSettings, restoreSettings } from '@test/index';
 import { GenerateWeather } from '@/weather/GenerateWeather';
 import { getManualOptionsBySeason } from '@/weather/manualWeather';
 import { cleanDate } from '@/utils/calendar';
-import { SimpleCalendarAdapter, CalendarDate } from '@/calendar';
+import { CalendarDate, calendarManager } from '@/calendar';
 import { runTestsForEachCalendar } from '@test/calendarTestHelper';
 
 let resetWeatherMock;  // reset to the 1st call
@@ -226,14 +226,23 @@ export const registerGenerateWeatherTests = () => {
     'simple-weather.weather.forecastGeneration',
     (context: QuenchBatchContext) => {
       const { describe, it, expect, before, after, } = context;
-      const todayTimestamp = SimpleCalendar.api.dateToTimestamp({
+      
+      // Get the current adapter and create test data
+      const adapter = calendarManager.getAdapter();
+      if (!adapter) throw new Error('No calendar adapter available');
+      
+      const todayTimestamp = adapter.dateToTimestamp({
         day: 14,
         month: 3,
         year: 2001,
+        hour: 0,
+        minute: 0,
+        display: { date: '3/14/2001', time: '0:00' }
       });
-      const todayDate = new SimpleCalendarAdapter().timestampToDate(todayTimestamp);
+      const todayDate = adapter.timestampToDate(todayTimestamp);
 
       if (!todayTimestamp) throw new Error('could not generate test date');
+      if (!todayDate) throw new Error('could not convert timestamp to date');
 
       const weather: WeatherData[] = [
         new WeatherData(todayDate, Season.Spring, Humidity.Modest, Climate.Temperate, 17, 70),
@@ -251,10 +260,13 @@ export const registerGenerateWeatherTests = () => {
       const REFORECAST_OFFSET = 4;
       const reforecasts: Record<string, Forecast> = {};   // the forecasts that will be generated with the next 7 calls fo generateWeather
       for (let i = 0; i < 7; i++) {
-        const timestamp = SimpleCalendar.api.dateToTimestamp({
+        const timestamp = adapter.dateToTimestamp({
           day: 15+i,
           month: 3,
-          year: 2001, 
+          year: 2001,
+          hour: 0,
+          minute: 0,
+          display: { date: `${3}/${15+i}/2001`, time: '0:00' }
         });
         forecasts[timestamp] = new Forecast(timestamp, Climate.Temperate, Humidity.Modest, weather[i].hexFlowerCell as HexFlowerCell); 
         reforecasts[timestamp] = new Forecast(timestamp, Climate.Temperate, Humidity.Modest, weather[(i+REFORECAST_OFFSET) % weather.length].hexFlowerCell as HexFlowerCell); 
@@ -335,10 +347,13 @@ export const registerGenerateWeatherTests = () => {
           dialogMockReturn = false;
           
           const holeyForecasts = {...forecasts};
-          const timestampToRemove = SimpleCalendar.api.dateToTimestamp({
+          const timestampToRemove = adapter.dateToTimestamp({
             day: 15+3,
             month: 3,
-            year: 2001, 
+            year: 2001,
+            hour: 0,
+            minute: 0,
+            display: { date: `3/${15+3}/2001`, time: '0:00' }
           });
   
           // remove a forecast
@@ -448,7 +463,6 @@ export const registerGenerateWeatherTests = () => {
           // Set up a forecast for today
           const forecastCell = 15; // specific hex cell for testing
           // Use cleanDate to get the same key that the actual code uses
-          const adapter = new SimpleCalendarAdapter();
           const dateKey = cleanDate(adapter, todayDate!);
           const forecasts = {
             [dateKey]: new Forecast(dateKey, Climate.Temperate, Humidity.Modest, forecastCell as HexFlowerCell)

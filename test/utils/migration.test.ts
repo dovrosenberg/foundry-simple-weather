@@ -5,6 +5,7 @@ import { Forecast } from '@/weather/Forecast';
 import { QuenchBatchContext } from '@ethaks/fvtt-quench'
 import { version } from '@module';
 import { runTestsForEachCalendar } from '@test/calendarTestHelper';
+import { calendarManager } from '@/calendar/CalendarManager';
 
 export const registerMigrationTests = () => {
   runTestsForEachCalendar(
@@ -33,10 +34,22 @@ export const registerMigrationTests = () => {
         it('should adjust forecast timestamps to 0:00 (midnight)', async () => {
           await ModuleSettings.set(ModuleSettingKeys.previousVersion, '');
 
-          // create a date
-          const date = SimpleCalendar.api.timestampToDate(2342342342) as SimpleCalendar.DateData;
+          // create a date using the current adapter
+          const adapter = calendarManager.getAdapter();
+          if (!adapter) throw new Error('No calendar adapter available');
+          
+          const date = adapter.timestampToDate(2342342342);
+          if (!date) throw new Error('Could not create date from timestamp');
+          
+          // Calculate midday timestamp (12:00) for the test
+          const middayTimestamp = adapter.dateToTimestamp({
+            ...date,
+            hour: 12,
+            minute: 0
+          });
+          
           const badForecasts = {
-            [date.midday.toString()]: new Forecast(date.midday, Climate.Cold, Humidity.Barren, 24),
+            [middayTimestamp.toString()]: new Forecast(middayTimestamp, Climate.Cold, Humidity.Barren, 24),
           }
           await ModuleSettings.set(ModuleSettingKeys.forecasts, badForecasts);
 
@@ -45,9 +58,10 @@ export const registerMigrationTests = () => {
           const updatedForecast = ModuleSettings.get(ModuleSettingKeys.forecasts);
           expect(Object.keys(updatedForecast).length).to.equal(1);
           // The timestamp should be cleaned to 0:00 (midnight)
-          const cleanedDate = SimpleCalendar.api.timestampToDate(Object.keys(updatedForecast)[0]) as SimpleCalendar.DateData;
-          expect(cleanedDate.hour).to.equal(0);
-          expect(cleanedDate.minute).to.equal(0);
+          const cleanedDate = adapter.timestampToDate(Number(Object.keys(updatedForecast)[0]));
+          expect(cleanedDate).to.not.be.null;
+          expect(cleanedDate!.hour).to.equal(0);
+          expect(cleanedDate!.minute).to.equal(0);
         });
       });
 

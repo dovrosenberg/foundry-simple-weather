@@ -34,7 +34,7 @@ export const detectAvailableCalendarsForTesting = (): CalendarTestInfo[] => {
     });
   }
 
-  if (typeof SimpleCalendar !== 'undefined') {
+  if (typeof (globalThis as any).SimpleCalendar !== 'undefined') {
     fallbackCalendars.push({
       type: CalendarType.SIMPLE_CALENDAR,
       name: 'Simple Calendar'

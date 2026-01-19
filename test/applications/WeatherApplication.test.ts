@@ -2,7 +2,7 @@ import { QuenchBatchContext } from '@ethaks/fvtt-quench';
 import { WeatherApplication } from '../../src/applications/WeatherApplication';
 import { expect } from 'chai';
 import { WeatherData } from '../../src/weather/WeatherData';
-import { Season } from '../../src/weather/climateData';
+import { Season, Humidity, Climate } from '../../src/weather/climateData';
 
 export const registerWeatherApplicationTests = (context: QuenchBatchContext) => {
   const { describe, it, beforeEach, afterEach } = context;
@@ -25,12 +25,11 @@ export const registerWeatherApplicationTests = (context: QuenchBatchContext) => 
           year: 2024,
           month: 1,
           day: 15,
-          // Add required properties for SimpleCalendar.DateData
           minute: 0,
           hour: 12,
-          weekday: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-          display: { date: { day: 15, month: 1, year: 2024 }, time: '12:00' },
-          currentSeason: { numericRepresentation: 1 }
+          weekday: 'Sun',
+          display: { date: '1/15/2024', time: '12:00' },
+          season: 1
         };
         
         const current = {
@@ -39,13 +38,13 @@ export const registerWeatherApplicationTests = (context: QuenchBatchContext) => 
           day: 16,
           minute: 0,
           hour: 12,
-          weekday: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-          display: { date: { day: 16, month: 1, year: 2024 }, time: '12:00' },
-          currentSeason: { numericRepresentation: 1 }
+          weekday: 'Mon',
+          display: { date: '1/16/2024', time: '12:00' },
+          season: 1
         };
         
         // Set up the current weather with the previous date
-        (weatherApp as any)._currentWeather = new WeatherData(previous, Season.Spring, 'Modest', 'Temperate', 14, 70);
+        (weatherApp as any)._currentWeather = new WeatherData(previous, Season.Spring, Humidity.Modest, Climate.Temperate, 14, 70);
         
         // Access the private method using bracket notation
         const result = (weatherApp as any).isOneDayAdvance(current);
@@ -59,13 +58,13 @@ export const registerWeatherApplicationTests = (context: QuenchBatchContext) => 
           day: 15,
           minute: 0,
           hour: 12,
-          weekday: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-          display: { date: { day: 15, month: 1, year: 2024 }, time: '12:00' },
-          currentSeason: { numericRepresentation: 1 }
+          weekday: 'Sun',
+          display: { date: '1/15/2024', time: '12:00' },
+          season: 1
         };
         
         // Set up the current weather with the same date
-        (weatherApp as any)._currentWeather = new WeatherData(date, Season.Spring, 'Modest', 'Temperate', 14, 70);
+        (weatherApp as any)._currentWeather = new WeatherData(date, Season.Spring, Humidity.Modest, Climate.Temperate, 14, 70);
         
         const result = (weatherApp as any).isOneDayAdvance(date);
         expect(result).to.be.false;
@@ -78,9 +77,9 @@ export const registerWeatherApplicationTests = (context: QuenchBatchContext) => 
           day: 15,
           minute: 0,
           hour: 12,
-          weekday: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-          display: { date: { day: 15, month: 1, year: 2024 }, time: '12:00' },
-          currentSeason: { numericRepresentation: 1 }
+          weekday: 'Sun',
+          display: { date: '1/15/2024', time: '12:00' },
+          season: 1
         };
         
         const current = {
@@ -89,12 +88,12 @@ export const registerWeatherApplicationTests = (context: QuenchBatchContext) => 
           day: 20,
           minute: 0,
           hour: 12,
-          weekday: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-          display: { date: { day: 20, month: 1, year: 2024 }, time: '12:00' },
-          currentSeason: { numericRepresentation: 1 }
+          weekday: 'Sat',
+          display: { date: '1/20/2024', time: '12:00' },
+          season: 1
         };
         
-        (weatherApp as any)._currentWeather = new WeatherData(previous, Season.Spring, 'Modest', 'Temperate', 14, 70);
+        (weatherApp as any)._currentWeather = new WeatherData(previous, Season.Spring, Humidity.Modest, Climate.Temperate, 14, 70);
         
         const result = (weatherApp as any).isOneDayAdvance(current);
         expect(result).to.be.false;
@@ -107,9 +106,9 @@ export const registerWeatherApplicationTests = (context: QuenchBatchContext) => 
           day: 31,
           minute: 0,
           hour: 12,
-          weekday: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-          display: { date: { day: 31, month: 1, year: 2024 }, time: '12:00' },
-          currentSeason: { numericRepresentation: 1 }
+          weekday: 'Wed',
+          display: { date: '1/31/2024', time: '12:00' },
+          season: 1
         };
         
         const current = {
@@ -118,12 +117,12 @@ export const registerWeatherApplicationTests = (context: QuenchBatchContext) => 
           day: 1,
           minute: 0,
           hour: 12,
-          weekday: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-          display: { date: { day: 1, month: 2, year: 2024 }, time: '12:00' },
-          currentSeason: { numericRepresentation: 2 }
+          weekday: 'Thu',
+          display: { date: '2/1/2024', time: '12:00' },
+          season: 2
         };
         
-        (weatherApp as any)._currentWeather = new WeatherData(previous, Season.Spring, 'Modest', 'Temperate', 14, 70);
+        (weatherApp as any)._currentWeather = new WeatherData(previous, Season.Spring, Humidity.Modest, Climate.Temperate, 14, 70);
         
         const result = (weatherApp as any).isOneDayAdvance(current);
         expect(result).to.be.true;
@@ -136,9 +135,9 @@ export const registerWeatherApplicationTests = (context: QuenchBatchContext) => 
           day: 31,
           minute: 0,
           hour: 12,
-          weekday: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-          display: { date: { day: 31, month: 12, year: 2023 }, time: '12:00' },
-          currentSeason: { numericRepresentation: 4 }
+          weekday: 'Sun',
+          display: { date: '12/31/2023', time: '12:00' },
+          season: 4
         };
         
         const current = {
@@ -147,9 +146,9 @@ export const registerWeatherApplicationTests = (context: QuenchBatchContext) => 
           day: 1,
           minute: 0,
           hour: 12,
-          weekday: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-          display: { date: { day: 1, month: 1, year: 2024 }, time: '12:00' },
-          currentSeason: { numericRepresentation: 1 }
+          weekday: 'Mon',
+          display: { date: '1/1/2024', time: '12:00' },
+          season: 1
         };
         
         (weatherApp as any)._currentWeather = new WeatherData(previous, Season.Winter, 'Modest', 'Temperate', 14, 70);
@@ -184,9 +183,9 @@ export const registerWeatherApplicationTests = (context: QuenchBatchContext) => 
           day: 15,
           minute: 0,
           hour: 12,
-          weekday: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-          display: { date: { day: 15, month: 1, year: 2024 }, time: '12:00' },
-          currentSeason: { numericRepresentation: 1 }
+          weekday: 'Sun',
+          display: { date: '1/15/2024', time: '12:00' },
+          season: 1
         };
         
         const current = {
@@ -195,12 +194,12 @@ export const registerWeatherApplicationTests = (context: QuenchBatchContext) => 
           // Missing day
           minute: 0,
           hour: 12,
-          weekday: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-          display: { date: { day: 16, month: 1, year: 2024 }, time: '12:00' },
-          currentSeason: { numericRepresentation: 1 }
+          weekday: 'Mon',
+          display: { date: '1/16/2024', time: '12:00' },
+          season: 1
         };
         
-        (weatherApp as any)._currentWeather = new WeatherData(previous, Season.Spring, 'Modest', 'Temperate', 14, 70);
+        (weatherApp as any)._currentWeather = new WeatherData(previous, Season.Spring, Humidity.Modest, Climate.Temperate, 14, 70);
         
         const result = (weatherApp as any).isOneDayAdvance(current);
         expect(result).to.be.false;

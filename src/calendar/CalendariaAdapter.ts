@@ -3,20 +3,22 @@ import { ICalendarAdapter, CalendarDate, TimeInterval } from './ICalendarAdapter
 import { WeatherApplication } from '@/applications/WeatherApplication';
 import { id as moduleId } from '@module';
 
-  type CalendariaDate = {
-    day: number;
-    dayOfMonth: number;
-    dayOfWeek: number;
-    hour: number;
-    leapYear: boolean;
-    minute: number;
-    month: number;
-    season: number;
-    second: number;
-    year: number;
-  }
+type CalendariaDate = {
+  day: number;
+  dayOfMonth: number;
+  dayOfWeek: number;
+  hour: number;
+  leapYear: boolean;
+  minute: number;
+  month: number;
+  season: number;
+  second: number;
+  year: number;
+}
 
 export class CalendariaAdapter implements ICalendarAdapter {
+  public name = 'CalendariaAdapter';
+
   private api: any;
 
   constructor() {
@@ -227,7 +229,7 @@ export class CalendariaAdapter implements ICalendarAdapter {
   }
 
 
-  public getHooks(): { init: string } {
+  public get hooks(): { init: string } {
     return {
       init: 'calendaria.ready'
     };

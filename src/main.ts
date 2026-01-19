@@ -214,9 +214,7 @@ function checkDependencies(): void {
   }
 }
 
-// Register Simple Calendar integration in setup hook instead of parse-time
-// This allows compatibility with both the original Simple Calendar module and
-// compatibility bridge modules that may register the SimpleCalendar global later.
+// Register calendar integration in setup hook instead of parse-time
 // Using 'setup' ensures all init hooks have completed, so the bridge's fake module
 // registration and parse-time global exposure will be available regardless of load order.
 Hooks.once('setup', (): void => {
@@ -228,7 +226,7 @@ Hooks.once('setup', (): void => {
   if (!calendarAdapter)
     return;
   
-  const hooks = calendarAdapter.getHooks();
+  const hooks = calendarAdapter.hooks;
   if (hooks.init) {
     Hooks.once(hooks.init, async (): Promise<void> => {
       // it's possible this gets called but the version # is too low - just ignore in that case

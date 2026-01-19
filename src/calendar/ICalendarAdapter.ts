@@ -1,7 +1,6 @@
 import { WeatherApplication } from '@/applications/WeatherApplication';
-import { SeasonDescription } from '@/weather/climateData';
 
-export interface CalendarDate {
+export interface CalendarDate {  
   year: number;
   month: number;
   day: number;
@@ -28,6 +27,8 @@ export interface TimeInterval {
 }
 
 export interface ICalendarAdapter {
+  name: string;  // adapter name
+
   // Core date/time methods
   getCurrentTimestamp(): number;
   timestampToDate(timestamp: number): CalendarDate | null;
@@ -47,7 +48,7 @@ export interface ICalendarAdapter {
   get wrapperElementId(): string;
   
   // Hooks/events
-  getHooks(): {
+  get hooks(): {
     init: string;
   };
 }

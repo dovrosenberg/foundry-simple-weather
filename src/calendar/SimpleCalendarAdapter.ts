@@ -3,6 +3,8 @@ import { ICalendarAdapter, CalendarDate, TimeInterval } from './ICalendarAdapter
 import { Season } from '@/weather/climateData';
 
 export class SimpleCalendarAdapter implements ICalendarAdapter {
+  public name = 'SimpleCalendarAdapter';
+  
   // classes for Simple Calendar injection (see also one in main.ts)
   // no  dot or # in front
   public static SC_CLASS_FOR_TAB_EXTENDED = 'fsc-c';    // open the search panel and find the siblings that are the panels and see what the different code is on search
@@ -189,7 +191,7 @@ export class SimpleCalendarAdapter implements ICalendarAdapter {
     return 'swr-fsc-container';
   }
 
-  public getHooks(): { init: string } {
+  public get hooks(): { init: string } {
     return {
       init: (globalThis as any).SimpleCalendar?.Hooks?.Init,
     };

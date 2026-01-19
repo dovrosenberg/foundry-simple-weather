@@ -5,16 +5,25 @@ import { weatherDescriptions, weatherSunniness, weatherTemperatures } from '@/we
 import { QuenchBatchContext } from '@ethaks/fvtt-quench';
 import { backupSettings, restoreSettings } from '@test/index';
 import { runTestsForEachCalendar } from '@test/calendarTestHelper';
+import { calendarManager } from '@/calendar/CalendarManager';
 
 export const registerForecastTests = () => {
   runTestsForEachCalendar(
     'simple-weather.weather.Forecast',
     (context: QuenchBatchContext) => {
       const { describe, it, expect, before, after, } = context;
-      const timestamp = SimpleCalendar.api.dateToTimestamp({
+      
+      // Get the current adapter and create test timestamp
+      const adapter = calendarManager.getAdapter();
+      if (!adapter) throw new Error('No calendar adapter available');
+      
+      const timestamp = adapter.dateToTimestamp({
         day: 14,
         month: 3,
         year: 2001,
+        hour: 0,
+        minute: 0,
+        display: { date: '3/14/2001', time: '0:00' }
       });
 
       before(() => {

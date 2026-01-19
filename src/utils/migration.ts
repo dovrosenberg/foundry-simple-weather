@@ -11,10 +11,10 @@ const migrateData = async(): Promise<void> => {
 
   // this captures everything before 1.17.4
   if (priorVersion === '') {
-    if (!('SimpleCalendar' in globalThis)) {
-      const errorMessage = 'You cannot currently migrate Simple Weather from a version prior to 1.17.4 without having Simple Calendar installed.  It is highly recommended \
-        that you turn off Simple Weather until you have Simple Calendar installed and then re-enable it after installing Simple Calendar.  Once migrated, you can then \
-        remove Simple Calendar again, if desired.';
+    if (!getCalendarAdapter()) {
+      const errorMessage = 'You cannot currently migrate Simple Weather from a version prior to 1.17.4 without having a Calendar installed.  It is highly recommended \
+        that you install and enable Simple Calendar (v13 fork), Simple Calendar Reborn, or Calendaria.  Then after a successful load (without this message), \
+        you can then remove the calendar again, if desired.';
       
         ui.notifications.error(errorMessage);
         throw new Error(errorMessage);

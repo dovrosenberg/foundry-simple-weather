@@ -41,21 +41,21 @@ export const registerCalendarManagerTests = () => {
           manager.setCalendar(CalendarType.SIMPLE_CALENDAR, true);
           const adapter = manager.getAdapter();
           expect(adapter).to.not.be.null;
-          expect(adapter!.constructor.name).to.equal('SimpleCalendarAdapter');
+          expect(adapter!.name).to.equal('SimpleCalendarAdapter');
         });
 
         it('should return SimpleCalendarRebornAdapter when Simple Calendar Reborn is set', () => {
           manager.setCalendar(CalendarType.SIMPLE_CALENDAR_REBORN, true);
           const adapter = manager.getAdapter();
           expect(adapter).to.not.be.null;
-          expect(adapter!.constructor.name).to.equal('SimpleCalendarRebornAdapter');
+          expect(adapter!.name).to.equal('SimpleCalendarRebornAdapter');
         });
 
         it('should return CalendariaAdapter when Calendaria is set', () => {
           manager.setCalendar(CalendarType.CALENDARIA, true);
           const adapter = manager.getAdapter();
           expect(adapter).to.not.be.null;
-          expect(adapter!.constructor.name).to.equal('CalendariaAdapter');
+          expect(adapter!.name).to.equal('CalendariaAdapter');
         });
 
         it('should detect available calendars', () => {
