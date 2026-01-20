@@ -3,9 +3,9 @@ import { CalendarDate, ICalendarAdapter } from '@/calendar';
 import { Season } from '@/weather/climateData';
 
 /** @returns the timestamp of the 0:00 time for the day -- our standard time for the date */
-function cleanDate(adapter: ICalendarAdapter, date: CalendarDate): number;
-function cleanDate(adapter: ICalendarAdapter, date: null): null;
-function cleanDate(adapter: ICalendarAdapter, date: CalendarDate | null): number | null {
+function cleanDate<APIDate>(adapter: ICalendarAdapter<APIDate>, date: CalendarDate): number;
+function cleanDate<APIDate>(adapter: ICalendarAdapter<APIDate>, date: null): null;
+function cleanDate<APIDate>(adapter: ICalendarAdapter<APIDate>, date: CalendarDate | null): number | null {
   // we need to always standardize on a time or else forecasts don't index properly
   // easiest is to use all 0 time 
   if (!date)
@@ -21,15 +21,22 @@ function cleanDate(adapter: ICalendarAdapter, date: CalendarDate | null): number
     };
     
     date.season = seasonMap[(date as any).currentSeason.icon] ?? Season.Spring;
-    delete (date as any).currentSeason;
   }
 
   return adapter.dateToTimestamp({
-    ...date,
+    year: date.year,
+    month: date.month,
+    day: date.day,
     hour: 0,
     minute: 0,  
+    season: date.season,
+    weekday: date.weekday,
     display: {
-      ...date.display,
+      weekday: date.display?.weekday || undefined,
+      month: date.display?.month || undefined,
+      day: date.display?.day || undefined,
+      year: date.display?.year || undefined,
+      date: date.display?.date || undefined,
       time: '0:00'
     }
   });

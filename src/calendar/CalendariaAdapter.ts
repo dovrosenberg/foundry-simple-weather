@@ -4,22 +4,45 @@ import { WeatherApplication } from '@/applications/WeatherApplication';
 import { id as moduleId } from '@module';
 
 type CalendariaDate = {
+  /** day of month, 1 indexed */
   day: number;
-  dayOfMonth: number;
-  dayOfWeek: number;
-  hour: number;
-  leapYear: boolean;
-  minute: number;
+
+  /** month, 0 indexed */
   month: number;
-  season: number;
-  second: number;
-  year: number;
+
+  /** raw year */
+  year: number; 
+
+  hour: number;
+  minute: number;
 }
 
-export class CalendariaAdapter implements ICalendarAdapter {
+type CalendariaAPI = {
+  getCurrentDateTime: () => CalendariaDate;
+  dateToTimestamp: (date: CalendariaDate) => number;
+  timestampToDate: (timestamp: number) => CalendariaDate;
+  getCurrentSeason: (date?: CalendariaDate) => { seasonalType: string };
+  formatDate: (date: CalendariaDate, format: string) => string;
+  addYears: (date: CalendariaDate, years: number) => CalendariaDate;
+  addMonths: (date: CalendariaDate, months: number) => CalendariaDate;
+  addDays: (date: CalendariaDate, days: number) => CalendariaDate;
+  createNote: (note: any) => Promise<JournalEntryPage>;
+  deleteNote: (noteId: string) => void;
+  getNotesForDate: (year: number, month: number, day: number) => { journalId: string }[];
+  registerWidget: (moduleId: string, widget: {
+    id: string;
+    type: string;
+    replaces: string;
+    icon: string;
+    label: string;
+    onClick: () => void;
+  }) => void;
+}
+
+export class CalendariaAdapter implements ICalendarAdapter<CalendariaDate> {
   public name = 'CalendariaAdapter';
 
-  private api: any;
+  private api: CalendariaAPI;
 
   constructor() {
     // Calendaria exposes its API on the global CALENDARIA object
@@ -34,41 +57,45 @@ export class CalendariaAdapter implements ICalendarAdapter {
 
   public getCurrentTimestamp(): number {
     this.ensureApi();
-    const currentDate = this.api.getCurrentDateTime();
+    const currentDate = this.api.getCurrentDateTime() as CalendariaDate;
     return this.api.dateToTimestamp(currentDate);
   }
   
   public CalendarDateToAPIDate(date: CalendarDate): CalendariaDate {
-    return this.api.timestampToDate(this.api.dateToTimestamp(date));
+    return {
+      year: date.year,
+      month: date.month,
+      day: date.day + 1,
+      hour: date.hour,
+      minute: date.minute
+    };
   }
 
   public APIDateToCalendarDate(date: CalendariaDate): CalendarDate {
     // map the season from the icons
-    const seasonIcon = this.api.getCurrentSeason(date)?.icon as string ?? '';
-    const icon = seasonIcon.replace('fas', '').trim();
+    const seasonType = this.api.getCurrentSeason(date)?.seasonalType as string ?? '';
     const seasonMap = {
-      'fa-snowflake': Season.Winter,
-      'fa-leaf': Season.Fall,
-      'fa-sun': Season.Summer,
-      'fa-seedling': Season.Spring
+      'winter': Season.Winter,
+      'autumn': Season.Fall,
+      'summer': Season.Summer,
+      'spring': Season.Spring
     }
 
-    // Calendaria uses 'dayOfMonth' instead of 'day'
     return {
       year: date.year,
       month: date.month,
-      day: date.dayOfMonth,
+      day: date.day - 1,
       hour: date.hour,
       minute: date.minute,
-      season: seasonMap[icon] ?? Season.Spring,
-      weekday: undefined,
+      season: seasonMap[seasonType] ?? Season.Spring,
+      weekday: this.api.formatDate(date, 'EEEE'),
       display: {
         weekday: this.api.formatDate(date, 'EEEE'),
-        date: this.api.formatDate(date, 'D MMMM YYYY'),
+        date: this.api.formatDate(date, 'MMMM D, YYYY'),
         day: this.api.formatDate(date, 'D'),
         month: this.api.formatDate(date, 'MMMM'),
         year: this.api.formatDate(date, 'YYYY'),
-        time: `${String(date.hour || 0).padStart(2, '0')}:${String(date.minute || 0).padStart(2, '0')}`
+        time: this.api.formatDate(date, 'hh:mm')
       }
     };
   }
@@ -86,17 +113,7 @@ export class CalendariaAdapter implements ICalendarAdapter {
   public dateToTimestamp(date: CalendarDate): number {
     this.ensureApi();
 
-    // datetoTimestamp doesn't need the day of year param
-    const dateCalendaria = {
-      year: date.year,
-      month: date.month,
-      dayOfMonth: date.day,
-      hour: date.hour || 0,
-      minute: date.minute || 0,
-      second: 0
-    }
-    
-    return this.api.dateToTimestamp(dateCalendaria);
+    return this.api.dateToTimestamp(this.CalendarDateToAPIDate(date));
   }
 
   public timestampPlusInterval(timestamp: number, interval: TimeInterval): number {
@@ -139,7 +156,7 @@ export class CalendariaAdapter implements ICalendarAdapter {
     const startDateCalendaria = this.CalendarDateToAPIDate(startDate);
     const endDateCalendaria = this.CalendarDateToAPIDate(endDate);
 
-    const note = await this.api.createNote({
+    const page = await this.api.createNote({
       name: title,
       content: content,
       startDate: startDateCalendaria,
@@ -148,7 +165,7 @@ export class CalendariaAdapter implements ICalendarAdapter {
       gmOnly: !isPublic
     });
 
-    return note;
+    return page.parent;
   }
 
   public async removeNote(noteId: string): Promise<void> {

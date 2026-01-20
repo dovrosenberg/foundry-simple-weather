@@ -2,20 +2,25 @@ import { WeatherApplication } from '@/applications/WeatherApplication';
 
 //note: this is our internal calendar date format - it's not the same as Foundry's CalendarData
 export interface CalendarDate {  
+  /** raw year */
   year: number;
+
+  /** month - 0 indexed */
   month: number;
-  day: number; // day of the month (note: in Foundry CalendarData, it's the day of the year)
-  hour?: number;
-  minute?: number;
-  season?: number;
-  weekday?: string;
+
+  /** day of the month, 0 indexed */
+  day: number; 
+  hour: number;
+  minute: number;
+  season: number;
+  weekday: string;
   display: {
-    weekday?: string;
-    month?: string;
-    day?: string;
-    year?: string;
-    time?: string;
-    date?: string;
+    weekday: string;
+    month: string;
+    day: string;
+    year: string;
+    time: string;
+    date: string;
   };
 }
 
@@ -25,10 +30,13 @@ export interface TimeInterval {
   day?: number;
 }
 
-export interface ICalendarAdapter {
+export interface ICalendarAdapter<APIDate> {
   name: string;  // adapter name
 
   // Core date/time methods
+  APIDateToCalendarDate(date: APIDate): CalendarDate;
+  CalendarDateToAPIDate(date: CalendarDate): APIDate;
+
   getCurrentTimestamp(): number;
   timestampToDate(timestamp: number): CalendarDate | null;
   dateToTimestamp(date: CalendarDate): number;
@@ -47,7 +55,5 @@ export interface ICalendarAdapter {
   get wrapperElementId(): string;
   
   // Hooks/events
-  get hooks(): {
-    init: string;
-  };
+  get hooks(): { init: string };
 }

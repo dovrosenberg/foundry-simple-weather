@@ -1,8 +1,9 @@
 import { WeatherApplication } from '@/applications/WeatherApplication';
 import { ICalendarAdapter, CalendarDate, TimeInterval } from './ICalendarAdapter';
 import { Season } from '@/weather/climateData';
+import { SimpleCalendar } from 'foundryvtt-simple-calendar';
 
-export class SimpleCalendarAdapter implements ICalendarAdapter {
+export class SimpleCalendarAdapter implements ICalendarAdapter<SimpleCalendar.DateData> {
   public name = 'SimpleCalendarAdapter';
   
   // classes for Simple Calendar injection (see also one in main.ts)
@@ -15,7 +16,7 @@ export class SimpleCalendarAdapter implements ICalendarAdapter {
   // look for #swr-fsc-compact-open; what is the class on the parent div that wraps it?
   public static SC_CLASS_FOR_COMPACT_BUTTON_WRAPPER = 'fsc-pj';  // no dot in the front
 
-  private api: any;
+  private api: typeof SimpleCalendar.api;
   
   constructor() {
     // Simple Calendar exposes its API on the global SimpleCalendar object
@@ -33,6 +34,18 @@ export class SimpleCalendarAdapter implements ICalendarAdapter {
     return this.api.timestamp();
   }
   
+  public CalendarDateToAPIDate(date: CalendarDate): SimpleCalendar.DateData {
+    // have to go through dateToTimestamp to get all the extra fields
+    return this.api.timestampToDate(this.api.dateToTimestamp({
+      year: date.year,
+      month: date.month,
+      day: date.day,
+      hour: date.hour,
+      minute: date.minute,
+      seconds: 0
+    }))!;
+  }
+
   public APIDateToCalendarDate(date: SimpleCalendar.DateData): CalendarDate {
     // season icons are weird
     const seasonMap = {

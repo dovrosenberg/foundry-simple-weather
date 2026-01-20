@@ -8,6 +8,95 @@ import { SimpleCalendarAdapter } from '@/calendar/SimpleCalendarAdapter';
 import { SimpleCalendarRebornAdapter } from '@/calendar/SimpleCalendarRebornAdapter';
 import { CalendariaAdapter } from '@/calendar/CalendariaAdapter';
 
+// Test date constants for use across all adapter tests
+const TEST_DATES: CalendarDate[] = [
+  {
+    year: 2024,
+    month: 6,
+    day: 15,
+    hour: 14,
+    minute: 30,
+    season: Season.Summer,
+    weekday: 'Monday',
+    display: {
+      weekday: 'Monday',
+      date: 'June 15, 2024',
+      day: '15',
+      month: 'June',
+      year: '2024',
+      time: '14:30'
+    }
+  },
+  {
+    year: 2023,
+    month: 0,
+    day: 1,
+    hour: 0,
+    minute: 0,
+    season: Season.Winter,
+    weekday: 'Tuesday',
+    display: { 
+      weekday: 'Tuesday',
+      date: 'January 1, 2023',
+      day: '1',
+      month: 'January',
+      year: '2023',
+      time: '00:00' 
+    }
+  },
+  {
+    year: 2025,
+    month: 11,
+    day: 31,
+    hour: 23,
+    minute: 59,
+    season: Season.Winter,
+    weekday: 'Wednesday',
+    display: { 
+      weekday: 'Wednesday',
+      date: 'December 31, 2025',
+      day: '31',
+      month: 'December',
+      year: '2025',
+      time: '23:59'
+    }
+  },
+  {
+    year: 2024,
+    month: 3,
+    day: 10,
+    hour: 12,
+    minute: 0,
+    season: Season.Spring,
+    weekday: 'Thursday',
+    display: {
+      weekday: 'Thursday',
+      date: 'April 10, 2024',
+      day: '10',
+      month: 'April',
+      year: '2024',
+      time: '12:00'
+    }
+  },
+  {
+    year: 2024,
+    month: 9,
+    day: 20,
+    hour: 8,
+    minute: 45,
+    season: Season.Fall,
+    weekday: 'Friday',
+    display: {
+      weekday: 'Friday',
+      date: 'October 20, 2024',
+      day: '20',
+      month: 'October',
+      year: '2024',
+      time: '08:45'
+    }
+  }
+];
+
 // Mock global APIs for testing
 const mockSimpleCalendarApi = {
   api: {
@@ -84,7 +173,7 @@ export const registerCalendarAdapterTests = () => {
     'simple-weather.calendar.adapters',
     (context: QuenchBatchContext) => {
       const { describe, it, expect, before, after } = context;
-      let adapter: ICalendarAdapter | null;
+      let adapter: ICalendarAdapter<any> | null;
       let originalSimpleCalendar: any;
       let originalCalendaria: any;
 
@@ -136,16 +225,7 @@ export const registerCalendarAdapterTests = () => {
 
         it('should convert date to timestamp', () => {
           expect(adapter).to.not.be.null;
-          const date: CalendarDate = {
-            year: 2024,
-            month: 6,
-            day: 15,
-            hour: 14,
-            minute: 30,
-            display: {
-              date: '6/15/2024'
-            }
-          };
+          const date = TEST_DATES[0];
           const timestamp = adapter!.dateToTimestamp(date);
           expect(timestamp).to.equal(1234567890);
         });
@@ -158,14 +238,14 @@ export const registerCalendarAdapterTests = () => {
 
         it('should get notes for day', () => {
           expect(adapter).to.not.be.null;
-          const notes = adapter!.getNotesForDay({ year: 2024, month: 6, day: 15, display: { date: '6/15/2024' } });
+          const notes = adapter!.getNotesForDay(TEST_DATES[0]);
           expect(notes).to.be.an('array');
         });
 
         it('should add note', async () => {
           expect(adapter).to.not.be.null;
-          const startDate = { year: 2024, month: 6, day: 15, display: { date: '6/15/2024' } };
-          const endDate = { year: 2024, month: 6, day: 15, display: { date: '6/15/2024' } };
+          const startDate = TEST_DATES[0];
+          const endDate = TEST_DATES[0];
           const note = await adapter!.addNote('Test', 'Content', startDate, endDate);
           expect(note).to.have.property('id');
         });
@@ -251,6 +331,25 @@ export const registerAdapterSpecificTests = () => {
       it('should have correct wrapper element ID', () => {
         expect(adapter.wrapperElementId).to.equal('swr-fsc-container');
       });
+
+      describe('Date Conversion Methods', () => {
+        it('should handle date conversion roundtrip correctly', () => {
+          TEST_DATES.forEach(originalCalendarDate => {
+            const apiDate = adapter.CalendarDateToAPIDate(originalCalendarDate);
+            const convertedBack = adapter.APIDateToCalendarDate(apiDate);
+
+            // check every property of the CalendarDate object
+            expect(convertedBack.year).to.equal(originalCalendarDate.year);
+            expect(convertedBack.month).to.equal(originalCalendarDate.month);
+            expect(convertedBack.day).to.equal(originalCalendarDate.day);
+            expect(convertedBack.hour).to.equal(originalCalendarDate.hour);
+            expect(convertedBack.minute).to.equal(originalCalendarDate.minute);
+            expect(convertedBack.season).to.equal(originalCalendarDate.season);
+            expect(convertedBack.weekday).to.equal(originalCalendarDate.weekday);            
+            expect(convertedBack.display).to.deep.equal(originalCalendarDate.display);
+          });
+        });
+      });
     });
 
     describe('SimpleCalendarRebornAdapter', () => {
@@ -279,6 +378,25 @@ export const registerAdapterSpecificTests = () => {
       it('should have correct wrapper element ID', () => {
         expect(adapter.wrapperElementId).to.equal('swr-fsc-container');
       });
+
+      describe('Date Conversion Methods', () => {
+        it('should handle date conversion roundtrip correctly', () => {
+          TEST_DATES.forEach(originalCalendarDate => {
+            const apiDate = adapter.CalendarDateToAPIDate(originalCalendarDate);
+            const convertedBack = adapter.APIDateToCalendarDate(apiDate);
+
+            // check every property of the CalendarDate object
+            expect(convertedBack.year).to.equal(originalCalendarDate.year);
+            expect(convertedBack.month).to.equal(originalCalendarDate.month);
+            expect(convertedBack.day).to.equal(originalCalendarDate.day);
+            expect(convertedBack.hour).to.equal(originalCalendarDate.hour);
+            expect(convertedBack.minute).to.equal(originalCalendarDate.minute);
+            expect(convertedBack.season).to.equal(originalCalendarDate.season);
+            expect(convertedBack.weekday).to.equal(originalCalendarDate.weekday);            
+            expect(convertedBack.display).to.deep.equal(originalCalendarDate.display);
+          });
+        });
+      });
     });
 
     describe('CalendariaAdapter', () => {
@@ -301,6 +419,25 @@ export const registerAdapterSpecificTests = () => {
 
       it('should have correct wrapper element ID', () => {
         expect(adapter.wrapperElementId).to.equal('swr-calendaria-container');
+      });
+
+      describe('Date Conversion Methods', () => {
+        it('should handle date conversion roundtrip correctly', () => {
+          TEST_DATES.forEach(originalCalendarDate => {
+            const apiDate = adapter.CalendarDateToAPIDate(originalCalendarDate);
+            const convertedBack = adapter.APIDateToCalendarDate(apiDate);
+
+            // check every property of the CalendarDate object
+            expect(convertedBack.year).to.equal(originalCalendarDate.year);
+            expect(convertedBack.month).to.equal(originalCalendarDate.month);
+            expect(convertedBack.day).to.equal(originalCalendarDate.day);
+            expect(convertedBack.hour).to.equal(originalCalendarDate.hour);
+            expect(convertedBack.minute).to.equal(originalCalendarDate.minute);
+            expect(convertedBack.season).to.equal(originalCalendarDate.season);
+            expect(convertedBack.weekday).to.equal(originalCalendarDate.weekday);            
+            expect(convertedBack.display).to.deep.equal(originalCalendarDate.display);
+          });
+        });
       });
     });
   });

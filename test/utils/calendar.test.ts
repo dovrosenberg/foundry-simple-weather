@@ -2,6 +2,8 @@ import { cleanDate } from '@/utils/calendar';
 import { QuenchBatchContext } from '@ethaks/fvtt-quench';
 import { runTestsForEachCalendar } from '@test/calendarTestHelper';
 import { calendarManager } from '@/calendar/CalendarManager';
+import { Season } from '@/weather/climateData';
+import { CalendarDate } from '@/calendar';
 
 export const registerCalendarTests = () => {
   runTestsForEachCalendar(
@@ -17,11 +19,16 @@ export const registerCalendarTests = () => {
             day: 15,
             hour: 14,
             minute: 30,
-            season: 2,
+            season: Season.Summer,
             display: {
-              date: '6/15/2024'
+              weekday: 'Friday',
+              date: 'July 16, 2025',
+              day: '16',
+              month: 'July',
+              year: '2025',
+              time: '14:30'
             }
-          };
+          } as CalendarDate;
       
           const adapter = calendarManager.getAdapter();
           expect(adapter).to.not.be.null;
@@ -37,6 +44,7 @@ export const registerCalendarTests = () => {
           expect(cleanedDate!.year).to.equal(testDate.year);
           expect(cleanedDate!.month).to.equal(testDate.month);
           expect(cleanedDate!.day).to.equal(testDate.day);
+          expect(cleanedDate!.display.date).to.equal(testDate.display.date);
         });
       });
     }
