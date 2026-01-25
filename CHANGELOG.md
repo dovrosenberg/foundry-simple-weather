@@ -3,7 +3,7 @@
 ## v2.2.0 - New Calendar Support
 #### Support for Simple Calendar Reborn v2.5.3 and Calendaria v0.8.0
 
-![](https://img.shields.io/badge/release%20date-January%2018%2C%202026-blue)
+![](https://img.shields.io/badge/release%20date-January%2025%2C%202026-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v2.2.0/module.zip)
 
 - While it might still work with other forks, Simple Weather now officially supports Simple Calendar Reborn.  Will wait to see what adoption looks like across the community before deciding if I can/need to support multiple forks.
