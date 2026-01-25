@@ -11,7 +11,7 @@ import { CalendariaAdapter } from '@/calendar/CalendariaAdapter';
 // Test date constants for use across all adapter tests
 const TEST_DATES: CalendarDate[] = [
   {
-    year: 2024,
+    year: 2024, 
     month: 6,
     day: 15,
     hour: 14,
@@ -97,28 +97,149 @@ const TEST_DATES: CalendarDate[] = [
   }
 ];
 
+// Simple Calendar API test dates (in SimpleCalendar.DateData format)
+const TEST_DATES_SC = [
+  {
+    year: 2024,
+    month: 6,
+    day: 15,
+    hour: 14,
+    minute: 30,
+    seconds: 0,
+    currentSeason: { icon: 'summer' },
+    weekdays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    dayOfTheWeek: 1,
+    display: {
+      weekday: 'Monday',
+      date: 'June 15, 2024',
+      day: '15',
+      month: 'June',
+      year: '2024',
+      time: '14:30'
+    }
+  },
+  {
+    year: 2023,
+    month: 0,
+    day: 1,
+    hour: 0,
+    minute: 0,
+    seconds: 0,
+    currentSeason: { icon: 'winter' },
+    weekdays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    dayOfTheWeek: 2,
+    display: {
+      weekday: 'Tuesday',
+      date: 'January 1, 2023',
+      day: '1',
+      month: 'January',
+      year: '2023',
+      time: '00:00'
+    }
+  },
+  {
+    year: 2025,
+    month: 11,
+    day: 31,
+    hour: 23,
+    minute: 59,
+    seconds: 0,
+    currentSeason: { icon: 'winter' },
+    weekdays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    dayOfTheWeek: 3,
+    display: {
+      weekday: 'Wednesday',
+      date: 'December 31, 2025',
+      day: '31',
+      month: 'December',
+      year: '2025',
+      time: '23:59'
+    }
+  },
+  {
+    year: 2024,
+    month: 3,
+    day: 10,
+    hour: 12,
+    minute: 0,
+    seconds: 0,
+    currentSeason: { icon: 'spring' },
+    weekdays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    dayOfTheWeek: 4,
+    display: {
+      weekday: 'Thursday',
+      date: 'April 10, 2024',
+      day: '10',
+      month: 'April',
+      year: '2024',
+      time: '12:00'
+    }
+  },
+  {
+    year: 2024,
+    month: 9,
+    day: 20,
+    hour: 8,
+    minute: 45,
+    seconds: 0,
+    currentSeason: { icon: 'fall' },
+    weekdays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    dayOfTheWeek: 5,
+    display: {
+      weekday: 'Friday',
+      date: 'October 20, 2024',
+      day: '20',
+      month: 'October',
+      year: '2024',
+      time: '08:45'
+    }
+  }
+];
+
+// Calendaria API test dates (in CalendariaDate format - note: day is 1-indexed)
+const TEST_DATES_CALENDARIA = [
+  {
+    year: 2024,
+    month: 6,
+    day: 16, // Calendaria uses 1-indexed day
+    hour: 14,
+    minute: 30
+  },
+  {
+    year: 2023,
+    month: 0,
+    day: 2, // Calendaria uses 1-indexed day
+    hour: 0,
+    minute: 0
+  },
+  {
+    year: 2025,
+    month: 11,
+    day: 32, // Calendaria uses 1-indexed day
+    hour: 23,
+    minute: 59
+  },
+  {
+    year: 2024,
+    month: 3,
+    day: 11, // Calendaria uses 1-indexed day
+    hour: 12,
+    minute: 0
+  },
+  {
+    year: 2024,
+    month: 9,
+    day: 21, // Calendaria uses 1-indexed day
+    hour: 8,
+    minute: 45
+  }
+];
+
 // Mock global APIs for testing
 const mockSimpleCalendarApi = {
   api: {
     timestamp: () => 1234567890,
-    timestampToDate: (_ts: number) => ({
-      year: 2024,
-      month: 6,
-      day: 15,
-      hour: 14,
-      minute: 30,
-      currentSeason: { icon: 'summer' },
-      weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      dayOfTheWeek: 4,
-      display: {
-        weekday: 'Friday',
-        month: 'June',
-        day: '15',
-        year: '2024',
-        time: '14:30',
-        date: '6/15/2024'
-      }
-    }),
+    timestampToDate: (_ts: number) => TEST_DATES_SC[0],
     dateToTimestamp: (_date: any) => 1234567890,
     timestampPlusInterval: (ts: number, interval: TimeInterval) => ts + (interval.day || 0) * 86400,
     getNotesForDay: () => [],
@@ -131,40 +252,44 @@ const mockSimpleCalendarApi = {
 
 const mockCalendariaApi = {
   api: {
-    getCurrentDateTime: () => ({
-      year: 2024,
-      month: 6,
-      day: 15,
-      hour: 14,
-      minute: 30,
-      season: Season.Summer
-    }),
-    dateToTimestamp: (_date: any) => 1234567890,
-    timestampToDate: (_ts: number) => ({
-      year: 2024,
-      month: 6,
-      dayOfMonth: 15,
-      hour: 14,
-      minute: 30,
-      season: Season.Summer,
-      dayOfWeek: 4
-    }),
+    getCurrentDateTime: () => TEST_DATES_CALENDARIA[0],
+    dateToTimestamp: (date: any) => {
+      // Return a timestamp that reflects the date values
+      // Base timestamp for June 16, 2024 14:30:00
+      const baseTimestamp = 1234567890;
+      const baseDate = TEST_DATES_CALENDARIA[0];
+      
+      // Calculate offset from base date
+      const dayOffset = (date.day - baseDate.day) || 0;
+      const monthOffset = (date.month - baseDate.month) || 0;
+      const yearOffset = (date.year - baseDate.year) || 0;
+      
+      return baseTimestamp + 
+        (yearOffset * 365 * 86400) + 
+        (monthOffset * 30 * 86400) + 
+        (dayOffset * 86400);
+    },
+    timestampToDate: (_ts: number) => TEST_DATES_CALENDARIA[0],
     addYears: (date: any, years: number) => ({ ...date, year: date.year + years }),
     addMonths: (date: any, months: number) => ({ ...date, month: date.month + months }),
-    addDays: (date: any, days: number) => ({ ...date, dayOfMonth: date.dayOfMonth + days }),
+    addDays: (date: any, days: number) => ({ ...date, day: date.day + days }),
     getNotesForDate: () => [],
-    createNote: async () => ({ id: 'test-note' } as any),
+    createNote: async () => ({ 
+      id: 'test-note-page',
+      parent: { id: 'test-note-journal' }
+    } as any),
     deleteNote: async () => {},
     registerWidget: () => {},
     formatDate: (_date: any, format: string) => {
-      if (format === 'EEEE') return 'Friday';
-      if (format === 'D MMMM YYYY') return '15 June 2024';
+      if (format === 'EEEE') return 'Monday';
+      if (format === 'MMMM D, YYYY') return 'June 15, 2024';
       if (format === 'D') return '15';
       if (format === 'MMMM') return 'June';
       if (format === 'YYYY') return '2024';
+      if (format === 'hh:mm') return '14:30';
       return '15 June 2024';
     },
-    getCurrentSeason: (_date: any) => ({ icon: 'fa-sun' })
+    getCurrentSeason: (_date: any) => ({ seasonalType: 'summer' })
   }
 };
 
@@ -232,8 +357,21 @@ export const registerCalendarAdapterTests = () => {
 
         it('should add interval to timestamp', () => {
           expect(adapter).to.not.be.null;
-          const timestamp = adapter!.timestampPlusInterval(1234567890, { day: 1 });
-          expect(timestamp).to.be.a('number');
+          const baseTimestamp = adapter!.getCurrentTimestamp();
+          const resultTimestamp = adapter!.timestampPlusInterval(baseTimestamp, { day: 1 });
+          
+          // The result should be different from the base timestamp
+          expect(resultTimestamp).to.not.equal(baseTimestamp);
+          
+          // For Simple Calendar adapters, it should be exactly 86400 seconds later
+          if (adapter!.name === 'SimpleCalendarAdapter' || adapter!.name === 'SimpleCalendarRebornAdapter') {
+            expect(resultTimestamp).to.equal(baseTimestamp + 86400);
+          }
+          
+          // For Calendaria, just verify it's greater (the exact value depends on dateToTimestamp implementation)
+          if (adapter!.name === 'CalendariaAdapter') {
+            expect(resultTimestamp).to.be.greaterThan(baseTimestamp);
+          }
         });
 
         it('should get notes for day', () => {
@@ -310,7 +448,7 @@ export const registerAdapterSpecificTests = () => {
 
       before(() => {
         (globalThis as any).SimpleCalendar = { 
-          api: mockSimpleCalendarApi, 
+          api: mockSimpleCalendarApi.api, 
           Hooks: { Init: 'simple-calendar-init' } 
         };
         adapter = new SimpleCalendarAdapter();
@@ -357,7 +495,7 @@ export const registerAdapterSpecificTests = () => {
 
       before(() => {
         (globalThis as any).SimpleCalendar = { 
-          api: mockSimpleCalendarApi, 
+          api: mockSimpleCalendarApi.api, 
           Hooks: { Init: 'simple-calendar-reborn-init' } 
         };
         adapter = new SimpleCalendarRebornAdapter();
@@ -403,7 +541,7 @@ export const registerAdapterSpecificTests = () => {
       let adapter: CalendariaAdapter;
 
       before(() => {
-        (globalThis as any).CALENDARIA = { api: mockCalendariaApi };
+        (globalThis as any).CALENDARIA = { api: mockCalendariaApi.api };
         adapter = new CalendariaAdapter();
       });
 
