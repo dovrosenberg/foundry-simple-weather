@@ -15,10 +15,10 @@
       "useFXHelp": "Sélectionnez le module à utiliser pour afficher les effets spéciaux.  Lorsqu'ils sont activés, les effets peuvent également être désactivés manuellement en cas de besoin.",
       "FXByScene": "Activer/Désactiver les FX par scène ?",
       "FXBySceneHelp": "Le bouton des FX doit-il avoir un impact uniquement sur la scène en cours ou doit-il s'appliquer à l'ensemble du module ? Utile si l'on veut gérer les transitions entre scènes intérieures et extérieures sans avoir à basculer manuellement à chaque fois.",
-      "attachToCalendar": "Attacher à Simple Calendar ?  (Expérimental - voir la description du module)",
-      "attachToCalendarHelp": "S'affiche dans une fenêtre contextuelle de Simple Calendar plutôt que dans une fenêtre indépendante.  Nécessite (évidemment) Simple Calendar.",
-      "storeInSCNotes": "Stocker la météo dans Simple Calendar ?",
-      "storeInSCNotesHelp": "Enregistrez la météo quotidienne dans les notes de Simple Calendar, puis 'rejouez' l'ancienne météo si vous revenez à une date antérieure.",
+      "attachToCalendar": "Attacher au Calendrier ?",
+      "attachToCalendarHelp": "S'affiche dans une fenêtre contextuelle du Calendrier plutôt que dans une fenêtre indépendante.  Nécessite (évidemment) Simple Calendar ou Calendaria.",
+      "storeInSCNotes": "Stocker la météo dans le Calendrier ?",
+      "storeInSCNotesHelp": "Enregistrez la météo quotidienne dans les notes du Simple Calendar/Calendaria, puis 'rejouez' l'ancienne météo si vous revenez à une date antérieure.",
       "options": {
         "useFX.choices.off": "Désactivé",
         "useFX.choices.core": "FoundryVTT paramètres de la scène et de la météo",
@@ -77,7 +77,7 @@
 
       "season": {
         "select": "Sélectionner la saison en cours",
-        "sync": "Syncronisé avec Simple Calendar",
+        "sync": "Synchronisé avec le Calendrier",
         "fall": "Automne",
         "summer": "Été",
         "spring": "Printemps",

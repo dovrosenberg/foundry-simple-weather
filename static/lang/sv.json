@@ -15,10 +15,10 @@
       "useFXHelp": "Välj modulen som används för att visa specialeffekter. När den är aktiverad kan effekterna även stängas av manuellt vid behov.",
       "FXByScene": "Aktivera/inaktivera FX per scen?",
       "FXBySceneHelp": "Ska FX-knappen bara påverka den aktuella scenen eller vara modul-övergripande? Användbart om du vill hantera övergångar mellan inomhus/utomhus-scener utan att behöva växla manuellt varje gång.",
-      "attachToCalendar": "Bifoga till Simple Calendar? (Experimentell - se modulbeskrivning)",
-      "attachToCalendarHelp": "Visa som en popup på Simple Calendar istf ett fristående fönster. Kräver (förstås) Simple Calendar.",
-      "storeInSCNotes": "Lagra väder i Simple Calendar?",
-      "storeInSCNotesHelp": "Lagra dagligt väder i Simple Calendars anteckningar och 'spela om' det gamla vädret om du går tillbaka till ett tidigare datum.",
+      "attachToCalendar": "Bifoga till Kalender?",
+      "attachToCalendarHelp": "Visa som en popup på Kalender istf ett fristående fönster. Kräver (förstås) Simple Calendar eller Calendaria.",
+      "storeInSCNotes": "Lagra väder i Kalender?",
+      "storeInSCNotesHelp": "Lagra dagligt väder i Simple Calendars/Calendarias anteckningar och 'spela om' det gamla vädret om du går tillbaka till ett tidigare datum.",
       "options": {
         "useFX.choices.off": "Inget",
         "useFX.choices.core": "FoundryVTT-scenens väderinställning",
@@ -77,7 +77,7 @@
       
       "season": {
         "select": "Välj den aktuella säsongen",
-        "sync": "Synkronisera med Simple Calendar",
+        "sync": "Synkronisera med Kalender",
         "fall": "Höst",
         "summer": "Sommar",
         "spring": "Vår",
