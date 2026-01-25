@@ -1,7 +1,7 @@
 # Change Log
 
 ## v2.2.0 - New Calendar Support
-#### Support for Simple Calendar Reborn v2.5.3 and Calendaria v0.7.4
+#### Support for Simple Calendar Reborn v2.5.3 and Calendaria v0.8.0
 
 ![](https://img.shields.io/badge/release%20date-January%2018%2C%202026-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v2.2.0/module.zip)
