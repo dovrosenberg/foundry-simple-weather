@@ -16,6 +16,7 @@ import { weatherEffects } from '@/weather/WeatherEffects';
 import { DisplayOptions } from '@/types/DisplayOptions';
 import { Forecast } from '@/weather/Forecast';
 import { cleanDate } from '@/utils/calendar';
+import { getCalendarAdapter, calendarManager, CalendarDate, } from '@/calendar';
 
 // the solo instance
 let weatherApplication: WeatherApplication;
@@ -53,7 +54,7 @@ type WeatherApplicationData = {
   useCelsius: boolean,
   attachedMode: boolean,
   showAttached: boolean,
-  SCContainerClasses: string,
+  containerClasses: string,
   windowPosition: WindowPosition,
   containerPosition: string,
   hideDialog: boolean,
@@ -61,25 +62,53 @@ type WeatherApplicationData = {
   forecasts: Forecast[],
 }
 
-
-// classes for Simple Calendar injection
-// no  dot or # in front
-const SC_CLASS_FOR_TAB_EXTENDED = 'fsc-c';    // open the search panel and find the siblings that are the panels and see what the different code is on search
-const SC_CLASS_FOR_TAB_CLOSED = 'fsc-d';    // look at the other siblings or close search and see what changes
-const SC_CLASS_FOR_TAB_WRAPPER = 'fsc-of';   // the siblings that are tabs all have it - also needs to go in .scss
-const SC_ID_FOR_WINDOW_WRAPPER = 'fsc-if';  // it's the top-level one with classes app, window-app, simple-calendar
-
 // flag name for storing daily weather on SC notes
-const SC_NOTE_WEATHER_FLAG_NAME = 'dailyWeather';
+const CAL_NOTE_WEATHER_FLAG_NAME = 'dailyWeather';
 
-class WeatherApplication extends Application {
+class WeatherApplication extends foundry.applications.api.HandlebarsApplicationMixin(
+  foundry.applications.api.ApplicationV2
+) {
+  static DEFAULT_OPTIONS = {
+    popOut: false,  // self-contained window without the extra wrapper
+    resizable: false,  // window is fixed size
+  };
+
+  static PARTS = {
+    main: {
+      template: `modules/${moduleJson.id}/templates/weather-dialog.hbs`,
+    },
+  };
+
+  // Override element getter to return the injected element when in attached mode
+  get element(): HTMLElement {
+    if (this._attachedMode) {
+      // Return the injected element if we have one
+      if (this._injectedElement) {
+        return this._injectedElement;
+      }
+
+      const adapter = getCalendarAdapter();
+      if (!adapter)
+        throw new Error("No adapter in attached mode in WeatherApplication.element()");
+      
+      // Otherwise try to find it in the DOM
+      const found = document.getElementById(adapter.wrapperElementId) || document.getElementById('swr-container');
+      if (found) {
+        this._injectedElement = found;
+        return found;
+      }
+    }
+    
+    // Fall back to the default ApplicationV2 element
+    return super.element;
+  }
+
   private _currentWeather: WeatherData;
   private _displayOptions: DisplayOptions;
-  private _calendarPresent = false;   // is simple calendar present?
+  private _calendarPresent = false;   // is a calendar present?
   private _manualPause = false;
   private _attachedMode = false;
   private _attachModeHidden = true;   // like _currentlyHidden but have to track separately because that's for managing ready state not popup state
-  private _simpleCalendarInstalled = false;
 
   private _currentClimate: Climate;
   private _currentHumidity: Humidity;
@@ -90,6 +119,7 @@ class WeatherApplication extends Application {
   private _windowDragHandler = new WindowDrag();
   private _windowPosition: WindowPosition;
   private _currentlyHidden = false;  // for toggling... we DO NOT save this state
+  private _injectedElement: HTMLElement | null = null;  // stores the injected element when in attached mode
 
   constructor() {
     super();
@@ -103,11 +133,8 @@ class WeatherApplication extends Application {
     this._attachedMode = ModuleSettings.get(ModuleSettingKeys.attachToCalendar) || false;
     this._attachModeHidden = true;
 
-    // assume no SC unless told otherwise
-    this._simpleCalendarInstalled = false;
-
     // get whether the manual pause is on
-    this._manualPause = ModuleSettings.get(ModuleSettingKeys.manualPause || false);
+    this._manualPause = ModuleSettings.get(ModuleSettingKeys.manualPause) || false;
 
     // don't show it until ready() has been called
     this._currentlyHidden = true;
@@ -119,10 +146,60 @@ class WeatherApplication extends Application {
   }
 
   // draw the window
-  public render(force?: boolean): void {
+  public render(options: any = {}): this {
     this.checkSeasonSync();
+    
+    if (this._attachedMode) {
+      // In attached mode, we need to render the template and inject it manually
+      // instead of letting ApplicationV2 create its own element
+      this._renderInAttachedMode();
+      return this;
+    } else {
+      return super.render(options);
+    }
+  }
 
-    super.render(force);
+  // Override close to handle attached mode
+  close(options?: Application.CloseOptions): Promise<void> {
+    if (this._attachedMode) {
+      // In attached mode, we don't have a standard application to close
+      // Just hide the injected element
+      if (this._injectedElement) {
+        this._injectedElement.remove();
+        this._injectedElement = null;
+      }
+      return Promise.resolve();
+    } else {
+      return super.close(options);
+    }
+  }
+
+  private async _renderInAttachedMode(): Promise<void> {
+    const adapter = getCalendarAdapter();
+    if (!adapter)
+      return;
+
+    // Get the rendered HTML using the template
+    const context = await this._prepareContext();
+    const template = WeatherApplication.PARTS?.main?.template;
+    if (!template) {
+      throw new Error('No template found for WeatherApplication');
+    }
+    
+    // Render the template to HTML string
+    const htmlString = await renderTemplate(template, context);
+    const html = $(htmlString);
+    
+    // Inject it into the calendar
+    const elementId = adapter.inject(html, this._attachModeHidden);
+    
+    // Set up event listeners - we need to find our injected element first
+    const injectedElement = document.getElementById(elementId) || document.getElementById('swr-container');
+    if (injectedElement) {
+      // Store the element reference for event handlers
+      this._injectedElement = injectedElement;
+      this._onRender(context, {});
+    }
   }
 
   public attachToCalendar() {
@@ -131,33 +208,21 @@ class WeatherApplication extends Application {
 
   public get attachedMode() { return this._attachedMode; }
 
-  // tell application that SC is present (used for notes)
-  public simpleCalendarInstalled() { this._simpleCalendarInstalled = true; }
-
-  // window options; called by parent class
-  static get defaultOptions() {
-    const options = super.defaultOptions;
-    
-    options.template = `modules/${moduleJson.id}/templates/weather-dialog.hbs`;
-    options.popOut = false;  // self-contained window without the extra wrapper
-    options.resizable = false;  // window is fixed size
-
-    return options;
-  }
-
   /**
    * This function provides the data that the template can use.
    * 
    * @returns A promise that resolves to the data the template can use.
    */
-  public async getData(): Promise<WeatherApplicationData> {
+  async _prepareContext(): Promise<WeatherApplicationData> {
+    const adapter = calendarManager.getAdapter();
+
     const data = {
-      ...(await super.getData()),
+      ...(await super._prepareContext()),
       isGM: isClientGM(),
       displayDate: this._currentWeather?.date?.display ? this._currentWeather.date.display.date : '',
       formattedDate: this._currentWeather?.date ? this._currentWeather.date.day + '/' + this._currentWeather.date.month + '/' + this._currentWeather.date.year : '',
       formattedTime: this._currentWeather?.date?.display ? this._currentWeather.date.display.time : '',
-      weekday: this._currentWeather?.date ? this._currentWeather.date.weekdays[this._currentWeather.date.dayOfTheWeek] : '',
+      weekday: this._currentWeather?.date?.weekday ? this._currentWeather?.date?.weekday : '',
       currentTemperature: this._currentWeather ? this._currentWeather.getTemperature(ModuleSettings.get(ModuleSettingKeys.useCelsius)) : '',
       currentDescription: this._currentWeather ? this._currentWeather.getDescription() : '',
       currentSeasonClass: this.currentSeasonClass(),
@@ -177,7 +242,8 @@ class WeatherApplication extends Application {
       useCelsius: ModuleSettings.get(ModuleSettingKeys.useCelsius),
       attachedMode: this._attachedMode,
       showAttached: this._attachedMode && !this._attachModeHidden,
-      SCContainerClasses: !this._attachedMode ? '' : `${SC_CLASS_FOR_TAB_WRAPPER} sc-right ${SC_CLASS_FOR_TAB_EXTENDED}`,
+      wrapperElementId: !this._attachedMode || !adapter ? '' : adapter.wrapperElementId,
+      containerClasses: !this._attachedMode || !adapter ? '' : adapter.containerClasses,
       windowPosition: this._attachedMode ? { bottom: 0, left: 0 } : this._windowPosition,
       containerPosition: this._attachedMode ? 'relative' : 'fixed',
       // For attached mode, we only hide if _attachModeHidden is true
@@ -219,6 +285,15 @@ class WeatherApplication extends Application {
    * Toggle the visibility of the weather application when it's in attached mode.
    */
   public toggleAttachModeHidden(): void {
+    // Check if multiple calendars are detected
+    if (calendarManager.hasMultipleCalendars) {
+      ui.notifications?.error(
+        `Multiple calendar modules detected. This is a REALLY bad idea. Please disable all but one calendar module to use Simple Weather.`
+      );
+      this._attachModeHidden = true;
+      return;
+    }
+    
     this._attachModeHidden = !this._attachModeHidden;
     this.render();
   }
@@ -227,8 +302,17 @@ class WeatherApplication extends Application {
    * Show the weather application window. Make it visible and render it.
    */
   public showWindow(): void {
+    // Check if multiple calendars are detected
+    if (calendarManager.hasMultipleCalendars) {
+      ui.notifications?.error(
+        `Multiple calendar modules detected. This is a REALLY bad idea. Please disable all but one calendar module to use Simple Weather.`
+      );
+      this._currentlyHidden = true;
+      return;
+    }
+    
     this._currentlyHidden = false;
-    this.render(true);
+    this.render({ force: true });
   }
 
   
@@ -245,7 +329,12 @@ class WeatherApplication extends Application {
    * 
    * @param html - The jQuery-wrapped HTML container for the weather application.
    */
-  public activateListeners(html: JQuery<HTMLElement>): void {
+  protected _onRender(context: any, options: any): void {
+    super._onRender(context, options);
+    
+    const root = this.element as unknown as HTMLElement;
+    const html: JQuery<HTMLElement> = (globalThis as any).$(root);
+
     // setup handlers and values for everyone
 
     // GM-only
@@ -287,33 +376,21 @@ class WeatherApplication extends Application {
       html.find('#swr-manual-submit').on('click', this.onSubmitWeatherClick);
 
       // select
-      html.find('#swr-manual-weather-selection').on('change', this.onManualWeatherChange);
+      html.find('#swr-manual-weather-selection').on('change', this.onManualWeatherChange.bind(this));
 
       // if we're in manual mode and there's no temp, set it
       const tempElement = html.find('#swr-manual-temperature');
       if (tempElement && !tempElement.val()) {
-        this.onManualWeatherChange();
+        this.onManualWeatherChange(false);
       }
 
       // watch for sc calendar to open a different panel
       if (this._attachedMode) {
-        const observer = new MutationObserver((mutations) => {
-          mutations.forEach((mutation) => {
-            if (mutation.attributeName === 'class' && $(mutation.target).hasClass(SC_CLASS_FOR_TAB_EXTENDED) && 
-                $(mutation.target).hasClass(SC_CLASS_FOR_TAB_WRAPPER) && ((mutation.target as HTMLElement).id!='swr-fsc-container')) {
-                // Class SC_CLASS_FOR_TAB_EXTENDED has been added to another panel (opening it), so turn off ours
-                this._attachModeHidden = true;
-                $('#swr-fsc-container').remove();
-            }
+        const adapter = calendarManager.getAdapter();
+        if (adapter)
+          adapter.activateListeners((hidden: boolean) => {
+            this._attachModeHidden = hidden;
           });
-        });
-
-        // attach the observer to the right element
-        const element: JQuery<HTMLElement> | HTMLElement = $(`#${SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SC_CLASS_FOR_TAB_WRAPPER}`).last().parent();
-        if (element && element.length>0) {
-          const target = element.get(0);
-          observer.observe(target as Node, { attributes: true, childList: true, subtree: true });
-        }
       }
     }
 
@@ -325,8 +402,6 @@ class WeatherApplication extends Application {
     html.find('#swr-weather-box-toggle').on('click', this.onWeatherToggleClick);
     html.find('#swr-date-box-toggle').on('click', this.onDateToggleClick);
     html.find('#swr-close-button').on('click', this.onCloseClick);
-
-    super.activateListeners(html);
   }
 
   // event handlers - note arrow functions because otherwise 'this' doesn't work
@@ -397,7 +472,7 @@ class WeatherApplication extends Application {
    * If we were previously syncing and Simple Calendar is no longer present, will turn off sync.
    * @param force - if true, will recalculate the season sync even if it's already been set
    */
-  public checkSeasonSync(force?: boolean): void {
+  public checkSeasonSync(_force?: boolean): void {
     // make sure simple calendar is present if we're trying to sync
     // this could happen if we had sync on but then uninstalled calendar and reloaded
     if (!this._calendarPresent && this._currentSeasonSync) {
@@ -442,7 +517,7 @@ class WeatherApplication extends Application {
     weatherEffects.ready(this._currentWeather);
 
     this._currentlyHidden = false;
-    this.render(true);
+    this.render({ force: true });
   };
 
   /**
@@ -457,15 +532,17 @@ isGM: ${isClientGM()}
 // displayOptions: ${JSON.stringify(this._displayOptions, null, 2)}
 dialogDisplay: ${ModuleSettings.get(ModuleSettingKeys.dialogDisplay)}
 calendarPresent: ${this._calendarPresent}
+activeCalendarType: ${calendarManager.calendarType}
 manualPause: ${this._manualPause}
 currentClimate: ${this._currentClimate}
 currentHumidity: ${this._currentHumidity}
 currentBiome: ${this._currentBiome}
 currentSeason: ${this._currentSeason}
 currentSeasonSync: ${this._currentSeasonSync}
-SW version: ${game.modules.get('simple-weather')?.version},
-SC version: ${game.modules.get('foundryvtt-simple-calendar')?.version},
-FXMaster version: ${game.modules.get('fxmaster')?.version},
+SW version: ${game.modules?.get('simple-weather')?.version},
+Calendar: ${calendarManager.calendarType}
+Calendar version: ${calendarManager.currentCalendar.version},
+FXMaster version: ${game.modules?.get('fxmaster')?.version},
 ModuleSettings.dialogDisplay: ${ModuleSettings.get(ModuleSettingKeys.dialogDisplay)}
 ModuleSettings.outputWeatherToChat: ${ModuleSettings.get(ModuleSettingKeys.outputWeatherToChat)}
 ModuleSettings.publicChat: ${ModuleSettings.get(ModuleSettingKeys.publicChat)}
@@ -506,23 +583,32 @@ _______________________________________
   /**
    * Updates the current date/time showing in the weather dialog.  Generates new weather if the date has changed.
    * 
-   * @param currentDate the SimpleCalendar.DateData object that contains the current date
+   * There are two scenarios when generating weather:
+   * 1. Normal day advancement: When the date advances by exactly one day (the common case), we preserve 
+   *    existing forecasts and don't prompt for confirmation, as users typically want to keep their forecast data.
+   * 2. Random date jumps: When users jump around in the calendar (e.g., skipping ahead weeks or months), 
+   *    we prompt to confirm whether to overwrite existing forecasts, as this may not be intended.
+   * 
+   * @param currentDate the CalendarDate object that contains the current date
    */
-  public async updateDateTime(currentDate: SimpleCalendar.DateData | null): Promise<void> {
+  public async updateDateTime(currentDate: CalendarDate | null): Promise<void> {
     if (!currentDate)
       return;
 
     if (this.hasDateChanged(currentDate)) {
       if (isClientGM()) {
+        // Check if this is a one-day advancement (normal progression)
+        const isOneDayAdvance = this.isOneDayAdvance(currentDate);
+        
         if (ModuleSettings.get(ModuleSettingKeys.storeInSCNotes)) {
           // if we're using notes from SC (and have a valid note) pull that weather
-          const notes = SimpleCalendar.api.getNotesForDay(currentDate.year, currentDate.month, currentDate.day);
+          const notes = getCalendarAdapter()?.getNotesForDay(currentDate) || [];
           let foundWeatherNote = false;
 
           for (let i=0; i<notes.length; i++) {
             if (notes[i]) {
-              const note = notes[i] as StoredDocument<JournalEntry>;
-              const flagData = note.getFlag(moduleJson.id, SC_NOTE_WEATHER_FLAG_NAME) as WeatherData;
+              const note = notes[i] as JournalEntry;
+              const flagData = note.getFlag(moduleJson.id, CAL_NOTE_WEATHER_FLAG_NAME) as WeatherData;
       
               // if it has the flag, it's a prior weather entry - use it
               if (flagData && flagData.temperature!=null && flagData.hexFlowerCell!=null) {
@@ -550,23 +636,23 @@ _______________________________________
           }
 
           if (!foundWeatherNote) {
-            await this.generateWeather(currentDate);
+            await this.generateWeather(currentDate, isOneDayAdvance);
           }      
         } else {
           // otherwise generate new weather
           log(false, 'Generate new weather');
           
-          await this.generateWeather(currentDate);
+          await this.generateWeather(currentDate, isOneDayAdvance);
         }
       }
+
+      await this.render();
     } else {
       // always update because the time has likely changed even if the date didn't
       // but we don't need to save the time to the db, because every second
       //    it's getting refreshed 
       this._currentWeather.date = currentDate;
     }
-
-    await this.render();
   }
 
   
@@ -581,8 +667,8 @@ _______________________________________
   public async setWeather(): Promise<void> {
     const weatherData = ModuleSettings.get(ModuleSettingKeys.lastWeatherData);
 
-    // if we have prior date info but Simple Calendar is no longer installed, we need to clean that up 
-    if (weatherData?.date && !('SimpleCalendar' in globalThis)) {
+    // if we have prior date info but Simple Calendar, etc. is no longer installed, we need to clean that up 
+    if (weatherData?.date && !calendarManager.hasActiveCalendar) {
       weatherData.date = null;
       await ModuleSettings.set(ModuleSettingKeys.lastWeatherData, weatherData);
     }
@@ -596,7 +682,7 @@ _______________________________________
     } else if (isClientGM()) {
       log(false, 'No saved weather data - Generating weather');
 
-      await this.generateWeather(null);
+      await this.generateWeather(null, false); // initial generation always prompts
     } else {
       log(false, 'Non-GM loaded blank weather');
       log(false, JSON.stringify(game.user));
@@ -610,20 +696,24 @@ _______________________________________
    * If the module is paused, it does nothing except update the date.  Otherwise, it generates
    * new weather based on the current settings and then activates that weather.
    * @param currentDate the date for which to generate weather, or null to use today's date
+   * @param isOneDayAdvance whether the date advanced by exactly one day (used to skip forecast confirmation)
    */
-  private async generateWeather(currentDate: SimpleCalendar.DateData | null): Promise<void> {
+  private async generateWeather(currentDate: CalendarDate | null, isOneDayAdvance: boolean = false): Promise<void> {
     // if we're paused, do nothing (except update the date)
     if (this._manualPause) {
       this._currentWeather.date = currentDate;
     } else {
       const season = this.getSeason();
-
+      
       this._currentWeather = await GenerateWeather.generateWeather(
         this._currentClimate ?? Climate.Temperate, 
         this._currentHumidity ?? Humidity.Modest, 
-        season ?? Season.Spring, 
+        season ?? Season.Spring,
         currentDate,
-        this._currentWeather || null
+        this._currentWeather || null,
+        false,  // forceRegenerate
+        false,  // forForecast
+        isOneDayAdvance  // pass the one-day advance flag
       );
 
       await this.activateWeather(this._currentWeather);
@@ -638,7 +728,7 @@ _______________________________________
    * @param temperature The temperature to use.
    * @param weatherIndex The index into the set of manual options.
    */
-  private async setManualWeather(currentDate: SimpleCalendar.DateData | null, temperature: number, weatherIndex: number): Promise<void> {
+  private async setManualWeather(currentDate: CalendarDate | null, temperature: number, weatherIndex: number): Promise<void> {
     const season = this.getSeason();
 
     if (season==null)
@@ -652,8 +742,9 @@ _______________________________________
       const options = getManualOptionsBySeason(season, this._currentClimate, this._currentHumidity);   
 
       // can't forecast if we don't have a date or we're not doing forecasts, or options aren't valid
-      if (currentDate && ModuleSettings.get(ModuleSettingKeys.useForecasts) && options && options[weatherIndex] && options[weatherIndex].valid) {
-        await GenerateWeather.generateForecast(cleanDate(currentDate), this._currentWeather, true);
+      const adapter = getCalendarAdapter();
+      if (currentDate && ModuleSettings.get(ModuleSettingKeys.useForecasts) && options && options[weatherIndex] && options[weatherIndex].valid && adapter) {
+        await GenerateWeather.generateForecast(cleanDate(adapter, currentDate), this._currentWeather, true, false); // manual weather always prompts
       }
 
       await this.activateWeather(this._currentWeather);
@@ -674,12 +765,10 @@ _______________________________________
    * 
    * @internal
    */
-  public setSpecificWeather(climate: Climate, humidity: Humidity, hexFlowerCell: HexFlowerCell): void {
-    const season = this.getSeason();
+  private setSpecificWeather(_climate: Climate, _humidity: Humidity, _hexFlowerCell: HexFlowerCell): void {
+    log(false, 'Running weather for ' + weatherDescriptions[_climate][_humidity][_hexFlowerCell]);
 
-    log(false, 'Running weather for ' + weatherDescriptions[climate][humidity][hexFlowerCell]);
-
-    const result = GenerateWeather.createSpecificWeather(this._currentWeather?.date || null, climate, humidity, hexFlowerCell);
+    const result = GenerateWeather.createSpecificWeather(this._currentWeather?.date || null, _climate, _humidity, _hexFlowerCell);
     if (result) {
       this._currentWeather = result;
       this.activateWeather(this._currentWeather);
@@ -724,38 +813,39 @@ _______________________________________
 
   // save the weather to a calendar note
   private async saveWeatherToCalendarNote(weatherData: WeatherData): Promise<void> {
+    if (!weatherData.date || !calendarManager.hasActiveCalendar) 
+      return;
+    
+    const adapter = getCalendarAdapter();
+    if (!adapter) return;
+    
     const noteTitle = 'Simple Weather - Daily Weather';
 
-    // is simple calendar present?
-    if (!this._simpleCalendarInstalled || !weatherData?.date) {
-      return;
-    }
-
     // remove any previous note for the day
-    const notes = SimpleCalendar.api.getNotesForDay(weatherData.date.year, weatherData.date.month, weatherData.date.day);
+    const notes = adapter.getNotesForDay(weatherData.date);
     for (let i=0; i<notes.length; i++) {
       if (notes[i]) {
-        const note = notes[i] as StoredDocument<JournalEntry>;
-        const flagData = note.getFlag(moduleJson.id, SC_NOTE_WEATHER_FLAG_NAME) as WeatherData;
+        const note = notes[i] as JournalEntry;
+        const flagData = note.getFlag(moduleJson.id, CAL_NOTE_WEATHER_FLAG_NAME) as WeatherData;
 
         // if it has the flag, it's a prior weather entry - delete it
         if (flagData) {
-          await SimpleCalendar.api.removeNote((notes[i] as StoredDocument<JournalEntry>).id);
+          await adapter.removeNote((notes[i]).id);
         }
       }
     }
 
     // add a new one
     const noteContent = `Todays weather: ${weatherData.getTemperature(ModuleSettings.get(ModuleSettingKeys.useCelsius))} -  ${weatherData.getDescription() }`;
-    const theDate = { year: weatherData.date.year, month: weatherData.date.month, day: weatherData.date.day};
 
     // create the note and store the weather detail as a flag
-    const newNote = await SimpleCalendar.api.addNote(noteTitle, noteContent, theDate, theDate, true);
-    await newNote?.setFlag(moduleJson.id, SC_NOTE_WEATHER_FLAG_NAME, weatherData);
+    const newNote = await adapter.addNote(noteTitle, noteContent, weatherData.date, weatherData.date, true);
+    // Cast to any to access Foundry's setFlag method
+    await (newNote as any)?.setFlag(moduleJson.id, CAL_NOTE_WEATHER_FLAG_NAME, weatherData);
   }
 
   // has the date part changed
-  private hasDateChanged(currentDate: SimpleCalendar.DateData): boolean {
+  private hasDateChanged(currentDate: CalendarDate): boolean {
     const previous = this._currentWeather?.date;
 
     if ((!previous && currentDate) || (previous && !currentDate))
@@ -763,10 +853,11 @@ _______________________________________
     if (!previous && !currentDate) 
       return false;
 
+    // previous exists and currentDate exists
     if (this.isDateTimeValid(currentDate)) {
-      if (currentDate.day !== (previous as SimpleCalendar.DateData).day
-          || currentDate.month !== (previous as SimpleCalendar.DateData).month
-          || currentDate.year !== (previous as SimpleCalendar.DateData).year) {
+      if (currentDate.day !== previous!.day
+          || currentDate.month !== previous!.month
+          || currentDate.year !== previous!.year) {
         return true;
       }
     } 
@@ -775,24 +866,52 @@ _______________________________________
     return false;
   }
 
-  private isDateTimeValid(date: SimpleCalendar.DateData): boolean {
-    if (this.isDefined(date.second) && this.isDefined(date.minute) && this.isDefined(date.day) &&
-    this.isDefined(date.month) && this.isDefined(date.year)) {
+  /**
+   * Checks if the current date is exactly one day after the previous date.
+   * This is used to determine if we should skip the forecast overwrite confirmation prompt.
+   * @param currentDate The new current date
+   * @returns true if the date is exactly one day after the previous date
+   */
+  private isOneDayAdvance(currentDate: CalendarDate): boolean {
+    const previous = this._currentWeather?.date;
+
+    // If we don't have a previous date or the current date is invalid, we can't determine
+    if (!previous || !this.isDateTimeValid(currentDate) || !this.isDateTimeValid(previous))
+      return false;
+
+    const adapter = getCalendarAdapter();
+    if (!adapter)
+      throw new Error("No adapter in WeatherApplication.isOneDayAdvance()");
+
+    // Convert both dates to timestamps to compare
+    const previousTimestamp = adapter.dateToTimestamp(previous);
+    const currentTimestamp = adapter.dateToTimestamp(currentDate);
+
+    if (previousTimestamp === null || currentTimestamp === null)
+      return false;
+
+    // Calculate the timestamp for exactly one day after the previous date
+    const nextDayTimestamp = adapter.timestampPlusInterval(previousTimestamp, { day: 1 });
+
+    // If the current timestamp matches the next day timestamp, it's a one-day advance
+    // we also count advances of less than a day the same way
+    return currentTimestamp <= nextDayTimestamp;
+  }
+
+  private isDateTimeValid(date: CalendarDate): boolean {
+    if (date.minute != null && date.day != null &&
+    date.month != null && date.year != null) {
       return true;
     }
 
     return false;
   }
 
-  private isDefined(value: unknown) {
-    return value !== undefined && value !== null;
-  }
-
   // access the current selections
   public getSeason(): Season | null {
     if (this._currentSeasonSync) {
       // if the season selector is set to "sync", then pull it off the date instead
-      return this._currentWeather.simpleCalendarSeason;
+      return this._currentWeather.calendarSeason;
     } else {
       return this._currentSeason;
     }
@@ -815,7 +934,7 @@ _______________________________________
 
   public async regenerateWeather() {
     if (isClientGM()) {
-      await this.generateWeather(this._currentWeather?.date || null);
+      await this.generateWeather(this._currentWeather?.date || null, false); // regenerate always prompts
       ModuleSettings.set(ModuleSettingKeys.lastWeatherData, this._currentWeather);        
       await this.render();
     }
@@ -826,7 +945,7 @@ _______________________________________
     const target = event.originalEvent?.target as HTMLSelectElement;
     if (target.value === 'sync') {
       this._currentSeasonSync = true;
-      this._currentSeason = Number(this._currentWeather.simpleCalendarSeason);
+      this._currentSeason = Number(this._currentWeather.calendarSeason);
     } else {
       this._currentSeasonSync = false;
       this._currentSeason = Number(target.value);
@@ -836,7 +955,7 @@ _______________________________________
     ModuleSettings.set(ModuleSettingKeys.season, this._currentSeason);
 
     // render to update the icon and the manual weather list
-    this.render(false);
+    this.render();
   };
 
   private onClimateSelectChange = (event): void => {
@@ -851,7 +970,7 @@ _______________________________________
     ModuleSettings.set(ModuleSettingKeys.biome, '');
 
     // force the manual weather dropdown to regenerate
-    this.render(false);
+    this.render();
   };
 
   private onHumiditySelectChange = (event): void => {
@@ -866,7 +985,7 @@ _______________________________________
     ModuleSettings.set(ModuleSettingKeys.biome, '');
 
     // force the manual weather dropdown to regenerate
-    this.render(false);
+    this.render();
   };
 
   private onBiomeSelectChange = (event): void => {
@@ -899,10 +1018,10 @@ _______________________________________
     }
 
     // force the manual weather dropdown to regenerate
-    this.render(false);
+    this.render();
   };
 
-  private onManualPauseChange = (event): void => {
+  private onManualPauseChange = (_event): void => {
     this.manualPauseToggle();
   };
 
@@ -1019,7 +1138,7 @@ _______________________________________
     return getManualOptionsBySeason(season, this._currentClimate, this._currentHumidity)[selectedValue];
   }
 
-  private onManualWeatherChange = async (): Promise<void> => {
+  private onManualWeatherChange = async (rerender = true): Promise<void> => {
     const option = this.getSelectedManualOption();
 
     if (option==null)
@@ -1040,7 +1159,8 @@ _______________________________________
     // trigger as if we'd entered it - to update the button status
     this.onManualTempInput()
 
-    await this.render();
+    if (rerender)
+      await this.render();
   }
 
   // get the class to apply to get the proper icon by season
@@ -1062,32 +1182,6 @@ _______________________________________
     return '';
   }
 
-  // override this function to handle the compact case
-  override _injectHTML(html: JQuery<HTMLElement>) {
-    if (this._attachedMode) {
-
-      if (!this._attachModeHidden) {
-        // turn off any existing calendar panels
-        const existingPanels = $(`#${SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SC_CLASS_FOR_TAB_WRAPPER}.${SC_CLASS_FOR_TAB_EXTENDED}`);
-        existingPanels.addClass(SC_CLASS_FOR_TAB_CLOSED).removeClass(SC_CLASS_FOR_TAB_EXTENDED);
-
-        // if it's there we'll replace, otherwise we'll append
-        if ($('#swr-fsc-container').length === 0) {
-          // attach to the calendar
-          const siblingPanels = $(`#${SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SC_CLASS_FOR_TAB_WRAPPER}.${SC_CLASS_FOR_TAB_CLOSED}`);
-          siblingPanels.last().parent().append(html);
-        } else {
-          $('#swr-fsc-container').replaceWith(html);
-        }
-      } else {
-        // hide it
-        $('#swr-fsc-container').remove();
-      }  
-    } else {
-      super._injectHTML(html);
-    }
-  }
-
   // load the next few days of forecasts to display
   public getForecasts(): Forecast[] {
     const numForecasts = 7;
@@ -1097,7 +1191,12 @@ _______________________________________
     
     const forecasts = [] as Forecast[];
 
-    let currentTimestamp = cleanDate(this._currentWeather.date);
+    const adapter = getCalendarAdapter();
+
+    if (!adapter)
+      throw new Error('Unable to get adapter in WeatherApplication.getForecasts()');
+
+    let currentTimestamp = this._currentWeather.date ? cleanDate(adapter, this._currentWeather.date) : 0;
 
     const allForecasts = ModuleSettings.get(ModuleSettingKeys.forecasts);
     if (!allForecasts || Object.keys(allForecasts).length===0) 
@@ -1106,7 +1205,10 @@ _______________________________________
     for (let day=1; day<=numForecasts; day++) {
       let forecastTimeStamp;
 
-      forecastTimeStamp = SimpleCalendar.api.timestampPlusInterval(currentTimestamp, { day: day});
+      const calendarAdapter = getCalendarAdapter();
+      if (calendarAdapter) {
+        forecastTimeStamp = calendarAdapter.timestampPlusInterval(currentTimestamp, { day: day});
+      }
   
       // load the forecast
       const forecast = allForecasts[forecastTimeStamp.toString()];

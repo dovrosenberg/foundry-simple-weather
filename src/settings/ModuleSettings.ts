@@ -128,16 +128,16 @@ export class ModuleSettings {
     await game.settings.set(moduleJson.id, setting, value);
   }
 
-  private static register(settingKey: string, settingConfig: ClientSettings.PartialSettingConfig) {
+  private static register(settingKey: string, settingConfig: Partial<ClientSettings.SettingSubmenuConfig>) {
     game.settings.register(moduleJson.id, settingKey, settingConfig);
   }
 
-  private static registerMenu(settingKey: string, settingConfig: ClientSettings.PartialSettingSubmenuConfig) {
+  private static registerMenu(settingKey: string, settingConfig: Partial<ClientSettings.SettingSubmenuConfig>) {
     game.settings.registerMenu(moduleJson.id, settingKey, settingConfig);
   }
 
   // these are global menus (shown at top)
-  private static menuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: ModuleSettingKeys })[] = [
+  private static menuParams: (Partial<ClientSettings.SettingSubmenuConfig> & { settingID: ModuleSettingKeys })[] = [
     // couldn't get this to work because it creates a new instance but I can't figure out how to attach it to the weatherInstance variable in main.js
     // {
     //     settingID: ModuleSettingKeys.showApplication,
@@ -158,12 +158,12 @@ export class ModuleSettings {
   ];
 
   // these are local menus (shown at top)
-  private static localMenuParams: (ClientSettings.PartialSettingSubmenuConfig & { settingID: ModuleSettingKeys })[] = [
+  private static localMenuParams: (Partial<ClientSettings.SettingSubmenuConfig> & { settingID: ModuleSettingKeys })[] = [
   ];
 
   // these are globals shown in the options
   // name and hint should be the id of a localization string
-  private static displayParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
+  private static displayParams: (Partial<ClientSettings.SettingConfig> & { settingID: ModuleSettingKeys })[] = [
     {
       settingID: ModuleSettingKeys.outputWeatherToChat,
       name: 'settings.outputWeatherToChat',
@@ -240,7 +240,7 @@ export class ModuleSettings {
   ];
 
   // these are client-specific and displayed in settings
-  private static localDisplayParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
+  private static localDisplayParams: (Partial<ClientSettings.SettingConfig> & { settingID: ModuleSettingKeys })[] = [
     {
       settingID: ModuleSettingKeys.useCelsius, 
       name: 'settings.useCelsius',
@@ -275,7 +275,7 @@ export class ModuleSettings {
   ];
 
   // these are globals only used internally
-  private static internalParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
+  private static internalParams: (Partial<ClientSettings.SettingConfig> & { settingID: ModuleSettingKeys })[] = [
     {
       settingID: ModuleSettingKeys.activeFXMParticleEffects,
       name: 'Active FX particle effects',
@@ -356,7 +356,7 @@ export class ModuleSettings {
   ];
   
   // these are client-specific only used internally
-  private static localInternalParams: (ClientSettings.PartialSettingConfig & { settingID: ModuleSettingKeys })[] = [
+  private static localInternalParams: (Partial<ClientSettings.SettingConfig> & { settingID: ModuleSettingKeys })[] = [
     {
       settingID: ModuleSettingKeys.fxActive,
       name: 'FX Active',

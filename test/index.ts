@@ -5,11 +5,14 @@
 import { ModuleSettingKeys, ModuleSettings } from '@/settings/ModuleSettings';
 import { registerUtilTests } from '@test/utils';
 import { registerWeatherTests } from '@test/weather';
+import { registerCalendarTests } from '@test/calendar';
 
 // Registers all `Quench` tests
+// @ts-ignore
 Hooks.on("quenchReady", () => {
   registerUtilTests();
   registerWeatherTests();
+  registerCalendarTests();
 });
 
 const settings = {};

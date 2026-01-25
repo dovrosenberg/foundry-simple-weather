@@ -1,16 +1,15 @@
 [![Supported Foundry Versions](https://img.shields.io/endpoint?url=https%3A%2F%2Ffoundryshields.com%2Fversion%3Fstyle%3Dflat%26url%3Dhttps%3A%2F%2Fgithub.com%2Fdovrosenberg%2Ffoundry-simple-weather%2Fraw%2Fmaster%2Fstatic%2Fmodule.json)](https://github.com/dovrosenberg/foundry-simple-weather)
 
-Dynamic weather generation, by season and biome, including automatically activating weather effects.  If [Simple Calendar](https://foundryvtt.com/packages/foundryvtt-simple-calendar) (see changelog for which versions of SC are supported by each version of Simple Weather) is present, Simple Weather will integrate to it and display the date/time and automatically generate new weather when the date changes.  Without Simple Calendar, no date is shown and weather regeneration can be manually triggered. (NOTE: THIS MODULE IS NOT AFFILIATED WITH THE CREATORS OF SIMPLE CALENDAR)
+Dynamic weather generation, by season and biome, including automatically activating weather effects.  If [Simple Calendar](https://foundryvtt.com/packages/foundryvtt-simple-calendar) (see changelog for which versions of SC are supported by each version of Simple Weather) is present, Simple Weather will integrate to it and display the date/time and automatically generate new weather when the date changes.  Without Simple Calendar, no date is shown and weather regeneration can be manually triggered. (NOTE: THIS MODULE IS NOT AFFILIATED WITH THE CREATORS OF SIMPLE CALENDAR OR ANY OTHER CALENDAR MODULE)
 
-
-I built this as a way to learn Foundry better, but I plan to maintain it for now and am happy to consider [feature requests](https://github.com/dovrosenberg/foundry-simple-weather/issues/new/choose)
 
 ## Note on v13 compatibility
 
-Unfortunately, Simple Calendar doesn't currently support Foundry v13, so be forewarned that while Simple Weather will run in standalone mode, that's all you're going to get.  If you were using Simple Calendar before, this may result in some strange behavior either when you first generate weather and/or when Simple Calendar comes back. I'm pretty sure that when Simple Calendar upgrades, this version will still work correctly with it, but there's no way to test it until then.  There's an [open issue](https://github.com/vigoren/foundryvtt-simple-calendar/issues/669) on Simple Calendar requesting support - please upvote.
+Unfortunately, the original Simple Calendar doesn't currently support Foundry v13, so be forewarned that while Simple Weather will run in standalone mode, that's all you're going to get.  If you were using Simple Calendar before, this may result in some strange behavior either when you first generate weather and/or when Simple Calendar comes back. I'm pretty sure that when Simple Calendar upgrades, this version will still work correctly with it, but there's no way to test it until then.  There's an [open issue](https://github.com/vigoren/foundryvtt-simple-calendar/issues/669) on Simple Calendar requesting support - please upvote.
 
-** That said, new news!  This version now supports Simple Calendar fork by CarlosFdex here: https://github.com/CarlosFdez/foundryvtt-simple-calendar/releases.  Use the link to the most recent `module.json`
-as the URL to install from in the Foundry VTT module manager. **  
+** That said, as of v2.2.0, Simple Weather support both [this fork by CarlosFdex](https://github.com/CarlosFdez/foundryvtt-simple-calendar) and [Simple Calendar Reborn](https://foundryvtt.com/packages/foundryvtt-simple-calendar-reborn).  
+
+**WARNING! DO NOT TRY TO USE SIMPLE WEATHER IN A WORLD WITH MORE THAN ONE SIMPLE CALENDAR-LIKE MODULE INSTALLED.  BAD THINGS ARE LIKELY TO HAPPEN, AS NONE OF THESE PLAY NICE WITH EACH OTHER.**
 
 ## Features
 
@@ -97,8 +96,10 @@ Comments on any of this are welcome [here](https://github.com/dovrosenberg/found
 ### Keybindings
 There are keybinding options under "Configure Controls" in the main Foundry Game Settings section.  You can toggle the whole window on/off, regenerate weather, pause automatic changes to the weather, and toggle weather effects on/off.  Note that these keybindings work even when the window is hidden.  So you can in theory run the whole weather system while the window is hidden (autogenerating weather by calendar, manually generating new weather, turning effects on/off).
 
-### Simple Calendar "Attached Mode"
+### Calendar "Attached Mode"
 When using the "Attached to Simple Calendar" setting, there will be a button added to the Simple Calendar window to toggle the weather tab on/off.  In this mode, there is no option to show Simple Weather's calendar panel (because the Simple Calendar must be showing).
+
+In Calendaria, similar behavior, but it only currently supports the compact view.
 
 **Note that there is tight version dependency between this module and Simple Calendar.  Check the changelog to find the version that works for your version of Simple Calendar.  If the latest version of Simple Calendar isn't yet supported, please file an issue to let me know.**
 
@@ -113,8 +114,8 @@ Or in compact mode:
 * **Make chat public** - If checked, everyone will see the weather display (from prior option) in the chat. If not, it will only be visible to the GM
 * **Can players see dialog** - If checked, the player version of the dialog (see above) will be visible to players. If not, players won't see a dialog.
 * **Display special effects** - Choose weather to use special effects (and which system).
-* **Attach to Simple Calendar** - If checked, turns on "Attached Mode" (see above).
-* **Store weather in Simple Calendar** - If checked, whenever new weather is loaded/generated, it will create a note on the current day in Simple Calendar.  This note will contain the weather for the day, for future reference.  If you ever change the calendar date to be a day that has one of these weather notes, it will reuse the weather from that date rather than generating new weather.  You can still manually set the weather or use the "regenerate" button to create new random weather (which will then update the note). The weather details are stored internally on the note, so it is safe to edit the note title and contents, if you'd like.
+* **Attach to Calendar** - If checked, turns on "Attached Mode" (see above).
+* **Store weather in Calendar** - If checked, whenever new weather is loaded/generated, it will create a note on the current day in Simple Calendar/Calendaria.  This note will contain the weather for the day, for future reference.  If you ever change the calendar date to be a day that has one of these weather notes, it will reuse the weather from that date rather than generating new weather.  You can still manually set the weather or use the "regenerate" button to create new random weather (which will then update the note). The weather details are stored internally on the note, so it is safe to edit the note title and contents, if you'd like.
 * **Use Celsius** - If checked, all temperatures will display in celsius.  If not, Faherenheit.
 
 ## Known Issues

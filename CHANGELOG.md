@@ -1,15 +1,22 @@
 # Change Log
 
+## v2.2.0 - New Calendar Support
+#### Support for Simple Calendar Reborn v2.5.3 and Calendaria v0.8.0
+
+![](https://img.shields.io/badge/release%20date-January%2018%2C%202026-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v2.2.0/module.zip)
+
+- While it might still work with other forks, Simple Weather now officially supports Simple Calendar Reborn.  Will wait to see what adoption looks like across the community before deciding if I can/need to support multiple forks.
+- Additionally, Simple Weather now supports Calendaria.  Thanks to Sayshal for providing a ton of support to get these working together.  For now, attached mode only works with the compact view.
+- Advancing the calendar one day will no longer prompt for overwriting forecasts.  It will just use the existing forecats and extend the extra day.  If you jump around on the calendar, you will still be prompted if you wish to overwrite, as you may not know in that scenario if there were already forecasts provided.
+
 ## v2.1.0 - Temporary support for Simple Calendar fork
 #### **Support for temporary fork of Simple Calendar - v2.4.18.5 **
 
 ![](https://img.shields.io/badge/release%20date-November%206%2C%202025-blue)
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v2.1.0/module.zip)
 
-- While waiting for official Simple Calendar package to be updated to v13, *CarlosFdez* has created a fork that is compatible with v13.
-You can now use Simple Weather with this fork.  For those not actively following the conversation on the Simple Calendar github page, 
-you can find the latest version at https://github.com/CarlosFdez/foundryvtt-simple-calendar/releases.  Use the link to the most recent `module.json`
-as the URL to install from in the Foundry VTT module manager.
+- While waiting for official Simple Calendar package to be updated to v13, *CarlosFdez* has created a fork that is compatible with v13. You can now use Simple Weather with this fork.  For those not actively following the conversation on the Simple Calendar github page, you can find the latest version at https://github.com/CarlosFdez/foundryvtt-simple-calendar/releases.  Use the link to the most recent `module.json` as the URL to install from in the Foundry VTT module manager.
 - Fixed potential race condition that caused Simple Calendar (or some substitutes) not to be detected at times, even when installed.  
 - Fixed duplicate button showing on Simple Calendar
 

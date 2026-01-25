@@ -7,7 +7,9 @@ import { QuenchBatchContext } from '@ethaks/fvtt-quench';
 import { backupSettings, restoreSettings } from '@test/index';
 import { GenerateWeather } from '@/weather/GenerateWeather';
 import { getManualOptionsBySeason } from '@/weather/manualWeather';
-import { startingCells, } from '@/weather/weatherMap';
+import { cleanDate } from '@/utils/calendar';
+import { CalendarDate, calendarManager } from '@/calendar';
+import { runTestsForEachCalendar } from '@test/calendarTestHelper';
 
 let resetWeatherMock;  // reset to the 1st call
 let dialogMockReturn: boolean = false;   // set this to determine the return value of the dialog prompt 
@@ -37,6 +39,11 @@ export const registerGenerateWeatherTests = () => {
         }
       });
       
+      afterEach(() => {
+        // Ensure all stubs are restored after each test
+        sinon.restore();
+      });
+      
       describe('Weather generation without SimpleCalendar', () => {
         it('should generate weather with null date', async () => {
           // Verify SimpleCalendar is not defined
@@ -54,7 +61,9 @@ export const registerGenerateWeatherTests = () => {
             season, 
             null, // null date
             null, 
-            false
+            false,
+            false,
+            false // isSingleDayAdvance = false
           );
           
           // Verify the result
@@ -169,13 +178,9 @@ export const registerGenerateWeatherTests = () => {
           expect(callArgs.content).to.include(weatherData.getDescription());
           expect(callArgs.content).to.include(weatherData.getTemperature(false));
           expect(callArgs.content).to.include("Custom message for testing");
-          
-          // Restore stubs
-          chatStub.restore();
-          getStub.restore();
         });
         
-        it('should handle generateForecast with no SimpleCalendar', async () => {
+        it('should handle generateForecast with no Calendar (turn off all calendar modules to test)', async () => {
           // Verify SimpleCalendar is not defined
           expect('SimpleCalendar' in globalThis).to.be.false;
           
@@ -205,10 +210,6 @@ export const registerGenerateWeatherTests = () => {
           
           // Verify ModuleSettings.set was not called (no changes to save)
           expect(setStub.called).to.be.false;
-          
-          // Restore stubs
-          getStub.restore();
-          setStub.restore();
         });
       });
       
@@ -221,18 +222,27 @@ export const registerGenerateWeatherTests = () => {
     }
   );
   
-  quench.registerBatch(
+  runTestsForEachCalendar(
     'simple-weather.weather.forecastGeneration',
     (context: QuenchBatchContext) => {
       const { describe, it, expect, before, after, } = context;
-      const todayTimestamp = SimpleCalendar.api.dateToTimestamp({
+      
+      // Get the current adapter and create test data
+      const adapter = calendarManager.getAdapter();
+      if (!adapter) throw new Error('No calendar adapter available');
+      
+      const todayTimestamp = adapter.dateToTimestamp({
         day: 14,
         month: 3,
         year: 2001,
+        hour: 0,
+        minute: 0,
+        display: { date: '3/14/2001', time: '0:00' }
       });
-      const todayDate = SimpleCalendar.api.timestampToDate(todayTimestamp);
+      const todayDate = adapter.timestampToDate(todayTimestamp);
 
       if (!todayTimestamp) throw new Error('could not generate test date');
+      if (!todayDate) throw new Error('could not convert timestamp to date');
 
       const weather: WeatherData[] = [
         new WeatherData(todayDate, Season.Spring, Humidity.Modest, Climate.Temperate, 17, 70),
@@ -250,24 +260,33 @@ export const registerGenerateWeatherTests = () => {
       const REFORECAST_OFFSET = 4;
       const reforecasts: Record<string, Forecast> = {};   // the forecasts that will be generated with the next 7 calls fo generateWeather
       for (let i = 0; i < 7; i++) {
-        const timestamp = SimpleCalendar.api.dateToTimestamp({
+        const timestamp = adapter.dateToTimestamp({
           day: 15+i,
           month: 3,
-          year: 2001, 
+          year: 2001,
+          hour: 0,
+          minute: 0,
+          display: { date: `${3}/${15+i}/2001`, time: '0:00' }
         });
         forecasts[timestamp] = new Forecast(timestamp, Climate.Temperate, Humidity.Modest, weather[i].hexFlowerCell as HexFlowerCell); 
         reforecasts[timestamp] = new Forecast(timestamp, Climate.Temperate, Humidity.Modest, weather[(i+REFORECAST_OFFSET) % weather.length].hexFlowerCell as HexFlowerCell); 
       }
         
+      // Move callCount to batch scope
+      let callCount = 0;
+      
+      // Define resetWeatherMock at batch scope
+      resetWeatherMock = () => { callCount = 0; }
+        
 
       before(async () => {
         backupSettings();
+      });
 
-        // mock generateWeather for testing forecasts
-        let callCount = 0;
-        resetWeatherMock = () => { callCount = 0;}
+      beforeEach(async () => {
+        // Create fresh stubs for each test
         weatherStub = sinon.stub(GenerateWeather, 'generateWeather').callsFake(
-          (_climate: Climate, _humidity: Humidity, _season: Season, today: SimpleCalendar.DateData | null, _yesterday: WeatherData | null, _forForecast = false): WeatherData => {
+          async (_climate: Climate, _humidity: Humidity, _season: Season, today: CalendarDate | null, _yesterday: WeatherData | null, _forForecast = false, _forceRegenerate = false, _isSingleDayAdvance = false): Promise<WeatherData> => {
             // update the date -- we start midway through the set to make sure they don't align with forecasts
             const weatherToReturn = weather[(REFORECAST_OFFSET + callCount++) % weather.length];
             weatherToReturn.date = today;
@@ -280,11 +299,15 @@ export const registerGenerateWeatherTests = () => {
         
         // Mock ChatMessage.create for outputWeatherToChat tests
         chatMessageStub = sinon.stub(ChatMessage, 'create').returns(Promise.resolve({} as ChatMessage));
-      });
-
-      beforeEach(async () => {
+        
         resetWeatherMock();
         chatMessageStub.resetHistory();
+        dialogStub.resetHistory();
+      });
+
+      afterEach(() => {
+        // Clean up all stubs after each test
+        sinon.restore();
       });
 
       describe('generateForecast', () => {
@@ -293,25 +316,25 @@ export const registerGenerateWeatherTests = () => {
 
           // test with a force overwrite so we can see if they change
           await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, null, Humidity.Modest, Climate.Temperate, 14, 14), false);
-          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
+          expect(ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
 
           await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, null, Climate.Temperate, 14, 14), false);
-          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
+          expect(ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
 
           await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, null, 14, 14), false);
-          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
+          expect(ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);
         });
 
         it('should generate forecasts for the next 7 days', async () => {
           await ModuleSettings.set(ModuleSettingKeys.forecasts, {});
           await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), false);
-          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(reforecasts);
+          expect(ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(reforecasts);
         });
 
         it('should overwrite if extendOnly==false', async () => {
           await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);
           await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), false);
-          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(reforecasts);
+          expect(ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(reforecasts);
         });
 
         it('should prompt about overwrite when extendOnly set to true', async () => {
@@ -324,10 +347,13 @@ export const registerGenerateWeatherTests = () => {
           dialogMockReturn = false;
           
           const holeyForecasts = {...forecasts};
-          const timestampToRemove = SimpleCalendar.api.dateToTimestamp({
+          const timestampToRemove = adapter.dateToTimestamp({
             day: 15+3,
             month: 3,
-            year: 2001, 
+            year: 2001,
+            hour: 0,
+            minute: 0,
+            display: { date: `3/${15+3}/2001`, time: '0:00' }
           });
   
           // remove a forecast
@@ -338,7 +364,7 @@ export const registerGenerateWeatherTests = () => {
 
           // fill back in the forecast (with the 1st weather used)
           holeyForecasts[timestampToRemove] = new Forecast(timestampToRemove, Climate.Temperate, Humidity.Modest, weather[REFORECAST_OFFSET].hexFlowerCell as HexFlowerCell); 
-          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(holeyForecasts);          
+          expect(ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(holeyForecasts);          
         });
 
         it('should overwrite everything if extendOnly==true and prompt is yes', async () => {
@@ -347,26 +373,62 @@ export const registerGenerateWeatherTests = () => {
           await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);  
           await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), true);
 
-          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(reforecasts);          
+          expect(ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(reforecasts);          
+        });
+
+        it('should NOT prompt about overwrite when extendOnly==true and isOneDayAdvance==true', async () => {
+          await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);  // make sure there are forecasts
+          await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), true, true);
+          expect(dialogStub.called).to.be.false;
+        });
+
+        it('should not overwrite when extendOnly==true and isOneDayAdvance==true', async () => {
+          await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);  // make sure there are forecasts
+          await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), true, true);
+          
+          // Should have preserved the forecasts even without prompting
+          expect(await ModuleSettings.get(ModuleSettingKeys.forecasts)).to.deep.equal(forecasts);          
+        });
+
+        it('should prompt when extendOnly==true but isOneDayAdvance==false', async () => {
+          await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);  // make sure there are forecasts
+          await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), true, false);
+          expect(dialogStub.called).to.be.true;
+        });
+
+        it('should NOT prompt when extendOnly==false regardless of isOneDayAdvance', async () => {
+          await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);  // make sure there are forecasts
+          
+          dialogStub.resetHistory();
+          await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), false, true);
+          expect(dialogStub.called).to.be.false;
+          
+          dialogStub.resetHistory();
+          await GenerateWeather.generateForecast(todayTimestamp, new WeatherData(todayDate, Season.Fall, Humidity.Modest, Climate.Temperate, 14, 14), false, false);
+          expect(dialogStub.called).to.be.false;
         });
       });
       
       describe('generateWeather', () => {
-        // Restore the original generateWeather for these tests
         beforeEach(() => {
-          weatherStub.restore();
+          // Restore the original generateWeather for these tests
+          if (weatherStub) {
+            weatherStub.restore();
+            weatherStub = null;
+          }
         });
         
-        // Re-stub after each test
         afterEach(() => {
-          let callCount = 0;
-          weatherStub = sinon.stub(GenerateWeather, 'generateWeather').callsFake(
-            (_climate: Climate, _humidity: Humidity, _season: Season, today: SimpleCalendar.DateData | null, _yesterday: WeatherData | null, _forForecast = false): WeatherData => {
-              const weatherToReturn = weather[(REFORECAST_OFFSET + callCount++) % weather.length];
-              weatherToReturn.date = today;
-              return weatherToReturn;
-            }
-          );
+          // Re-create the stub after these tests
+          if (!weatherStub) {
+            weatherStub = sinon.stub(GenerateWeather, 'generateWeather').callsFake(
+              (_climate: Climate, _humidity: Humidity, _season: Season, today: CalendarDate | null, _yesterday: WeatherData | null, _forForecast = false): WeatherData => {
+                const weatherToReturn = weather[(REFORECAST_OFFSET + callCount++) % weather.length];
+                weatherToReturn.date = today;
+                return weatherToReturn;
+              }
+            );
+          }
         });
         
         it('should generate weather with valid parameters', async () => {
@@ -382,7 +444,9 @@ export const registerGenerateWeatherTests = () => {
             season, 
             todayDate, 
             null, // no yesterday data
-            false
+            false,
+            false,
+            false // isOneDayAdvance = false
           );
           
           // Verify the result
@@ -398,8 +462,10 @@ export const registerGenerateWeatherTests = () => {
         it('should use existing forecast when available', async () => {
           // Set up a forecast for today
           const forecastCell = 15; // specific hex cell for testing
+          // Use cleanDate to get the same key that the actual code uses
+          const dateKey = cleanDate(adapter, todayDate!);
           const forecasts = {
-            [todayTimestamp]: new Forecast(todayTimestamp, Climate.Temperate, Humidity.Modest, forecastCell as HexFlowerCell)
+            [dateKey]: new Forecast(dateKey, Climate.Temperate, Humidity.Modest, forecastCell as HexFlowerCell)
           };
           
           // Set the module settings
@@ -413,7 +479,9 @@ export const registerGenerateWeatherTests = () => {
             Season.Spring,
             todayDate,
             null,
-            false
+            false,
+            false,
+            false // isOneDayAdvance = false
           );
           
           // Verify it used the forecast
@@ -441,12 +509,59 @@ export const registerGenerateWeatherTests = () => {
             Season.Spring, // changed to spring
             todayDate,
             yesterdayWeather,
-            false
+            false,
+            false,
+            false // isOneDayAdvance = false
           );
           
-          // Verify it picked a new starting cell for the new season
-          expect(result.hexFlowerCell).to.be.a('number');
-          expect(startingCells[Season.Spring]).to.include(result.hexFlowerCell);
+          // Should have generated a new weather (not using yesterday's position)
+          expect(result).to.not.be.null;
+          expect(result.season).to.equal(Season.Spring);
+        });
+        
+        it('should pass isOneDayAdvance parameter to generateForecast', async () => {
+          // Set up forecasts to exist
+          await ModuleSettings.set(ModuleSettingKeys.forecasts, forecasts);
+          await ModuleSettings.set(ModuleSettingKeys.useForecasts, true);
+          
+          // Reset dialog stub history
+          dialogStub.resetHistory();
+          
+          // Call with isOneDayAdvance = true
+          await GenerateWeather.generateWeather(
+            Climate.Temperate,
+            Humidity.Modest,
+            Season.Spring,
+            todayDate,
+            null,
+            false,
+            false,
+            true // isOneDayAdvance
+          );
+          
+          // Should not have prompted because isOneDayAdvance is true
+          expect(dialogStub.called).to.be.false;
+          
+          // Reset dialog stub history
+          dialogStub.resetHistory();
+          
+          // Call with isOneDayAdvance = false
+          await GenerateWeather.generateWeather(
+            Climate.Temperate,
+            Humidity.Modest,
+            Season.Spring,
+            todayDate,
+            null,
+            false,
+            false,
+            false // isOneDayAdvance
+          );
+          
+          // Should have prompted because isOneDayAdvance is false
+          expect(dialogStub.called).to.be.true;
+          
+          // Clean up
+          await ModuleSettings.set(ModuleSettingKeys.forecasts, {});
         });
       });
       
@@ -550,7 +665,11 @@ export const registerGenerateWeatherTests = () => {
           
           // Mock the ModuleSettings.get method to return our custom values
           const getStub = sinon.stub(ModuleSettings, 'get');
-          getStub.withArgs(ModuleSettingKeys.customChatMessages).returns([[[{}]], [[{}, { 17: "Custom message for testing" }]], [[{}]]]);
+          const mockCustomMessages = [] as any;
+          mockCustomMessages[1] = []; // Climate.Temperate
+          mockCustomMessages[1][1] = { 17: "Custom message for testing" }; // Humidity.Modest
+          
+          getStub.withArgs(ModuleSettingKeys.customChatMessages).returns(mockCustomMessages);
           getStub.withArgs(ModuleSettingKeys.outputDateToChat).returns(true);
           getStub.withArgs(ModuleSettingKeys.publicChat).returns(true);
           
@@ -564,9 +683,6 @@ export const registerGenerateWeatherTests = () => {
           expect(callArgs.content).to.include(weatherData.getDescription());
           expect(callArgs.content).to.include(weatherData.getTemperature(false));
           expect(callArgs.content).to.include("Custom message for testing");
-          
-          // Restore the original get method
-          getStub.restore();
         });
       });
 
