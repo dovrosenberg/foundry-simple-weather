@@ -213,7 +213,7 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
    * 
    * @returns A promise that resolves to the data the template can use.
    */
-  override async _prepareContext(): Promise<WeatherApplicationData> {
+  async _prepareContext(): Promise<WeatherApplicationData> {
     const adapter = calendarManager.getAdapter();
 
     const data = {
@@ -376,7 +376,7 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
       html.find('#swr-manual-submit').on('click', this.onSubmitWeatherClick);
 
       // select
-      html.find('#swr-manual-weather-selection').on('change', this.onManualWeatherChange);
+      html.find('#swr-manual-weather-selection').on('change', this.onManualWeatherChange.bind(this));
 
       // if we're in manual mode and there's no temp, set it
       const tempElement = html.find('#swr-manual-temperature');
@@ -472,7 +472,7 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
    * If we were previously syncing and Simple Calendar is no longer present, will turn off sync.
    * @param force - if true, will recalculate the season sync even if it's already been set
    */
-  public checkSeasonSync(force?: boolean): void {
+  public checkSeasonSync(_force?: boolean): void {
     // make sure simple calendar is present if we're trying to sync
     // this could happen if we had sync on but then uninstalled calendar and reloaded
     if (!this._calendarPresent && this._currentSeasonSync) {
@@ -765,12 +765,10 @@ _______________________________________
    * 
    * @internal
    */
-  public setSpecificWeather(climate: Climate, humidity: Humidity, hexFlowerCell: HexFlowerCell): void {
-    const season = this.getSeason();
+  private setSpecificWeather(_climate: Climate, _humidity: Humidity, _hexFlowerCell: HexFlowerCell): void {
+    log(false, 'Running weather for ' + weatherDescriptions[_climate][_humidity][_hexFlowerCell]);
 
-    log(false, 'Running weather for ' + weatherDescriptions[climate][humidity][hexFlowerCell]);
-
-    const result = GenerateWeather.createSpecificWeather(this._currentWeather?.date || null, climate, humidity, hexFlowerCell);
+    const result = GenerateWeather.createSpecificWeather(this._currentWeather?.date || null, _climate, _humidity, _hexFlowerCell);
     if (result) {
       this._currentWeather = result;
       this.activateWeather(this._currentWeather);
@@ -1023,7 +1021,7 @@ _______________________________________
     this.render();
   };
 
-  private onManualPauseChange = (event): void => {
+  private onManualPauseChange = (_event): void => {
     this.manualPauseToggle();
   };
 

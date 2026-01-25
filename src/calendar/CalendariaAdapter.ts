@@ -138,7 +138,9 @@ export class CalendariaAdapter implements ICalendarAdapter<CalendariaDate> {
 
   public getNotesForDay(date: CalendarDate): JournalEntry[] {
     this.ensureApi();
-    const notes = this.api.getNotesForDate(date.year, date.month, date.day);
+    // Convert to API date format (which adds 1 to day)
+    const apiDate = this.CalendarDateToAPIDate(date);
+    const notes = this.api.getNotesForDate(apiDate.year, apiDate.month, apiDate.day);
 
     // Calendaria returns note stubs, we need to return them as JournalEntry objects
     return notes.map((note: { journalId: string }) => JournalEntry.get(note.journalId)) || [];
