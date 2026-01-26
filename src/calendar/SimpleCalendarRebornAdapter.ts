@@ -64,7 +64,7 @@ export class SimpleCalendarRebornAdapter implements ICalendarAdapter<SimpleCalen
       season: seasonMap[date.currentSeason.icon] ?? Season.Spring,
       weekday: date?.weekdays && date.dayOfTheWeek !== undefined 
         ? date.weekdays[date.dayOfTheWeek] 
-        : undefined,
+        : '',
       display: {
         weekday: date.display.weekday,
         month: date.display.month,
@@ -163,7 +163,7 @@ export class SimpleCalendarRebornAdapter implements ICalendarAdapter<SimpleCalen
       // if it's there we'll replace, otherwise we'll append
       if ($(`#${elementId}`).length === 0) {
         // attach to the calendar
-        const siblingPanels = $(`#${SimpleCalendarRebornAdapter.SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SimpleCalendarRebornAdapter.SC_CLASS_FOR_TAB_WRAPPER}.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_CLOSED}`);
+        const siblingPanels = $(`#${SimpleCalendarRebornAdapter.SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SimpleCalendarRebornAdapter.SC_CLASS_FOR_TAB_WRAPPER}.${SimpleCalendarRebornAdapter.SC_CLASS_FOR_TAB_CLOSED}`);
         siblingPanels.last().parent().append(html);
       } else {
         $(`#${elementId}`).replaceWith(html);

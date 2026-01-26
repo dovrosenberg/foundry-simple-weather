@@ -64,7 +64,7 @@ export class SimpleCalendarAdapter implements ICalendarAdapter<SimpleCalendar.Da
       season: seasonMap[date.currentSeason.icon] ?? Season.Spring,
       weekday: date?.weekdays && date.dayOfTheWeek !== undefined 
         ? date.weekdays[date.dayOfTheWeek] 
-        : undefined,
+        : '',
       display: {
         weekday: date.display.weekday,
         month: date.display.month,
