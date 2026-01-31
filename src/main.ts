@@ -236,7 +236,7 @@ Hooks.once('setup', (): void => {
           // tell the application we're using the calendar
           weatherApplication.activateCalendar();
 
-          weatherApplication.updateDateTime(calendarAdapter.timestampToDate(calendarAdapter.getCurrentTimestamp()));   // this is really for the very 1st load; after that this date should match what was saved in settings
+          weatherApplication.updateDateTime(calendarAdapter.timestampToDate(calendarAdapter.getCurrentTimestamp()), true);   // this is really for the very 1st load; after that this date should match what was saved in settings
         }
 
         // modify the drop-downs

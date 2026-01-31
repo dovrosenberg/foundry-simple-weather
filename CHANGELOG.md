@@ -7,6 +7,7 @@
 ![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v2.2.2/module.zip)
 
 - Updated Polish translations - thanks Lioheart!
+- No longer outputs the current weather to chat every time Foundry refreshes
 
 ## v2.2.1 - Bug fix for Simple Calendar Reborn
 #### Support for Simple Calendar Reborn v2.5.3 and Calendaria v0.8.0

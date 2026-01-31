@@ -590,8 +590,9 @@ _______________________________________
    *    we prompt to confirm whether to overwrite existing forecasts, as this may not be intended.
    * 
    * @param currentDate the CalendarDate object that contains the current date
+   * @param preventChatOutput if true, prevents outputting weather to chat during activation
    */
-  public async updateDateTime(currentDate: CalendarDate | null): Promise<void> {
+  public async updateDateTime(currentDate: CalendarDate | null, preventChatOutput: boolean = false): Promise<void> {
     if (!currentDate)
       return;
 
@@ -623,7 +624,7 @@ _______________________________________
                   flagData.temperature
                 );
 
-                await this.activateWeather(this._currentWeather);
+                await this.activateWeather(this._currentWeather, preventChatOutput);
 
                 // should only be one, so we can skip rest of notes;
                 break;
@@ -765,7 +766,7 @@ _______________________________________
    * 
    * @internal
    */
-  private setSpecificWeather(_climate: Climate, _humidity: Humidity, _hexFlowerCell: HexFlowerCell): void {
+  public setSpecificWeather(_climate: Climate, _humidity: Humidity, _hexFlowerCell: HexFlowerCell): void {
     log(false, 'Running weather for ' + weatherDescriptions[_climate][_humidity][_hexFlowerCell]);
 
     const result = GenerateWeather.createSpecificWeather(this._currentWeather?.date || null, _climate, _humidity, _hexFlowerCell);
@@ -790,11 +791,12 @@ _______________________________________
   /**
    * Activates the given weather data; saves to settings, output to chat, display FX, and save to calendar notes if enabled.
    * @param weatherData the WeatherData to activate
+   * @param preventChatOutput if true, prevents outputting weather to chat during activation
    */
-  private async activateWeather(weatherData: WeatherData): Promise<void> {
+  private async activateWeather(weatherData: WeatherData, preventChatOutput: boolean = false): Promise<void> {
     if (isClientGM()) {
-      // Output to chat if enabled
-      if (ModuleSettings.get(ModuleSettingKeys.outputWeatherToChat)) {
+      // Output to chat if enabled and not prevented
+      if (!preventChatOutput && ModuleSettings.get(ModuleSettingKeys.outputWeatherToChat)) {
         GenerateWeather.outputWeatherToChat(weatherData);
       }
 
