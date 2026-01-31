@@ -15,10 +15,10 @@
       "useFXHelp": "Wybór modułu używanego podczas wyświetlania efektów specjalnych. Po aktywacji efekty można również wyłączyć ręcznie w razie potrzeby.",
       "FXByScene": "Włączyć/wyłączyć FX według sceny?",
       "FXBySceneHelp": "Czy przycisk przełączania FX powinien mieć wpływ tylko na bieżącą scenę, czy też na cały moduł? Przydatne, jeśli chcesz obsługiwać przejścia między scenami w pomieszczeniach i na zewnątrz bez konieczności ręcznego przełączania za każdym razem.",
-      "attachToCalendar": "Przyłączony do Simple Calendar?",
-      "attachToCalendarHelp": "Wyświetla się jako wyskakujące okienko w Simple Calendar, a nie jako samodzielne okno. Wymaga (oczywiście) Simple Calendar.",
-      "storeInSCNotes": "Przechowywać pogodę w Simple Calendar?",
-      "storeInSCNotesHelp": "Przechowuj codzienną pogodę w notatkach kalendarza Simple Calendar, a następnie „odtwórz” starą pogodę, jeśli wrócisz do wcześniejszej daty.",
+      "attachToCalendar": "Przyłączyć do kalendarza?",
+      "attachToCalendarHelp": "Wyświetlaj jako wyskakujące okienko w kalendarzu zamiast w osobnym oknie. Wymaga (oczywiście) Simple Calendar lub Calendaria.",
+      "storeInSCNotes": "Zapisywanie pogody w kalendarzu?",
+      "storeInSCNotesHelp": "Zapisuj codzienne prognozy pogody w notatkach Simple Calendar/Calendaria, a następnie „odtwórz” dawną pogodę, jeśli wrócisz do poprzedniej daty.",
       "options": {
         "useFX.choices.off": "Brak",
         "useFX.choices.core": "Ustawienia pogody sceny FoundryVTT",
@@ -53,7 +53,7 @@
         "tundra": "Tundra",
         "alpine": "Alpejski",
         "taiga": "Tajga",
-        "chaparral": "Chaparral",
+        "chaparral": "Zarośla",
         "grassland": "Łąka",
         "forest": "Las",
         "desert": "Pustynia",
@@ -77,7 +77,7 @@
 
       "season": {
         "select": "Wybierz bieżącą porę roku",
-        "sync": "Synchronizacja z kalendarzem Simple Calendar",
+        "sync": "Synchronizacja z kalendarzem",
         "fall": "Jesień",
         "summer": "Lato",
         "spring": "Wiosna",
@@ -106,7 +106,7 @@
       "manualWeatherDisabled": "Wprowadź temperaturę przed ustawieniem pogody",
       "forecast": "Prognoza",
       "overwriteDialogTitle": "Nadpisać istniejące prognozy?",
-      "overwriteDialogContent": "To generowanie pogody nadpisze jedną lub więcej istniejących prognoz. Czy jesteś pewien? Jeśli wybierzesz 'Nie', zostaną wygenerowane tylko dni, które nie mają istniejących prognoz."
+      "overwriteDialogContent": "To generowanie pogody zastąpi jedną lub więcej istniejących prognoz. Czy na pewno? Jeśli wybierzesz „Nie”, wygenerowane zostaną tylko te dni, dla których nie ma istniejących prognoz."
     },
 
     "chat": {
