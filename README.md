@@ -5,11 +5,11 @@ Dynamic weather generation, by season and biome, including automatically activat
 
 ## Note on v13 compatibility
 
-Unfortunately, the original Simple Calendar doesn't currently support Foundry v13, so be forewarned that while Simple Weather will run in standalone mode, that's all you're going to get.  If you were using Simple Calendar before, this may result in some strange behavior either when you first generate weather and/or when Simple Calendar comes back. I'm pretty sure that when Simple Calendar upgrades, this version will still work correctly with it, but there's no way to test it until then.  There's an [open issue](https://github.com/vigoren/foundryvtt-simple-calendar/issues/669) on Simple Calendar requesting support - please upvote.
+Unfortunately, the original Simple Calendar doesn't currently support Foundry v13, so be forewarned that while Simple Weather will run in standalone mode, that's all you're going to get with Simple Calendar.
 
-** That said, as of v2.2.0, Simple Weather support both [this fork by CarlosFdex](https://github.com/CarlosFdez/foundryvtt-simple-calendar) and [Simple Calendar Reborn](https://foundryvtt.com/packages/foundryvtt-simple-calendar-reborn).  
+That said, as of v2.2.0, Simple Weather supports [this fork by CarlosFdex](https://github.com/CarlosFdez/foundryvtt-simple-calendar), [Simple Calendar Reborn](https://foundryvtt.com/packages/foundryvtt-simple-calendar-reborn), and [Calendaria](https://foundryvtt.com/packages/calendaria).  
 
-**WARNING! DO NOT TRY TO USE SIMPLE WEATHER IN A WORLD WITH MORE THAN ONE SIMPLE CALENDAR-LIKE MODULE INSTALLED.  BAD THINGS ARE LIKELY TO HAPPEN, AS NONE OF THESE PLAY NICE WITH EACH OTHER.**
+**WARNING! DO NOT TRY TO USE SIMPLE WEATHER IN A WORLD WITH MORE THAN ONE OF THESE MODULES ACTIVE.  BAD THINGS ARE LIKELY TO HAPPEN.**
 
 ## Features
 
