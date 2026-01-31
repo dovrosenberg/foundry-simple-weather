@@ -21,7 +21,7 @@
     "rmfolder": "rm -rf ~/foundry13data/Data/modules/simple-weather",
     "buildcopy": "npm run build && npm run copy",
     "foundry": "node ~/foundry13/resources/app/main.js --dataPath=/home/dov/foundry13data",
-    "foundry12": "node ~/foundry12/resources/app/main.js --dataPath=/home/dov/foundry12data"
+    "foundry14": "node ~/foundry14/resources/app/main.js --dataPath=/home/dov/foundry14data"
   },
   "devDependencies": {
     "@ethaks/fvtt-quench": "^0.9.2",
