@@ -1,6 +1,5 @@
 export * from './CalendarManager';
 export * from './ICalendarAdapter';
-export * from './SimpleCalendarAdapter';
 export * from './SimpleCalendarRebornAdapter';
 export * from './CalendariaAdapter';
 

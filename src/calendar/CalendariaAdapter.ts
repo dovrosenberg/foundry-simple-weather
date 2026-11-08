@@ -197,10 +197,6 @@ export class CalendariaAdapter implements ICalendarAdapter<CalendariaDate> {
     const elementId = this.wrapperElementId;
     
     if (!hidden) {
-      // turn off any existing calendar panels
-      // const existingPanels = $(`#${SimpleCalendarAdapter.SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_WRAPPER}.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_EXTENDED}`);
-      // existingPanels.addClass(SimpleCalendarAdapter.SC_CLASS_FOR_TAB_CLOSED).removeClass(SimpleCalendarAdapter.SC_CLASS_FOR_TAB_EXTENDED);
-
       // if it's there we'll replace, otherwise we'll append      
       if ($(`#${elementId}`).length === 0) {
         // attach to the calendar

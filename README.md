@@ -12,7 +12,7 @@ As of version 2.3.0, I have started using AI to generate code for this module.  
 
 Unfortunately, the original Simple Calendar doesn't currently support Foundry v13, so be forewarned that while Simple Weather will run in standalone mode, that's all you're going to get with Simple Calendar.
 
-That said, as of v2.2.0, Simple Weather supports [this fork by CarlosFdex](https://github.com/CarlosFdez/foundryvtt-simple-calendar), [Simple Calendar Reborn](https://foundryvtt.com/packages/foundryvtt-simple-calendar-reborn), and [Calendaria](https://foundryvtt.com/packages/calendaria).  
+That said, as of v2.3.0, Simple Weather supports [Simple Calendar Reborn](https://foundryvtt.com/packages/foundryvtt-simple-calendar-reborn), and [Calendaria](https://foundryvtt.com/packages/calendaria).  
 
 **WARNING! DO NOT TRY TO USE SIMPLE WEATHER IN A WORLD WITH MORE THAN ONE OF THESE MODULES ACTIVE.  BAD THINGS ARE LIKELY TO HAPPEN.**
 
