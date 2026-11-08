@@ -27,6 +27,10 @@ export interface CalendarModuleInfo {
   preferredVersion?: string;
 }
 
+// isMoreRecent returns true when equal
+const meetsMinimum = (moduleInfo: CalendarModuleInfo, version: string): boolean =>
+  VersionUtils.isMoreRecent(version, moduleInfo.minimumVersion);
+
 // these are sorted in order of preference (1st one found will win)
 const CALENDAR_MODULES: CalendarModuleInfo[] = [
   {
@@ -96,8 +100,7 @@ export class CalendarManager {
       const module = game.modules?.get(moduleInfo.moduleId);
       
       if (module && module.active && module.version) {
-        const meetsMinimumVersion = moduleInfo.minimumVersion === module.version || 
-          VersionUtils.isMoreRecent(module.version, moduleInfo.minimumVersion);
+        const meetsMinimumVersion = meetsMinimum(moduleInfo, module.version);
         
         this._currentCalendar = {
           type: moduleInfo.type,
@@ -171,8 +174,7 @@ export class CalendarManager {
       const module = game?.modules?.get(moduleInfo.moduleId);
 
       if (module && module.active && module.version) {
-        const meetsMinimumVersion = moduleInfo.minimumVersion === module.version ||
-          VersionUtils.isMoreRecent(module.version, moduleInfo.minimumVersion);
+        const meetsMinimumVersion = meetsMinimum(moduleInfo, module.version);
 
         this._availableCalendars.push({
           type: moduleInfo.type,
@@ -226,7 +228,7 @@ export class CalendarManager {
       const module = game?.modules?.get(moduleInfo.moduleId);
       const version = module?.version;
       const meetsMinimumVersion = version ?
-        (moduleInfo.minimumVersion === version || VersionUtils.isMoreRecent(version, moduleInfo.minimumVersion)) :
+        meetsMinimum(moduleInfo, version) :
         false;
 
       this._currentCalendar = {

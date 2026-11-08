@@ -68,9 +68,16 @@ const CAL_NOTE_WEATHER_FLAG_NAME = 'dailyWeather';
 class WeatherApplication extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.api.ApplicationV2
 ) {
+  // the template draws its own window (#swr-container, position: fixed) and handles its own dragging.
+  // frame: false - without it, AppV2 wraps us in .application > .window-content; under the dark theme
+  //    .window-content has backdrop-filter, which makes it the containing block for our fixed container,
+  //    so the content is positioned relative to (and clipped by) that frame instead of the viewport.
+  // positioned: false - AppV2 shouldn't write top/left/width/height onto our element
   static DEFAULT_OPTIONS = {
-    popOut: false,  // self-contained window without the extra wrapper
-    resizable: false,  // window is fixed size
+    window: {
+      frame: false,
+      positioned: false,
+    },
   };
 
   static PARTS = {
@@ -187,7 +194,7 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
     }
     
     // Render the template to HTML string
-    const htmlString = await renderTemplate(template, context);
+    const htmlString = await foundry.applications.handlebars.renderTemplate(template, context);
     const html = $(htmlString);
     
     // Inject it into the calendar
@@ -552,7 +559,7 @@ ModuleSettings.attachToCalendar: ${ModuleSettings.get(ModuleSettingKeys.attachTo
 ModuleSettings.storeInSCNotes: ${ModuleSettings.get(ModuleSettingKeys.storeInSCNotes)}
 ModuleSettings.fxActive: ${ModuleSettings.get(ModuleSettingKeys.fxActive)}
 ModuleSettings.lastWeatherData: ${ModuleSettings.get(ModuleSettingKeys.lastWeatherData)}
-getData: ${JSON.stringify(await this.getData(), null, 2)}
+_prepareContext: ${JSON.stringify(await this._prepareContext(), null, 2)}
 _______________________________________
     `;
 

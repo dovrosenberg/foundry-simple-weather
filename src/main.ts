@@ -2,7 +2,7 @@ import '@/../styles/simple-weather.scss';
 import '@/../styles/menu-icon.scss';
 
 import { ModuleSettings, ModuleSettingKeys, } from '@/settings/ModuleSettings';
-import { isClientGM } from '@/utils/game';
+import { isClientGM, localize } from '@/utils/game';
 import { allowSeasonSync, Climate, HexFlowerCell, Humidity, initializeLocalizedText as initializeLocalizedClimateText } from '@/weather/climateData';
 import { initializeLocalizedText as initializeLocalizedWeatherText } from '@/weather/weatherMap';
 import { updateWeatherApplication, weatherApplication, WeatherApplication } from '@/applications/WeatherApplication';
@@ -144,15 +144,21 @@ Hooks.on('getSceneControlButtons', async (controls: Record<string, SceneControl>
 
 // add the setting to the scene config application
 Hooks.on('renderSceneConfig', async (app: SceneConfig, html: HTMLElement) => {
-  if (!isClientGM())
+  if (!isClientGM() || !ModuleSettings.get(ModuleSettingKeys.FXByScene))
     return;
 
-  if (!ModuleSettings.get(ModuleSettingKeys.FXByScene))
+  // v14 renders by parts and this hook can fire repeatedly; don't inject twice
+  if (html.querySelector('#swr-scene-fx-active'))
     return;
-  
-  // get the setting
-  const currentSceneFX = SceneSettings.get(SceneSettingKeys.fxActive, app.object);
 
+  // use the scene being edited, not the current one
+  const scene = app.document as Scene;
+
+  // read the flag directly; SceneSettings.get() would write the default, which re-renders this sheet mid-render
+  const currentSceneFX = (scene.getFlag(moduleJson.id, SceneSettingKeys.fxActive) as boolean | undefined) ?? true;
+
+  // no name attribute on the checkbox: the change handler is the only writer of the flag, so the
+  //    sheet's form submit can't save a second (possibly stale) copy
   const injection = `
   <style> .swr-scene-config {
       border: 1px solid #999;
@@ -163,40 +169,35 @@ Hooks.on('renderSceneConfig', async (app: SceneConfig, html: HTMLElement) => {
   <fieldset class="swr-scene-config">
     <legend><span>Simple Weather</span></legend>
     <div class="form-group">
-      <label>FX on</label>
+      <label for="swr-scene-fx-active">${localize('sceneConfig.fxActive')}</label>
       <input
         type="checkbox"
         id="swr-scene-fx-active"
-        name="flags.simple-weather.swr-fxActive"
         ${currentSceneFX ? 'checked' : ''}>
-      <p class="notes">Should FX be used on this scene?</p>
+      <p class="hint notes">${localize('sceneConfig.fxActiveHelp')}</p>
     </div>
   </fieldset>`;
-  
-  const matchElementById = /<[^>]*id[\\s]?=[\\s]?['\"](SceneConfig-Scene-.*-weather)['\"]/gi;
-  const weatherEffectBox = matchElementById.exec(html.outerHTML);
-  if (!weatherEffectBox)
-    throw new Error('Format of SceneConfig sheet invalid');
 
-  const boxId = weatherEffectBox[1];
-  const formGroup = html.querySelector('#' + boxId )?.closest('.form-group');
-
-  if (!formGroup)
-    throw new Error('Format of SceneConfig sheet invalid');
-
-  // insert our html
-  formGroup.insertAdjacentHTML('afterend', injection);
-
-  // insert the click handler
-  // we could have used 'name=flags.simple-weather.swr-fxActive' on the checkbox, but that only saves the value, it doesn't update
-  // the value in the popup or actually handle turning the fx on/off
-  const checkbox = html.querySelector('#swr-scene-fx-active') as HTMLInputElement;
-  if (checkbox) {
-    checkbox.addEventListener("change", async (event) => {
-      await weatherEffects.setFxActive(checkbox.checked);
-      weatherApplication.render();
-    });
+  // anchor on the weather <select> directly (Basics tab)
+  const anchor = html.querySelector('[name="weather"]')?.closest('.form-group');
+  if (!anchor) {
+    console.warn('simple-weather | Could not find weather field in SceneConfig; skipping injection');
+    return;
   }
+  anchor.insertAdjacentHTML('afterend', injection);
+
+  const checkbox = html.querySelector('#swr-scene-fx-active') as HTMLInputElement | null;
+  checkbox?.addEventListener('change', async () => {
+    if (scene.id === SceneSettings.currentScene?.id) {
+      // editing the scene we're on: toggle live FX (this also saves the flag)
+      await weatherEffects.setFxActive(checkbox.checked);
+    } else {
+      // editing some other scene: just save its flag
+      await SceneSettings.set(SceneSettingKeys.fxActive, checkbox.checked, scene);
+    }
+    weatherApplication?.render();
+  });
+
   // fix box height
   app.setPosition({ height: 'auto' });
 })

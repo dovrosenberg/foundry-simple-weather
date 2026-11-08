@@ -4,7 +4,7 @@
   "description": "Add dynamic weather to your FoundryVTT world.  Note: not affiliated with creators of Simple Calendar.",
 
   "compatibility": {
-    "minimum": "13",
+    "minimum": "14",
     "verified": "14.370"
   },
 

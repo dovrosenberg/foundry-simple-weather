@@ -42,9 +42,9 @@ class WeatherEffects {
         // module is missing... but they picked it so just disable for now
         this._useFX = 'off';
         ui.notifications?.error('Disabling FXMaster because module not present');
-      } else if (fxVersion!=='3.0.0' && !VersionUtils.isMoreRecent(fxVersion, '3.0.0')) {
+      } else if (!VersionUtils.isMoreRecent(fxVersion, '8.0.0')) {
         if (isClientGM()) {
-          ui.notifications?.error('FX Master found, but version prior to v3.0.0. Make sure the latest version of FX Master is installed to use for weather effects.');
+          ui.notifications?.error('FX Master found, but version prior to v8.0.0. Make sure the latest version of FX Master is installed to use for weather effects.');
           ui.notifications?.error('Version found: ' + fxVersion);
         }
       }

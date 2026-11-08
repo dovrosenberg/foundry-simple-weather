@@ -89,6 +89,11 @@
       }
     },
 
+    "sceneConfig": {
+      "fxActive": "FX on",
+      "fxActiveHelp": "Should FX be used on this scene?"
+    },
+
     "labels": {
       "openButton": "Open Simple Weather",
       "repostChat": "Repost current weather to chat",

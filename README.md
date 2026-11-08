@@ -5,10 +5,10 @@ Dynamic weather generation, by season and biome, including automatically activat
 
 ## AI Usage
 
-There is no AI-written code or content in this module, but I have used AI in an advisory role, in particular for facilitating changes needed to support Foudnry upgrade.  In a couple versions in the past, some language translations were done by AI, but translations are now all done by humans (see the credits).
+As of version 2.3.0, I have started using AI to generate code for this module.  It is so far retricted to the work to support Foundry version upgrades.  I have reviewed all generated code to ensure it works as intended.
 
 
-## Note on v13 compatibility with Simple Calendar
+## Note on v13/v14 compatibility with Simple Calendar
 
 Unfortunately, the original Simple Calendar doesn't currently support Foundry v13, so be forewarned that while Simple Weather will run in standalone mode, that's all you're going to get with Simple Calendar.
 
