@@ -4,7 +4,6 @@ import { Season } from '@/weather/climateData';
 import { WeatherApplication } from '@/applications/WeatherApplication';
 import { QuenchBatchContext } from '@ethaks/fvtt-quench';
 import { runTestsForEachCalendar } from '@test/calendarTestHelper';
-import { SimpleCalendarAdapter } from '@/calendar/SimpleCalendarAdapter';
 import { SimpleCalendarRebornAdapter } from '@/calendar/SimpleCalendarRebornAdapter';
 import { CalendariaAdapter } from '@/calendar/CalendariaAdapter';
 
@@ -309,7 +308,7 @@ export const registerCalendarAdapterTests = () => {
         
         // Set up mock APIs based on current calendar type
         const currentType = calendarManager.calendarType;
-        if (currentType === CalendarType.SIMPLE_CALENDAR || currentType === CalendarType.SIMPLE_CALENDAR_REBORN) {
+        if (currentType === CalendarType.SIMPLE_CALENDAR_REBORN) {
           (globalThis as any).SimpleCalendar = mockSimpleCalendarApi ;
         } else if (currentType === CalendarType.CALENDARIA) {
           (globalThis as any).CALENDARIA = mockCalendariaApi ;
@@ -363,8 +362,8 @@ export const registerCalendarAdapterTests = () => {
           // The result should be different from the base timestamp
           expect(resultTimestamp).to.not.equal(baseTimestamp);
           
-          // For Simple Calendar adapters, it should be exactly 86400 seconds later
-          if (adapter!.name === 'SimpleCalendarAdapter' || adapter!.name === 'SimpleCalendarRebornAdapter') {
+          // For Simple Calendar Reborn, it should be exactly 86400 seconds later
+          if (adapter!.name === 'SimpleCalendarRebornAdapter') {
             expect(resultTimestamp).to.equal(baseTimestamp + 86400);
           }
           
@@ -441,53 +440,6 @@ export const registerAdapterSpecificTests = () => {
     after(() => {
       (globalThis as any).SimpleCalendar = originalSimpleCalendar;
       (globalThis as any).CALENDARIA = originalCalendaria;
-    });
-
-    describe('SimpleCalendarAdapter', () => {
-      let adapter: SimpleCalendarAdapter;
-
-      before(() => {
-        (globalThis as any).SimpleCalendar = { 
-          api: mockSimpleCalendarApi.api, 
-          Hooks: { Init: 'simple-calendar-init' } 
-        };
-        adapter = new SimpleCalendarAdapter();
-      });
-
-      it('should have correct container classes', () => {
-        const classes = adapter.containerClasses;
-        expect(classes).to.include('fsc-of');
-        expect(classes).to.include('sc-right');
-        expect(classes).to.include('fsc-c');
-      });
-
-      it('should have correct hook', () => {
-        const hooks = adapter.hooks;
-        expect(hooks.init).to.equal('simple-calendar-init');
-      });
-
-      it('should have correct wrapper element ID', () => {
-        expect(adapter.wrapperElementId).to.equal('swr-fsc-container');
-      });
-
-      describe('Date Conversion Methods', () => {
-        it('should handle date conversion roundtrip correctly', () => {
-          TEST_DATES.forEach(originalCalendarDate => {
-            const apiDate = adapter.CalendarDateToAPIDate(originalCalendarDate);
-            const convertedBack = adapter.APIDateToCalendarDate(apiDate);
-
-            // check every property of the CalendarDate object
-            expect(convertedBack.year).to.equal(originalCalendarDate.year);
-            expect(convertedBack.month).to.equal(originalCalendarDate.month);
-            expect(convertedBack.day).to.equal(originalCalendarDate.day);
-            expect(convertedBack.hour).to.equal(originalCalendarDate.hour);
-            expect(convertedBack.minute).to.equal(originalCalendarDate.minute);
-            expect(convertedBack.season).to.equal(originalCalendarDate.season);
-            expect(convertedBack.weekday).to.equal(originalCalendarDate.weekday);            
-            expect(convertedBack.display).to.deep.equal(originalCalendarDate.display);
-          });
-        });
-      });
     });
 
     describe('SimpleCalendarRebornAdapter', () => {

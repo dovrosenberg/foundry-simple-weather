@@ -37,13 +37,6 @@ export const registerCalendarManagerTests = () => {
           expect(adapter).to.be.null;
         });
 
-        it('should return SimpleCalendarAdapter when Simple Calendar is set', () => {
-          manager.setCalendar(CalendarType.SIMPLE_CALENDAR, true);
-          const adapter = manager.getAdapter();
-          expect(adapter).to.not.be.null;
-          expect(adapter!.name).to.equal('SimpleCalendarAdapter');
-        });
-
         it('should return SimpleCalendarRebornAdapter when Simple Calendar Reborn is set', () => {
           manager.setCalendar(CalendarType.SIMPLE_CALENDAR_REBORN, true);
           const adapter = manager.getAdapter();
@@ -63,16 +56,16 @@ export const registerCalendarManagerTests = () => {
           (globalThis as any).game = {
             modules: {
               get: (moduleId: string) => {
-                if (moduleId === 'foundryvtt-simple-calendar') {
+                if (moduleId === 'foundryvtt-simple-calendar-reborn') {
                   return {
                     active: true,
-                    version: '2.4.18.5'
+                    version: '2.6.1'
                   };
                 }
                 if (moduleId === 'calendaria') {
                   return {
                     active: true,
-                    version: '0.7.1'
+                    version: '1.4.8'
                   };
                 }
                 return undefined;
@@ -99,9 +92,9 @@ export const registerCalendarManagerTests = () => {
         });
 
         it('should get current calendar info', () => {
-          manager.setCalendar(CalendarType.SIMPLE_CALENDAR, true);
+          manager.setCalendar(CalendarType.SIMPLE_CALENDAR_REBORN, true);
           const current = manager.currentCalendar;
-          expect(current.type).to.equal(CalendarType.SIMPLE_CALENDAR);
+          expect(current.type).to.equal(CalendarType.SIMPLE_CALENDAR_REBORN);
           expect(current.isActive).to.be.true;
         });
 
@@ -109,7 +102,7 @@ export const registerCalendarManagerTests = () => {
           manager.setCalendar(CalendarType.NONE, true);
           expect(manager.hasActiveCalendar).to.be.false;
 
-          manager.setCalendar(CalendarType.SIMPLE_CALENDAR, true);
+          manager.setCalendar(CalendarType.SIMPLE_CALENDAR_REBORN, true);
           expect(manager.hasActiveCalendar).to.be.true;
         });
 
@@ -123,16 +116,16 @@ export const registerCalendarManagerTests = () => {
           (globalThis as any).game = {
             modules: {
               get: (moduleId: string) => {
-                if (moduleId === 'foundryvtt-simple-calendar') {
+                if (moduleId === 'foundryvtt-simple-calendar-reborn') {
                   return {
                     active: true,
-                    version: '2.4.18.5'
+                    version: '2.6.1'
                   };
                 }
                 if (moduleId === 'calendaria') {
                   return {
                     active: true,
-                    version: '0.7.1'
+                    version: '1.4.8'
                   };
                 }
                 return undefined;
@@ -150,10 +143,10 @@ export const registerCalendarManagerTests = () => {
           (globalThis as any).game = {
             modules: {
               get: (moduleId: string) => {
-                if (moduleId === 'foundryvtt-simple-calendar') {
+                if (moduleId === 'foundryvtt-simple-calendar-reborn') {
                   return {
                     active: true,
-                    version: '2.4.18.5'
+                    version: '2.6.1'
                   };
                 }
                 return undefined;
@@ -165,7 +158,7 @@ export const registerCalendarManagerTests = () => {
           
           // This should work
           expect(() => {
-            manager.setCalendar(CalendarType.SIMPLE_CALENDAR, false);
+            manager.setCalendar(CalendarType.SIMPLE_CALENDAR_REBORN, false);
           }).to.not.throw();
 
           // This should fail because calendar isn't available
@@ -176,7 +169,7 @@ export const registerCalendarManagerTests = () => {
 
         it('should set calendar without validation (for testing)', () => {
           expect(() => {
-            manager.setCalendar(CalendarType.SIMPLE_CALENDAR, true);
+            manager.setCalendar(CalendarType.SIMPLE_CALENDAR_REBORN, true);
           }).to.not.throw();
         });
 
@@ -207,10 +200,10 @@ export const registerCalendarManagerTests = () => {
           (globalThis as any).game = {
             modules: {
               get: (moduleId: string) => {
-                if (moduleId === 'foundryvtt-simple-calendar') {
+                if (moduleId === 'foundryvtt-simple-calendar-reborn') {
                   return {
                     active: true,
-                    version: '2.4.18.5'
+                    version: '2.6.1'
                   };
                 }
                 return undefined;
@@ -229,10 +222,10 @@ export const registerCalendarManagerTests = () => {
           (globalThis as any).game = {
             modules: {
               get: (moduleId: string) => {
-                if (moduleId === 'foundryvtt-simple-calendar') {
+                if (moduleId === 'foundryvtt-simple-calendar-reborn') {
                   return {
                     active: true,
-                    version: '2.5.0.0' // Newer than minimum
+                    version: '2.7.0' // Newer than minimum
                   };
                 }
                 return undefined;
@@ -249,10 +242,10 @@ export const registerCalendarManagerTests = () => {
           (globalThis as any).game = {
             modules: {
               get: (moduleId: string) => {
-                if (moduleId === 'foundryvtt-simple-calendar') {
+                if (moduleId === 'foundryvtt-simple-calendar-reborn') {
                   return {
                     active: true,
-                    version: '2.4.0.0' // Older than minimum
+                    version: '2.6.0' // Older than minimum
                   };
                 }
                 return undefined;
