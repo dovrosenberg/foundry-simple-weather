@@ -68,9 +68,16 @@ const CAL_NOTE_WEATHER_FLAG_NAME = 'dailyWeather';
 class WeatherApplication extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.api.ApplicationV2
 ) {
+  // the template draws its own window (#swr-container, position: fixed) and handles its own dragging.
+  // frame: false - without it, AppV2 wraps us in .application > .window-content; under the dark theme
+  //    .window-content has backdrop-filter, which makes it the containing block for our fixed container,
+  //    so the content is positioned relative to (and clipped by) that frame instead of the viewport.
+  // positioned: false - AppV2 shouldn't write top/left/width/height onto our element
   static DEFAULT_OPTIONS = {
-    popOut: false,  // self-contained window without the extra wrapper
-    resizable: false,  // window is fixed size
+    window: {
+      frame: false,
+      positioned: false,
+    },
   };
 
   static PARTS = {
@@ -81,7 +88,7 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
 
   // Override element getter to return the injected element when in attached mode
   get element(): HTMLElement {
-    if (this._attachedMode) {
+    if (this._renderAttached) {
       // Return the injected element if we have one
       if (this._injectedElement) {
         return this._injectedElement;
@@ -108,6 +115,7 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
   private _calendarPresent = false;   // is a calendar present?
   private _manualPause = false;
   private _attachedMode = false;
+  private _floatingOverride = false;  // attached mode, but showing the floating window instead (opened from the calendar's big view)
   private _attachModeHidden = true;   // like _currentlyHidden but have to track separately because that's for managing ready state not popup state
 
   private _currentClimate: Climate;
@@ -149,7 +157,7 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
   public render(options: any = {}): this {
     this.checkSeasonSync();
     
-    if (this._attachedMode) {
+    if (this._renderAttached) {
       // In attached mode, we need to render the template and inject it manually
       // instead of letting ApplicationV2 create its own element
       this._renderInAttachedMode();
@@ -161,7 +169,7 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
 
   // Override close to handle attached mode
   close(options?: Application.CloseOptions): Promise<void> {
-    if (this._attachedMode) {
+    if (this._renderAttached) {
       // In attached mode, we don't have a standard application to close
       // Just hide the injected element
       if (this._injectedElement) {
@@ -187,7 +195,7 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
     }
     
     // Render the template to HTML string
-    const htmlString = await renderTemplate(template, context);
+    const htmlString = await foundry.applications.handlebars.renderTemplate(template, context);
     const html = $(htmlString);
     
     // Inject it into the calendar
@@ -207,6 +215,9 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
   }
 
   public get attachedMode() { return this._attachedMode; }
+
+  // are we currently drawing into the calendar (vs. as the floating window)?
+  private get _renderAttached(): boolean { return this._attachedMode && !this._floatingOverride; }
 
   /**
    * This function provides the data that the template can use.
@@ -233,23 +244,23 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
       manualSelections: getManualOptionsBySeason(this._currentSeason, this._currentClimate, this._currentHumidity),
       selectedManualOption: this.getSelectedManualOption() || getManualOptionsBySeason(this._currentSeason, this._currentClimate, this._currentHumidity)[0],
       displayOptions: this._displayOptions,
-      hideCalendar: this._attachedMode || !this._calendarPresent || !this._displayOptions.dateBox,
-      hideCalendarToggle: this._attachedMode || !this._calendarPresent,
-      hideWeather: !this._attachedMode && this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
+      hideCalendar: this._renderAttached || !this._calendarPresent || !this._displayOptions.dateBox,
+      hideCalendarToggle: this._renderAttached || !this._calendarPresent,
+      hideWeather: !this._renderAttached && this._calendarPresent && !this._displayOptions.weatherBox,  // can only hide weather if calendar present and setting is off
       hideFXToggle: !weatherEffects.useFX,
       manualPause: this._manualPause,
       fxActive: weatherEffects.fxActive,
       useCelsius: ModuleSettings.get(ModuleSettingKeys.useCelsius),
-      attachedMode: this._attachedMode,
-      showAttached: this._attachedMode && !this._attachModeHidden,
-      wrapperElementId: !this._attachedMode || !adapter ? '' : adapter.wrapperElementId,
-      containerClasses: !this._attachedMode || !adapter ? '' : adapter.containerClasses,
-      windowPosition: this._attachedMode ? { bottom: 0, left: 0 } : this._windowPosition,
-      containerPosition: this._attachedMode ? 'relative' : 'fixed',
+      attachedMode: this._renderAttached,
+      showAttached: this._renderAttached && !this._attachModeHidden,
+      wrapperElementId: !this._renderAttached || !adapter ? '' : adapter.wrapperElementId,
+      containerClasses: !this._renderAttached || !adapter ? '' : adapter.containerClasses,
+      windowPosition: this._renderAttached ? { bottom: 0, left: 0 } : this._windowPosition,
+      containerPosition: this._renderAttached ? 'relative' : 'fixed',
       // For attached mode, we only hide if _attachModeHidden is true
       // For non-attached mode, we hide if _currentlyHidden is true or if the user is not a GM and dialogDisplay is false
-      hideDialog: (this._attachedMode && this._attachModeHidden) || 
-                 (!this._attachedMode && (this._currentlyHidden || !(isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)))),
+      hideDialog: (this._renderAttached && this._attachModeHidden) || 
+                 (!this._renderAttached && (this._currentlyHidden || !(isClientGM() || ModuleSettings.get(ModuleSettingKeys.dialogDisplay)))),
 
       showForecast: isClientGM() && ModuleSettings.get(ModuleSettingKeys.useForecasts),
       forecasts: this.getForecasts(),
@@ -294,8 +305,55 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
       return;
     }
     
+    // showing the floating window (opened from the big calendar)? close it and go back to the attached panel
+    if (this._floatingOverride) {
+      void this.close().then(() => {
+        this._floatingOverride = false;
+        this._currentlyHidden = true;
+        this._attachModeHidden = false;
+        this.render();
+      });
+      return;
+    }
+
     this._attachModeHidden = !this._attachModeHidden;
     this.render();
+  }
+
+  /**
+   * In attached mode, open or close the floating window instead of the attached panel. Used by calendar
+   * views that have no room for an attached panel (Calendaria's big calendar).
+   */
+  public async toggleFloatingWindow(): Promise<void> {
+    if (calendarManager.hasMultipleCalendars) {
+      ui.notifications?.error(
+        `Multiple calendar modules detected. This is a REALLY bad idea. Please disable all but one calendar module to use Simple Weather.`
+      );
+      return;
+    }
+
+    if (this._floatingOverride) {
+      // already floating: toggle it (the window's own close button also hides it via _currentlyHidden)
+      this._currentlyHidden = !this._currentlyHidden;
+      this.render({ force: true });
+      return;
+    }
+
+    // switch from the attached panel to the floating window
+    if (this._injectedElement) {
+      this._injectedElement.remove();
+      this._injectedElement = null;
+    }
+    this._attachModeHidden = true;
+    this._floatingOverride = true;
+    this._currentlyHidden = false;
+
+    // the calendar view it was opened from already shows the date, so open on weather only
+    //    (display options are only used by the floating window, so saving them doesn't affect the attached panel)
+    this._displayOptions = { ...this._displayOptions, dateBox: false, weatherBox: true };
+    void ModuleSettings.set(ModuleSettingKeys.displayOptions, this._displayOptions);
+
+    this.render({ force: true });
   }
 
   /**
@@ -385,7 +443,7 @@ class WeatherApplication extends foundry.applications.api.HandlebarsApplicationM
       }
 
       // watch for sc calendar to open a different panel
-      if (this._attachedMode) {
+      if (this._renderAttached) {
         const adapter = calendarManager.getAdapter();
         if (adapter)
           adapter.activateListeners((hidden: boolean) => {
@@ -552,7 +610,7 @@ ModuleSettings.attachToCalendar: ${ModuleSettings.get(ModuleSettingKeys.attachTo
 ModuleSettings.storeInSCNotes: ${ModuleSettings.get(ModuleSettingKeys.storeInSCNotes)}
 ModuleSettings.fxActive: ${ModuleSettings.get(ModuleSettingKeys.fxActive)}
 ModuleSettings.lastWeatherData: ${ModuleSettings.get(ModuleSettingKeys.lastWeatherData)}
-getData: ${JSON.stringify(await this.getData(), null, 2)}
+_prepareContext: ${JSON.stringify(await this._prepareContext(), null, 2)}
 _______________________________________
     `;
 

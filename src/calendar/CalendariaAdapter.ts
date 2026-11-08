@@ -40,6 +40,10 @@ type CalendariaAPI = {
 }
 
 export class CalendariaAdapter implements ICalendarAdapter<CalendariaDate> {
+  // ids (DEFAULT_OPTIONS.id) of Calendaria's mini and big calendar applications
+  public static MINI_CAL_ID = 'calendaria-mini-cal';
+  public static BIG_CAL_ID = 'calendaria-big-cal';
+
   public name = 'CalendariaAdapter';
 
   private api: CalendariaAPI;
@@ -178,38 +182,45 @@ export class CalendariaAdapter implements ICalendarAdapter<CalendariaDate> {
   public addSidebarButton(weatherApplication: WeatherApplication, onClick: () => void): void {
     this.ensureApi();
 
+    // replaces Calendaria's weather indicator wherever it's shown (mini calendar, big calendar, HUD).
+    //    On the mini calendar (and HUD) it toggles the attached panel. The big calendar has no room for
+    //    an attached panel (overflow: hidden), so there it toggles the floating window instead
     this.api.registerWidget(moduleId, {
       id: 'swr-calendaria-button',
       type: 'indicator',
       replaces: 'weather-indicator',
       icon: 'fas fa-cloud-sun',
       label: 'Simple Weather',
-      onClick: () => onClick()
+      onClick: (event: Event) => {
+        const clicked = event?.currentTarget as HTMLElement | null;
+        if (clicked?.closest(`#${CalendariaAdapter.BIG_CAL_ID}`))
+          void weatherApplication.toggleFloatingWindow();
+        else
+          onClick();
+      }
     });
 
-    // Calendaria doesn't appear to have a direct sidebar button API
-    Hooks.on('renderMiniCalendar', (/*application: Application, html: HTMLElement*/): void => {
-      weatherApplication.render();
+    // re-inject whenever the mini calendar renders (rendering replaces our element). Calendaria's bundle is
+    //    minified, so the class-named hook (render<ClassName>) isn't stable; match on the app id instead
+    Hooks.on('renderApplicationV2', (application: foundry.applications.api.ApplicationV2): void => {
+      if (application.id === CalendariaAdapter.MINI_CAL_ID)
+        weatherApplication.render();
     });
   }
 
   public inject(html: JQuery<HTMLElement>, hidden: boolean): string {
     const elementId = this.wrapperElementId;
-    
-    if (!hidden) {
-      // turn off any existing calendar panels
-      // const existingPanels = $(`#${SimpleCalendarAdapter.SC_ID_FOR_WINDOW_WRAPPER} .window-content`).find(`.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_WRAPPER}.${SimpleCalendarAdapter.SC_CLASS_FOR_TAB_EXTENDED}`);
-      // existingPanels.addClass(SimpleCalendarAdapter.SC_CLASS_FOR_TAB_CLOSED).removeClass(SimpleCalendarAdapter.SC_CLASS_FOR_TAB_EXTENDED);
 
-      // if it's there we'll replace, otherwise we'll append      
+    if (!hidden) {
+      // if it's there we'll replace, otherwise we'll append
       if ($(`#${elementId}`).length === 0) {
         // attach to the calendar
-        const targetPanel = $('#mini-calendar .mini-notes-panel');
+        const targetPanel = $(`#${CalendariaAdapter.MINI_CAL_ID} .notes-panel`);
         if (targetPanel.length === 0) {
-          console.error('Calendaria: Could not find #mini-calendar .mini-notes-panel to inject weather panel');
+          console.error(`Calendaria: Could not find #${CalendariaAdapter.MINI_CAL_ID} .notes-panel to inject weather panel`);
           return '';
         }
-      
+
         targetPanel.after(html);
         $(`#${elementId}`).addClass('visible');
       } else {
@@ -219,8 +230,8 @@ export class CalendariaAdapter implements ICalendarAdapter<CalendariaDate> {
     } else {
       // hide it
       $(`#${elementId}`).removeClass('visible');
-    }      
-    
+    }
+
     return elementId;
   }
 

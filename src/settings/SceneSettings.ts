@@ -37,7 +37,9 @@ export class SceneSettings {
     // if undefined, return the default (and initialize on the scene)
     if (value===undefined) {
       value = SceneSettings.params.find(p=>(p.settingID===setting))?.default as SettingType<T>;
-      void SceneSettings.set(setting, value);
+      // write to the scene we read from (not the current one); skip if there's no scene at all
+      if (sceneToUse)
+        void SceneSettings.set(setting, value, sceneToUse);
     }
 
     return value;

@@ -36,8 +36,8 @@ export const detectAvailableCalendarsForTesting = (): CalendarTestInfo[] => {
 
   if (typeof (globalThis as any).SimpleCalendar !== 'undefined') {
     fallbackCalendars.push({
-      type: CalendarType.SIMPLE_CALENDAR,
-      name: 'Simple Calendar'
+      type: CalendarType.SIMPLE_CALENDAR_REBORN,
+      name: 'Simple Calendar Reborn'
     });
   }
 
@@ -45,11 +45,11 @@ export const detectAvailableCalendarsForTesting = (): CalendarTestInfo[] => {
     return fallbackCalendars;
   }
 
-  // If nothing is detected, return Simple Calendar as a default
+  // If nothing is detected, return Simple Calendar Reborn as a default
   // The tests will fail if it's not actually available, but at least they'll be registered
   return [{
-    type: CalendarType.SIMPLE_CALENDAR,
-    name: 'Simple Calendar'
+    type: CalendarType.SIMPLE_CALENDAR_REBORN,
+    name: 'Simple Calendar Reborn'
   }];
 };
 
@@ -60,8 +60,6 @@ const getCalendarName = (type: CalendarType): string => {
   switch (type) {
     case CalendarType.CALENDARIA:
       return 'Calendaria';
-    case CalendarType.SIMPLE_CALENDAR:
-      return 'Simple Calendar';
     case CalendarType.SIMPLE_CALENDAR_REBORN:
       return 'Simple Calendar Reborn';
     default:
@@ -133,7 +131,7 @@ export const runTestsForEachCalendar = (
  */
 export const setupCalendarForTest = (
   context: QuenchBatchContext,
-  calendarType: CalendarType = CalendarType.SIMPLE_CALENDAR
+  calendarType: CalendarType = CalendarType.SIMPLE_CALENDAR_REBORN
 ): void => {
   const { before } = context;
 

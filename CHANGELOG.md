@@ -1,6 +1,14 @@
 # Change Log
 
-## v2.2.2 - Polish language update
+## v2.3.0 - Support for Foundry v14
+#### Support for Simple Calendar Reborn v2.5.3 and Calendaria v0.8.3
+
+![](https://img.shields.io/badge/release%20date-November%208%2C%202026-blue)
+![GitHub release](https://img.shields.io/github/downloads-pre/dovrosenberg/foundry-simple-weather/v2.3.0/module.zip)
+
+- Support for Foundry v14 - sorry it took so long
+
+## v2.2.2 - Polish language update -- last update for Foundry v13
 #### Support for Simple Calendar Reborn v2.5.3 and Calendaria v0.8.3
 
 ![](https://img.shields.io/badge/release%20date-January%2031%2C%202026-blue)

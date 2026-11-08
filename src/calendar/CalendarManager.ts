@@ -2,13 +2,11 @@ import { ModuleSettings, ModuleSettingKeys } from '@/settings/ModuleSettings';
 import { VersionUtils } from '@/utils/versionUtils';
 import { isClientGM } from '@/utils/game';
 import { ICalendarAdapter } from './ICalendarAdapter';
-import { SimpleCalendarAdapter } from './SimpleCalendarAdapter';
 import { SimpleCalendarRebornAdapter } from './SimpleCalendarRebornAdapter';
 import { CalendariaAdapter } from './CalendariaAdapter';
 
 export enum CalendarType {
   NONE = 'none',
-  SIMPLE_CALENDAR = 'foundryvtt-simple-calendar',
   SIMPLE_CALENDAR_REBORN = 'foundryvtt-simple-calendar-reborn',
   CALENDARIA = 'calendaria'
 }
@@ -27,25 +25,23 @@ export interface CalendarModuleInfo {
   preferredVersion?: string;
 }
 
+// isMoreRecent returns true when equal
+const meetsMinimum = (moduleInfo: CalendarModuleInfo, version: string): boolean =>
+  VersionUtils.isMoreRecent(version, moduleInfo.minimumVersion);
+
 // these are sorted in order of preference (1st one found will win)
 const CALENDAR_MODULES: CalendarModuleInfo[] = [
   {
     moduleId: 'calendaria',
     type: CalendarType.CALENDARIA,
-    minimumVersion: '0.8.3',
-    preferredVersion: '0.8.3'
+    minimumVersion: '1.4.8',
+    preferredVersion: '1.4.8'
   },
   {
     moduleId: 'foundryvtt-simple-calendar-reborn',
     type: CalendarType.SIMPLE_CALENDAR_REBORN,
-    minimumVersion: '2.5.3',
-    preferredVersion: '2.5.3'
-  },
-  {
-    moduleId: 'foundryvtt-simple-calendar',
-    type: CalendarType.SIMPLE_CALENDAR,
-    minimumVersion: '2.4.18.5',  // this is the forked version
-    preferredVersion: '2.4.18.5'
+    minimumVersion: '2.6.1',
+    preferredVersion: '2.6.1'
   }
 ];
 
@@ -96,8 +92,7 @@ export class CalendarManager {
       const module = game.modules?.get(moduleInfo.moduleId);
       
       if (module && module.active && module.version) {
-        const meetsMinimumVersion = moduleInfo.minimumVersion === module.version || 
-          VersionUtils.isMoreRecent(module.version, moduleInfo.minimumVersion);
+        const meetsMinimumVersion = meetsMinimum(moduleInfo, module.version);
         
         this._currentCalendar = {
           type: moduleInfo.type,
@@ -148,9 +143,6 @@ export class CalendarManager {
       case CalendarType.CALENDARIA:
         return new CalendariaAdapter();
 
-      case CalendarType.SIMPLE_CALENDAR:
-        return new SimpleCalendarAdapter();
-
       case CalendarType.SIMPLE_CALENDAR_REBORN:
         return new SimpleCalendarRebornAdapter();
 
@@ -171,8 +163,7 @@ export class CalendarManager {
       const module = game?.modules?.get(moduleInfo.moduleId);
 
       if (module && module.active && module.version) {
-        const meetsMinimumVersion = moduleInfo.minimumVersion === module.version ||
-          VersionUtils.isMoreRecent(module.version, moduleInfo.minimumVersion);
+        const meetsMinimumVersion = meetsMinimum(moduleInfo, module.version);
 
         this._availableCalendars.push({
           type: moduleInfo.type,
@@ -226,7 +217,7 @@ export class CalendarManager {
       const module = game?.modules?.get(moduleInfo.moduleId);
       const version = module?.version;
       const meetsMinimumVersion = version ?
-        (moduleInfo.minimumVersion === version || VersionUtils.isMoreRecent(version, moduleInfo.minimumVersion)) :
+        meetsMinimum(moduleInfo, version) :
         false;
 
       this._currentCalendar = {
