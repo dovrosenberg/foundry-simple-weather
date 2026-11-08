@@ -3,7 +3,12 @@
 Dynamic weather generation, by season and biome, including automatically activating weather effects.  If [Simple Calendar](https://foundryvtt.com/packages/foundryvtt-simple-calendar) (see changelog for which versions of SC are supported by each version of Simple Weather) is present, Simple Weather will integrate to it and display the date/time and automatically generate new weather when the date changes.  Without Simple Calendar, no date is shown and weather regeneration can be manually triggered. (NOTE: THIS MODULE IS NOT AFFILIATED WITH THE CREATORS OF SIMPLE CALENDAR OR ANY OTHER CALENDAR MODULE)
 
 
-## Note on v13 compatibility
+## AI Usage
+
+There is no AI-written code or content in this module, but I have used AI in an advisory role, in particular for facilitating changes needed to support Foudnry upgrade.  In a couple versions in the past, some language translations were done by AI, but translations are now all done by humans (see the credits).
+
+
+## Note on v13 compatibility with Simple Calendar
 
 Unfortunately, the original Simple Calendar doesn't currently support Foundry v13, so be forewarned that while Simple Weather will run in standalone mode, that's all you're going to get with Simple Calendar.
 
